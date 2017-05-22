@@ -25,7 +25,7 @@ SECRET_KEY = 'm86gf@82@$g+=5p=8q1jm^bt2np##f@5!=omdrqj6z$gw0a9ez'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -79,9 +79,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'OPTIONS': {
             'database': 'banquetExpert',
-            'user':'root',
-            'password':'beijingyan',
-            'host':'114.215.220.241',
+            'user': 'root',
+            'password': 'beijingyan',
+            'host': '114.215.220.241',
             # 'port':''
         }
     }
