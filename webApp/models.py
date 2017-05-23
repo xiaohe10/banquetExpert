@@ -11,12 +11,12 @@ class Admin(models.Model):
         max_length=20, default=None, null=True, unique=True)
     password = models.CharField(max_length=128)
     token = models.CharField(max_length=32)
+    authority = models.CharField(max_length=20, default='', db_index=True)
     is_enabled = models.BooleanField(default=True, db_index=True)
 
     create_time = models.DateTimeField(default=timezone.now, db_index=True)
 
     class Meta:
-        db_table = 'admin'
         ordering = ['-create_time']
 
 
@@ -30,7 +30,6 @@ class Hotel(models.Model):
     create_time = models.DateTimeField(default=timezone.now, db_index=True)
 
     class Meta:
-        db_table = 'hotel'
         ordering = ['-create_time']
 
 
@@ -54,7 +53,6 @@ class HotelBranch(models.Model):
     manager = models.ForeignKey('Staff', models.CASCADE, 'branches')
 
     class Meta:
-        db_table = 'hotel_branch'
         ordering = ['-create_time']
 
 
@@ -75,7 +73,6 @@ class Room(models.Model):
     staff = models.ManyToManyField('Staff', 'rooms')
 
     class Meta:
-        db_table = 'room'
         ordering = ['-create_time']
 
 
@@ -94,12 +91,12 @@ class Staff(models.Model):
     position = models.CharField(max_length=20, default='')
     birthday = models.DateField(default=None, null=True, db_index=True)
     description = models.CharField(max_length=100, default='')
+    authority = models.CharField(max_length=20, default='', db_index=True)
     is_enabled = models.BooleanField(default=True, db_index=True)
 
     create_time = models.DateTimeField(default=timezone.now, db_index=True)
 
     class Meta:
-        db_table = 'staff'
         ordering = ['-create_time']
 
     def set_password(self, password):
@@ -116,19 +113,12 @@ class Staff(models.Model):
         return password1 == self.password
 
     def update_token(self):
-        """更新用户令牌"""
+        """更新令牌"""
 
         random_content = self.phone_number + timezone.now().isoformat()
         hasher = hashlib.md5()
         hasher.update(random_content.encode())
         self.token = hasher.hexdigest()
-
-    def save_and_generate_name(self):
-        """保存当前实例并生成序列用户名"""
-
-        self.save()
-        self.name = '宴专家员工 #{}'.format(self.id)
-        self.save()
 
 
 class User(models.Model):
@@ -139,7 +129,7 @@ class User(models.Model):
     password = models.CharField(max_length=128)
     phone = models.CharField(max_length=11, unique=True)
     token = models.CharField(max_length=32)
-    nike_name = models.CharField(max_length=20)
+    nike_name = models.CharField(max_length=20, default='')
     name = models.CharField(max_length=20)
     id_number = models.CharField(max_length=18, default='')
     icon = models.CharField(max_length=100, default='')
@@ -161,7 +151,6 @@ class User(models.Model):
     create_time = models.DateTimeField(default=timezone.now, db_index=True)
 
     class Meta:
-        db_table = 'user'
         ordering = ['-create_time']
 
     def set_password(self, password):
@@ -178,7 +167,7 @@ class User(models.Model):
         return password1 == self.password
 
     def update_token(self):
-        """更新用户令牌"""
+        """更新令牌"""
 
         random_content = self.phone_number + timezone.now().isoformat()
         hasher = hashlib.md5()
@@ -186,10 +175,9 @@ class User(models.Model):
         self.token = hasher.hexdigest()
 
     def save_and_generate_name(self):
-        """保存当前实例并生成序列用户名"""
+        """生成序列用户昵称并保存当前实例"""
 
-        self.save()
-        self.name = '宴专家用户 #{}'.format(self.id)
+        self.nike_name = '宴专家用户 #{}'.format(self.id)
         self.save()
 
 
@@ -225,7 +213,6 @@ class Order(models.Model):
     staff = models.ForeignKey('Staff', models.CASCADE, 'orders')
 
     class Meta:
-        db_table = 'order'
         ordering = ['-create_time']
 
 
@@ -300,5 +287,4 @@ class OrderScore(models.Model):
                                     'check_order_scores')
 
     class Meta:
-        db_table = 'order_score'
         ordering = ['-create_time']
