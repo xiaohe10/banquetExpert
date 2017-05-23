@@ -61,9 +61,9 @@ class Room(models.Model):
 
     number = models.CharField(max_length=10)
     position = models.CharField(max_length=10)
-    state = models.IntegerField(choices={0: '空闲', 1: '预定中', 2: '用餐中'},
-                                default=0,
-                                db_index=True)
+    state = models.IntegerField(
+        choices=((0, '空闲'), (1, '预定中'), (2, '用餐中')),
+        default=0, db_index=True)
     people_number_range = models.CharField(max_length=20, default='')
     is_enabled = models.BooleanField(default=True, db_index=True)
 
@@ -86,7 +86,7 @@ class Staff(models.Model):
     token = models.CharField(max_length=32)
     name = models.CharField(max_length=20)
     icon = models.CharField(max_length=100, default='')
-    gender = models.IntegerField(choices={0: '保密', 1: '男', 2: '女'},
+    gender = models.IntegerField(choices=((0, '保密'), (1, '男'), (2, '女')),
                                  default=0, db_index=True)
     position = models.CharField(max_length=20, default='')
     birthday = models.DateField(default=None, null=True, db_index=True)
@@ -130,10 +130,10 @@ class User(models.Model):
     phone = models.CharField(max_length=11, unique=True)
     token = models.CharField(max_length=32)
     nike_name = models.CharField(max_length=20, default='')
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=20, default='')
     id_number = models.CharField(max_length=18, default='')
     icon = models.CharField(max_length=100, default='')
-    gender = models.IntegerField(choices={0: '保密', 1: '男', 2: '女'},
+    gender = models.IntegerField(choices=((0, '保密'), (1, '男'), (2, '女')),
                                  default=0, db_index=True)
     qq = models.CharField(max_length=20, default='')
     wechat = models.CharField(max_length=20, default='')
@@ -184,8 +184,9 @@ class User(models.Model):
 class Order(models.Model):
     """订单模型"""
 
-    state = models.IntegerField(choices={0: '进行中', 1: '已完成', 2: '已删除'},
-                                default=0, db_index=True)
+    state = models.IntegerField(
+        choices=((0, '进行中'), (1, '已完成'), (2, '已删除')),
+        default=0, db_index=True)
     people_number = models.IntegerField(db_index=True)
     pay_number = models.IntegerField(default=None, db_index=True)
     water_card = models.CharField(max_length=10, default='')

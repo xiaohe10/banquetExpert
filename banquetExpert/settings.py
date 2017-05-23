@@ -82,7 +82,7 @@ DATABASES = {
             'user': 'root',
             'password': 'beijingyan',
             'host': '114.215.220.241',
-            'port': '3306',
+            'port': 3306,
         }
     }
 }
