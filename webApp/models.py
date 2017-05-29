@@ -408,6 +408,10 @@ class OrderScore(models.Model):
     work_in_heart_picture = models.CharField(max_length=100, default='')
     work_in_heart_score = models.IntegerField(default=None, null=True)
     check_work_in_heart_score = models.IntegerField(default=None, null=True)
+    # 私人订制创新
+    innovation_picture = models.CharField(max_length=100, default='')
+    innovation_score = models.IntegerField(default=None, null=True)
+    check_innovation_score = models.IntegerField(default=None, null=True)
     # 表扬信顾客满意度
     praise_letter_picture = models.CharField(max_length=100, default='')
     praise_letter_score = models.IntegerField(default=None, null=True)
