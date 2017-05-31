@@ -3,6 +3,15 @@ import hashlib
 from django.db import models
 from django.utils import timezone
 
+__all__ = ['Admin', 'Hotel', 'HotelBranch', 'Room', 'Staff', 'ExternalChannel',
+           'User', 'Order', 'OrderScore']
+
+
+class EnabledManager(models.Manager):
+    """自定义管理器"""
+    def get_queryset(self):
+        return super().get_queryset().filter(is_enabled=True)
+
 
 class Admin(models.Model):
     """管理员模型"""
@@ -22,6 +31,10 @@ class Admin(models.Model):
     # 创建时间
     create_time = models.DateTimeField(default=timezone.now, db_index=True)
 
+    # 管理器
+    objects = models.Manager()
+    enabled_objects = EnabledManager()
+
     class Meta:
         ordering = ['-create_time']
 
@@ -38,6 +51,10 @@ class Hotel(models.Model):
 
     # 创建时间
     create_time = models.DateTimeField(default=timezone.now, db_index=True)
+
+    # 管理器
+    objects = models.Manager()
+    enabled_objects = EnabledManager()
 
     class Meta:
         ordering = ['-create_time']
@@ -79,6 +96,10 @@ class HotelBranch(models.Model):
     # 店长
     manager = models.ForeignKey('Staff', models.CASCADE, 'branches')
 
+    # 管理器
+    objects = models.Manager()
+    enabled_objects = EnabledManager()
+
     class Meta:
         ordering = ['-create_time']
 
@@ -117,6 +138,10 @@ class Room(models.Model):
     # 员工
     staff = models.ManyToManyField('Staff', 'rooms')
 
+    # 管理器
+    objects = models.Manager()
+    enabled_objects = EnabledManager()
+
     class Meta:
         ordering = ['-create_time']
 
@@ -124,13 +149,13 @@ class Room(models.Model):
 class Staff(models.Model):
     """员工模型"""
 
-    # 用户名
-    username = models.CharField(
+    # 员工编号
+    staff_number = models.CharField(
         max_length=20, default=None, null=True, unique=True)
-    # 密码
-    password = models.CharField(max_length=128)
     # 手机
     phone = models.CharField(max_length=11, unique=True)
+    # 密码
+    password = models.CharField(max_length=128)
     # 令牌
     token = models.CharField(max_length=32)
     # 姓名
@@ -142,12 +167,10 @@ class Staff(models.Model):
                                  default=0, db_index=True)
     # 职位
     position = models.CharField(max_length=20, default='')
-    # 获客渠道
+    # 所属获客渠道
     guest_channel = models.IntegerField(
         choices=((0, '无'), (1, '高层管理'), (2, '预定员和迎宾'), (3, '客户经理')),
         default=0, db_index=True)
-    # 生日
-    birthday = models.DateField(default=None, null=True)
     # 备注
     description = models.CharField(max_length=100, default='')
     # 权限
@@ -158,21 +181,12 @@ class Staff(models.Model):
     # 创建时间
     create_time = models.DateTimeField(default=timezone.now, db_index=True)
 
+    # 管理器
+    objects = models.Manager()
+    enabled_objects = EnabledManager()
+
     class Meta:
         ordering = ['-create_time']
-
-    def set_password(self, password):
-        """设置密码(MD5加密方式)"""
-
-        hasher = hashlib.md5(password.encode(encoding='utf-8'))
-        self.password = hasher.hexdigest()
-
-    def check_password(self, password):
-        """检查密码(MD5验证方式)"""
-
-        hasher = hashlib.md5(password.encode(encoding='utf-8'))
-        password1 = hasher.hexdigest()
-        return password1 == self.password
 
     def update_token(self):
         """更新令牌"""
@@ -205,12 +219,18 @@ class ExternalChannel(models.Model):
         default=0)
     # 佣金核算数值
     commission_value = models.IntegerField()
+    # 是否有效
+    is_enabled = models.BooleanField(default=True, db_index=True)
 
     # 创建时间
     create_time = models.DateTimeField(default=timezone.now, db_index=True)
 
     # 直属上级
     staff = models.ForeignKey('Staff', models.CASCADE, 'external_channels')
+
+    # 管理器
+    objects = models.Manager()
+    enabled_objects = EnabledManager()
 
 
 class User(models.Model):
@@ -264,21 +284,12 @@ class User(models.Model):
     # 创建时间
     create_time = models.DateTimeField(default=timezone.now, db_index=True)
 
+    # 管理器
+    objects = models.Manager()
+    enabled_objects = EnabledManager()
+
     class Meta:
         ordering = ['-create_time']
-
-    def set_password(self, password):
-        """设置密码(MD5加密方式)"""
-
-        hasher = hashlib.md5(password.encode(encoding='utf-8'))
-        self.password = hasher.hexdigest()
-
-    def check_password(self, password):
-        """检查密码(MD5验证方式)"""
-
-        hasher = hashlib.md5(password.encode(encoding='utf-8'))
-        password1 = hasher.hexdigest()
-        return password1 == self.password
 
     def update_token(self):
         """更新令牌"""
