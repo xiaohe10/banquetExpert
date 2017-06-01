@@ -125,8 +125,10 @@ class Room(models.Model):
     facility = models.CharField(max_length=100, default='')
     # 是否靠窗
     is_beside_window = models.BooleanField(default=False)
-    # 可容纳人数
-    people_number_range = models.CharField(max_length=20, default='')
+    # 最小可容纳人数
+    min_people_number = models.IntegerField(default=None, null=True)
+    # 最大可容纳人数
+    max_people_number = models.IntegerField(default=None, null=True)
     # 是否有效
     is_enabled = models.BooleanField(default=True, db_index=True)
 
@@ -160,6 +162,8 @@ class Staff(models.Model):
     token = models.CharField(max_length=32)
     # 姓名
     name = models.CharField(max_length=20)
+    # 身份证号
+    id_number = models.CharField(max_length=18, default='')
     # 头像
     icon = models.CharField(max_length=100, default='')
     # 性别
@@ -191,7 +195,7 @@ class Staff(models.Model):
     def update_token(self):
         """更新令牌"""
 
-        random_content = self.phone_number + timezone.now().isoformat()
+        random_content = self.phone + timezone.now().isoformat()
         hasher = hashlib.md5()
         hasher.update(random_content.encode())
         self.token = hasher.hexdigest()
@@ -294,7 +298,7 @@ class User(models.Model):
     def update_token(self):
         """更新令牌"""
 
-        random_content = self.phone_number + timezone.now().isoformat()
+        random_content = self.phone + timezone.now().isoformat()
         hasher = hashlib.md5()
         hasher.update(random_content.encode())
         self.token = hasher.hexdigest()

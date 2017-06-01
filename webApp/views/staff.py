@@ -2,16 +2,23 @@ from django import forms
 from django.db import IntegrityError
 from django.http import JsonResponse, HttpResponse
 from django.db import transaction
+from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import View
 
+from ..utils.decorator import validate_args
 from ..models import Staff
 
-__all__ = ['List', 'Token']
+__all__ = ['List', 'Token', 'Password', 'Profile']
 
 
 class List(View):
     ORDERS = ('create_time', 'create_time', 'name', '-name')
 
+    @validate_args({
+        'offset': forms.IntegerField(min_value=0, required=False),
+        'limit': forms.IntegerField(min_value=0, required=False),
+        'order': forms.IntegerField(min_value=0, max_value=3, required=False),
+    })
     def get(self, request, offset=0, limit=10, order=1):
         """获取员工列表
 
@@ -25,7 +32,7 @@ class List(View):
         :return:
             count: 员工总数
             list: 员工列表
-                id: ID
+                staff_id: ID
                 staff_number: 员工编号
                 name: 员工姓名
                 icon: 员工头像
@@ -39,20 +46,43 @@ class List(View):
         c = Staff.enabled_objects.count()
         staffs = Staff.enabled_objects.order_by(
             self.ORDERS[order])[offset:offset + limit]
-        l = [{'id': s.id,
+        l = [{'staff_id': s.id,
               'name': s.name,
               'staff_number': s.staff_number,
               'icon': s.icon,
               'gender': s.gender,
               'position': s.position,
-              'guest_channel': s.channel,
+              'guest_channel': s.guest_channel,
               'authority': s.authority,
               'create_time': s.create_time} for s in staffs]
         return JsonResponse({'count': c, 'list': l})
 
+    @validate_args({
+        'phone': forms.RegexField(r'[0-9]{11}'),
+        'password': forms.CharField(min_length=1, max_length=128),
+        'staff_number': forms.CharField(
+            min_length=1, max_length=20, required=False),
+        'name': forms.CharField(min_length=1, max_length=20),
+        'gender': forms.IntegerField(min_value=0, max_value=2, required=False),
+        'position': forms.CharField(max_length=20),
+        'id_number': forms.CharField(min_length=18, max_length=18),
+    })
     def post(self, request, phone, password, **kwargs):
-        """注册，若成功返回令牌"""
+        """注册，若成功返回令牌
 
+        :param phone: 手机号
+        :param password: 密码
+        :param kwargs:
+            staff_number: 员工编号
+            name: 姓名(必传)
+            gender: 性别, 0: 保密, 1: 男, 2: 女
+            position: 职位(必传)
+            id_number: 身份证号(必传)
+        :return token: 令牌
+        """
+
+        if Staff.objects.get(phone=phone):
+            return HttpResponse('该手机号已注册', status=403)
         staff_keys = ('staff_number', 'name', 'gender', 'position', 'id_number')
         with transaction.atomic():
             try:
@@ -64,28 +94,135 @@ class List(View):
                 staff.save()
                 return JsonResponse({'token': staff.token})
             except IntegrityError:
-                return HttpResponse(400, '创建员工失败')
+                return HttpResponse('创建员工失败', status=400)
 
 
 class Token(View):
-
+    @validate_args({
+        'phone': forms.RegexField(r'[0-9]{11}'),
+        'password': forms.CharField(min_length=1, max_length=128),
+    })
     def post(self, request, phone, password):
         """更新并返回员工令牌
 
-        :param phone: 手机号
-        :param password: 密码
+        :param phone: 手机号(必传)
+        :param password: 密码(必传)
         :return token: 员工token
         """
 
         try:
             staff = Staff.objects.get(phone=phone)
         except Staff.DoesNotExist:
-            return HttpResponse(404, '员工不存在')
+            return HttpResponse('员工不存在', status=404)
         else:
             if not staff.is_enabled:
-                return HttpResponse(400, '员工已删除')
+                return HttpResponse('员工已删除', status=400)
             if staff.password != password:
-                return HttpResponse(401, '密码错误')
+                return HttpResponse('密码错误', status=400)
             staff.update_token()
             staff.save()
             return JsonResponse({'token': staff.token})
+
+
+class Password(View):
+    @validate_args({
+        'new_password': forms.CharField(min_length=6, max_length=20),
+        'old_password': forms.CharField(min_length=6, max_length=20),
+    })
+    def post(self, request, token, old_password, new_password):
+        """修改密码
+
+        :param token: 令牌(必传)
+        :param old_password: 旧密码(6-20位, 必传)
+        :param new_password: 新密码(6-20位, 必传)
+        :return 200/403
+        """
+        try:
+            request.staff = Staff.enabled_objects.get(token=token)
+        except ObjectDoesNotExist:
+            return HttpResponse('员工不存在', status=404)
+        else:
+            if request.staff.password == old_password:
+                request.staff.password = new_password
+                return HttpResponse('密码修改成功', status=200)
+            return HttpResponse('旧密码错误', status=403)
+
+
+class Profile(View):
+    def get(self, request, token, staff_id=None):
+        """获取员工信息
+
+        :param token: 令牌
+        :param staff_id: 员工编号
+        :return:
+            staff_id: ID
+            staff_number: 员工编号
+            name: 员工姓名
+            icon: 员工头像
+            gender: 性别
+            position: 职位
+            guest_channel: 所属获客渠道, 0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理
+            description: 备注
+            authority: 权限
+            create_time: 注册时间
+        """
+        request.staff, staff = None, None
+        try:
+            request.staff = Staff.enabled_objects.get(token=token)
+        except ObjectDoesNotExist:
+            return HttpResponse('员工不存在', status=404)
+        if staff_id:
+            try:
+                staff = Staff.enabled_objects.get(id=staff_id)
+            except ObjectDoesNotExist:
+                return HttpResponse('员工不存在', status=404)
+        else:
+            staff = request.staff
+        r = {'staff_id': staff.id,
+             'staff_number': staff.staff_number,
+             'name': staff.name,
+             'icon': staff.icon,
+             'gender': staff.gender,
+             'position': staff.position,
+             'guest_channel': staff.guest_channel,
+             'description': staff.description,
+             'authority': staff.authority,
+             'create_time': staff.create_time}
+        return JsonResponse(r)
+
+    @validate_args({
+        'staff_number': forms.CharField(
+            min_length=1, max_length=20, required=False),
+        'name': forms.CharField(min_length=1, max_length=20),
+        'gender': forms.IntegerField(min_value=0, max_value=2, required=False),
+        'position': forms.CharField(max_length=20, required=False),
+        'guest_channel': forms.IntegerField(
+            min_value=0, max_value=3, required=False),
+        'description': forms.CharField(max_length=100, required=False),
+        'authority': forms.CharField(max_length=20, required=False),
+    })
+    def post(self, request, token, **kwargs):
+        """修改员工信息
+
+        :param token: 令牌
+        :param kwargs:
+            staff_number: 员工编号
+            gender: 性别
+            position: 职位
+            guest_channel: 所属获客渠道, 0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理
+            description: 备注
+            authority: 权限
+        :return: 200
+        """
+        try:
+            request.staff = Staff.enabled_objects.get(token=token)
+        except ObjectDoesNotExist:
+            return HttpResponse('员工不存在', status=404)
+
+        staff_keys = ('staff_number', 'gender', 'position', 'guest_channel',
+                      'description', 'authority')
+        for k in staff_keys:
+            if k in kwargs:
+                setattr(request.staff, k, kwargs[k])
+        request.staff.save()
+        return HttpResponse('修改信息成功', status=200)
