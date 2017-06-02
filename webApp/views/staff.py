@@ -201,7 +201,10 @@ class Icon(View):
 
                 # 删除旧文件, 保存新的文件路径
                 if request.staff.icon:
-                    os.remove(request.staff.icon)
+                    try:
+                        os.remove(request.staff.icon)
+                    except OSError:
+                        pass
                 request.staff.icon = dir_name
                 request.staff.save()
                 return HttpResponse('上传成功', status=200)
