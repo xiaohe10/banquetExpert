@@ -9,7 +9,6 @@ from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import View
 
-from banquetExpert.settings import BASE_DIR
 from ..utils.decorator import validate_args, validate_staff_token
 from ..models import Staff
 
