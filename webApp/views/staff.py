@@ -89,7 +89,7 @@ class List(View):
         :return token: 令牌
         """
 
-        if Staff.objects.get(phone=phone):
+        if Staff.objects.filter(phone=phone).exists():
             return HttpResponse('该手机号已注册', status=403)
         staff_keys = ('staff_number', 'name', 'gender', 'position', 'id_number')
         with transaction.atomic():
