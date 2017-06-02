@@ -23,6 +23,9 @@ class Admin(models.Model):
     password = models.CharField(max_length=128)
     # 令牌
     token = models.CharField(max_length=32)
+    # 类型
+    type = models.IntegerField(choices=((0, '管理员'), (1, '超级管理员')),
+                               default=0)
     # 权限
     authority = models.CharField(max_length=20, default='', db_index=True)
     # 是否有效
@@ -30,6 +33,10 @@ class Admin(models.Model):
 
     # 创建时间
     create_time = models.DateTimeField(default=timezone.now, db_index=True)
+
+    # 所属酒店(超级管理员不属于任何酒店)
+    hotel = models.ForeignKey('Hotel', models.CASCADE, 'admins', default=None,
+                              null=True)
 
     # 管理器
     objects = models.Manager()
@@ -177,6 +184,9 @@ class Staff(models.Model):
     guest_channel = models.IntegerField(
         choices=((0, '无'), (1, '高层管理'), (2, '预定员和迎宾'), (3, '客户经理')),
         default=0, db_index=True)
+    # 状态
+    status = models.IntegerField(
+        choices=((0, '待审核'), (1, '审核通过')), default=0, db_index=True)
     # 备注
     description = models.CharField(max_length=100, default='')
     # 权限
@@ -186,6 +196,9 @@ class Staff(models.Model):
 
     # 创建时间
     create_time = models.DateTimeField(default=timezone.now, db_index=True)
+
+    # 所属酒店
+    hotel = models.ForeignKey('Hotel', models.CASCADE, 'branches')
 
     # 管理器
     objects = models.Manager()

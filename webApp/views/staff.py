@@ -10,7 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import View
 
 from ..utils.decorator import validate_args, validate_staff_token
-from ..models import Staff
+from ..models import Staff, Hotel
 
 __all__ = ['List', 'Token', 'Password', 'Icon', 'Profile']
 
@@ -20,15 +20,17 @@ class List(View):
 
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
+        'status': forms.IntegerField(min_value=0, max_value=1),
         'offset': forms.IntegerField(min_value=0, required=False),
         'limit': forms.IntegerField(min_value=0, required=False),
         'order': forms.IntegerField(min_value=0, max_value=3, required=False),
     })
     @validate_staff_token()
-    def get(self, request, token, offset=0, limit=10, order=1):
+    def get(self, request, token, status=1, offset=0, limit=10, order=1):
         """获取员工列表
 
         :param token: 令牌(必传)
+        :param status: 员工状态, 0: 待审核, 1: 审核通过, 默认1
         :param offset: 起始值
         :param limit: 偏移量
         :param order: 排序方式
@@ -50,8 +52,8 @@ class List(View):
                 authority: 权限
                 create_time: 注册时间
         """
-        c = Staff.enabled_objects.count()
-        staffs = Staff.enabled_objects.order_by(
+        c = Staff.enabled_objects.filter(status=status).count()
+        staffs = Staff.enabled_objects.filter(status=status).order_by(
             self.ORDERS[order])[offset:offset + limit]
         l = [{'staff_id': s.id,
               'name': s.name,
@@ -73,12 +75,14 @@ class List(View):
         'gender': forms.IntegerField(min_value=0, max_value=2, required=False),
         'position': forms.CharField(max_length=20),
         'id_number': forms.CharField(min_length=18, max_length=18),
+        'hotel_id': forms.IntegerField(),
     })
-    def post(self, request, phone, password, **kwargs):
+    def post(self, request, phone, password, hotel_id, **kwargs):
         """注册，若成功返回令牌
 
-        :param phone: 手机号
-        :param password: 密码
+        :param phone: 手机号(必传)
+        :param password: 密码(必传)
+        :param hotel_id: 酒店ID(必传)
         :param kwargs:
             staff_number: 员工编号
             name: 姓名(必传)
@@ -88,12 +92,17 @@ class List(View):
         :return token: 令牌
         """
 
+        try:
+            hotel = Hotel.enabled_objects.get(id=hotel_id)
+        except Hotel.DoesNotExist:
+            return HttpResponse('酒店不存在', status=404)
+
         if Staff.objects.filter(phone=phone).exists():
             return HttpResponse('该手机号已注册', status=403)
         staff_keys = ('staff_number', 'name', 'gender', 'position', 'id_number')
         with transaction.atomic():
             try:
-                staff = Staff(phone=phone, password=password)
+                staff = Staff(phone=phone, password=password, hotel=hotel)
                 staff.update_token()
                 for k in staff_keys:
                     if k in kwargs:
@@ -123,7 +132,9 @@ class Token(View):
             return HttpResponse('员工不存在', status=404)
         else:
             if not staff.is_enabled:
-                return HttpResponse('员工已删除', status=400)
+                return HttpResponse('员工已删除', status=403)
+            if staff.status == 0:
+                return HttpResponse('账号待审核', status=403)
             if staff.password != password:
                 return HttpResponse('密码错误', status=400)
             staff.update_token()

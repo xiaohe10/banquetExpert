@@ -3,7 +3,27 @@ from django.http import QueryDict, HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import ValidationError
 
-from ..models import Staff, User
+from ..models import Admin, Staff, User
+
+
+def validate_admin_token():
+    """对被装饰的方法根据token对管理者进行身份认证"""
+    def decorator(function):
+        @wraps(function)
+        def returned_wrapper(self, request, *args, **kwargs):
+            if 'token' not in kwargs:
+                return HttpResponse('需要参数 "token"', status=400)
+            try:
+                admin = Admin.objects.get(token=kwargs['token'])
+            except ObjectDoesNotExist:
+                return HttpResponse('"token" 错误', status=404)
+            else:
+                if admin.is_enabled is not True:
+                    return HttpResponse('账号已删除', status=403)
+                request.admin = admin
+            return function(self, request, *args, **kwargs)
+        return returned_wrapper
+    return decorator
 
 
 def validate_staff_token():
@@ -19,7 +39,9 @@ def validate_staff_token():
                 return HttpResponse('"token" 错误', status=404)
             else:
                 if staff.is_enabled is not True:
-                    return HttpResponse('账号已删除', status=400)
+                    return HttpResponse('账号已删除', status=403)
+                if staff.status == 0:
+                    return HttpResponse('账号待审核', status=403)
                 request.staff = staff
             return function(self, request, *args, **kwargs)
         return returned_wrapper
