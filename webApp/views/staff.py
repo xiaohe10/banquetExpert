@@ -175,7 +175,8 @@ class Icon(View):
                 return HttpResponse('员工不存在', status=404)
         else:
             staff = request.staff
-        return JsonResponse({'icon': BASE_DIR + '/' + staff.icon})
+
+        return JsonResponse({'icon': staff.icon})
 
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
@@ -193,11 +194,11 @@ class Icon(View):
             if icon:
                 icon_time = timezone.now().strftime('%H%M%S%f')
                 icon_tail = str(icon).split('.')[-1]
-                dir_name = 'uploaded/icon/staff/%d/%s.%s' % \
-                           (request.staff.id, icon_time, icon_tail)
+                dir_name = 'uploaded/icon/staff/%d/' % request.staff.id
                 os.makedirs(dir_name, exist_ok=True)
+                file_name = dir_name + '%s.%s' % (icon_time, icon_tail)
                 img = Image.open(icon)
-                img.save(dir_name, quality=90)
+                img.save(file_name, quality=90)
 
                 # 删除旧文件, 保存新的文件路径
                 if request.staff.icon:
