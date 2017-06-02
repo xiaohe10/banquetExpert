@@ -205,7 +205,7 @@ class Icon(View):
                         os.remove(request.staff.icon)
                     except OSError:
                         pass
-                request.staff.icon = dir_name
+                request.staff.icon = file_name
                 request.staff.save()
                 return HttpResponse('上传成功', status=200)
 
