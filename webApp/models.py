@@ -3,7 +3,7 @@ import hashlib
 from django.db import models
 from django.utils import timezone
 
-__all__ = ['Admin', 'Hotel', 'HotelBranch', 'Room', 'Staff', 'ExternalChannel',
+__all__ = ['Admin', 'Hotel', 'HotelBranch', 'Desk', 'Staff', 'ExternalChannel',
            'User', 'Order', 'OrderScore']
 
 
@@ -104,10 +104,10 @@ class HotelBranch(models.Model):
         ordering = ['-create_time']
 
 
-class Room(models.Model):
-    """房间模型"""
+class Desk(models.Model):
+    """桌位模型"""
 
-    # 房间号
+    # 桌位号
     number = models.CharField(max_length=10)
     # 位置
     position = models.CharField(max_length=10)
@@ -123,6 +123,8 @@ class Room(models.Model):
     type = models.CharField(max_length=10, default='', db_index=True)
     # 设施
     facility = models.CharField(max_length=100, default='')
+    # 照片
+    picture = models.CharField(max_length=100, default='')
     # 是否靠窗
     is_beside_window = models.BooleanField(default=False)
     # 最小可容纳人数
@@ -136,9 +138,9 @@ class Room(models.Model):
     create_time = models.DateTimeField(default=timezone.now, db_index=True)
 
     # 所属门店
-    branch = models.ForeignKey('HotelBranch', models.CASCADE, 'rooms')
+    branch = models.ForeignKey('HotelBranch', models.CASCADE, 'desks')
     # 员工
-    staff = models.ManyToManyField('Staff', 'rooms')
+    staff = models.ManyToManyField('Staff', 'desks')
 
     # 管理器
     objects = models.Manager()
@@ -364,8 +366,8 @@ class Order(models.Model):
     # 撤销时间
     reverse_time = models.DateTimeField(default=None, db_index=True)
 
-    # 预定房间
-    room = models.ForeignKey('Room', models.CASCADE, 'orders')
+    # 预定桌位
+    desk = models.ForeignKey('Desk', models.CASCADE, 'orders')
     # 顾客(可能是散客)
     user = models.ForeignKey(
         'User', models.CASCADE, 'orders', default=None, null=True)

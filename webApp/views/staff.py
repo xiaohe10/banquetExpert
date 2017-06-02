@@ -1,27 +1,35 @@
+import os
+
+from PIL import Image
 from django import forms
 from django.db import IntegrityError
 from django.http import JsonResponse, HttpResponse
+from django.utils import timezone
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import View
 
-from ..utils.decorator import validate_args
+from banquetExpert.settings import BASE_DIR
+from ..utils.decorator import validate_args, validate_staff_token
 from ..models import Staff
 
-__all__ = ['List', 'Token', 'Password', 'Profile']
+__all__ = ['List', 'Token', 'Password', 'Icon', 'Profile']
 
 
 class List(View):
     ORDERS = ('create_time', 'create_time', 'name', '-name')
 
     @validate_args({
+        'token': forms.CharField(min_length=32, max_length=32),
         'offset': forms.IntegerField(min_value=0, required=False),
         'limit': forms.IntegerField(min_value=0, required=False),
         'order': forms.IntegerField(min_value=0, max_value=3, required=False),
     })
-    def get(self, request, offset=0, limit=10, order=1):
+    @validate_staff_token()
+    def get(self, request, token, offset=0, limit=10, order=1):
         """获取员工列表
 
+        :param token: 令牌(必传)
         :param offset: 起始值
         :param limit: 偏移量
         :param order: 排序方式
@@ -105,7 +113,7 @@ class Token(View):
     def post(self, request, phone, password):
         """更新并返回员工令牌
 
-        :param phone: 手机号(必传)
+        :param phone: 手机号(11位, 必传)
         :param password: 密码(必传)
         :return token: 员工token
         """
@@ -126,9 +134,11 @@ class Token(View):
 
 class Password(View):
     @validate_args({
+        'token': forms.CharField(min_length=32, max_length=32),
         'new_password': forms.CharField(min_length=6, max_length=20),
         'old_password': forms.CharField(min_length=6, max_length=20),
     })
+    @validate_staff_token()
     def post(self, request, token, old_password, new_password):
         """修改密码
 
@@ -137,23 +147,79 @@ class Password(View):
         :param new_password: 新密码(6-20位, 必传)
         :return 200/403
         """
-        try:
-            request.staff = Staff.enabled_objects.get(token=token)
-        except ObjectDoesNotExist:
-            return HttpResponse('员工不存在', status=404)
+
+        if request.staff.password == old_password:
+            request.staff.password = new_password
+            return HttpResponse('密码修改成功', status=200)
+        return HttpResponse('旧密码错误', status=403)
+
+
+class Icon(View):
+    @validate_args({
+        'token': forms.CharField(min_length=32, max_length=32),
+        'staff_id': forms.IntegerField(required=False),
+    })
+    @validate_staff_token()
+    def get(self, request, token, staff_id=None):
+        """获取头像
+
+        :param token: 令牌(必传)
+        :param staff_id: 员工ID
+        :return:
+            icon: 头像地址
+        """
+        if staff_id:
+            try:
+                staff = Staff.enabled_objects.get(id=staff_id)
+            except ObjectDoesNotExist:
+                return HttpResponse('员工不存在', status=404)
         else:
-            if request.staff.password == old_password:
-                request.staff.password = new_password
-                return HttpResponse('密码修改成功', status=200)
-            return HttpResponse('旧密码错误', status=403)
+            staff = request.staff
+        return JsonResponse({'icon': BASE_DIR + '/' + staff.icon})
+
+    @validate_args({
+        'token': forms.CharField(min_length=32, max_length=32),
+    })
+    @validate_staff_token()
+    def post(self, request, token):
+        """修改头像
+
+        :param token: 令牌(必传)
+        :return: 200
+        """
+        if request.method == 'POST':
+            icon = request.FILES['icon']
+
+            if icon:
+                icon_time = timezone.now().strftime('%H%M%S%f')
+                icon_tail = str(icon).split('.')[-1]
+                dir_name = 'uploaded/icon/staff/%d/%s.%s' % \
+                           (request.staff.id, icon_time, icon_tail)
+                os.makedirs(dir_name, exist_ok=True)
+                img = Image.open(icon)
+                img.save(dir_name, quality=90)
+
+                # 删除旧文件, 保存新的文件路径
+                if request.staff.icon:
+                    os.remove(request.staff.icon)
+                request.staff.icon = dir_name
+                request.staff.save()
+                return HttpResponse('上传成功', status=200)
+
+            return HttpResponse('图片为空', status=400)
 
 
 class Profile(View):
+    @validate_args({
+        'token': forms.CharField(min_length=32, max_length=32),
+        'staff_id': forms.IntegerField(required=False),
+    })
+    @validate_staff_token()
     def get(self, request, token, staff_id=None):
         """获取员工信息
 
-        :param token: 令牌
-        :param staff_id: 员工编号
+        :param token: 令牌(必传)
+        :param staff_id: 员工ID
         :return:
             staff_id: ID
             staff_number: 员工编号
@@ -166,11 +232,6 @@ class Profile(View):
             authority: 权限
             create_time: 注册时间
         """
-        request.staff, staff = None, None
-        try:
-            request.staff = Staff.enabled_objects.get(token=token)
-        except ObjectDoesNotExist:
-            return HttpResponse('员工不存在', status=404)
         if staff_id:
             try:
                 staff = Staff.enabled_objects.get(id=staff_id)
@@ -191,9 +252,10 @@ class Profile(View):
         return JsonResponse(r)
 
     @validate_args({
+        'token': forms.CharField(min_length=32, max_length=32),
         'staff_number': forms.CharField(
             min_length=1, max_length=20, required=False),
-        'name': forms.CharField(min_length=1, max_length=20),
+        'name': forms.CharField(min_length=1, max_length=20, required=False),
         'gender': forms.IntegerField(min_value=0, max_value=2, required=False),
         'position': forms.CharField(max_length=20, required=False),
         'guest_channel': forms.IntegerField(
@@ -201,10 +263,11 @@ class Profile(View):
         'description': forms.CharField(max_length=100, required=False),
         'authority': forms.CharField(max_length=20, required=False),
     })
+    @validate_staff_token()
     def post(self, request, token, **kwargs):
         """修改员工信息
 
-        :param token: 令牌
+        :param token: 令牌(必传)
         :param kwargs:
             staff_number: 员工编号
             gender: 性别
@@ -214,10 +277,6 @@ class Profile(View):
             authority: 权限
         :return: 200
         """
-        try:
-            request.staff = Staff.enabled_objects.get(token=token)
-        except ObjectDoesNotExist:
-            return HttpResponse('员工不存在', status=404)
 
         staff_keys = ('staff_number', 'gender', 'position', 'guest_channel',
                       'description', 'authority')
