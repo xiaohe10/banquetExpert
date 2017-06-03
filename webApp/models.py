@@ -198,7 +198,7 @@ class Staff(models.Model):
     create_time = models.DateTimeField(default=timezone.now, db_index=True)
 
     # 所属酒店
-    hotel = models.ForeignKey('Hotel', models.CASCADE, 'branches')
+    hotel = models.ForeignKey('Hotel', models.CASCADE, 'staffs')
 
     # 管理器
     objects = models.Manager()
