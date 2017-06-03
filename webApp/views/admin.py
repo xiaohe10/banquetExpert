@@ -44,7 +44,7 @@ class AdminList(View):
         """
 
         # 只有超级管理者才能访问
-        if request.admin != 1:
+        if request.admin.type != 1:
             return HttpResponse('禁止访问', status=403)
 
         c = Admin.objects.count()
