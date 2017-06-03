@@ -50,7 +50,7 @@ class List(View):
                 guest_channel: 所属获客渠道
                     0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理
                 authority: 权限
-                create_time: 注册时间
+                create_time: 创建时间
         """
         c = Staff.enabled_objects.filter(status=status).count()
         staffs = Staff.enabled_objects.filter(status=status).order_by(
@@ -78,7 +78,7 @@ class List(View):
         'hotel_id': forms.IntegerField(),
     })
     def post(self, request, phone, password, hotel_id, **kwargs):
-        """注册，若成功返回令牌
+        """员工注册
 
         :param phone: 手机号(必传)
         :param password: 密码(必传)
@@ -89,7 +89,7 @@ class List(View):
             gender: 性别, 0: 保密, 1: 男, 2: 女
             position: 职位(必传)
             id_number: 身份证号(必传)
-        :return token: 令牌
+        :return 200
         """
 
         try:
@@ -108,7 +108,7 @@ class List(View):
                     if k in kwargs:
                         setattr(staff, k, kwargs[k])
                 staff.save()
-                return JsonResponse({'token': staff.token})
+                return HttpResponse('创建员工成功', status=200)
             except IntegrityError:
                 return HttpResponse('创建员工失败', status=400)
 
@@ -244,7 +244,7 @@ class Profile(View):
             guest_channel: 所属获客渠道, 0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理
             description: 备注
             authority: 权限
-            create_time: 注册时间
+            create_time: 创建时间
         """
         if staff_id:
             try:

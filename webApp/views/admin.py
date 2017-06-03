@@ -8,11 +8,12 @@ from django.core.exceptions import ObjectDoesNotExist
 from ..utils.decorator import validate_args, validate_admin_token
 from ..models import Admin, Hotel, Staff
 
-__all__ = ['AdminList', 'Token', 'StaffList', 'StaffProfile']
+__all__ = ['AdminList', 'Token', 'HotelList', 'HotelProfile',
+           'StaffList', 'StaffProfile']
 
 
 class AdminList(View):
-    ORDERS = ('create_time', 'create_time', 'name', '-name')
+    ORDERS = ('create_time', 'create_time', 'username', '-username')
 
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
@@ -39,7 +40,7 @@ class AdminList(View):
                 username: 用户名
                 authority: 权限
                 is_enabled: 是否有效
-                create_time: 注册时间
+                create_time: 创建时间
         """
 
         # 只有超级管理者才能访问
@@ -138,6 +139,117 @@ class Token(View):
             return JsonResponse({'token': admin.token})
 
 
+class HotelList(View):
+    ORDERS = ('create_time', 'create_time', 'name', '-name')
+
+    @validate_args({
+        'token': forms.CharField(min_length=32, max_length=32),
+        'is_enabled': forms.BooleanField(required=False),
+        'offset': forms.IntegerField(min_value=0, required=False),
+        'limit': forms.IntegerField(min_value=0, required=False),
+        'order': forms.IntegerField(min_value=0, max_value=3, required=False),
+    })
+    @validate_admin_token()
+    def get(self, request, token, is_enabled=True, offset=0, limit=10, order=1):
+        """获取酒店列表
+
+        :param token: 令牌(必传)
+        :param is_enabled: 是否有效, 默认:是
+        :param offset: 起始值
+        :param limit: 偏移量
+        :param order: 排序方式
+            0: 注册时间升序
+            1: 注册时间降序（默认值）
+            2: 昵称升序
+            3: 昵称降序
+        :return:
+            count: 酒店总数
+            list: 酒店列表
+                hotel_id: ID
+                name: 名称
+                icon: 头像
+                branches_count: 门店数
+                owner_name: 法人代表
+                create_time: 创建时间
+        """
+
+        # 只能超级管理员查看
+        if request.admin.type != 1:
+            return HttpResponse('没有权限', status=403)
+        c = Hotel.objects.filter(is_enabled=is_enabled).count()
+        hotels = Hotel.objects.filter(is_enabled=is_enabled).order_by(
+            self.ORDERS[order])[offset:offset + limit]
+        l = [{'hotel_id': h.id,
+              'name': h.name,
+              'icon': h.icon,
+              'branches_count': h.branches.count(),
+              'owner_name': h.owner_name,
+              'create_time': h.create_time} for h in hotels]
+        return JsonResponse({'count': c, 'list': l})
+
+    @validate_args({
+        'token': forms.CharField(min_length=32, max_length=32),
+        'name': forms.CharField(min_length=1, max_length=20),
+        'owner_name': forms.CharField(min_length=1, max_length=20),
+    })
+    @validate_admin_token()
+    def post(self, request, token, name, owner_name):
+        """注册新酒店
+
+        :param token: 令牌(必传)
+        :param name: 名称(必传)
+        :param owner_name: 法人代表(必传)
+        :return 200
+        """
+
+        # 只有超级管理员能注册
+        if request.admin.type != 1:
+            return HttpResponse('没有权限', status=403)
+
+        try:
+            Hotel.objects.create(name=name, owner_name=owner_name)
+            return HttpResponse('创建酒店成功', status=200)
+        except IntegrityError:
+            return HttpResponse('创建酒店失败', status=400)
+
+
+class HotelProfile(View):
+    @validate_args({
+        'token': forms.CharField(min_length=32, max_length=32),
+        'name': forms.CharField(min_length=1, max_length=20),
+        'owner_name': forms.CharField(min_length=1, max_length=20),
+        'staff_id': forms.IntegerField(),
+    })
+    @validate_admin_token()
+    def post(self, request, token, hotel_id, **kwargs):
+        """修改酒店信息
+
+        :param token: 令牌(必传)
+        :param hotel_id: 酒店ID(必传)
+        :param kwargs:
+            name: 名称
+            owner_name: 法人代表
+            is_enabled: 是否可用, True/False
+        :return: 200
+        """
+
+        try:
+            hotel = Hotel.objects.get(id=hotel_id)
+        except Staff.DoesNotExist:
+            return HttpResponse('酒店不存在', status=404)
+
+        # 只有超级管理员能管理
+        if request.admin.type != 1:
+            return HttpResponse('没有权限', status=403)
+
+        hotel_keys = ('name', 'owner_name', 'is_enabled')
+        for k in hotel_keys:
+            if k in kwargs:
+                setattr(hotel, k, kwargs[k])
+        hotel.save()
+        return HttpResponse('修改信息成功', status=200)
+
+
 class StaffList(View):
     ORDERS = ('create_time', 'create_time', 'name', '-name')
 
@@ -156,7 +268,7 @@ class StaffList(View):
 
         :param token: 令牌(必传)
         :param status: 员工状态, 0: 待审核, 1: 审核通过, 默认1
-        :param is_enabled: 员工是否有效, 默认:是
+        :param is_enabled: 是否有效, 默认:是
         :param offset: 起始值
         :param limit: 偏移量
         :param order: 排序方式
@@ -177,7 +289,7 @@ class StaffList(View):
                 guest_channel: 所属获客渠道
                     0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理
                 authority: 权限
-                create_time: 注册时间
+                create_time: 创建时间
         """
         # 管理员只能查看自己酒店的员工
         if request.admin.type == 0:
@@ -218,7 +330,7 @@ class StaffList(View):
     })
     @validate_admin_token()
     def post(self, request, phone, password, hotel_id, **kwargs):
-        """注册，若成功返回令牌
+        """注册新员工
 
         :param phone: 手机号(必传)
         :param password: 密码(必传)
@@ -245,7 +357,8 @@ class StaffList(View):
         staff_keys = ('staff_number', 'name', 'gender', 'position', 'id_number')
         with transaction.atomic():
             try:
-                staff = Staff(phone=phone, password=password, hotel=hotel)
+                staff = Staff(phone=phone, password=password, status=1,
+                              hotel=hotel)
                 staff.update_token()
                 for k in staff_keys:
                     if k in kwargs:
@@ -270,7 +383,7 @@ class StaffProfile(View):
         'authority': forms.CharField(max_length=20, required=False),
         'status': forms.IntegerField(required=False),
         'is_enabled': forms.BooleanField(required=False),
-        'staff_id': forms.IntegerField()
+        'staff_id': forms.IntegerField(),
     })
     @validate_admin_token()
     def post(self, request, token, staff_id, **kwargs):
@@ -291,7 +404,7 @@ class StaffProfile(View):
         """
 
         try:
-            staff = Staff.enabled_objects.get(id=staff_id)
+            staff = Staff.objects.get(id=staff_id)
         except Staff.DoesNotExist:
             return HttpResponse('员工不存在', status=404)
 

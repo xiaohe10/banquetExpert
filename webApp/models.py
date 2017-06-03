@@ -45,12 +45,22 @@ class Admin(models.Model):
     class Meta:
         ordering = ['-create_time']
 
+    def update_token(self):
+        """更新令牌"""
+
+        random_content = self.username + timezone.now().isoformat()
+        hasher = hashlib.md5()
+        hasher.update(random_content.encode())
+        self.token = hasher.hexdigest()[:32]
+
 
 class Hotel(models.Model):
     """酒店模型"""
 
     # 名称
     name = models.CharField(max_length=20)
+    # 头像
+    icon = models.CharField(max_length=100, default='')
     # 法人代表
     owner_name = models.CharField(max_length=20)
     # 是否有效

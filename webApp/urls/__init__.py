@@ -9,6 +9,6 @@ urlpatterns = [
     url(r'^hotel/', include(hotel.urlpatterns, namespace='hotel')),
     url(r'^hotel_branch/', include(hotel_branch.urlpatterns,
                                    namespace='hotel_branch')),
-    url(r'^room/', include(desk.urlpatterns, namespace='room')),
+    url(r'^desk/', include(desk.urlpatterns, namespace='desk')),
     url(r'^staff/', include(staff.urlpatterns, namespace='staff')),
 ]
