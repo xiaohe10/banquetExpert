@@ -284,7 +284,7 @@ class StaffList(View):
                 name: 员工姓名
                 icon: 员工头像
                 gender: 性别
-                hotel: 员工所属酒店
+                hotel_name: 员工所属酒店
                 position: 职位
                 guest_channel: 所属获客渠道
                     0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理
@@ -310,7 +310,7 @@ class StaffList(View):
               'staff_number': s.staff_number,
               'icon': s.icon,
               'gender': s.gender,
-              'hotel': s.hotel,
+              'hotel_name': s.hotel.name,
               'position': s.position,
               'guest_channel': s.guest_channel,
               'authority': s.authority,
@@ -416,6 +416,6 @@ class StaffProfile(View):
                       'description', 'authority', 'status', 'is_enabled')
         for k in staff_keys:
             if k in kwargs:
-                setattr(request.staff, k, kwargs[k])
-        request.staff.save()
+                setattr(staff, k, kwargs[k])
+        staff.save()
         return HttpResponse('修改信息成功', status=200)
