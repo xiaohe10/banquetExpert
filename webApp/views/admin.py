@@ -13,7 +13,7 @@ __all__ = ['AdminList', 'Token', 'HotelList', 'HotelProfile',
 
 
 class AdminList(View):
-    ORDERS = ('create_time', 'create_time', 'username', '-username')
+    ORDERS = ('create_time', '-create_time', 'username', '-username')
 
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
@@ -140,7 +140,7 @@ class Token(View):
 
 
 class HotelList(View):
-    ORDERS = ('create_time', 'create_time', 'name', '-name')
+    ORDERS = ('create_time', '-create_time', 'name', '-name')
 
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
@@ -251,7 +251,7 @@ class HotelProfile(View):
 
 
 class StaffList(View):
-    ORDERS = ('create_time', 'create_time', 'name', '-name')
+    ORDERS = ('create_time', '-create_time', 'name', '-name')
 
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),

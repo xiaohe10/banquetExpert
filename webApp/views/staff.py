@@ -16,7 +16,7 @@ __all__ = ['List', 'Token', 'Password', 'Icon', 'Profile']
 
 
 class List(View):
-    ORDERS = ('create_time', 'create_time', 'name', '-name')
+    ORDERS = ('create_time', '-create_time', 'name', '-name')
 
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
