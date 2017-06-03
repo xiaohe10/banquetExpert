@@ -255,7 +255,7 @@ class StaffList(View):
 
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
-        'status': forms.IntegerField(min_value=0, max_value=1),
+        'status': forms.IntegerField(min_value=0, max_value=1, required=False),
         'is_enabled': forms.BooleanField(required=False),
         'offset': forms.IntegerField(min_value=0, required=False),
         'limit': forms.IntegerField(min_value=0, required=False),
