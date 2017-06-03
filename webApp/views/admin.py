@@ -1,14 +1,18 @@
+import os
+
+from PIL import Image
+
 from django import forms
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
+from django.utils import timezone
 from django.http import JsonResponse, HttpResponse
-from django.db import transaction
 from django.views.generic import View
 from django.core.exceptions import ObjectDoesNotExist
 
 from ..utils.decorator import validate_args, validate_admin_token
 from ..models import Admin, Hotel, Staff
 
-__all__ = ['AdminList', 'Token', 'HotelList', 'HotelProfile',
+__all__ = ['AdminList', 'Token', 'HotelList', 'HotelProfile', 'HotelIcon',
            'StaffList', 'StaffProfile']
 
 
@@ -206,31 +210,25 @@ class HotelList(View):
         if request.admin.type != 1:
             return HttpResponse('没有权限', status=403)
 
+        if Hotel.objects.filter(name=name).exists():
+            return HttpResponse('酒店名已注册', status=400)
         try:
             Hotel.objects.create(name=name, owner_name=owner_name)
             return HttpResponse('创建酒店成功', status=200)
         except IntegrityError:
             return HttpResponse('创建酒店失败', status=400)
 
-
-class HotelProfile(View):
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
-        'name': forms.CharField(min_length=1, max_length=20),
-        'owner_name': forms.CharField(min_length=1, max_length=20),
-        'staff_id': forms.IntegerField(),
+        'hotel_id': forms.IntegerField(),
     })
     @validate_admin_token()
-    def post(self, request, token, hotel_id, **kwargs):
-        """修改酒店信息
+    def delete(self, request, token, hotel_id, **kwargs):
+        """删除酒店
 
         :param token: 令牌(必传)
         :param hotel_id: 酒店ID(必传)
-        :param kwargs:
-            name: 名称
-            owner_name: 法人代表
-            is_enabled: 是否可用, True/False
-        :return: 200
+        :return: 200/400/403/404
         """
 
         try:
@@ -242,12 +240,123 @@ class HotelProfile(View):
         if request.admin.type != 1:
             return HttpResponse('没有权限', status=403)
 
-        hotel_keys = ('name', 'owner_name', 'is_enabled')
+        hotel.is_enabled = False
+        hotel.save()
+        return HttpResponse('删除成功', status=200)
+
+
+class HotelProfile(View):
+    @validate_args({
+        'token': forms.CharField(min_length=32, max_length=32),
+        'name': forms.CharField(min_length=1, max_length=20, required=False),
+        'owner_name': forms.CharField(min_length=1, max_length=20,
+                                      required=False),
+        'is_enabled': forms.BooleanField(required=False),
+        'hotel_id': forms.IntegerField(),
+    })
+    @validate_admin_token()
+    def post(self, request, token, hotel_id, **kwargs):
+        """修改酒店信息
+
+        :param token: 令牌(必传)
+        :param hotel_id: 酒店ID(必传)
+        :param kwargs:
+            name: 名称
+            owner_name: 法人代表
+            is_enabled: 是否可用, True/False
+        :return: 200/400/403/404
+        """
+
+        try:
+            hotel = Hotel.objects.get(id=hotel_id)
+        except Staff.DoesNotExist:
+            return HttpResponse('酒店不存在', status=404)
+
+        # 只有超级管理员能管理
+        if request.admin.type != 1:
+            return HttpResponse('没有权限', status=403)
+
+        name = kwargs.pop('name') if 'name' in kwargs else None
+        if name:
+            if Hotel.objects.filter(name=name).exists():
+                return HttpResponse('酒店名已注册', status=400)
+            hotel.name = name
+
+        hotel_keys = ('owner_name', 'is_enabled')
         for k in hotel_keys:
             if k in kwargs:
                 setattr(hotel, k, kwargs[k])
         hotel.save()
         return HttpResponse('修改信息成功', status=200)
+
+
+class HotelIcon(View):
+    @validate_args({
+        'token': forms.CharField(min_length=32, max_length=32),
+        'hotel_id': forms.IntegerField(),
+    })
+    @validate_admin_token()
+    def get(self, request, token, hotel_id):
+        """获取头像
+
+        :param token: 令牌(必传)
+        :param hotel_id: 员工ID(必传)
+        :return:
+            icon: 头像地址
+        """
+
+        try:
+            hotel = Hotel.enabled_objects.get(id=hotel_id)
+        except ObjectDoesNotExist:
+            return HttpResponse('酒店不存在', status=404)
+
+        return JsonResponse({'icon': hotel.icon})
+
+    @validate_args({
+        'token': forms.CharField(min_length=32, max_length=32),
+        'hotel_id': forms.IntegerField(),
+    })
+    @validate_admin_token()
+    def post(self, request, token, hotel_id=None):
+        """修改头像
+
+        :param token: 令牌(必传)
+        :param hotel_id: 酒店ID(必传)
+        :return: 200
+        """
+
+        try:
+            hotel = Hotel.enabled_objects.get(id=hotel_id)
+        except ObjectDoesNotExist:
+            return HttpResponse('酒店不存在', status=404)
+
+        # 管理员只能管理自己的酒店
+        if request.admin.type == 0 and hotel != request.admin.hotel:
+            return HttpResponse('管理员只能管理自己的酒店', status=403)
+
+        if request.method == 'POST':
+            icon = request.FILES['icon']
+
+            if icon:
+                icon_time = timezone.now().strftime('%H%M%S%f')
+                icon_tail = str(icon).split('.')[-1]
+                dir_name = 'uploaded/icon/hotel/%d/' % request.staff.id
+                os.makedirs(dir_name, exist_ok=True)
+                file_name = dir_name + '%s.%s' % (icon_time, icon_tail)
+                img = Image.open(icon)
+                img.save(file_name, quality=90)
+
+                # 删除旧文件, 保存新的文件路径
+                if hotel.icon:
+                    try:
+                        os.remove(hotel.icon)
+                    except OSError:
+                        pass
+                hotel.icon = file_name
+                hotel.save()
+                return HttpResponse('上传成功', status=200)
+
+            return HttpResponse('图片为空', status=400)
 
 
 class StaffList(View):
@@ -260,15 +369,17 @@ class StaffList(View):
         'offset': forms.IntegerField(min_value=0, required=False),
         'limit': forms.IntegerField(min_value=0, required=False),
         'order': forms.IntegerField(min_value=0, max_value=3, required=False),
+        'hotel_id': forms.IntegerField(),
     })
     @validate_admin_token()
-    def get(self, request, token, status=1, is_enabled=True, offset=0, limit=10,
-            order=1):
+    def get(self, request, token, hotel_id, status=1, is_enabled=True, offset=0,
+            limit=10, order=1):
         """获取员工列表
 
         :param token: 令牌(必传)
         :param status: 员工状态, 0: 待审核, 1: 审核通过, 默认1
         :param is_enabled: 是否有效, 默认:是
+        :param hotel_id: 酒店ID(必传)
         :param offset: 起始值
         :param limit: 偏移量
         :param order: 排序方式
@@ -291,20 +402,20 @@ class StaffList(View):
                 authority: 权限
                 create_time: 创建时间
         """
+
+        try:
+            hotel = Hotel.enabled_objects.get(id=hotel_id)
+        except Hotel.DoesNotExist:
+            return HttpResponse('酒店不存在', status=404)
         # 管理员只能查看自己酒店的员工
-        if request.admin.type == 0:
-            hotel = request.admin.hotel
-            c = Staff.objects.filter(hotel=hotel, status=status,
-                                     is_enabled=is_enabled).count()
-            staffs = Staff.objects.filter(
-                hotel=hotel, status=status, is_enabled=is_enabled).order_by(
-                self.ORDERS[order])[offset:offset + limit]
-        else:
-            c = Staff.objects.filter(
-                status=status, is_enabled=is_enabled).count()
-            staffs = Staff.objects.filter(
-                status=status, is_enabled=is_enabled).order_by(
-                self.ORDERS[order])[offset:offset + limit]
+        if request.admin.type == 0 and hotel != request.admin.hotel:
+            return HttpResponse('管理员只能查看自己酒店的员工', status=403)
+        c = Staff.objects.filter(hotel=hotel, status=status,
+                                 is_enabled=is_enabled).count()
+        staffs = Staff.objects.filter(
+            hotel=hotel, status=status, is_enabled=is_enabled).order_by(
+            self.ORDERS[order])[offset:offset + limit]
+
         l = [{'staff_id': s.id,
               'name': s.name,
               'staff_number': s.staff_number,
