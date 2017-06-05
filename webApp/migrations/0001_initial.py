@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                 ('number', models.CharField(max_length=10)),
                 ('position', models.CharField(max_length=10)),
                 ('state', models.IntegerField(choices=[(0, '空闲'), (1, '预定中'), (2, '用餐中')], db_index=True, default=0)),
-                ('order', models.IntegerField(db_index=True)),
+                ('Order', models.IntegerField(db_index=True)),
                 ('expense', models.IntegerField(default=None, null=True)),
                 ('type', models.CharField(db_index=True, default='', max_length=10)),
                 ('facility', models.CharField(default='', max_length=100)),
@@ -258,7 +258,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='orderscore',
-            name='order',
+            name='Order',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='order_score', to='webApp.Order'),
         ),
         migrations.AddField(
@@ -267,12 +267,12 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='order_scores', to='webApp.Staff'),
         ),
         migrations.AddField(
-            model_name='order',
+            model_name='Order',
             name='internal_channel',
             field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='orders', to='webApp.Staff'),
         ),
         migrations.AddField(
-            model_name='order',
+            model_name='Order',
             name='user',
             field=models.ForeignKey(default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='orders', to='webApp.User'),
         ),

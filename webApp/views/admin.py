@@ -23,7 +23,7 @@ class AdminList(View):
         'token': forms.CharField(min_length=32, max_length=32),
         'offset': forms.IntegerField(min_value=0, required=False),
         'limit': forms.IntegerField(min_value=0, required=False),
-        'order': forms.IntegerField(min_value=0, max_value=3, required=False),
+        'Order': forms.IntegerField(min_value=0, max_value=3, required=False),
     })
     @validate_admin_token()
     def get(self, request, token, offset=0, limit=10, order=1):
@@ -151,7 +151,7 @@ class HotelList(View):
         'is_enabled': forms.BooleanField(required=False),
         'offset': forms.IntegerField(min_value=0, required=False),
         'limit': forms.IntegerField(min_value=0, required=False),
-        'order': forms.IntegerField(min_value=0, max_value=3, required=False),
+        'Order': forms.IntegerField(min_value=0, max_value=3, required=False),
     })
     @validate_admin_token()
     def get(self, request, token, is_enabled=True, offset=0, limit=10, order=1):
@@ -368,7 +368,7 @@ class StaffList(View):
         'is_enabled': forms.BooleanField(required=False),
         'offset': forms.IntegerField(min_value=0, required=False),
         'limit': forms.IntegerField(min_value=0, required=False),
-        'order': forms.IntegerField(min_value=0, max_value=3, required=False),
+        'Order': forms.IntegerField(min_value=0, max_value=3, required=False),
         'hotel_id': forms.IntegerField(),
     })
     @validate_admin_token()

@@ -22,7 +22,7 @@ class List(View):
         'status': forms.IntegerField(min_value=0, max_value=1, required=False),
         'offset': forms.IntegerField(min_value=0, required=False),
         'limit': forms.IntegerField(min_value=0, required=False),
-        'order': forms.IntegerField(min_value=0, max_value=3, required=False),
+        'Order': forms.IntegerField(min_value=0, max_value=3, required=False),
     })
     @validate_staff_token()
     def get(self, request, token, status=1, offset=0, limit=10, order=1):
