@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/jquery-1.12.3.min.js"></script>
+</head>
+<body>
+
+<input type="button" value="登录" name="login" id="login"/>
+
+<script>
+    $("#login").click(function () {
+        alert("登錄");
+        $.ajax({
+            url: "/webApp/admin/token/",
+            method: "get",
+            data: {
+                username: "admin",
+                password: "admin"
+            },
+            success: function (data, status) {
+                alert("success:" + data + "\nstatus:" + status);
+            },
+            fail: function (message) {
+                alert("failed:" + message)
+            }
+        });
+    });
+</script>
+</body>
+</html>
