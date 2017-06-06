@@ -1,10 +1,5 @@
-import os
-
-from PIL import Image
-
 from django import forms
 from django.db import IntegrityError, transaction
-from django.utils import timezone
 from django.http import JsonResponse, HttpResponse
 from django.views.generic import View
 from django.core.exceptions import ObjectDoesNotExist

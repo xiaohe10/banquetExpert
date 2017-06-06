@@ -4,7 +4,7 @@ from django.db import models
 from django.utils import timezone
 
 __all__ = ['Admin', 'Hotel', 'HotelBranch', 'Desk', 'Staff', 'ExternalChannel',
-           'User', 'Order', 'OrderScore']
+           'User', 'Order', 'OrderScore', 'Course', 'CoursePurchaseRecord']
 
 
 class EnabledManager(models.Manager):
@@ -484,7 +484,61 @@ class OrderScore(models.Model):
     staff = models.ForeignKey('Staff', models.CASCADE, 'order_scores')
     # 检查员工
     check_staff = models.ForeignKey('Staff', models.CASCADE,
-                                    'check_order_scores')
+                                    'check_order_scores', default=None,
+                                    null=True)
+
+    class Meta:
+        ordering = ['-create_time']
+
+
+class Course(models):
+    """微课堂模型"""
+
+    # 对应cc视频ID
+    videoID = models.CharField(max_length=20, unique=True)
+    # 状态
+    status = models.IntegerField(
+        choices=((0, '待审核'), (1, '审核通过'), (2, '审核未通过')),
+        default=0, db_index=True)
+    # 标题
+    title = models.CharField(max_length=20)
+    # 标签
+    tags = models.CharField(max_length=20, db_index=True)
+    # 价格
+    price = models.IntegerField(default=0)
+    # 描述
+    description = models.CharField(max_length=100, default='')
+
+    # 创建时间
+    create_time = models.DateTimeField(default=timezone.now, db_index=True)
+    # 检查人最后操作时间
+    modify_time = models.DateTimeField(default=None, null=True, db_index=True)
+
+    # 视频上传者
+    staff = models.ForeignKey('Staff', models.CASCADE, 'courses')
+    # 视频审核者
+    check_staff = models.ForeignKey('Staff', models.CASCADE, 'check_courses',
+                                    default=None, null=True)
+
+    class Meta:
+        ordering = ['-create_time']
+
+
+class CoursePurchaseRecord(models):
+    """课程购买模型"""
+
+    # 其他支付信息
+    # todo
+
+    # 花费
+    cost = models.IntegerField()
+    # 创建时间
+    create_time = models.DateTimeField(default=timezone.now, db_index=True)
+
+    # 课程
+    course = models.ForeignKey('Course', models.CASCADE, 'purchase_records')
+    # 购买者
+    hotel = models.ForeignKey('Hotel', models.CASCADE, 'purchase_records')
 
     class Meta:
         ordering = ['-create_time']
