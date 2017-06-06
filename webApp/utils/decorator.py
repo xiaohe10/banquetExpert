@@ -6,6 +6,28 @@ from django.forms import ValidationError
 from ..models import Admin, Staff, User
 
 
+def validate_super_admin_token():
+    """对被装饰的方法根据token对超级管理者进行身份认证"""
+    def decorator(function):
+        @wraps(function)
+        def returned_wrapper(self, request, *args, **kwargs):
+            if 'token' not in kwargs:
+                return HttpResponse('需要参数 "token"', status=400)
+            try:
+                admin = Admin.objects.get(token=kwargs['token'])
+            except ObjectDoesNotExist:
+                return HttpResponse('"token" 错误', status=401)
+            else:
+                if admin.type != 1:
+                    return HttpResponse('没有访问权限', status=403)
+                if admin.is_enabled is not True:
+                    return HttpResponse('账号已删除', status=404)
+                request.admin = admin
+            return function(self, request, *args, **kwargs)
+        return returned_wrapper
+    return decorator
+
+
 def validate_admin_token():
     """对被装饰的方法根据token对管理者进行身份认证"""
     def decorator(function):
@@ -16,10 +38,10 @@ def validate_admin_token():
             try:
                 admin = Admin.objects.get(token=kwargs['token'])
             except ObjectDoesNotExist:
-                return HttpResponse('"token" 错误', status=404)
+                return HttpResponse('"token" 错误', status=401)
             else:
                 if admin.is_enabled is not True:
-                    return HttpResponse('账号已删除', status=403)
+                    return HttpResponse('账号已删除', status=404)
                 request.admin = admin
             return function(self, request, *args, **kwargs)
         return returned_wrapper
@@ -36,10 +58,10 @@ def validate_staff_token():
             try:
                 staff = Staff.objects.get(token=kwargs['token'])
             except ObjectDoesNotExist:
-                return HttpResponse('"token" 错误', status=404)
+                return HttpResponse('"token" 错误', status=401)
             else:
                 if staff.is_enabled is not True:
-                    return HttpResponse('账号已删除', status=403)
+                    return HttpResponse('账号已删除', status=404)
                 if staff.status == 0:
                     return HttpResponse('账号待审核', status=403)
                 request.staff = staff
@@ -58,10 +80,10 @@ def validate_user_token():
             try:
                 user = User.objects.get(token=kwargs['token'])
             except ObjectDoesNotExist:
-                return HttpResponse('"token" 错误', status=404)
+                return HttpResponse('"token" 错误', status=401)
             else:
                 if user.is_enabled is not True:
-                    return HttpResponse('账号已删除', status=400)
+                    return HttpResponse('账号已删除', status=404)
                 request.user = user
             return function(self, request, *args, **kwargs)
         return returned_wrapper

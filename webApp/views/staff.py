@@ -22,7 +22,7 @@ class List(View):
         'status': forms.IntegerField(min_value=0, max_value=1, required=False),
         'offset': forms.IntegerField(min_value=0, required=False),
         'limit': forms.IntegerField(min_value=0, required=False),
-        'Order': forms.IntegerField(min_value=0, max_value=3, required=False),
+        'order': forms.IntegerField(min_value=0, max_value=3, required=False),
     })
     @validate_staff_token()
     def get(self, request, token, status=1, offset=0, limit=10, order=1):
@@ -133,9 +133,9 @@ class Token(View):
             if not staff.is_enabled:
                 return HttpResponse('员工已删除', status=403)
             if staff.status == 0:
-                return HttpResponse('账号待审核', status=403)
+                return HttpResponse('账号待审核', status=401)
             if staff.password != password:
-                return HttpResponse('密码错误', status=400)
+                return HttpResponse('密码错误', status=403)
             staff.update_token()
             staff.save()
             return JsonResponse({'token': staff.token})

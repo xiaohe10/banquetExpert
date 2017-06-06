@@ -20,7 +20,7 @@ class Admin(models.Model):
     username = models.CharField(
         max_length=20, default=None, null=True, unique=True)
     # 密码
-    password = models.CharField(max_length=128)
+    password = models.CharField(max_length=32)
     # 令牌
     token = models.CharField(max_length=32)
     # 类型
@@ -176,7 +176,7 @@ class Staff(models.Model):
     # 手机
     phone = models.CharField(max_length=11, unique=True)
     # 密码
-    password = models.CharField(max_length=128)
+    password = models.CharField(max_length=32)
     # 令牌
     token = models.CharField(max_length=32)
     # 姓名
@@ -269,7 +269,7 @@ class User(models.Model):
     username = models.CharField(
         max_length=20, default=None, null=True, unique=True)
     # 密码
-    password = models.CharField(max_length=128)
+    password = models.CharField(max_length=32)
     # 手机
     phone = models.CharField(max_length=11, unique=True)
     # 令牌

@@ -9,12 +9,8 @@ urlpatterns = [
     url(r'^token/$', Token.as_view(), name='token'),
     # 修改密码(post)
     url(r'^password/$', Password.as_view(), name='password'),
-    # 获取个人头像(get)/修改头像(post)
-    url(r'^icon/$', Icon.as_view(), name='owner_icon'),
-    # 获取他人头像(get)
-    url(r'^(?P<staff_id>\d+)/icon/$', Icon.as_view(), name='icon'),
-    # 获取个人资料(get)/修改个人资料(post)
-    url(r'^profile/$', Profile.as_view(), name='owner_profile'),
-    # 获取他人资料(get)
-    url(r'^(?P<staff_id>\d+)/profile/$', Profile.as_view(), name='profile'),
+    # 获取头像(get)/修改头像(post)
+    url(r'^icon/$', Icon.as_view(), name='icon'),
+    # 获取资料(get)/修改个人资料(post)
+    url(r'^profile/$', Profile.as_view(), name='profile'),
 ]
