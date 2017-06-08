@@ -1,10 +1,10 @@
 from django import forms
 from django.db import IntegrityError, transaction
-from django.http import JsonResponse, HttpResponse
 from django.views.generic import View
 from django.core.exceptions import ObjectDoesNotExist
 
 from ..utils.decorator import validate_args, validate_super_admin_token
+from ..utils.response import corr_response, err_response
 from ..models import Admin, Hotel
 
 __all__ = ['AdminList', 'Token', 'HotelList', 'HotelProfile']
@@ -51,7 +51,7 @@ class AdminList(View):
               'authority': a.authority,
               'is_enabled': a.is_enabled,
               'create_time': a.create_time} for a in admins]
-        return JsonResponse({'count': c, 'list': l})
+        corr_response({'count': c, 'list': l})
 
     @validate_args({
         'username': forms.CharField(min_length=1, max_length=20),
@@ -71,14 +71,14 @@ class AdminList(View):
         """
 
         if Admin.enabled_objects.filter(username=username).exists():
-            return HttpResponse('该用户名已注册', status=403)
+            err_response('err_2', '该用户名已注册')
 
         if hotel_id is not None:
             if type == 0:
                 try:
                     hotel = Hotel.enabled_objects.get(id=hotel_id)
                 except ObjectDoesNotExist:
-                    return HttpResponse('酒店不存在', status=404)
+                    err_response('err_3', '该酒店不存在')
                 else:
                     with transaction.atomic():
                         try:
@@ -86,11 +86,11 @@ class AdminList(View):
                                           type=type, hotel=hotel)
                             admin.update_token()
                             admin.save()
-                            return HttpResponse('创建管理员成功', status=200)
+                            corr_response({'admin_id': admin.id})
                         except IntegrityError:
-                            return HttpResponse('创建管理员失败', status=400)
+                            err_response('error_4', '服务器创建管理员失败')
             else:
-                return HttpResponse('超级管理员不属于任何酒店', status=400)
+                err_response('err_5', '权限错误')
         else:
             if type == 1:
                 with transaction.atomic():
@@ -99,11 +99,11 @@ class AdminList(View):
                                       type=type)
                         admin.update_token()
                         admin.save()
-                        return HttpResponse('创建管理员成功', status=200)
+                        corr_response({'admin_id': admin.id})
                     except IntegrityError:
-                        return HttpResponse('创建管理员失败', status=400)
+                        err_response('error_4', '服务器创建管理员失败')
             else:
-                return HttpResponse('请提交管理员所属酒店', status=400)
+                err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
 
     @validate_args({
         'admin_id': forms.IntegerField(required=False),
@@ -115,12 +115,14 @@ class AdminList(View):
         :param admin_id: 管理员ID(必传)
         :return: 200/404
         """
+
+        admin = None
         try:
             admin = Admin.objects.get(id=admin_id)
         except Admin.DoesNotExist:
-            return HttpResponse('管理员不存在', status=404)
+            err_response('err_2', '管理员不存在')
         admin.is_enabled = False
-        return 200
+        corr_response()
 
 
 class Token(View):
@@ -139,17 +141,17 @@ class Token(View):
         try:
             admin = Admin.objects.get(username=username)
         except Admin.DoesNotExist:
-            return HttpResponse('超级管理员不存在', status=404)
+            err_response('err_2', '管理员不存在')
         else:
             if not admin.is_enabled:
-                return HttpResponse('管理员已删除', status=400)
+                err_response('err_2', '管理员不存在')
             if admin.type != 1:
-                return HttpResponse('没有访问权限', status=403)
+                err_response('err_2', '管理员不存在')
             if admin.password != password:
-                return HttpResponse('密码错误', status=400)
+                err_response('err_3', '密码错误')
             admin.update_token()
             admin.save()
-            return JsonResponse({'token': admin.token})
+            corr_response({'token': admin.token})
 
 
 class HotelList(View):
@@ -197,7 +199,7 @@ class HotelList(View):
               'owner_name': h.owner_name,
               'is_enabled': h.is_enabled,
               'create_time': h.create_time} for h in hotels]
-        return JsonResponse({'count': c, 'list': l})
+        corr_response({'count': c, 'list': l})
 
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
@@ -215,12 +217,12 @@ class HotelList(View):
         """
 
         if Hotel.enabled_objects.filter(name=name).exists():
-            return HttpResponse('酒店名已注册', status=400)
+            err_response('err_4', '酒店名已注册')
         try:
             Hotel.objects.create(name=name, owner_name=owner_name)
-            return HttpResponse('创建酒店成功', status=200)
+            corr_response()
         except IntegrityError:
-            return HttpResponse('创建酒店失败', status=400)
+            err_response('err_5', '服务器创建酒店失败')
 
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
@@ -238,11 +240,11 @@ class HotelList(View):
         try:
             hotel = Hotel.objects.get(id=hotel_id)
         except Hotel.DoesNotExist:
-            return HttpResponse('酒店不存在', status=404)
-
-        hotel.is_enabled = False
-        hotel.save()
-        return HttpResponse('删除成功', status=200)
+            err_response('err_4', '酒店不存在')
+        else:
+            hotel.is_enabled = False
+            hotel.save()
+            corr_response()
 
 
 class HotelProfile(View):
@@ -271,16 +273,16 @@ class HotelProfile(View):
         try:
             hotel = Hotel.objects.get(id=hotel_id)
         except Hotel.DoesNotExist:
-            return HttpResponse('酒店不存在', status=404)
-
-        d = {'hotel_id': hotel.id,
-             'name': hotel.name,
-             'icon': hotel.icon,
-             'branches_count': hotel.branches.count(),
-             'owner_name': hotel.owner_name,
-             'is_enabled': hotel.is_enabled,
-             'create_time': hotel.create_time,}
-        return JsonResponse(d)
+            err_response('err_4', '酒店不存在')
+        else:
+            d = {'hotel_id': hotel.id,
+                 'name': hotel.name,
+                 'icon': hotel.icon,
+                 'branches_count': hotel.branches.count(),
+                 'owner_name': hotel.owner_name,
+                 'is_enabled': hotel.is_enabled,
+                 'create_time': hotel.create_time,}
+            corr_response(d)
 
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
@@ -301,15 +303,16 @@ class HotelProfile(View):
         :return: 200/400/403/404
         """
 
+        hotel = None
         try:
             hotel = Hotel.enabled_objects.get(id=hotel_id)
         except Hotel.DoesNotExist:
-            return HttpResponse('酒店不存在', status=404)
+            err_response('err_4', '酒店不存在')
 
         name = kwargs.pop('name') if 'name' in kwargs else None
         if name:
             if Hotel.enabled_objects.filter(name=name).exists():
-                return HttpResponse('酒店名已注册', status=400)
+                err_response('err_4', '酒店名已注册')
             hotel.name = name
 
         hotel_keys = ('owner_name', 'is_enabled')
@@ -317,4 +320,4 @@ class HotelProfile(View):
             if k in kwargs:
                 setattr(hotel, k, kwargs[k])
         hotel.save()
-        return HttpResponse('修改信息成功', status=200)
+        corr_response()

@@ -1,9 +1,10 @@
 from functools import wraps
-from django.http import QueryDict, HttpResponse
+from django.http import QueryDict
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import ValidationError
 
 from ..models import Admin, Staff, User
+from ..utils.response import err_response
 
 
 def validate_super_admin_token():
@@ -12,16 +13,16 @@ def validate_super_admin_token():
         @wraps(function)
         def returned_wrapper(self, request, *args, **kwargs):
             if 'token' not in kwargs:
-                return HttpResponse('需要参数 "token"', status=400)
+                err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
             try:
                 admin = Admin.objects.get(token=kwargs['token'])
             except ObjectDoesNotExist:
-                return HttpResponse('"token" 错误', status=401)
+                err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
             else:
                 if admin.type != 1:
-                    return HttpResponse('没有访问权限', status=403)
+                    err_response('err_2', '权限错误')
                 if admin.is_enabled is not True:
-                    return HttpResponse('账号已删除', status=404)
+                    err_response('err_3', '不存在该管理员')
                 request.admin = admin
             return function(self, request, *args, **kwargs)
         return returned_wrapper
@@ -34,14 +35,14 @@ def validate_admin_token():
         @wraps(function)
         def returned_wrapper(self, request, *args, **kwargs):
             if 'token' not in kwargs:
-                return HttpResponse('需要参数 "token"', status=400)
+                err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
             try:
                 admin = Admin.objects.get(token=kwargs['token'])
             except ObjectDoesNotExist:
-                return HttpResponse('"token" 错误', status=401)
+                err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
             else:
                 if admin.is_enabled is not True:
-                    return HttpResponse('账号已删除', status=404)
+                    err_response('err_3', '不存在该管理员')
                 request.admin = admin
             return function(self, request, *args, **kwargs)
         return returned_wrapper
@@ -54,16 +55,16 @@ def validate_staff_token():
         @wraps(function)
         def returned_wrapper(self, request, *args, **kwargs):
             if 'token' not in kwargs:
-                return HttpResponse('需要参数 "token"', status=400)
+                err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
             try:
                 staff = Staff.objects.get(token=kwargs['token'])
             except ObjectDoesNotExist:
-                return HttpResponse('"token" 错误', status=401)
+                err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
             else:
                 if staff.is_enabled is not True:
-                    return HttpResponse('账号已删除', status=404)
+                    err_response('err_3', '不存在该员工')
                 if staff.status == 0:
-                    return HttpResponse('账号待审核', status=403)
+                    err_response('err_3', '不存在该员工')
                 request.staff = staff
             return function(self, request, *args, **kwargs)
         return returned_wrapper
@@ -76,14 +77,14 @@ def validate_user_token():
         @wraps(function)
         def returned_wrapper(self, request, *args, **kwargs):
             if 'token' not in kwargs:
-                return HttpResponse('需要参数 "token"', status=400)
+                err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
             try:
                 user = User.objects.get(token=kwargs['token'])
             except ObjectDoesNotExist:
-                return HttpResponse('"token" 错误', status=401)
+                err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
             else:
                 if user.is_enabled is not True:
-                    return HttpResponse('账号已删除', status=404)
+                    err_response('err_3', '不存在该用户')
                 request.user = user
             return function(self, request, *args, **kwargs)
         return returned_wrapper
@@ -108,9 +109,9 @@ def validate_args(dic):
                     kwargs[k] = v.clean(data[k])
                 except KeyError:
                     if v.required:
-                        return HttpResponse('需要参数 "%s"' % k, status=400)
+                        err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
                 except ValidationError:
-                    return HttpResponse('含有不合法参数 "%s"' % k, status=400)
+                    err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
             return function(self, request, *args, **kwargs)
         return returned_wrapper
     return decorator

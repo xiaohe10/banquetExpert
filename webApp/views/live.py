@@ -3,10 +3,10 @@ import string
 from random import choice
 from django import forms
 from django.db import IntegrityError, transaction
-from django.http import JsonResponse, HttpResponse
 from django.views.generic import View
 
 from ..utils.decorator import validate_args, validate_staff_token
+from ..utils.response import corr_response, err_response
 from ..utils.cc_sdk import create_live_room, query_live_room
 from ..models import Live
 
@@ -58,13 +58,13 @@ class List(View):
         cc_room_ids = [live.cc_room_id for live in lives]
         res = query_live_room(cc_room_ids)
         if res['result'] != 'OK':
-            return HttpResponse('查询直播间状态失败', status=400)
+            err_response('err_4', '查询直播间状态失败')
         try:
             rooms = res['rooms']
             rooms_status = {room['roomId']: room['liveStatus'] for room
                             in rooms}
         except KeyError:
-            return HttpResponse('查询直播间状态失败', status=400)
+            err_response('err_4', '查询直播间状态失败')
         l = []
         for live in lives:
             cc_room_id = live.cc_room_id
@@ -91,7 +91,7 @@ class List(View):
             else:
                 d['status'] = 0
             l.append(d)
-        return JsonResponse({'count': c, 'list': l})
+        corr_response({'count': c, 'list': l})
 
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
@@ -138,13 +138,14 @@ class List(View):
                 # 向CC发送http请求，创建直播间
                 res = create_live_room(publisher_password, play_password,
                                        name, description)
+                cc_room_id = None
                 try:
                     if res['result'] == 'OK':
                         cc_room_id = res['room']['id']
                     else:
-                        return HttpResponse('创建直播间失败', status=400)
+                        err_response('err_4', '服务器创建直播间失败')
                 except KeyError:
-                    return HttpResponse('创建直播间失败', status=400)
+                    err_response('err_4', '服务器创建直播间失败')
                 live = Live(cc_room_id=cc_room_id, name=name,
                             description=description, staff=request.staff)
                 for k in live_keys:
@@ -154,9 +155,9 @@ class List(View):
                 d = {'live_id': live.id,
                      'cc_room_id': cc_room_id,
                      'publisher_password': publisher_password}
-                return JsonResponse(d)
+                corr_response(d)
             except IntegrityError:
-                return HttpResponse('创建直播间失败', status=400)
+                err_response('err_4', '服务器创建直播间失败')
 
 
 class OwnedList(View):
@@ -209,4 +210,4 @@ class OwnedList(View):
               'start_time': live.start_time,
               'end_time': live.end_time,
               'create_time': live.create_time} for live in lives]
-        return JsonResponse({'count': c, 'list': l})
+        corr_response({'count': c, 'list': l})

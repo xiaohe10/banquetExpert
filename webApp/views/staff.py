@@ -3,15 +3,15 @@ import os
 from PIL import Image
 from django import forms
 from django.db import IntegrityError, transaction
-from django.http import JsonResponse, HttpResponse
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import View
 
 from ..utils.decorator import validate_args, validate_staff_token
+from ..utils.response import corr_response, err_response
 from ..models import Staff, Hotel
 
-__all__ = ['List', 'Token', 'Password', 'Icon', 'Profile']
+__all__ = ['List', 'Token', 'Password', 'Profile']
 
 
 class List(View):
@@ -63,7 +63,7 @@ class List(View):
               'guest_channel': s.guest_channel,
               'authority': s.authority,
               'create_time': s.create_time} for s in staffs]
-        return JsonResponse({'count': c, 'list': l})
+        corr_response({'count': c, 'list': l})
 
     @validate_args({
         'phone': forms.RegexField(r'[0-9]{11}'),
@@ -91,13 +91,14 @@ class List(View):
         :return 200
         """
 
+        hotel = None
         try:
             hotel = Hotel.enabled_objects.get(id=hotel_id)
         except Hotel.DoesNotExist:
-            return HttpResponse('酒店不存在', status=404)
+            err_response('err_3', '酒店不存在')
 
         if Staff.objects.filter(phone=phone).exists():
-            return HttpResponse('该手机号已注册', status=403)
+            err_response('err_2', '该手机号已经注册过')
         staff_keys = ('staff_number', 'name', 'gender', 'position', 'id_number')
         with transaction.atomic():
             try:
@@ -107,9 +108,9 @@ class List(View):
                     if k in kwargs:
                         setattr(staff, k, kwargs[k])
                 staff.save()
-                return HttpResponse('创建员工成功', status=200)
+                corr_response({'staff_id': staff.id})
             except IntegrityError:
-                return HttpResponse('创建员工失败', status=400)
+                err_response('err_4', '服务器创建员工错误')
 
 
 class Token(View):
@@ -128,17 +129,17 @@ class Token(View):
         try:
             staff = Staff.objects.get(phone=phone)
         except Staff.DoesNotExist:
-            return HttpResponse('员工不存在', status=404)
+            err_response('err_2', '不存在该用户')
         else:
             if not staff.is_enabled:
-                return HttpResponse('员工已删除', status=403)
+                err_response('err_2', '不存在该用户')
             if staff.status == 0:
-                return HttpResponse('账号待审核', status=401)
+                err_response('err_2', '不存在该用户')
             if staff.password != password:
-                return HttpResponse('密码错误', status=403)
+                err_response('err_3', '密码错误')
             staff.update_token()
             staff.save()
-            return JsonResponse({'token': staff.token})
+            return corr_response({'token': staff.token})
 
 
 class Password(View):
@@ -159,67 +160,8 @@ class Password(View):
 
         if request.staff.password == old_password:
             request.staff.password = new_password
-            return HttpResponse('密码修改成功', status=200)
-        return HttpResponse('旧密码错误', status=403)
-
-
-class Icon(View):
-    @validate_args({
-        'token': forms.CharField(min_length=32, max_length=32),
-        'staff_id': forms.IntegerField(required=False),
-    })
-    @validate_staff_token()
-    def get(self, request, token, staff_id=None):
-        """获取头像
-
-        :param token: 令牌(必传)
-        :param staff_id: 员工ID
-        :return:
-            icon: 头像地址
-        """
-        if staff_id:
-            try:
-                staff = Staff.enabled_objects.get(id=staff_id)
-            except ObjectDoesNotExist:
-                return HttpResponse('员工不存在', status=404)
-        else:
-            staff = request.staff
-
-        return JsonResponse({'icon': staff.icon})
-
-    @validate_args({
-        'token': forms.CharField(min_length=32, max_length=32),
-    })
-    @validate_staff_token()
-    def post(self, request, token):
-        """修改头像
-
-        :param token: 令牌(必传)
-        :return: 200
-        """
-        if request.method == 'POST':
-            icon = request.FILES['icon']
-
-            if icon:
-                icon_time = timezone.now().strftime('%H%M%S%f')
-                icon_tail = str(icon).split('.')[-1]
-                dir_name = 'uploaded/icon/staff/%d/' % request.staff.id
-                os.makedirs(dir_name, exist_ok=True)
-                file_name = dir_name + '%s.%s' % (icon_time, icon_tail)
-                img = Image.open(icon)
-                img.save(file_name, quality=90)
-
-                # 删除旧文件, 保存新的文件路径
-                if request.staff.icon:
-                    try:
-                        os.remove(request.staff.icon)
-                    except OSError:
-                        pass
-                request.staff.icon = file_name
-                request.staff.save()
-                return HttpResponse('上传成功', status=200)
-
-            return HttpResponse('图片为空', status=400)
+            corr_response({'staff_id': request.staff.id})
+        err_response('err_3', '旧密码错误')
 
 
 class Profile(View):
@@ -245,11 +187,12 @@ class Profile(View):
             authority: 权限
             create_time: 创建时间
         """
+        staff = None
         if staff_id:
             try:
                 staff = Staff.enabled_objects.get(id=staff_id)
             except ObjectDoesNotExist:
-                return HttpResponse('员工不存在', status=404)
+                err_response('err_2', '不存在该员工')
         else:
             staff = request.staff
         r = {'staff_id': staff.id,
@@ -262,7 +205,7 @@ class Profile(View):
              'description': staff.description,
              'authority': staff.authority,
              'create_time': staff.create_time}
-        return JsonResponse(r)
+        corr_response(r)
 
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
@@ -288,6 +231,7 @@ class Profile(View):
             guest_channel: 所属获客渠道, 0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理
             description: 备注
             authority: 权限
+            icon: 头像, [file]格式
         :return: 200
         """
 
@@ -296,5 +240,27 @@ class Profile(View):
         for k in staff_keys:
             if k in kwargs:
                 setattr(request.staff, k, kwargs[k])
+
+        # 修改头像
+        if 'icon' in request.FILES:
+            icon = request.FILES['icon']
+
+            if icon:
+                icon_time = timezone.now().strftime('%H%M%S%f')
+                icon_tail = str(icon).split('.')[-1]
+                dir_name = 'uploaded/icon/staff/%d/' % request.staff.id
+                os.makedirs(dir_name, exist_ok=True)
+                file_name = dir_name + '%s.%s' % (icon_time, icon_tail)
+                img = Image.open(icon)
+                img.save(file_name, quality=90)
+
+                # 删除旧文件, 保存新的文件路径
+                if request.staff.icon:
+                    try:
+                        os.remove(request.staff.icon)
+                    except OSError:
+                        pass
+                request.staff.icon = file_name
+
         request.staff.save()
-        return HttpResponse('修改信息成功', status=200)
+        corr_response()

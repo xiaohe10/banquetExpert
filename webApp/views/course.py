@@ -1,9 +1,9 @@
 from django import forms
 from django.db import IntegrityError, transaction
-from django.http import JsonResponse, HttpResponse
 from django.views.generic import View
 
 from ..utils.decorator import validate_args, validate_staff_token
+from ..utils.response import corr_response, err_response
 from ..models import Course
 
 __all__ = ['List']
@@ -70,7 +70,7 @@ class List(View):
             else:
                 d['cc_video_id'] = ''
             l.append(d)
-        return JsonResponse({'count': c, 'list': l})
+        corr_response({'count': c, 'list': l})
 
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
@@ -102,9 +102,9 @@ class List(View):
                     if k in kwargs:
                         setattr(course, k, kwargs[k])
                 course.save()
-                return HttpResponse('上传视频成功', status=200)
+                corr_response()
             except IntegrityError:
-                return HttpResponse('上传视频失败', status=400)
+                err_response('err_5', '服务器上传视频失败')
 
 
 class OwnedList(View):
@@ -154,4 +154,4 @@ class OwnedList(View):
               'tags': course.tags,
               'description': course.description,
               'create_time': course.create_time} for course in courses]
-        return JsonResponse({'count': c, 'list': l})
+        corr_response({'count': c, 'list': l})

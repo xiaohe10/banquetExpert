@@ -52,7 +52,7 @@ URL：webApp/staff/register <br>
 {
 	"phone":"18813101211",
 	"password":"pass",
-	"hotel_id":"12",
+	"hotel_id":12,
 	"staff_number":"2017213464",
 	"name":"小张",
 	"gender":1,
@@ -73,7 +73,7 @@ URL：webApp/staff/register <br>
 {
 	"status":"true",
 	"data":{
-		"staff_id":"001"
+		"staff_id":1
 	}
 }
 ```
@@ -84,6 +84,8 @@ URL：webApp/staff/register <br>
 |:------------- |:---------------|
 | err_1 | 参数不正确（缺少参数或者不符合格式） |
 | err_2 | 该手机号已经注册过 |
+| err_3 | 该酒店不存在 |
+| err_4 | 服务器发生错误 |
 
 
 ## 登录
@@ -118,7 +120,7 @@ URL：webApp/staff/login <br>
 {
 	"status":"true",
 	"data":{
-		"staff_id":"001",
+		"staff_id":1,
 		"token":"129ASDFIOJIO3RN23U12934INASDF"
 	}
 }
@@ -166,7 +168,7 @@ URL：webApp/staff/pass_modify <br>
 {
 	"status":"true",
 	"data":{
-		"staff_id":"001"
+		"staff_id":1
 	}
 }
 ```
@@ -194,7 +196,7 @@ URL：webApp/staff/profile/ <br>
 
 ```
 {
-	"staff_id":"101",
+	"staff_id":101,
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
 }
 ```
@@ -221,7 +223,7 @@ URL：webApp/staff/profile/ <br>
 {
 	"status":"true",
 	"data":{
-		"staff_id":"001",
+		"staff_id":1,
 		"staff_number":"2017013434",
 		"name":"小张",
 		"gender":1,
@@ -265,7 +267,7 @@ URL：webApp/staff/profile/ <br>
 ```
 {
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
-	"staff_id":"001",
+	"staff_id":1,
 	"staff_number":"2017013434",
 	"name":"小张",
 	"gender":1,
