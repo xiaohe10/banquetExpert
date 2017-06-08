@@ -85,7 +85,7 @@ class List(View):
         :param kwargs:
             staff_number: 员工编号
             name: 姓名(必传)
-            gender: 性别, 0: 保密, 1: 男, 2: 女
+            gender: 性别, 0: 保密, 1: 男, 2: 女, 默认为0
             position: 职位(必传)
             id_number: 身份证号(必传)
         :return 200
@@ -115,13 +115,13 @@ class List(View):
 class Token(View):
     @validate_args({
         'phone': forms.RegexField(r'[0-9]{11}'),
-        'password': forms.CharField(min_length=1, max_length=128),
+        'password': forms.CharField(min_length=1, max_length=32),
     })
     def post(self, request, phone, password):
         """更新并返回员工令牌
 
         :param phone: 手机号(11位, 必传)
-        :param password: 密码(必传)
+        :param password: 密码(md5加密结果, 32位, 必传)
         :return token: 员工token
         """
 
@@ -144,16 +144,16 @@ class Token(View):
 class Password(View):
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
-        'new_password': forms.CharField(min_length=6, max_length=20),
-        'old_password': forms.CharField(min_length=6, max_length=20),
+        'new_password': forms.CharField(min_length=1, max_length=32),
+        'old_password': forms.CharField(min_length=1, max_length=32),
     })
     @validate_staff_token()
     def post(self, request, token, old_password, new_password):
         """修改密码
 
         :param token: 令牌(必传)
-        :param old_password: 旧密码(6-20位, 必传)
-        :param new_password: 新密码(6-20位, 必传)
+        :param old_password: 旧密码(md5加密结果, 32位, 必传)
+        :param new_password: 新密码(md5加密结果, 32位, 必传)
         :return 200/403
         """
 

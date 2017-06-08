@@ -491,11 +491,11 @@ class OrderScore(models.Model):
         ordering = ['-create_time']
 
 
-class Course(models):
+class Course(models.Model):
     """微课堂模型"""
 
-    # 对应cc视频ID
-    videoID = models.CharField(max_length=20, unique=True)
+    # 对应CC视频ID
+    cc_video_id = models.CharField(max_length=20, unique=True)
     # 状态
     status = models.IntegerField(
         choices=((0, '待审核'), (1, '审核通过'), (2, '审核未通过')),
@@ -524,8 +524,8 @@ class Course(models):
         ordering = ['-create_time']
 
 
-class CoursePurchaseRecord(models):
-    """课程购买模型"""
+class CoursePurchaseRecord(models.Model):
+    """课程购买记录模型"""
 
     # 其他支付信息
     # todo
@@ -538,7 +538,61 @@ class CoursePurchaseRecord(models):
     # 课程
     course = models.ForeignKey('Course', models.CASCADE, 'purchase_records')
     # 购买者
-    hotel = models.ForeignKey('Hotel', models.CASCADE, 'purchase_records')
+    hotel = models.ForeignKey(
+        'Hotel', models.CASCADE, 'course_purchase_records')
+
+    class Meta:
+        ordering = ['-create_time']
+
+
+class Live(models.Model):
+    """直播间模型"""
+
+    # 对应CC直播间ID
+    cc_room_id = models.CharField(max_length=20, unique=True)
+    # 直播间名称
+    name = models.CharField(max_length=20)
+    # 描述
+    description = models.CharField(max_length=100, default='')
+    # 价格
+    price = models.IntegerField(default=0)
+    # 推流端密，即讲师密码
+    publisher_password = models.CharField(max_length=6, default='')
+    # 播放端密码
+    play_password = models.CharField(max_length=6, default='')
+    # 直播开始日期
+    start_date = models.DateField(default=None, null=True)
+    # 直播结束时间
+    end_date = models.DateField(default=None, null=True)
+    # 直播开始时间
+    start_time = models.TimeField(default=None, null=True)
+    # 直播结束时间
+    end_time = models.TimeField(default=None, null=True)
+    # 创建时间
+    create_time = models.DateTimeField(default=timezone.now, db_index=True)
+
+    # 直播发布者
+    staff = models.ForeignKey('Staff', models.CASCADE, 'lives')
+
+    class Meta:
+        ordering = ['-create_time']
+
+
+class LivePurchaseRecord(models.Model):
+    """直播购买记录模型"""
+
+    # 其他支付信息
+    # todo
+
+    # 花费
+    cost = models.IntegerField()
+    # 创建时间
+    create_time = models.DateTimeField(default=timezone.now, db_index=True)
+
+    # 课程
+    live = models.ForeignKey('Live', models.CASCADE, 'purchase_records')
+    # 购买者
+    hotel = models.ForeignKey('Hotel', models.CASCADE, 'live_purchase_records')
 
     class Meta:
         ordering = ['-create_time']
