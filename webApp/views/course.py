@@ -70,11 +70,11 @@ class List(View):
             else:
                 d['cc_video_id'] = ''
             l.append(d)
-        corr_response({'count': c, 'list': l})
+        return corr_response({'count': c, 'list': l})
 
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
-        'cc_video_id': forms.CharField(min_length=1, max_length=20),
+        'cc_video_id': forms.CharField(min_length=1, max_length=32),
         'title': forms.CharField(min_length=1, max_length=20),
         'tags': forms.CharField(min_length=1, max_length=20),
         'description': forms.CharField(max_length=100, required=False),
@@ -102,9 +102,9 @@ class List(View):
                     if k in kwargs:
                         setattr(course, k, kwargs[k])
                 course.save()
-                corr_response()
+                return corr_response()
             except IntegrityError:
-                err_response('err_5', '服务器上传视频失败')
+                return err_response('err_5', '服务器上传视频失败')
 
 
 class OwnedList(View):
@@ -154,4 +154,4 @@ class OwnedList(View):
               'tags': course.tags,
               'description': course.description,
               'create_time': course.create_time} for course in courses]
-        corr_response({'count': c, 'list': l})
+        return corr_response({'count': c, 'list': l})

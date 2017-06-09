@@ -63,7 +63,7 @@ class List(View):
               'guest_channel': s.guest_channel,
               'authority': s.authority,
               'create_time': s.create_time} for s in staffs]
-        corr_response({'count': c, 'list': l})
+        return corr_response({'count': c, 'list': l})
 
     @validate_args({
         'phone': forms.RegexField(r'[0-9]{11}'),
@@ -91,14 +91,13 @@ class List(View):
         :return 200
         """
 
-        hotel = None
         try:
             hotel = Hotel.enabled_objects.get(id=hotel_id)
         except Hotel.DoesNotExist:
-            err_response('err_3', '酒店不存在')
+            return err_response('err_3', '酒店不存在')
 
         if Staff.objects.filter(phone=phone).exists():
-            err_response('err_2', '该手机号已经注册过')
+            return err_response('err_2', '该手机号已经注册过')
         staff_keys = ('staff_number', 'name', 'gender', 'position', 'id_number')
         with transaction.atomic():
             try:
@@ -108,9 +107,9 @@ class List(View):
                     if k in kwargs:
                         setattr(staff, k, kwargs[k])
                 staff.save()
-                corr_response({'staff_id': staff.id})
+                return corr_response({'staff_id': staff.id})
             except IntegrityError:
-                err_response('err_4', '服务器创建员工错误')
+                return err_response('err_4', '服务器创建员工错误')
 
 
 class Token(View):
@@ -129,14 +128,14 @@ class Token(View):
         try:
             staff = Staff.objects.get(phone=phone)
         except Staff.DoesNotExist:
-            err_response('err_2', '不存在该用户')
+            return err_response('err_2', '不存在该用户')
         else:
             if not staff.is_enabled:
-                err_response('err_2', '不存在该用户')
+                return err_response('err_2', '不存在该用户')
             if staff.status == 0:
-                err_response('err_2', '不存在该用户')
+                return err_response('err_2', '不存在该用户')
             if staff.password != password:
-                err_response('err_3', '密码错误')
+                return err_response('err_3', '密码错误')
             staff.update_token()
             staff.save()
             return corr_response({'token': staff.token})
@@ -160,8 +159,8 @@ class Password(View):
 
         if request.staff.password == old_password:
             request.staff.password = new_password
-            corr_response({'staff_id': request.staff.id})
-        err_response('err_3', '旧密码错误')
+            return corr_response({'staff_id': request.staff.id})
+        return err_response('err_3', '旧密码错误')
 
 
 class Profile(View):
@@ -192,7 +191,7 @@ class Profile(View):
             try:
                 staff = Staff.enabled_objects.get(id=staff_id)
             except ObjectDoesNotExist:
-                err_response('err_2', '不存在该员工')
+                return err_response('err_2', '不存在该员工')
         else:
             staff = request.staff
         r = {'staff_id': staff.id,
@@ -205,7 +204,7 @@ class Profile(View):
              'description': staff.description,
              'authority': staff.authority,
              'create_time': staff.create_time}
-        corr_response(r)
+        return corr_response(r)
 
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
@@ -263,4 +262,4 @@ class Profile(View):
                 request.staff.icon = file_name
 
         request.staff.save()
-        corr_response()
+        return corr_response()

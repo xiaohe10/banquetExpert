@@ -7,7 +7,6 @@ from django.db import IntegrityError, transaction
 from django.utils import timezone
 from ..utils.response import corr_response, err_response
 from django.views.generic import View
-from django.core.exceptions import ObjectDoesNotExist
 
 from ..utils.decorator import validate_args, validate_admin_token
 from ..models import Admin, Hotel, HotelBranch, Staff
@@ -32,15 +31,15 @@ class Token(View):
         try:
             admin = Admin.objects.get(username=username)
         except Admin.DoesNotExist:
-            err_response('err_2', '管理员不存在')
+            return err_response('err_2', '管理员不存在')
         else:
             if not admin.is_enabled:
-                err_response('err_2', '管理员不存在')
+                return err_response('err_2', '管理员不存在')
             if admin.password != password:
-                err_response('err_4', '密码错误')
+                return err_response('err_4', '密码错误')
             admin.update_token()
             admin.save()
-            corr_response({'token': admin.token})
+            return corr_response({'token': admin.token})
 
 
 class HotelProfile(View):
@@ -64,22 +63,21 @@ class HotelProfile(View):
         :return: 200/400/403/404
         """
 
-        hotel = None
         try:
             hotel = Hotel.objects.get(id=hotel_id)
         except Hotel.DoesNotExist:
-            err_response('err_3', '酒店不存在')
+            return err_response('err_3', '酒店不存在')
 
         # 管理员只能管理自己的酒店
         if request.admin.type == 0 and hotel != request.admin.hotel:
-            err_response('err_2', '权限错误')
+            return err_response('err_2', '权限错误')
 
         name = kwargs.pop('name') if 'name' in kwargs else None
         owner_name = kwargs.pop('owner_name') if \
             'owner_name' in kwargs else None
         if name:
             if Hotel.objects.filter(name=name).exists():
-                err_response('err_3', '酒店名已注册')
+                return err_response('err_3', '酒店名已注册')
             hotel.name = name
 
         if owner_name:
@@ -105,10 +103,10 @@ class HotelProfile(View):
                         pass
                 hotel.icon = file_name
 
-            err_response('err_4', '图片为空')
+            return err_response('err_4', '图片为空')
 
         hotel.save()
-        corr_response()
+        return corr_response()
 
 
 class HotelBranchList(View):
@@ -157,15 +155,14 @@ class HotelBranchList(View):
                 create_time: 创建时间
         """
 
-        hotel = None
         try:
             hotel = Hotel.enabled_objects.get(id=hotel_id)
         except Hotel.DoesNotExist:
-            err_response('err_3', '酒店不存在')
+            return err_response('err_3', '酒店不存在')
 
         # 管理员只能查看自己酒店的门店
         if request.admin.type == 0 and hotel != request.admin.hotel:
-            err_response('err_2', '权限错误')
+            return err_response('err_2', '权限错误')
         c = HotelBranch.objects.filter(
             hotel=hotel, is_enabled=is_enabled).count()
         branches = HotelBranch.objects.filter(
@@ -187,7 +184,7 @@ class HotelBranchList(View):
               'hotel_name': b.hotel.hotel.name,
               'manager': b.manager,
               'create_time': b.create_time} for b in branches]
-        corr_response({'count': c, 'list': l})
+        return corr_response({'count': c, 'list': l})
 
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
@@ -222,15 +219,14 @@ class HotelBranchList(View):
         :return 200/400
         """
 
-        hotel, staff = None, None
         try:
             hotel = Hotel.enabled_objects.get(id=hotel_id)
         except Hotel.DoesNotExist:
-            err_response('err_3', '酒店不存在')
+            return err_response('err_3', '酒店不存在')
         try:
             staff = Staff.enabled_objects.get(id=staff_id)
         except Staff.DoesNotExist:
-            err_response('err_4', '员工不存在')
+            return err_response('err_4', '员工不存在')
 
         branch_keys = ('name', 'province', 'city', 'county', 'address', 'phone',
                        'facility', 'pay_card', 'cuisine')
@@ -241,9 +237,9 @@ class HotelBranchList(View):
                     if k in kwargs:
                         setattr(branch, k, kwargs[k])
                 branch.save()
-                corr_response()
+                return corr_response()
             except IntegrityError:
-                err_response('error_5', '服务器创建门店失败')
+                return err_response('error_5', '服务器创建门店失败')
 
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
@@ -261,11 +257,11 @@ class HotelBranchList(View):
         try:
             branch = HotelBranch.objects.get(id=branch_id)
         except HotelBranch.DoesNotExist:
-            err_response('err_4', '门店不存在')
+            return err_response('err_4', '门店不存在')
         else:
             branch.is_enabled = False
             branch.save()
-            corr_response()
+            return corr_response()
 
 
 class StaffList(View):
@@ -312,15 +308,14 @@ class StaffList(View):
                 create_time: 创建时间
         """
 
-        hotel = None
         try:
             hotel = Hotel.enabled_objects.get(id=hotel_id)
         except Hotel.DoesNotExist:
-            err_response('err_4', '酒店不存在')
+            return err_response('err_4', '酒店不存在')
 
         # 管理员只能查看自己酒店的员工
         if request.admin.type == 0 and hotel != request.admin.hotel:
-            err_response('err_2', '权限错误')
+            return err_response('err_2', '权限错误')
         c = Staff.objects.filter(hotel=hotel, status=status,
                                  is_enabled=is_enabled).count()
         staffs = Staff.objects.filter(
@@ -337,7 +332,7 @@ class StaffList(View):
               'guest_channel': s.guest_channel,
               'authority': s.authority,
               'create_time': s.create_time} for s in staffs]
-        corr_response({'count': c, 'list': l})
+        return corr_response({'count': c, 'list': l})
 
     @validate_args({
         'phone': forms.RegexField(r'[0-9]{11}'),
@@ -366,17 +361,16 @@ class StaffList(View):
         :return 200
         """
 
-        hotel = None
         try:
             hotel = Hotel.enabled_objects.get(id=hotel_id)
         except Hotel.DoesNotExist:
-            err_response('err_4', '酒店不存在')
+            return err_response('err_4', '酒店不存在')
         # 管理员只能添加自己酒店的员工
         if request.admin.type == 0 and hotel != request.admin.hotel:
-            err_response('err_2', '权限错误')
+            return err_response('err_2', '权限错误')
 
         if Staff.objects.filter(phone=phone).exists():
-            err_response('err_3', '该手机号已注册')
+            return err_response('err_3', '该手机号已注册')
         staff_keys = ('staff_number', 'name', 'gender', 'position', 'id_number')
         with transaction.atomic():
             try:
@@ -388,9 +382,9 @@ class StaffList(View):
                     if k in kwargs:
                         setattr(staff, k, kwargs[k])
                 staff.save()
-                corr_response()
+                return corr_response()
             except IntegrityError:
-                err_response('err_5', '服务器创建员工失败')
+                return err_response('err_5', '服务器创建员工失败')
 
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
@@ -405,18 +399,17 @@ class StaffList(View):
         :return: 200/404
         """
 
-        staff = None
         try:
             staff = Staff.objects.get(id=staff_id)
         except Staff.DoesNotExist:
-            err_response('err_3', '员工不存在')
+            return err_response('err_3', '员工不存在')
         # 管理员只能管理自己酒店的员工
         if request.admin.type == 0 and staff.hotel != request.admin.hotel:
-            err_response('err_2', '权限错误')
+            return err_response('err_2', '权限错误')
 
         staff.is_enabled = False
         staff.save()
-        corr_response()
+        return corr_response()
 
 
 class StaffProfile(View):
@@ -447,15 +440,14 @@ class StaffProfile(View):
             create_time: 创建时间
         """
 
-        staff = None
         try:
             staff = Staff.objects.get(id=staff_id)
         except Staff.DoesNotExist:
-            err_response('err_3', '员工不存在')
+            return err_response('err_3', '员工不存在')
 
         # 管理员只能查看自己酒店的员工
         if request.admin.type == 0 and staff.hotel != request.admin.hotel:
-            err_response('err_2', '权限错误')
+            return err_response('err_2', '权限错误')
 
         d = {'staff_id': staff.id,
              'staff_number': staff.staff_number,
@@ -467,7 +459,7 @@ class StaffProfile(View):
              'authority': staff.authority,
              'status': staff.status,
              'create_time': staff.create_time}
-        corr_response(d)
+        return corr_response(d)
 
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
@@ -501,15 +493,14 @@ class StaffProfile(View):
         :return: 200
         """
 
-        staff = None
         try:
             staff = Staff.objects.get(id=staff_id)
         except Staff.DoesNotExist:
-            err_response('err_3', '员工不存在')
+            return err_response('err_3', '员工不存在')
 
         # 管理员只能管理自己酒店的员工
         if request.admin.type == 0 and staff.hotel != request.admin.hotel:
-            err_response('err_2', '权限错误')
+            return err_response('err_2', '权限错误')
 
         staff_keys = ('staff_number', 'gender', 'position', 'guest_channel',
                       'description', 'authority', 'status', 'is_enabled')
@@ -517,4 +508,4 @@ class StaffProfile(View):
             if k in kwargs:
                 setattr(staff, k, kwargs[k])
         staff.save()
-        corr_response()
+        return corr_response()

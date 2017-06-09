@@ -13,16 +13,16 @@ def validate_super_admin_token():
         @wraps(function)
         def returned_wrapper(self, request, *args, **kwargs):
             if 'token' not in kwargs:
-                err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+                return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
             try:
                 admin = Admin.objects.get(token=kwargs['token'])
             except ObjectDoesNotExist:
-                err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+                return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
             else:
                 if admin.type != 1:
-                    err_response('err_2', '权限错误')
+                    return err_response('err_2', '权限错误')
                 if admin.is_enabled is not True:
-                    err_response('err_3', '不存在该管理员')
+                    return err_response('err_3', '不存在该管理员')
                 request.admin = admin
             return function(self, request, *args, **kwargs)
         return returned_wrapper
@@ -35,14 +35,14 @@ def validate_admin_token():
         @wraps(function)
         def returned_wrapper(self, request, *args, **kwargs):
             if 'token' not in kwargs:
-                err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+                return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
             try:
                 admin = Admin.objects.get(token=kwargs['token'])
             except ObjectDoesNotExist:
-                err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+                return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
             else:
                 if admin.is_enabled is not True:
-                    err_response('err_3', '不存在该管理员')
+                    return err_response('err_3', '不存在该管理员')
                 request.admin = admin
             return function(self, request, *args, **kwargs)
         return returned_wrapper
@@ -55,16 +55,16 @@ def validate_staff_token():
         @wraps(function)
         def returned_wrapper(self, request, *args, **kwargs):
             if 'token' not in kwargs:
-                err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+                return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
             try:
                 staff = Staff.objects.get(token=kwargs['token'])
             except ObjectDoesNotExist:
-                err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+                return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
             else:
                 if staff.is_enabled is not True:
-                    err_response('err_3', '不存在该员工')
+                    return err_response('err_3', '不存在该员工')
                 if staff.status == 0:
-                    err_response('err_3', '不存在该员工')
+                    return err_response('err_3', '不存在该员工')
                 request.staff = staff
             return function(self, request, *args, **kwargs)
         return returned_wrapper
@@ -77,14 +77,14 @@ def validate_user_token():
         @wraps(function)
         def returned_wrapper(self, request, *args, **kwargs):
             if 'token' not in kwargs:
-                err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+                return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
             try:
                 user = User.objects.get(token=kwargs['token'])
             except ObjectDoesNotExist:
-                err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+                return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
             else:
                 if user.is_enabled is not True:
-                    err_response('err_3', '不存在该用户')
+                    return err_response('err_3', '不存在该用户')
                 request.user = user
             return function(self, request, *args, **kwargs)
         return returned_wrapper
@@ -109,9 +109,11 @@ def validate_args(dic):
                     kwargs[k] = v.clean(data[k])
                 except KeyError:
                     if v.required:
-                        err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+                        return err_response(
+                            'err_1', '参数不正确（缺少参数或者不符合格式）')
                 except ValidationError:
-                    err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+                    return err_response(
+                        'err_1', '参数不正确（缺少参数或者不符合格式）')
             return function(self, request, *args, **kwargs)
         return returned_wrapper
     return decorator

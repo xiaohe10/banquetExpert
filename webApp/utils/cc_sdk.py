@@ -9,7 +9,9 @@ import urllib.request
 
 USER_ID = 'D1202B6FCA1991FD'
 API_KEY = 'IahwRk1RJOTLi90JywVsmID87K3D9XJG'
+
 CREATE_LIVE_URL = 'http://api.csslcloud.net/api/room/create'
+UPDATE_LIVE_URL = 'http://api.csslcloud.net/api/room/update'
 REPLAY_LIVE_URL = 'http://api.csslcloud.net/api/live/info'
 QUERY_LIVE_URL = 'http://api.csslcloud.net/api/rooms/publishing'
 
@@ -26,8 +28,8 @@ def create_live_room(publisher_password, play_password, name, description):
 
     # 需要传输的参数
     query_map = {'userid': USER_ID,
-                 'name': name,
-                 'desc': description,
+                 'name': urllib.parse.quote(name),
+                 'desc': urllib.parse.quote(description),
                  'templatetype': 5,
                  'authtype': 1,
                  'publisherpass': publisher_password,
@@ -39,11 +41,45 @@ def create_live_room(publisher_password, play_password, name, description):
     query_hash = create_hashed_query_string(query_map)
 
     url = CREATE_LIVE_URL + "?" + query_hash
-    f = urllib.request.urlopen("%s?%s" % (url, query_hash))
+    f = urllib.request.urlopen(url)
 
     content = f.read().decode('utf-8')
     res = json.loads(content)
 
+    return res
+
+
+def update_live_room(cc_room_id, publisher_password, play_password, name,
+                     description):
+    """调用CC接口，更新直播间信息
+
+    :param cc_room_id: 对应CC上的roomid
+    :param publisher_password: 推送密码
+    :param play_password: 播放密码
+    :param name: 直播间名称
+    :param description: 直播间描述
+    :return
+    """
+
+    # 需要传输的参数
+    query_map = {'roomid': cc_room_id,
+                 'userid': USER_ID,
+                 'name': urllib.parse.quote(name),
+                 'desc': urllib.parse.quote(description),
+                 'authtype': 1,
+                 'publisherpass': publisher_password,
+                 'assistantpass': "beijingyan",
+                 'playpass': play_password,
+                 'barrage': 0}
+    # 加密参数
+    query_hash = create_hashed_query_string(query_map)
+
+    url = UPDATE_LIVE_URL + "?" + query_hash
+    f = urllib.request.urlopen(url)
+
+    content = f.read().decode('utf-8')
+    res = json.loads(content)
+    print(res)
     return res
 
 
@@ -57,12 +93,12 @@ def query_live_room(cc_room_ids):
     cc_room_id_str = ','.join(cc_room_ids)
     # 需要传输的参数
     query_map = {'userid': USER_ID,
-                 'roomids': cc_room_id_str,}
+                 'roomids': cc_room_id_str}
     # 加密参数
     query_hash = create_hashed_query_string(query_map)
 
     url = QUERY_LIVE_URL + "?" + query_hash
-    f = urllib.request.urlopen("%s?%s" % (url, query_hash))
+    f = urllib.request.urlopen(url)
 
     content = f.read().decode('utf-8')
     res = json.loads(content)
@@ -82,19 +118,19 @@ def create_hashed_query_string(query_map):
     query_str = ''
     for key in sorted_keys:
         if not query_str:
-            query_str = key + "=" + query_map[key]
+            query_str = key + "=" + str(query_map[key])
         else:
-            query_str = query_str + "&" + key + "=" + query_map[key]
+            query_str = query_str + "&" + key + "=" + str(query_map[key])
 
     # 获取时间戳
-    now = int(time.time() / 1000)
+    now = int(time.time())
 
     # 拼接
     result_str = "{0}&time={1}&salt={2}".format(query_str, now, API_KEY)
 
     # MD5加密
     hash_str = hashlib.md5(result_str.encode(encoding='utf-8'))
-    hash_str = hash_str.hexdigest().lower()
+    hash_str = hash_str.hexdigest().upper()
 
     result = "{0}&time={1}&hash={2}".format(query_str, now, hash_str)
     return result

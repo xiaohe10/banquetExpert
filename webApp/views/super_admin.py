@@ -51,7 +51,7 @@ class AdminList(View):
               'authority': a.authority,
               'is_enabled': a.is_enabled,
               'create_time': a.create_time} for a in admins]
-        corr_response({'count': c, 'list': l})
+        return corr_response({'count': c, 'list': l})
 
     @validate_args({
         'username': forms.CharField(min_length=1, max_length=20),
@@ -71,14 +71,14 @@ class AdminList(View):
         """
 
         if Admin.enabled_objects.filter(username=username).exists():
-            err_response('err_2', '该用户名已注册')
+            return err_response('err_2', '该用户名已注册')
 
         if hotel_id is not None:
             if type == 0:
                 try:
                     hotel = Hotel.enabled_objects.get(id=hotel_id)
                 except ObjectDoesNotExist:
-                    err_response('err_3', '该酒店不存在')
+                    return err_response('err_3', '该酒店不存在')
                 else:
                     with transaction.atomic():
                         try:
@@ -86,11 +86,11 @@ class AdminList(View):
                                           type=type, hotel=hotel)
                             admin.update_token()
                             admin.save()
-                            corr_response({'admin_id': admin.id})
+                            return corr_response({'admin_id': admin.id})
                         except IntegrityError:
-                            err_response('error_4', '服务器创建管理员失败')
+                            return err_response('error_4', '服务器创建管理员失败')
             else:
-                err_response('err_5', '权限错误')
+                return err_response('err_5', '权限错误')
         else:
             if type == 1:
                 with transaction.atomic():
@@ -99,11 +99,11 @@ class AdminList(View):
                                       type=type)
                         admin.update_token()
                         admin.save()
-                        corr_response({'admin_id': admin.id})
+                        return corr_response({'admin_id': admin.id})
                     except IntegrityError:
-                        err_response('error_4', '服务器创建管理员失败')
+                        return err_response('error_4', '服务器创建管理员失败')
             else:
-                err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+                return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
 
     @validate_args({
         'admin_id': forms.IntegerField(required=False),
@@ -116,13 +116,12 @@ class AdminList(View):
         :return: 200/404
         """
 
-        admin = None
         try:
             admin = Admin.objects.get(id=admin_id)
         except Admin.DoesNotExist:
-            err_response('err_2', '管理员不存在')
+            return err_response('err_2', '管理员不存在')
         admin.is_enabled = False
-        corr_response()
+        return corr_response()
 
 
 class Token(View):
@@ -141,17 +140,17 @@ class Token(View):
         try:
             admin = Admin.objects.get(username=username)
         except Admin.DoesNotExist:
-            err_response('err_2', '管理员不存在')
+            return err_response('err_2', '管理员不存在')
         else:
             if not admin.is_enabled:
-                err_response('err_2', '管理员不存在')
+                return err_response('err_2', '管理员不存在')
             if admin.type != 1:
-                err_response('err_2', '管理员不存在')
+                return err_response('err_2', '管理员不存在')
             if admin.password != password:
-                err_response('err_3', '密码错误')
+                return err_response('err_3', '密码错误')
             admin.update_token()
             admin.save()
-            corr_response({'token': admin.token})
+            return corr_response({'token': admin.token})
 
 
 class HotelList(View):
@@ -199,7 +198,7 @@ class HotelList(View):
               'owner_name': h.owner_name,
               'is_enabled': h.is_enabled,
               'create_time': h.create_time} for h in hotels]
-        corr_response({'count': c, 'list': l})
+        return corr_response({'count': c, 'list': l})
 
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
@@ -217,12 +216,12 @@ class HotelList(View):
         """
 
         if Hotel.enabled_objects.filter(name=name).exists():
-            err_response('err_4', '酒店名已注册')
+            return err_response('err_4', '酒店名已注册')
         try:
             Hotel.objects.create(name=name, owner_name=owner_name)
-            corr_response()
+            return corr_response()
         except IntegrityError:
-            err_response('err_5', '服务器创建酒店失败')
+            return err_response('err_5', '服务器创建酒店失败')
 
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
@@ -240,11 +239,11 @@ class HotelList(View):
         try:
             hotel = Hotel.objects.get(id=hotel_id)
         except Hotel.DoesNotExist:
-            err_response('err_4', '酒店不存在')
+            return err_response('err_4', '酒店不存在')
         else:
             hotel.is_enabled = False
             hotel.save()
-            corr_response()
+            return corr_response()
 
 
 class HotelProfile(View):
@@ -273,7 +272,7 @@ class HotelProfile(View):
         try:
             hotel = Hotel.objects.get(id=hotel_id)
         except Hotel.DoesNotExist:
-            err_response('err_4', '酒店不存在')
+            return err_response('err_4', '酒店不存在')
         else:
             d = {'hotel_id': hotel.id,
                  'name': hotel.name,
@@ -282,7 +281,7 @@ class HotelProfile(View):
                  'owner_name': hotel.owner_name,
                  'is_enabled': hotel.is_enabled,
                  'create_time': hotel.create_time,}
-            corr_response(d)
+            return corr_response(d)
 
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
@@ -303,16 +302,15 @@ class HotelProfile(View):
         :return: 200/400/403/404
         """
 
-        hotel = None
         try:
             hotel = Hotel.enabled_objects.get(id=hotel_id)
         except Hotel.DoesNotExist:
-            err_response('err_4', '酒店不存在')
+            return err_response('err_4', '酒店不存在')
 
         name = kwargs.pop('name') if 'name' in kwargs else None
         if name:
             if Hotel.enabled_objects.filter(name=name).exists():
-                err_response('err_4', '酒店名已注册')
+                return err_response('err_4', '酒店名已注册')
             hotel.name = name
 
         hotel_keys = ('owner_name', 'is_enabled')
@@ -320,4 +318,4 @@ class HotelProfile(View):
             if k in kwargs:
                 setattr(hotel, k, kwargs[k])
         hotel.save()
-        corr_response()
+        return corr_response()

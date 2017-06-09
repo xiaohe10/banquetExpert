@@ -495,7 +495,7 @@ class Course(models.Model):
     """微课堂模型"""
 
     # 对应CC视频ID
-    cc_video_id = models.CharField(max_length=20, unique=True)
+    cc_video_id = models.CharField(max_length=32, unique=True)
     # 状态
     status = models.IntegerField(
         choices=((0, '待审核'), (1, '审核通过'), (2, '审核未通过')),
@@ -549,7 +549,7 @@ class Live(models.Model):
     """直播间模型"""
 
     # 对应CC直播间ID
-    cc_room_id = models.CharField(max_length=20, unique=True)
+    cc_room_id = models.CharField(max_length=32, unique=True)
     # 直播间名称
     name = models.CharField(max_length=20)
     # 描述

@@ -7,10 +7,10 @@ from django.views.generic import View
 
 from ..utils.decorator import validate_args, validate_staff_token
 from ..utils.response import corr_response, err_response
-from ..utils.cc_sdk import create_live_room, query_live_room
+from ..utils.cc_sdk import create_live_room, query_live_room, update_live_room
 from ..models import Live
 
-__all__ = ['List', 'OwnedList']
+__all__ = ['List', 'OwnedList', 'Profile']
 
 
 class List(View):
@@ -38,6 +38,7 @@ class List(View):
             count: 直播总数
             list: 直播列表
                 live_id: ID
+                name: 直播间名称
                 cc_room_id: 对应CC的roomid
                 status: 直播间状态, 0: 未开始, 1: 正在直播
                 play_password: 播放密码，如果直播需要付费且当前员工的酒店未付费则返回空
@@ -54,21 +55,25 @@ class List(View):
         c = Live.objects.all().count()
         lives = Live.objects.all().order_by(
             self.ORDERS[order])[offset:offset + limit]
+
+        rooms_status = {}
         # 批量查询直播间状态
         cc_room_ids = [live.cc_room_id for live in lives]
-        res = query_live_room(cc_room_ids)
-        if res['result'] != 'OK':
-            err_response('err_4', '查询直播间状态失败')
-        try:
-            rooms = res['rooms']
-            rooms_status = {room['roomId']: room['liveStatus'] for room
-                            in rooms}
-        except KeyError:
-            err_response('err_4', '查询直播间状态失败')
+        if len(cc_room_ids) > 0:
+            res = query_live_room(cc_room_ids)
+            if res['result'] != 'OK':
+                return err_response('err_4', '查询直播间状态失败')
+            try:
+                rooms = res['rooms']
+                rooms_status = {room['roomId']: room['liveStatus']
+                                for room in rooms}
+            except KeyError:
+                return err_response('err_4', '查询直播间状态失败')
         l = []
         for live in lives:
             cc_room_id = live.cc_room_id
             d = {'live_id': live.id,
+                 'name': live.name,
                  'cc_room_id': cc_room_id,
                  'price': live.price,
                  'buyer_count': live.purchase_records.count(),
@@ -91,7 +96,7 @@ class List(View):
             else:
                 d['status'] = 0
             l.append(d)
-        corr_response({'count': c, 'list': l})
+        return corr_response({'count': c, 'list': l})
 
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
@@ -124,7 +129,9 @@ class List(View):
 
         # 验证当前用户是否有权限发布直播
         # todo
-        description = kwargs['description'] if 'description' in kwargs else ''
+
+        description = kwargs.pop('description') \
+            if 'description' in kwargs else ''
 
         live_keys = ('start_date', 'end_date', 'start_time', 'end_time',
                      'price')
@@ -138,16 +145,17 @@ class List(View):
                 # 向CC发送http请求，创建直播间
                 res = create_live_room(publisher_password, play_password,
                                        name, description)
-                cc_room_id = None
                 try:
                     if res['result'] == 'OK':
                         cc_room_id = res['room']['id']
                     else:
-                        err_response('err_4', '服务器创建直播间失败')
+                        return err_response('err_4', '服务器创建直播间失败')
                 except KeyError:
-                    err_response('err_4', '服务器创建直播间失败')
+                    return err_response('err_4', '服务器创建直播间失败')
                 live = Live(cc_room_id=cc_room_id, name=name,
-                            description=description, staff=request.staff)
+                            description=description, staff=request.staff,
+                            publisher_password=publisher_password,
+                            play_password=play_password)
                 for k in live_keys:
                     if k in kwargs:
                         setattr(live, k, kwargs[k])
@@ -155,9 +163,9 @@ class List(View):
                 d = {'live_id': live.id,
                      'cc_room_id': cc_room_id,
                      'publisher_password': publisher_password}
-                corr_response(d)
+                return corr_response(d)
             except IntegrityError:
-                err_response('err_4', '服务器创建直播间失败')
+                return err_response('err_4', '服务器创建直播间失败')
 
 
 class OwnedList(View):
@@ -184,6 +192,7 @@ class OwnedList(View):
             count: 直播总数
             list: 直播列表
                 live_id: ID
+                name: 直播间名称
                 cc_room_id: 对应cc的roomid
                 publisher_password: 推送密码
                 price: 价格
@@ -200,6 +209,7 @@ class OwnedList(View):
         lives = request.staff.lives.order_by(
             self.ORDERS[order])[offset:offset + limit]
         l = [{'live_id': live.id,
+              'name': live.name,
               'cc_room_id': live.cc_room_id,
               'price': live.price,
               'buyer_count': live.purchase_records.count(),
@@ -210,4 +220,78 @@ class OwnedList(View):
               'start_time': live.start_time,
               'end_time': live.end_time,
               'create_time': live.create_time} for live in lives]
-        corr_response({'count': c, 'list': l})
+        return corr_response({'count': c, 'list': l})
+
+
+class Profile(View):
+    @validate_args({
+        'token': forms.CharField(min_length=32, max_length=32),
+        'live_id': forms.IntegerField(),
+        'name': forms.CharField(min_length=1, max_length=20, required=False),
+        'start_date': forms.DateField(required=False),
+        'end_date': forms.DateField(required=False),
+        'start_time': forms.TimeField(required=False),
+        'end_time': forms.TimeField(required=False),
+        'price': forms.IntegerField(required=False),
+        'description': forms.CharField(max_length=100, required=False),
+    })
+    @validate_staff_token()
+    def post(self, request, token, live_id, **kwargs):
+        """
+
+        :param token: 员工令牌(必传)
+        :param live_id: 直播间ID(必传)
+        :param kwargs:
+            name: 直播间名称
+            start_date: 开始日期
+            end_date: 结束日期
+            start_time: 开始时间
+            end_time: 结束时间
+            price: 价格
+            description: 描述
+        :return:
+        """
+
+        try:
+            live = Live.objects.get(id=live_id)
+        except Live.DoesNotExist:
+            return err_response('err_4', '直播间不存在')
+        if live.staff != request.staff:
+            return err_response('err_2', '权限错误')
+        name = kwargs.pop('name') if 'name' in kwargs else None
+        description = kwargs.pop('description') \
+            if 'description' in kwargs else None
+
+        live_keys = ('start_date', 'end_date', 'start_time', 'end_time',
+                     'price')
+        with transaction.atomic():
+            try:
+                # 向CC发送http请求，修改直播间信息
+                if name is not None:
+                    live.name = name
+                    if description is not None:
+                        live.description = description
+                else:
+                    if description is not None:
+                        live.description = description
+
+                if (name is not None) or (description is not None):
+                    res = update_live_room(live.cc_room_id,
+                                           live.publisher_password,
+                                           live.play_password,
+                                           live.name,
+                                           live.description)
+                    try:
+                        if res['result'] != 'OK':
+                            return err_response('err_4', '服务器修改直播间信息失败')
+                    except KeyError:
+                        return err_response('err_4', '服务器修改直播间信息失败')
+
+                # 修改数据库
+                for k in live_keys:
+                    if k in kwargs:
+                        setattr(live, k, kwargs[k])
+                live.save()
+                return corr_response()
+            except IntegrityError:
+                return err_response('err_4', '服务器修改直播间信息失败')
