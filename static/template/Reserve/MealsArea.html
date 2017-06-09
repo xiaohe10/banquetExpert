@@ -3,8 +3,8 @@
 <div class="py-1 bg-info">
     <div class="p-2 bg-success">
         <a>>全部桌位，共7个</a>
-        <input class="btn btn-sm btn-secondary ml-1 mr-2" type="button" value="新增桌位"/>
-        <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" value="保存"/>
+        <input class="btn btn-sm btn-secondary ml-1 mr-2" type="button" id="addarea" value="新增餐位"/>
+        <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" id="save" value="保存"/>
     </div>
 </div>
 <!--表格-->
@@ -19,24 +19,22 @@
                 <td>操作</td>
             </tr>
             </thead>
-            <tbody class="align-content-center">
-            <tr class="table-info">
-                <td>应用</td>
-                <td>
-                    <input class="form-control form-control-sm text-center" type="text" value="一楼" name="area" id="area"/>
-                </td>
-                <td>
-                    <input class="form-control form-control-sm text-center" type="text" value="一楼" name="order" id="order"/>
-                </td>
-                <td>
-                    <input class="btn btn-link btn-sm" type="button" value="桌位设置" name="set-seat"/>
-                    <span class="form-check-label">
-                                    <input class="form-check-input form-control-sm" type="checkbox" value="启用" name="enable"/>
-                                        启用
-                                    </span>
-                </td>
-            </tr>
+            <tbody class="align-content-center" id="area">
+
             </tbody>
         </table>
+        <!--<input class="form-check-input form-control-sm" type="checkbox" value="启用" name="enable" checked="checked"/>-->
     </form>
 </div>
+<script type="text/javascript">
+    alert("加载餐位设置！");
+    $.ready(function () {
+        $.templates("#areaTemplate").link("#area", BanquetExpert.area);
+        $("#addarea").click(function () {
+            alert("新增餐位");
+        });
+        $("#save").click(function () {
+            alert("保存");
+        });
+    });
+</script>

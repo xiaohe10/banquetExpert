@@ -21,19 +21,26 @@
 <div class="container-fluid">
     <div class="row">
         <!--左侧导航栏-->
-        <div class="accordion col-3 bg-faded small" id="drawer">
-            左侧导航栏
+        <!--"python manage.py runserver localhost:8000"-->
+        <div class="accordion col-3 bg-faded small">
+            <div class="nav navbar" id="drawer">
+                左侧导航栏
+            </div>
         </div>
         <!--内容页-->
         <div class="col-9">
             <!--路径导航-->
-            <div id="breadcrumb">
-                路径导航
+            <div>
+                <ol class="breadcrumb mb-2 bg-faded" id="breadcrumb">
+                    路径导航
+                </ol>
             </div>
             <!--内容面板-->
-            <main id="main">
+            <main style="display: none" id="main">
                 内容面板
             </main>
+            <!--iframe-->
+            <iframe width="auto" height="auto" src="./template/Account/AccountManage.html"></iframe>
         </div>
     </div>
 </div>

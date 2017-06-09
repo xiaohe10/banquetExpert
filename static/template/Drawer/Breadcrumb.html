@@ -1,9 +1,7 @@
-<ol class="breadcrumb mb-2 bg-faded">
-    {{for Breadcrumb}}
-    {{if #index < 2}}
-    <li class="breadcrumb-item text-info"><a>{{:title}}</a></li>
+{{for}}
+    {{if #getIndex() < 2}}
+        <li class="breadcrumb-item text-info"><a>{{:title}}</a></li>
     {{else}}
-    <li class="breadcrumb-item active text-primary"><a>{{:title}}</a></li>
+        <li class="breadcrumb-item active text-primary"><a>{{:title}}</a></li>
     {{/if}}
-    {{/for}}
-</ol>
+{{/for}}

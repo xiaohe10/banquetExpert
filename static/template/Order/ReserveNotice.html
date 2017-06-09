@@ -11,23 +11,18 @@
                 <input type="date" value="2017-6-8" name="date-to" id="date-to"/>
                 <select name="area" id="area">
                     <option value="0">全部就餐区域</option>
-                    <option value="1">一楼</option>
-                    <option value="2">二楼</option>
-                    <option value="3">三楼</option>
-                    <option value="4">四楼</option>
-                    <option value="5">五楼</option>
-                    <option value="6">六楼</option>
+                    {{for area}}
+                    <option value="{{:value}}">{{:name}}</option>
+                    {{/for }}
                 </select>
                 <select name="channel" id="channel">
                     <option value="0">全部接单渠道</option>
-                    <optgroup label="内部渠道">内部渠道</optgroup>
-                    <option value="1">一楼</option>
-                    <option value="2">二楼</option>
-                    <option value="3">三楼</option>
-                    <optgroup label="外部渠道">外部渠道</optgroup>
-                    <option value="4">四楼</option>
-                    <option value="5">五楼</option>
-                    <option value="6">六楼</option>
+                    {{for channel}}
+                    <optgroup label="{{:name}}">{{:name}}</optgroup>
+                    {{for items}}
+                    <option value="{{:value}}">{{:name}}</option>
+                    {{/for }}
+                    {{/for }}
                 </select>
                 <input type="text" value="18800184976" name="keyword" id="keyword" placeholder="输入姓名或手机号"/>
                 <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" value="查询"/>

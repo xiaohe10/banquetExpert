@@ -11,12 +11,9 @@
                 <input type="date" value="2017-6-8" name="date-to" id="date-to"/>
                 <select name="area" id="area">
                     <option value="0">请选择区域</option>
-                    <option value="1">一楼</option>
-                    <option value="2">二楼</option>
-                    <option value="3">三楼</option>
-                    <option value="4">四楼</option>
-                    <option value="5">五楼</option>
-                    <option value="6">六楼</option>
+                    {{for area}}
+                    <option value="{{:value}}">{{:name}}</option>
+                    {{/for }}
                 </select>
                 <select name="area" id="seat">
                     <option value="0">请选择餐位</option>
@@ -29,14 +26,12 @@
                 </select>
                 <select name="channel" id="channel">
                     <option value="0">全部接单渠道</option>
-                    <optgroup label="内部渠道">内部渠道</optgroup>
-                    <option value="1">aaa</option>
-                    <option value="2">bbb</option>
-                    <option value="3">ccc</option>
-                    <optgroup label="外部渠道">外部渠道</optgroup>
-                    <option value="4">xxx</option>
-                    <option value="5">yyy</option>
-                    <option value="6">zzz</option>
+                    {{for channel}}
+                    <optgroup label="{{:name}}">{{:name}}</optgroup>
+                    {{for items}}
+                    <option value="{{:value}}">{{:name}}</option>
+                    {{/for }}
+                    {{/for }}
                 </select>
                 <input type="text" value="18800184976" name="keyword" id="keyword" placeholder="输入姓名或手机号"/>
                 <input class="btn btn-sm btn-primary mx-1 px-2" type="button" id="query" value="查询"/>
@@ -217,7 +212,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-            This is footer
+                This is footer
             </div>
         </div>
     </div>

@@ -3,12 +3,13 @@
 <div class="py-1 bg-info">
     <!--桌位导航栏-->
     <nav class="nav bg-info">
-        <a class="nav-link active" href="#">一楼</a>
-        <a class="nav-link" href="#">二楼</a>
-        <a class="nav-link" href="#">三楼</a>
-        <a class="nav-link" href="#">四楼</a>
-        <a class="nav-link" href="#">五楼</a>
-        <a class="nav-link" href="#">六楼</a>
+        {{for area}}
+        {{if #index === 0}}
+        <a class="nav-link active" href="#">{{:name}}</a>
+        {{else}}
+        <a class="nav-link" href="#">{{:name}}</a>
+        {{/if}}
+        {{/for}}
     </nav>
     <div class="p-2 bg-success">
         <a>全部桌位，共7个</a>

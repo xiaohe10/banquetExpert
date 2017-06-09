@@ -4,12 +4,12 @@
 /**
  * 全局变量：记录所有固定的内容
  *
- * @type {{area: [区域], staff: [操作员], channel: {inner: [内部渠道], outer: [外部渠道]}}}
+ *
  */
-var BanquetExpert = {
+BanquetExpert = {
     area: [
         {
-            value: 0, name: '一楼',
+            value: 0, name: '一楼', order: 0, status: 1,
             seat: [
                 {value: 0, name: '101', min: 12, max: 16, type: "豪华包间", order: 1},
                 {value: 1, name: '102', min: 12, max: 16, type: "豪华包间", order: 1},
@@ -18,7 +18,7 @@ var BanquetExpert = {
             ]
         },
         {
-            value: 1, name: '二楼',
+            value: 1, name: '二楼', order: 1, status: 0,
             seat: [
                 {value: 0, name: '206', min: 12, max: 16, type: "豪华包间", order: 1},
                 {value: 1, name: '207', min: 12, max: 16, type: "豪华包间", order: 1},
@@ -27,7 +27,7 @@ var BanquetExpert = {
             ]
         },
         {
-            value: 2, name: '三楼',
+            value: 2, name: '三楼', order: 2, status: 0,
             seat: [
                 {value: 0, name: '306', min: 12, max: 16, type: "豪华包间", order: 1},
                 {value: 1, name: '307', min: 12, max: 16, type: "豪华包间", order: 1},
@@ -36,7 +36,7 @@ var BanquetExpert = {
             ]
         },
         {
-            value: 3, name: '五楼',
+            value: 3, name: '五楼', order: 3, status: 1,
             seat: [
                 {value: 0, name: '506', min: 12, max: 16, type: "豪华包间", order: 1},
                 {value: 1, name: '507', min: 12, max: 16, type: "豪华包间", order: 1},
@@ -49,21 +49,27 @@ var BanquetExpert = {
         {value: 0, name: 'aaa'},
         {value: 0, name: 'bbb'}
     ],
-    channel: {
-        inner: [
-            {value: 3, name: 'B'},
-            {value: 3, name: 'B'},
-            {value: 3, name: 'B'},
-            {value: 3, name: 'B'}
-        ],
-        outer: [
-            {value: 3, name: 'A'},
-            {value: 3, name: 'A'},
-            {value: 3, name: 'A'},
-            {value: 3, name: 'A'},
-            {value: 3, name: 'A'},
-        ]
-    },
+    channel: [
+        {
+            name: "内部渠道",
+            items: [
+                {value: 1, name: 'A'},
+                {value: 2, name: 'B'},
+                {value: 3, name: 'C'},
+                {value: 4, name: 'D'}
+            ]
+        },
+        {
+            name: "外部渠道",
+            items: [
+                {value: 5, name: 'E'},
+                {value: 6, name: 'F'},
+                {value: 7, name: 'G'},
+                {value: 8, name: 'H'},
+                {value: 9, name: 'I'}
+            ]
+        }
+    ],
     menus: [
         {
             title: "后台用户管理",
@@ -155,6 +161,7 @@ var log = {
     ]
 };
 
+// 子页面模板
 var Templates = {
     Drawer: "Drawer/Drawer.html", // 侧边栏
     Breadcrumb: "Drawer/Breadcrumb.html", // 路径导航
@@ -210,6 +217,7 @@ var Templates = {
 
 $(document).ready(function () {
 
+    // 查找子节点
     var find = function (obj, key, value) {
         var newObj = false;
         $.each(obj, function () {
@@ -223,6 +231,7 @@ $(document).ready(function () {
         return newObj;
     };
 
+    // 刷新路径导航
     var refreshBreadcrumb = function (path) {
         var string = path.substr(0, path.length - 5);
         var items = string.split('/');
@@ -235,6 +244,7 @@ $(document).ready(function () {
         $.observable(BanquetExpert.Breadcrumb).insert({title: item.title});
     };
 
+    // 刷新子页面和更新路径导航
     var refresh = function (path, id, data) {
         if (id === "#main") {
             // 更新路径导航
@@ -263,13 +273,24 @@ $(document).ready(function () {
         }
     };
 
-    refresh(Templates.Drawer, "#drawer", BanquetExpert);
-    refresh(Templates.Breadcrumb, "#breadcrumb", BanquetExpert);
+    // 初始化侧边导航栏/路径导航
+    refresh(Templates.Drawer, "#drawer", BanquetExpert.menus);
+    refresh(Templates.Breadcrumb, "#breadcrumb", BanquetExpert.Breadcrumb);
 
+    // 设置本地路由
     var routes = {
         // 账户管理
         "/Account/AccountManage": function () {
+            // $.ajax({
+            //     url: "",
+            //     method: "get",
+            //     success: function () {
+            //         refresh(Templates.tabContent.Account.AccountManage, "#main");
+            //     },
+            //     failed: function () {
             refresh(Templates.tabContent.Account.AccountManage, "#main");
+            // }
+            // });
         },
         "/Account/FinanceManage": function () {
             refresh(Templates.tabContent.Account.FinanceManage, "#main");
@@ -311,7 +332,7 @@ $(document).ready(function () {
             refresh(Templates.tabContent.Order.OperationLog, "#main");
         },
         "/Order/OrderHistory": function () {
-            refresh(Templates.tabContent.Order.OrderHistory, "#main");
+            refresh(Templates.tabContent.Order.OrderHistory, "#main", BanquetExpert);
         },
         "/Order/OrderStatistics": function () {
             refresh(Templates.tabContent.Order.OrderStatistics, "#main");
@@ -320,11 +341,11 @@ $(document).ready(function () {
             refresh(Templates.tabContent.Order.PhoneReserve, "#main");
         },
         "/Order/ReserveNotice": function () {
-            refresh(Templates.tabContent.Order.ReserveNotice, "#main");
+            refresh(Templates.tabContent.Order.ReserveNotice, "#main", BanquetExpert);
         },
         // 预定管理
         "/Reserve/AreaDeskRelation": function () {
-            refresh(Templates.tabContent.Reserve.AreaDeskRelation, "#main");
+            refresh(Templates.tabContent.Reserve.AreaDeskRelation, "#main", BanquetExpert);
         },
         "/Reserve/MealsTime": function () {
             refresh(Templates.tabContent.Reserve.MealsTime, "#main");
