@@ -1,0 +1,235 @@
+<!--主页/订单管理/预定通知单-->
+<!--操作栏-->
+<div class="py-1 bg-info">
+    <div class="p-2 bg-success">
+        <form>
+            <!--查询报表-->
+            <div class="form-inline p-1">
+                <a>就餐日期：</a>
+                <input type="date" value="2017-6-8" name="date-from" id="date-from"/>
+                ~
+                <input type="date" value="2017-6-8" name="date-to" id="date-to"/>
+                <select name="area" id="area">
+                    <option value="0">全部就餐区域</option>
+                    <option value="1">一楼</option>
+                    <option value="2">二楼</option>
+                    <option value="3">三楼</option>
+                    <option value="4">四楼</option>
+                    <option value="5">五楼</option>
+                    <option value="6">六楼</option>
+                </select>
+                <select name="channel" id="channel">
+                    <option value="0">全部接单渠道</option>
+                    <optgroup label="内部渠道">内部渠道</optgroup>
+                    <option value="1">一楼</option>
+                    <option value="2">二楼</option>
+                    <option value="3">三楼</option>
+                    <optgroup label="外部渠道">外部渠道</optgroup>
+                    <option value="4">四楼</option>
+                    <option value="5">五楼</option>
+                    <option value="6">六楼</option>
+                </select>
+                <input type="text" value="18800184976" name="keyword" id="keyword" placeholder="输入姓名或手机号"/>
+                <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" value="查询"/>
+            </div>
+            <!--报表下载-->
+            <div class="form-inline p-1">
+                <select name="daily-report" id="daily-report">
+                    <optgroup label="销售渠道业绩日报表下载">销售渠道业绩日报表下载</optgroup>
+                    <option value="0"><a class="carousel-control-prev-icon">2017-6-3报表</a></option>
+                    <option value="1"><a class="carousel-control-prev-icon">2017-6-4报表</a></option>
+                    <option value="2"><a class="carousel-control-prev-icon">2017-6-5报表</a></option>
+                    <option value="3"><a class="carousel-control-prev-icon">2017-6-6报表</a></option>
+                    <option value="4"><a class="carousel-control-prev-icon">2017-6-7报表</a></option>
+                    <option value="5"><a class="carousel-control-prev-icon">2017-6-8报表</a></option>
+                </select>
+                <input class="btn btn-sm btn-secondary ml-1 mr-2" type="button" value="生成报表"/>
+            </div>
+        </form>
+    </div>
+</div>
+<!--内容-->
+<div class="py-2 px-2 mt-2 bg-info">
+    <!--导航栏-->
+    <div class="pb-2">
+        <nav class="nav bg-info">
+            <a class="nav-link active" href="#">今日报表</a>
+            <a class="nav-link" href="#">午餐</a>
+            <a class="nav-link" href="#">晚餐</a>
+            <a class="nav-link" href="#">已撤销订单</a>
+            <a class="nav-link" href="#">散客订单</a>
+        </nav>
+    </div>
+    <!--详细信息-->
+    <div class="p-2 mb-2 bg-success" ng-init="info={order_count:17,seat_count:17,customer_count:184}">
+        <a>订单数：17 桌位数：17 就餐人数：17</a>
+        <label>
+            <input type="checkbox" name="phone-mask" value="电话号码以'*'代替" checked="checked"/>
+            电话号码以'*'代替
+        </label>
+        <label>
+            <input type="checkbox" name="seat-marge" value="一单多桌合并成一行" checked="checked"/>
+            一单多桌合并成一行
+        </label>
+        <input class="btn btn-primary btn-sm" type="button" value="打印"/>
+    </div>
+    <!--表格-->
+    <div class="p-2 mb-2 bg-faded">
+        <table class="table table-hover table-bordered small">
+            <thead class="bg-info">
+            <tr align="center">
+                <td>就餐时间</td>
+                <td>区域</td>
+                <td>桌号</td>
+                <td>姓名</td>
+                <td>手机</td>
+                <td>人数</td>
+                <td>接单渠道</td>
+                <td>下单时间</td>
+                <td>分类</td>
+                <td>订单状态</td>
+                <td>操作员</td>
+                <td>订单详情</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr align="center">
+                <td>06月08日晚餐18:00</td>
+                <td>二楼</td>
+                <td>(CEIEC)215 [备注]</td>
+                <td>高 女士</td>
+                <td>18510515888</td>
+                <td>18</td>
+                <td>刘光艳</td>
+                <td>2017/6/8 10:57:33</td>
+                <td>流失</td>
+                <td>已订</td>
+                <td>刘光艳</td>
+                <td><a href="#" data-toggle="modal" data-target=".order-details">订单详情</a></td>
+            </tr>
+            <tr align="center">
+                <td>06月08日晚餐18:00</td>
+                <td>二楼</td>
+                <td>(CEIEC)215 [备注]</td>
+                <td>高 女士</td>
+                <td>18510515888</td>
+                <td>18</td>
+                <td>刘光艳</td>
+                <td>2017/6/8 10:57:33</td>
+                <td>流失</td>
+                <td>已订</td>
+                <td>刘光艳</td>
+                <td><a href="#" data-toggle="modal" data-target=".order-details">订单详情</a></td>
+            </tr>
+            <tr align="center">
+                <td>06月08日晚餐18:00</td>
+                <td>二楼</td>
+                <td>(CEIEC)215 [备注]</td>
+                <td>高 女士</td>
+                <td>18510515888</td>
+                <td>18</td>
+                <td>刘光艳</td>
+                <td>2017/6/8 10:57:33</td>
+                <td>流失</td>
+                <td>已订</td>
+                <td>刘光艳</td>
+                <td><a href="#" data-toggle="modal" data-target=".order-details">订单详情</a></td>
+            </tr>
+            <tr align="center">
+                <td>06月08日晚餐18:00</td>
+                <td>二楼</td>
+                <td>(CEIEC)215 [备注]</td>
+                <td>高 女士</td>
+                <td>18510515888</td>
+                <td>18</td>
+                <td>刘光艳</td>
+                <td>2017/6/8 10:57:33</td>
+                <td>流失</td>
+                <td>已订</td>
+                <td>刘光艳</td>
+                <td><a href="#" data-toggle="modal" data-target=".order-details">订单详情</a></td>
+            </tr>
+            <tr align="center">
+                <td>06月08日晚餐18:00</td>
+                <td>二楼</td>
+                <td>(CEIEC)215 [备注]</td>
+                <td>高 女士</td>
+                <td>18510515888</td>
+                <td>18</td>
+                <td>刘光艳</td>
+                <td>2017/6/8 10:57:33</td>
+                <td>流失</td>
+                <td>已订</td>
+                <td>刘光艳</td>
+                <td><a href="#" data-toggle="modal" data-target=".order-details">订单详情</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<!--对话框/预订单详情-->
+<div class="modal order-details" id="order-details" role="dialog" aria-labelledby="order-details">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <a>预订单详情</a>
+            </div>
+            <div class="modal-body">
+                <div class="row bg-faded">
+                    <div class="px-3 py-2">2017年6月7日 周三 晚餐</div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-sm-2">
+                        <!--Nav tabs-->
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item active"><a href="#order" role="tab" data-toggle="tab">订单信息</a></li>
+                            <li class="nav-item"><a href="#option" role="tab" data-toggle="tab">操作信息</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-8">
+                        <!--Tab panes-->
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="order">
+                                <div class="text-info">
+                                    <p><strong>三楼 315</strong></p>
+                                    <p><strong>张 先生 100 0000 0000 6人 未分类客户</strong></p>
+                                    <p><strong>用餐时间：2017年6月7日 周三(晚餐) 14:57</strong></p>
+                                    <p><strong>创建时间：2017年6月7日14:59 操作：XXX</strong></p>
+                                </div>
+                                <div class="text-info bg-faded p-2">
+                                    <p>备注：给女朋友过生日，提前到店布置房间。</p>
+                                </div>
+                                <div class="row m-2">
+                                    <div class="col-sm-10 d-inline">
+                                        <div class="img-thumbnail p-2 m-1">IMG1</div>
+                                        <div class="img-thumbnail p-2 m-1">IMG2</div>
+                                        <div class="img-thumbnail p-2 m-1">IMG3</div>
+                                        <div class="img-thumbnail p-2 m-1">IMG4</div>
+                                        <div class="img-thumbnail p-2 m-1">IMG5</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="row my-3 text-sm-center">已选0</div>
+                                        <div class="row my-3">
+                                            <input class="btn btn-secondary btn-sm px-2 mx-1" type="button" value="删除"/>
+                                            <input class="btn btn-primary btn-sm px-2 mx-1" type="button" value="下载"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="option">
+                                <p><a>2017/6/1 13:24:42 预订单修改 单蕾</a></p>
+                                <p class="text-info">对张先生18614023307预订的2017-06-02晚餐段315桌位</p>
+                                <p><a>2017/6/1 13:24:42 预订单修改 单蕾</a></p>
+                                <p class="text-info">对张先生18614023307预订的2017-06-02晚餐段315桌位</p>
+                                <p><a>系统ID：0cdc987e-e654-43f9-a6ed-01af184c3251</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                This is footer<a class="close"></a>
+            </div>
+        </div>
+    </div>
+</div>

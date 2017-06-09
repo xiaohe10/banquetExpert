@@ -2,31 +2,41 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>宴专家后台管理</title>
+    <link href="bootstrap/css/bootstrap.css" type="text/css" rel="stylesheet"/>
+    <link href="bootstrap/css/bootstrap-grid.css" type="text/css" rel="stylesheet"/>
+    <link href="bootstrap/css/bootstrap-reboot.css" type="text/css" rel="stylesheet"/>
+    <!--<link href="bootstrap/css/bootstrap-combined.min.css" type="text/css" rel="stylesheet">-->
+    <script src="js/md5.js"></script>
     <script src="js/jquery-1.12.3.min.js"></script>
+    <!--<script src="js/angular.js"></script>-->
+    <script src="js/jsrender.js"></script>
+    <script src="js/jsviews.js"></script>
+    <script src="js/director-1.2.8.js"></script>
+    <script src="bootstrap/js/bootstrap.js"></script>
+    <script src="bootstrap/js/accordion.js"></script>
 </head>
 <body>
-
-<input type="button" value="登录" name="login" id="login"/>
-
-<script>
-    $("#login").click(function () {
-        alert("登錄");
-        $.ajax({
-            url: "/webApp/admin/token/",
-            method: "get",
-            data: {
-                username: "admin",
-                password: "admin"
-            },
-            success: function (data, status) {
-                alert("success:" + data + "\nstatus:" + status);
-            },
-            fail: function (message) {
-                alert("failed:" + message)
-            }
-        });
-    });
-</script>
+<!--主页面-->
+<div class="container-fluid">
+    <div class="row">
+        <!--左侧导航栏-->
+        <div class="accordion col-3 bg-faded small" id="drawer">
+            左侧导航栏
+        </div>
+        <!--内容页-->
+        <div class="col-9">
+            <!--路径导航-->
+            <div id="breadcrumb">
+                路径导航
+            </div>
+            <!--内容面板-->
+            <main id="main">
+                内容面板
+            </main>
+        </div>
+    </div>
+</div>
+<script src="js/expert.js"></script>
 </body>
 </html>

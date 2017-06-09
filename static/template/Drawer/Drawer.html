@@ -1,0 +1,12 @@
+<div class="nav navbar">
+    {{for menus itemVar="~menu"}}
+    <div class="nav-item">
+        <a href="#/{{:menu_id}}">{{:title}}</a>
+        <div class="nav navbar">
+            {{for item}}
+            <div class="nav-item"><a class="nav-link" href="#/{{:~menu.menu_id}}/{{:item_id}}">{{:title}}</a></div>
+            {{/for}}
+        </div>
+    </div>
+    {{/for}}
+</div>

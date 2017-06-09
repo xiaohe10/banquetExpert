@@ -1,0 +1,12 @@
+<div class="accordion">
+    {{:menu}}
+    <div class="accordion-group">
+        <div class="accordion-heading" href="#"><a class="accordion-toggle" data-toggle="collapse">{{:title}}</a></div>
+        <div class="accordion-toggle in collapse">
+            {{for item}}
+            <li><a href="#">{{:title}}</a></li>
+            {{/for}}
+        </div>
+    </div>
+    {{/for}}
+</div>

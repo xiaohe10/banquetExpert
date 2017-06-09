@@ -1,0 +1,70 @@
+<!--主页/账户管理/财务报表-->
+<!--操作栏-->
+<div class="py-1 bg-info">
+    <div class="p-2 bg-success">
+        <label for="year">>年 </label>
+        <select class="form-control-sm" id="year">
+            <option selected="selected">2011</option>
+            <option>2012</option>
+            <option>2013</option>
+            <option>2014</option>
+            <option>2015</option>
+            <option>2016</option>
+            <option>2017</option>
+        </select>
+        <label for="month">>月 </label>
+        <select class="form-control-sm" id="month">
+            <option selected="selected">1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+            <option>7</option>
+            <option>8</option>
+            <option>9</option>
+            <option>10</option>
+            <option>11</option>
+            <option>12</option>
+        </select>
+        <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" value="查询"/>
+    </div>
+</div>
+<!--内容-->
+<div class="py-2 px-2 mt-2 bg-info">
+    <!--详细信息-->
+    <div class="p-2 mb-2 bg-success">
+        <a>账户余额： ￥636.96 本月充值： 500.0000 短信费用： ￥476.24 系统服务费： 0.0000</a>
+    </div>
+    <!--表格-->
+    <form class="form-group small">
+        <table class="table table-bordered table-hover">
+            <thead class="bg-info">
+            <tr align="center">
+                <td align="middle" rowspan="2">日期</td>
+                <td align="middle" rowspan="2">充值</td>
+                <!--支出-->
+                <td align="middle" colspan="4">支出</td>
+                <td align="middle" rowspan="2">账户余额</td>
+            </tr>
+            <tr align="center">
+                <td>短信费用</td>
+                <td>订单佣金 <a href="#">明细</a></td>
+                <td>系统服务费</td>
+                <td>合计</td>
+            </tr>
+            </thead>
+            <tbody class="align-content-center">
+            <tr class="table-info">
+                <td>2017年5月24日</td>
+                <td>￥0.00</td>
+                <td>￥8.00</td>
+                <td>￥0.00</td>
+                <td>￥0.00</td>
+                <td>￥8.00</td>
+                <td>￥636.96</td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+</div>

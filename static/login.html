@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>宴专家后台管理登录</title>
+    <link href="bootstrap/css/bootstrap.css" type="text/css" rel="stylesheet"/>
+    <script src="js/md5.js"></script>
+    <script src="js/jquery-1.12.3.min.js"></script>
+    <script src="bootstrap/js/bootstrap.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="modal-dialog align-content-center">
+        <div class="modal-content bg-warning">
+            <div class="modal-header">
+                宴专家后台登录
+            </div>
+            <div class="modal-body">
+                <div class="modal-content m-3 p-3">
+                    <form class="">
+                        <div class="form-group">
+                            <label for="username">用户名：</label>
+                            <input type="text" class="form-control" value="admin" id="username">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">密码：</label>
+                            <input type="password" class="form-control" value="admin" id="password">
+                        </div>
+                        <div class="form-group">
+                            <input type="button" class="form-control btn-primary" value="登录" name="login" id="login"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                版权所有@Heng Ai
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#login").click(function () {
+        var username, password;
+        username = $("#username").val();
+        password = $('#password').val();
+        password = hex_md5(password);
+        $.ajax({
+            url: "/webApp/admin/token/",
+            method: "POST",
+            data: {
+                username: username,
+                password: password
+            },
+            success: function (data, status) {
+                location.href = "index.html";
+            },
+            fail: function (message) {
+                alert("登录失败:" + message)
+            }
+        });
+    });
+</script>
+</body>
+</html>
