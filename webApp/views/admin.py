@@ -12,8 +12,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from ..utils.decorator import validate_args, validate_admin_token
 from ..models import Admin, Hotel, HotelBranch, Staff
 
-__all__ = ['Token', 'HotelProfile', 'HotelIcon', 'HotelBranchList',
-           'StaffList', 'StaffProfile']
+__all__ = ['Token', 'HotelProfile', 'HotelBranchList', 'StaffList',
+           'StaffProfile']
 
 
 class Token(View):
@@ -60,6 +60,7 @@ class HotelProfile(View):
         :param kwargs:
             name: 酒店名
             owner_name: 法人代表
+            icon: 头像，[file]文件
         :return: 200/400/403/404
         """
 
@@ -67,67 +68,24 @@ class HotelProfile(View):
         try:
             hotel = Hotel.objects.get(id=hotel_id)
         except Hotel.DoesNotExist:
-            err_response('err_2', '酒店不存在')
-
-        name = kwargs.pop('name') if 'name' in kwargs else None
-        owner_name = kwargs.pop('owner_name') if \
-            'owner_name' in kwargs else None
-        if name:
-            if Hotel.objects.filter(name=name).exists():
-                err_response('err_2', '酒店名已注册')
-            hotel.name = name
-
-        if owner_name:
-            hotel.owner_name = owner_name
-        hotel.save()
-        corr_response()
-
-
-class HotelIcon(View):
-    @validate_args({
-        'token': forms.CharField(min_length=32, max_length=32),
-        'hotel_id': forms.IntegerField(),
-    })
-    @validate_admin_token()
-    def get(self, request, token, hotel_id):
-        """获取头像
-
-        :param token: 令牌(必传)
-        :param hotel_id: 员工ID(必传)
-        :return:
-            icon: 头像地址
-        """
-
-        try:
-            hotel = Hotel.enabled_objects.get(id=hotel_id)
-            corr_response({'icon': hotel.icon})
-        except ObjectDoesNotExist:
-            err_response('err_2', '酒店不存在')
-
-    @validate_args({
-        'token': forms.CharField(min_length=32, max_length=32),
-        'hotel_id': forms.IntegerField(),
-    })
-    @validate_admin_token()
-    def post(self, request, token, hotel_id=None):
-        """修改头像
-
-        :param token: 令牌(必传)
-        :param hotel_id: 酒店ID(必传)
-        :return: 200
-        """
-
-        hotel = None
-        try:
-            hotel = Hotel.enabled_objects.get(id=hotel_id)
-        except ObjectDoesNotExist:
             err_response('err_3', '酒店不存在')
 
         # 管理员只能管理自己的酒店
         if request.admin.type == 0 and hotel != request.admin.hotel:
             err_response('err_2', '权限错误')
 
-        if request.method == 'POST':
+        name = kwargs.pop('name') if 'name' in kwargs else None
+        owner_name = kwargs.pop('owner_name') if \
+            'owner_name' in kwargs else None
+        if name:
+            if Hotel.objects.filter(name=name).exists():
+                err_response('err_3', '酒店名已注册')
+            hotel.name = name
+
+        if owner_name:
+            hotel.owner_name = owner_name
+
+        if 'icon' in request.FILES:
             icon = request.FILES['icon']
 
             if icon:
@@ -146,10 +104,11 @@ class HotelIcon(View):
                     except OSError:
                         pass
                 hotel.icon = file_name
-                hotel.save()
-                corr_response()
 
             err_response('err_4', '图片为空')
+
+        hotel.save()
+        corr_response()
 
 
 class HotelBranchList(View):
@@ -197,6 +156,7 @@ class HotelBranchList(View):
                 manager: 店长
                 create_time: 创建时间
         """
+
         hotel = None
         try:
             hotel = Hotel.enabled_objects.get(id=hotel_id)

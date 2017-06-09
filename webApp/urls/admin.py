@@ -7,8 +7,6 @@ urlpatterns = [
     url(r'^token/$', Token.as_view(), name='token'),
     # 修改酒店资料(post)
     url(r'^hotel/profile/$', HotelProfile.as_view(), name='hotel_profile'),
-    # 获取酒店头像(get)/修改酒店头像(post)
-    url(r'^hotel/icon/$', HotelIcon.as_view(), name='hotel_icon'),
     # 获取酒店门店列表(get)/注册新的门店(post)/删除门店(delete)
     url(r'^hotel_branch/profile/$',
         HotelBranchList.as_view(), name='hotel_branch'),
