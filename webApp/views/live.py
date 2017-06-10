@@ -59,13 +59,13 @@ class List(View):
         if len(cc_room_ids) > 0:
             res = query_live_room(cc_room_ids)
             if res['result'] != 'OK':
-                return err_response('err_4', '查询直播间状态失败')
+                return err_response('err_4', '服务器查询直播间状态失败')
             try:
                 rooms = res['rooms']
                 rooms_status = {room['roomId']: room['liveStatus']
                                 for room in rooms}
             except KeyError:
-                return err_response('err_4', '查询直播间状态失败')
+                return err_response('err_4', '服务器查询直播间状态失败')
         l = []
         for live in lives:
             cc_room_id = live.cc_room_id
@@ -125,7 +125,7 @@ class SubscribedList(View):
                 name: 直播间名称
                 hotel_name: 直播间所属酒店名
                 cc_room_id: 对应cc的roomid
-                publisher_password: 推送密码
+                play_password: 播放密码
                 price: 价格
                 buyer_count: 已购买数
                 description: 描述
@@ -146,13 +146,13 @@ class SubscribedList(View):
         if len(cc_room_ids) > 0:
             res = query_live_room(cc_room_ids)
             if res['result'] != 'OK':
-                return err_response('err_4', '查询直播间状态失败')
+                return err_response('err_4', '服务器查询直播间状态失败')
             try:
                 rooms = res['rooms']
                 rooms_status = {room['roomId']: room['liveStatus']
                                 for room in rooms}
             except KeyError:
-                return err_response('err_4', '查询直播间状态失败')
+                return err_response('err_4', '服务器查询直播间状态失败')
         l = []
         for live in lives:
             cc_room_id = live.cc_room_id
@@ -214,17 +214,17 @@ class PlayBack(View):
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
         'live_id': forms.IntegerField(),
-        'offset': forms.IntegerField(min_value=0, required=False),
-        'limit': forms.IntegerField(min_value=0, required=False),
+        'page_index': forms.IntegerField(min_value=0, required=False),
+        'page_num': forms.IntegerField(min_value=0, required=False),
     })
     @validate_staff_token()
-    def get(self, request, token, live_id, offset=0, limit=10):
+    def get(self, request, token, live_id, page_index=1, page_num=10):
         """
 
         :param token: 令牌
         :param live_id: 直播间ID
-        :param offset: 起始值
-        :param limit: 偏移量
+        :param page_index: 页码起始值, 默认为1
+        :param page_num: 每页数量, 默认为10
         :return:
             count: 回放数
             list:
@@ -245,18 +245,17 @@ class PlayBack(View):
         # 判断当前员工的酒店是否需要购买和是否已经购买该直播
         if (live.price > 0) and (live.hotel != staff.hotel) and \
                 (not live.purchase_records.filter(hotel=staff.hotel).exixt()):
-            return err_response('err_3', '未购买该直播')
+            return err_response('err_2', '未购买该直播')
 
         # 获取直播间回放
-        page_index = int(offset / limit) + 1
-        res = replay_live_room(live.cc_room_id, page_index, limit)
+        res = replay_live_room(live.cc_room_id, page_index, page_num)
         if res['result'] != 'OK':
-            return err_response('err_4', '查询直播间状态失败')
+            return err_response('err_5', '服务器查询直播间状态失败')
         try:
             lives = res['lives']
             c = res['count']
         except KeyError:
-            return err_response('err_4', '查询直播间状态失败')
+            return err_response('err_5', '服务器查询直播间状态失败')
 
         l = [{'cc_live_id': cc_live['id'],
               'start_time': cc_live['startTime'],

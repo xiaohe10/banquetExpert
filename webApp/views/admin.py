@@ -531,15 +531,15 @@ class LiveList(View):
         :param order: 排序方式
             0: 注册时间升序
             1: 注册时间降序（默认值）
-            2: 昵称升序
-            3: 昵称降序
+            2: 名称升序
+            3: 名称降序
         :return:
             count: 直播总数
             list: 直播列表
                 live_id: ID
                 name: 直播间名称
                 cc_room_id: 对应cc的roomid
-                publisher_password: 推送密码
+                publisher_password: 推流密码
                 price: 价格
                 buyer_count: 已购买数
                 description: 描述
@@ -579,7 +579,7 @@ class LiveList(View):
     })
     @validate_admin_token()
     def post(self, request, token, name, **kwargs):
-        """
+        """创建直播间
 
         :param token: 令牌(必传)
         :param name: 直播间名称(必传)
@@ -593,7 +593,7 @@ class LiveList(View):
         :return:
             live_id: 直播间id
             cc_room_id: 对应cc上的roomid
-            publisher_password: 推送密码
+            publisher_password: 推流密码
         """
 
         # 验证是否有权限发布直播
@@ -699,9 +699,9 @@ class LiveProfile(View):
                                            live.description)
                     try:
                         if res['result'] != 'OK':
-                            return err_response('err_4', '服务器修改直播间信息失败')
+                            return err_response('err_5', '服务器修改直播间信息失败')
                     except KeyError:
-                        return err_response('err_4', '服务器修改直播间信息失败')
+                        return err_response('err_5', '服务器修改直播间信息失败')
 
                 # 修改数据库
                 for k in live_keys:
@@ -710,24 +710,24 @@ class LiveProfile(View):
                 live.save()
                 return corr_response()
             except IntegrityError:
-                return err_response('err_4', '服务器修改直播间信息失败')
+                return err_response('err_5', '服务器修改直播间信息失败')
 
 
 class LivePlayBack(View):
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
         'live_id': forms.IntegerField(),
-        'offset': forms.IntegerField(min_value=0, required=False),
-        'limit': forms.IntegerField(min_value=0, required=False),
+        'page_index': forms.IntegerField(min_value=0, required=False),
+        'page_num': forms.IntegerField(min_value=0, required=False),
     })
     @validate_admin_token()
-    def get(self, request, token, live_id, offset=0, limit=10):
+    def get(self, request, token, live_id, page_index=0, page_num=10):
         """
 
         :param token: 令牌
         :param live_id: 直播间ID
-        :param offset: 起始值
-        :param limit: 偏移量
+        :param page_index: 页码起始值, 默认为1
+        :param page_num: 每页数量, 默认为10
         :return:
             count: 回放数
             list:
@@ -749,15 +749,14 @@ class LivePlayBack(View):
             return err_response('err_2', '权限错误')
 
         # 获取直播间回放
-        page_index = int(offset / limit) + 1
-        res = replay_live_room(live.cc_room_id, page_index, limit)
+        res = replay_live_room(live.cc_room_id, page_index, page_num)
         if res['result'] != 'OK':
-            return err_response('err_4', '查询直播间状态失败')
+            return err_response('err_5', '服务器查询直播间状态失败')
         try:
             lives = res['lives']
             c = res['count']
         except KeyError:
-            return err_response('err_4', '查询直播间状态失败')
+            return err_response('err_5', '服务器查询直播间状态失败')
 
         l = [{'cc_live_id': cc_live['id'],
               'start_time': cc_live['startTime'],

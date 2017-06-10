@@ -6,7 +6,7 @@ from ..utils.decorator import validate_args, validate_staff_token
 from ..utils.response import corr_response, err_response
 from ..models import Course
 
-__all__ = ['List']
+__all__ = ['List', 'OwnedList', 'Check']
 
 
 class List(View):
@@ -159,3 +159,31 @@ class OwnedList(View):
               'description': course.description,
               'create_time': course.create_time} for course in courses]
         return corr_response({'count': c, 'list': l})
+
+
+class Check(View):
+    @validate_args({
+        'token': forms.CharField(min_length=32, max_length=32),
+        'course_id': forms.IntegerField(),
+        'status': forms.IntegerField(min_value=1, max_value=2),
+    })
+    @validate_staff_token()
+    def post(self, request, token, course_id, status):
+        """视频审核
+
+        :param token: 令牌(必传)
+        :param course_id: 课程ID
+        :param status: 审核结果, 1: 审核通过, 2: 审核未通过
+        :return 200
+        """
+
+        # 验证是否有权限审核视频
+        # todo
+
+        try:
+            course = Course.objects.get(id=course_id)
+        except Course.DoesNotExist:
+            return err_response('err_4', '课程不存在')
+
+        course.status = status
+        corr_response()

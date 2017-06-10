@@ -17,7 +17,7 @@ urlpatterns = [
         name='staff_profile'),
     # 获取自己酒店的直播间列表(get)
     url(r'^live/list/$', LiveList.as_view(), name='live_list'),
-    # 发布直播(post)
+    # 创建直播间(post)
     url(r'^live/push/$', LiveList.as_view(), name='push_live'),
     # 修改直播间信息(post)
     url(r'^live/profile/$', LiveProfile.as_view(), name='live_profile'),
