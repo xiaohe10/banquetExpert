@@ -1,0 +1,144 @@
+<!--主页/预订管理/桌位设置-->
+<!--操作栏-->
+<div class="py-1 bg-info">
+    <!--桌位导航栏-->
+    <nav class="nav bg-info" id="area">
+
+    </nav>
+    <div class="p-2 bg-success">
+        <a id="details">全部桌位，共7个 注：序号数值越大，则优先推荐</a>
+        <input class="btn btn-sm btn-secondary ml-1 mr-2" type="button" id="add-desk" value="新增桌位"/>
+        <input class="btn btn-sm btn-primary mx-2" type="button" id="save" value="保存"/>
+    </div>
+</div>
+<!--内容-->
+<div class="py-2 px-2 bg-info">
+    <!--表格-->
+    <form class="form-group">
+        <table class="table table-bordered table-hover small">
+            <thead class="bg-info">
+            <tr>
+                <td>桌位名称</td>
+                <td>就餐人数</td>
+                <td>费用</td>
+                <td>排序</td>
+                <td>是否靠窗</td>
+                <td>类型</td>
+                <td>设施</td>
+                <td>相关操作</td>
+                <td>营销APP</td>
+                <td>网络预订</td>
+            </tr>
+            </thead>
+            <tbody class="align-content-center" id="seat-table">
+
+            </tbody>
+        </table>
+    </form>
+    <!--分页导航-->
+    <div class="row m-2">
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-lg">
+                <li>
+                    <a href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li><a href="#">1</a></li>
+                <li><a href="#">2</a></li>
+                <li class="active"><a href="#">3</a></li>
+                <li><a href="#">4</a></li>
+                <li><a href="#">5</a></li>
+                <li><a href="#">6</a></li>
+                <li><a href="#">7</a></li>
+                <li><a href="#">8</a></li>
+                <li><a href="#">9</a></li>
+                <li><a href="#">10</a></li>
+                <li>
+                    <a href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+<script id="areaTemplate" type="text/x-jsrender">
+    {{for }}
+        {{if #getIndex() === 0}}
+            <a class="nav-link active" href="#/Reserve/AreaDesk/Area/{{:#getIndex()}}">{{:name}}</a>
+        {{else}}
+            <a class="nav-link" href="#/Reserve/AreaDesk/Area/{{:#getIndex()}}">{{:name}}</a>
+        {{/if}}
+    {{/for}}
+</script>
+<script id="seatTableTemplate" type="text/x-jsrender">
+    {^{for }}
+        <tr class="table-info">
+            <td>{{:name}}</td>
+            <td>{{:min}} 人 至 {{:max}} 人</td>
+            <td>1000元</td>
+            <td><input type="text" name="order" data-link="order" /></td>
+            <td>
+                <label for="window">
+                    <input type="checkbox" name="window" data-link="window">靠窗
+                </label>
+            </td>
+            <td>{{:type}}</td>
+            <td>无</td>
+            <td>
+                <a href="#/Reserve/AreaDesk/Desk/Modify/{{:value}}">修改</a>
+                <a href="#/Reserve/AreaDesk/Desk/Enable/{{:value}}">停用/开启</a>
+            </td>
+            <td>
+                <label>
+                    <input type="checkbox" data-link="app" name="app"/>开启
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="checkbox" data-link="enable" name="web"/>开启
+                </label>
+            </td>
+        </tr>
+    {{/for}}
+</script>
+<script>
+    var index = 0;
+    var seat = BanquetExpert.area[index].seat;
+
+    // 绑定模板
+    $.templates("#areaTemplate").link("#area", BanquetExpert.area);
+    $.templates("#seatTableTemplate").link("#seat-table", seat);
+    $("#details").html("全部桌位，共" + seat.length + "个 注：序号数值越大，则优先推荐");
+
+    // 事件处理
+    $("#add-desk").click(function () {
+        $.observable(seat).insert({value: 0, name: '桌号', min: 12, max: 16, type: "类型", order: 1, enable: true});
+        $("#details").html("全部桌位，共" + seat.length + "个 注：序号数值越大，则优先推荐");
+    });
+    $("#save").click(function () {
+        alert("保存区域桌位信息");
+    });
+
+    // 路由设置
+    var routes = {
+        "/Reserve/AreaDesk/Area/:area_id": function (area_id) {
+            index = area_id;
+            $.observable(seat).refresh(BanquetExpert.area[index]);
+            $("#details").html("全部桌位，共" + seat.length + "个 注：序号数值越大，则优先推荐");
+        },
+        "/Reserve/AreaDesk/Desk/Modify/:desk_id": function (desk_id) {
+            alert("修改桌位：" + desk_id);
+        },
+        "/Reserve/AreaDesk/Desk/Enable/:desk_id": function (desk_id) {
+            alert("开启桌位：" + desk_id);
+            var enable = seat[desk_id].enable;
+            enable = ~enable;
+            $.observable(seat[desk_id]).setProperty({enable: enable});
+        }
+    };
+
+    var router = window.Router(routes);
+    router.init();
+</script>

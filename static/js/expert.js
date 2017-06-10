@@ -7,41 +7,58 @@
  *
  */
 BanquetExpert = {
+    keu: "宴专家",
+    meals: {
+        lunch: [
+            "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "11:45",
+            "12:00", "12:15", "12:30", "12:45", "13:00", "13:15", "13:30", "13:45",
+            "14:00", "14:30", "15:00", "15:30", "16:00"
+        ],
+        dinner: [
+            "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:15",
+            "18:30", "18:45", "19:00", "19:15", "19:30", "19:45", "20:00", "20:30",
+            "21:00", "21:30", "21:45", "22:00", "22:30", "23:00", "23:30", "23:45"
+        ],
+        supper: [
+            "22:00", "22:30", "23:00", "23:30", "00:00", "00:30", "01:00", "01:30",
+            "02:00", "02:30", "03:00", "03:30", "04:00"
+        ]
+    },
     area: [
         {
             value: 0, name: '一楼', order: 0, status: 1,
             seat: [
-                {value: 0, name: '101', min: 12, max: 16, type: "豪华包间", order: 1},
-                {value: 1, name: '102', min: 12, max: 16, type: "豪华包间", order: 1},
-                {value: 2, name: '111', min: 12, max: 16, type: "豪华包间", order: 1},
-                {value: 3, name: '105', min: 12, max: 16, type: "豪华包间", order: 1}
+                {value: 0, name: '101', min: 1, max: 16, type: "大厅散台	", order: 1, enable: false},
+                {value: 1, name: '102', min: 1, max: 16, type: "豪华包间", order: 2, enable: true},
+                {value: 2, name: '111', min: 1, max: 16, type: "大厅散台	", order: 3, enable: false},
+                {value: 3, name: '105', min: 1, max: 16, type: "豪华包间", order: 4, enable: true}
             ]
         },
         {
             value: 1, name: '二楼', order: 1, status: 0,
             seat: [
-                {value: 0, name: '206', min: 12, max: 16, type: "豪华包间", order: 1},
-                {value: 1, name: '207', min: 12, max: 16, type: "豪华包间", order: 1},
-                {value: 2, name: '208', min: 12, max: 16, type: "豪华包间", order: 1},
-                {value: 3, name: '209', min: 12, max: 16, type: "豪华包间", order: 1}
+                {value: 0, name: '206', min: 5, max: 16, type: "大厅散台	", order: 5, enable: true},
+                {value: 1, name: '207', min: 5, max: 16, type: "豪华包间", order: 6, enable: false},
+                {value: 2, name: '208', min: 5, max: 16, type: "大厅散台	", order: 7, enable: true},
+                {value: 3, name: '209', min: 5, max: 16, type: "大厅散台	", order: 8, enable: false}
             ]
         },
         {
             value: 2, name: '三楼', order: 2, status: 0,
             seat: [
-                {value: 0, name: '306', min: 12, max: 16, type: "豪华包间", order: 1},
-                {value: 1, name: '307', min: 12, max: 16, type: "豪华包间", order: 1},
-                {value: 2, name: '308', min: 12, max: 16, type: "豪华包间", order: 1},
-                {value: 3, name: '309', min: 12, max: 16, type: "豪华包间", order: 1}
+                {value: 0, name: '306', min: 8, max: 16, type: "豪华包间", order: 9, enable: true},
+                {value: 1, name: '307', min: 8, max: 16, type: "大厅散台	", order: 10, enable: false},
+                {value: 2, name: '308', min: 8, max: 16, type: "豪华包间", order: 11, enable: true},
+                {value: 3, name: '309', min: 8, max: 16, type: "大厅散台	", order: 12, enable: false}
             ]
         },
         {
             value: 3, name: '五楼', order: 3, status: 1,
             seat: [
-                {value: 0, name: '506', min: 12, max: 16, type: "豪华包间", order: 1},
-                {value: 1, name: '507', min: 12, max: 16, type: "豪华包间", order: 1},
-                {value: 2, name: '508', min: 12, max: 16, type: "豪华包间", order: 1},
-                {value: 3, name: '509', min: 12, max: 16, type: "豪华包间", order: 1}
+                {value: 0, name: '506', min: 12, max: 16, type: "豪华包间", order: 13, enable: true},
+                {value: 1, name: '507', min: 12, max: 16, type: "豪华包间", order: 14, enable: false},
+                {value: 2, name: '508', min: 12, max: 16, type: "豪华包间", order: 15, enable: false},
+                {value: 3, name: '509', min: 12, max: 16, type: "豪华包间", order: 16, enable: true}
             ]
         }
     ],
@@ -90,9 +107,9 @@ BanquetExpert = {
             title: "预订管理",
             menu_id: "Reserve",
             item: [
-                {title: "设置桌位对应关系", item_id: "AreaDeskRelation"},
                 {title: "餐段设置", item_id: "MealsTime"},
                 {title: "餐位设置", item_id: "MealsArea"},
+                {title: "桌位设置", item_id: "AreaDesk"},
                 {title: "自动推荐桌位", item_id: "SeatRecommend"}
             ]
         },
@@ -177,8 +194,7 @@ var Templates = {
         },
         // 预定管理
         Reserve: {
-            AreaDeskRelation: "Reserve/AreaDeskRelation.html", // 设置桌位对应关系
-            AreaDesk: "#", // 【餐位设置】桌位设置
+            AreaDesk: "Reserve/AreaDesk.html", // 桌位设置
             MealsTime: "Reserve/MealsTime.html", // 餐段管理
             MealsArea: "Reserve/MealsArea.html", // 餐位设置
             SeatRecommend: "Reserve/SeatRecommend.html" // 自动推荐桌位
@@ -231,6 +247,10 @@ $(document).ready(function () {
         return newObj;
     };
 
+    var refreshData = function () {
+
+    }
+
     // 刷新路径导航
     var refreshBreadcrumb = function (path) {
         var string = path.substr(0, path.length - 5);
@@ -281,94 +301,108 @@ $(document).ready(function () {
     var routes = {
         // 账户管理
         "/Account/AccountManage": function () {
-            // $.ajax({
-            //     url: "",
-            //     method: "get",
-            //     success: function () {
-            //         refresh(Templates.tabContent.Account.AccountManage, "#main");
-            //     },
-            //     failed: function () {
-            refresh(Templates.tabContent.Account.AccountManage, "#main");
-            // }
-            // });
+            refreshBreadcrumb(Templates.tabContent.Account.AccountManage);
+            $("main").load("./template/" + Templates.tabContent.Account.AccountManage);
         },
         "/Account/FinanceManage": function () {
-            refresh(Templates.tabContent.Account.FinanceManage, "#main");
+            refreshBreadcrumb(Templates.tabContent.Account.FinanceManage);
+            $("main").load("./template/" + Templates.tabContent.Account.FinanceManage);
         },
         "/Account/SMSDetails": function () {
-            refresh(Templates.tabContent.Account.SMSDetails, "#main");
+            refreshBreadcrumb(Templates.tabContent.Account.SMSDetails);
+            $("main").load("./template/" + Templates.tabContent.Account.SMSDetails);
         },
         "/Account/Restaurant": function () {
-            refresh(Templates.tabContent.Account.Restaurant, "#main");
+            refreshBreadcrumb(Templates.tabContent.Account.Restaurant);
+            $("main").load("./template/" + Templates.tabContent.Account.Restaurant);
         },
         // 后台用户管理
         "/Channel/Channel": function () {
-            refresh(Templates.tabContent.Channel.Channel, "#main");
+            refreshBreadcrumb(Templates.tabContent.Channel.Channel);
+            $("main").load("./template/" + Templates.tabContent.Channel.Channel);
         },
         "/Channel/Privilege": function () {
-            refresh(Templates.tabContent.Channel.Privilege, "#main");
+            refreshBreadcrumb(Templates.tabContent.Channel.Privilege);
+            $("main").load("./template/" + Templates.tabContent.Channel.Privilege);
         },
         // 客户管理
         "/Customer/AnniversaryReport": function () {
-            refresh(Templates.tabContent.Customer.AnniversaryReport, "#main");
+            refreshBreadcrumb(Templates.tabContent.Customer.AnniversaryReport);
+            $("main").load("./template/" + Templates.tabContent.Customer.AnniversaryReport);
         },
         "/Customer/CustomerAnalysis": function () {
-            refresh(Templates.tabContent.Customer.CustomerAnalysis, "#main");
+            refreshBreadcrumb(Templates.tabContent.Customer.CustomerAnalysis);
+            $("main").load("./template/" + Templates.tabContent.Customer.CustomerAnalysis);
         },
         "/Customer/CustomerProfiles": function () {
-            refresh(Templates.tabContent.Customer.CustomerProfiles, "#main");
+            refreshBreadcrumb(Templates.tabContent.Customer.CustomerProfiles);
+            $("main").load("./template/" + Templates.tabContent.Customer.CustomerProfiles);
         },
         "/Customer/CustomerRecycleBin": function () {
-            refresh(Templates.tabContent.Customer.CustomerRecycleBin, "#main");
+            refreshBreadcrumb(Templates.tabContent.Customer.CustomerRecycleBin);
+            $("main").load("./template/" + Templates.tabContent.Customer.CustomerRecycleBin);
         },
         "/Customer/MemberValue": function () {
-            refresh(Templates.tabContent.Customer.MemberValue, "#main");
+            refreshBreadcrumb(Templates.tabContent.Customer.MemberValue);
+            $("main").load("./template/" + Templates.tabContent.Customer.MemberValue);
         },
         // 订单管理
         "/Order/InsertOrder": function () {
-            refresh(Templates.tabContent.Order.InsertOrder, "#main");
+            refreshBreadcrumb(Templates.tabContent.Order.InsertOrder);
+            $("main").load("./template/" + Templates.tabContent.Order.InsertOrder);
         },
         "/Order/OperationLog": function () {
-            refresh(Templates.tabContent.Order.OperationLog, "#main");
+            refreshBreadcrumb(Templates.tabContent.Order.OperationLog);
+            $("main").load("./template/" + Templates.tabContent.Order.OperationLog);
         },
         "/Order/OrderHistory": function () {
-            refresh(Templates.tabContent.Order.OrderHistory, "#main", BanquetExpert);
+            refreshBreadcrumb(Templates.tabContent.Order.OrderHistory);
+            $("main").load("./template/" + Templates.tabContent.Order.OrderHistory);
         },
         "/Order/OrderStatistics": function () {
-            refresh(Templates.tabContent.Order.OrderStatistics, "#main");
+            refreshBreadcrumb(Templates.tabContent.Order.OrderStatistics);
+            $("main").load("./template/" + Templates.tabContent.Order.OrderStatistics);
         },
         "/Order/PhoneReserve": function () {
-            refresh(Templates.tabContent.Order.PhoneReserve, "#main");
+            refreshBreadcrumb(Templates.tabContent.Order.PhoneReserve);
+            $("main").load("./template/" + Templates.tabContent.Order.PhoneReserve);
         },
         "/Order/ReserveNotice": function () {
-            refresh(Templates.tabContent.Order.ReserveNotice, "#main", BanquetExpert);
+            refreshBreadcrumb(Templates.tabContent.Order.ReserveNotice);
+            $("main").load("./template/" + Templates.tabContent.Order.ReserveNotice);
         },
         // 预定管理
-        "/Reserve/AreaDeskRelation": function () {
-            refresh(Templates.tabContent.Reserve.AreaDeskRelation, "#main", BanquetExpert);
+        "/Reserve/AreaDesk": function () {
+            refreshBreadcrumb(Templates.tabContent.Reserve.AreaDesk);
+            $("main").load("./template/" + Templates.tabContent.Reserve.AreaDesk);
         },
         "/Reserve/MealsTime": function () {
-            refresh(Templates.tabContent.Reserve.MealsTime, "#main");
+            refreshBreadcrumb(Templates.tabContent.Reserve.MealsTime);
+            $("main").load("./template/" + Templates.tabContent.Reserve.MealsTime);
         },
         "/Reserve/MealsArea": function () {
-            refresh(Templates.tabContent.Reserve.MealsArea, "#main");
+            refreshBreadcrumb(Templates.tabContent.Reserve.MealsArea);
+            $("main").load("./template/" + Templates.tabContent.Reserve.MealsArea);
         },
         "/Reserve/SeatRecommend": function () {
-            refresh(Templates.tabContent.Reserve.SeatRecommend, "#main");
+            refreshBreadcrumb(Templates.tabContent.Reserve.SeatRecommend);
+            $("main").load("./template/" + Templates.tabContent.Reserve.SeatRecommend);
         },
         // 评分审阅
         "/Review/Rank": function () {
-            refresh(Templates.tabContent.Review.Rank, "#main");
+            refreshBreadcrumb(Templates.tabContent.Review.Rank);
+            $("main").load("./template/" + Templates.tabContent.Review.Rank);
         },
         "/Review/Tutorial": function () {
-            refresh(Templates.tabContent.Review.Tutorial, "#main");
+            refreshBreadcrumb(Templates.tabContent.Review.Tutorial);
+            $("main").load("./template/" + Templates.tabContent.Review.Tutorial);
         },
         // 智能订餐台
         "/SmartOrder/SmartOrder": function () {
-            refresh(Templates.tabContent.SmartOrder.SmartOrder, "#main");
+            refreshBreadcrumb(Templates.tabContent.SmartOrder.SmartOrder);
+            $("main").load("./template/" + Templates.tabContent.SmartOrder.SmartOrder);
         }
     };
-
     var router = window.Router(routes);
     router.init();
 });

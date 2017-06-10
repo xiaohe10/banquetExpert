@@ -4,28 +4,8 @@
     <div class="p-2 bg-success">
         <form>
             <!--查询报表-->
-            <div class="form-inline p-1">
-                <a>就餐日期：</a>
-                <input type="date" value="2017-6-8" name="date-from" id="date-from"/>
-                ~
-                <input type="date" value="2017-6-8" name="date-to" id="date-to"/>
-                <select name="area" id="area">
-                    <option value="0">全部就餐区域</option>
-                    {{for area}}
-                    <option value="{{:value}}">{{:name}}</option>
-                    {{/for }}
-                </select>
-                <select name="channel" id="channel">
-                    <option value="0">全部接单渠道</option>
-                    {{for channel}}
-                    <optgroup label="{{:name}}">{{:name}}</optgroup>
-                    {{for items}}
-                    <option value="{{:value}}">{{:name}}</option>
-                    {{/for }}
-                    {{/for }}
-                </select>
-                <input type="text" value="18800184976" name="keyword" id="keyword" placeholder="输入姓名或手机号"/>
-                <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" value="查询"/>
+            <div class="form-inline p-1" id="option">
+
             </div>
             <!--报表下载-->
             <div class="form-inline p-1">
@@ -88,62 +68,6 @@
             </tr>
             </thead>
             <tbody>
-            <tr align="center">
-                <td>06月08日晚餐18:00</td>
-                <td>二楼</td>
-                <td>(CEIEC)215 [备注]</td>
-                <td>高 女士</td>
-                <td>18510515888</td>
-                <td>18</td>
-                <td>刘光艳</td>
-                <td>2017/6/8 10:57:33</td>
-                <td>流失</td>
-                <td>已订</td>
-                <td>刘光艳</td>
-                <td><a href="#" data-toggle="modal" data-target=".order-details">订单详情</a></td>
-            </tr>
-            <tr align="center">
-                <td>06月08日晚餐18:00</td>
-                <td>二楼</td>
-                <td>(CEIEC)215 [备注]</td>
-                <td>高 女士</td>
-                <td>18510515888</td>
-                <td>18</td>
-                <td>刘光艳</td>
-                <td>2017/6/8 10:57:33</td>
-                <td>流失</td>
-                <td>已订</td>
-                <td>刘光艳</td>
-                <td><a href="#" data-toggle="modal" data-target=".order-details">订单详情</a></td>
-            </tr>
-            <tr align="center">
-                <td>06月08日晚餐18:00</td>
-                <td>二楼</td>
-                <td>(CEIEC)215 [备注]</td>
-                <td>高 女士</td>
-                <td>18510515888</td>
-                <td>18</td>
-                <td>刘光艳</td>
-                <td>2017/6/8 10:57:33</td>
-                <td>流失</td>
-                <td>已订</td>
-                <td>刘光艳</td>
-                <td><a href="#" data-toggle="modal" data-target=".order-details">订单详情</a></td>
-            </tr>
-            <tr align="center">
-                <td>06月08日晚餐18:00</td>
-                <td>二楼</td>
-                <td>(CEIEC)215 [备注]</td>
-                <td>高 女士</td>
-                <td>18510515888</td>
-                <td>18</td>
-                <td>刘光艳</td>
-                <td>2017/6/8 10:57:33</td>
-                <td>流失</td>
-                <td>已订</td>
-                <td>刘光艳</td>
-                <td><a href="#" data-toggle="modal" data-target=".order-details">订单详情</a></td>
-            </tr>
             <tr align="center">
                 <td>06月08日晚餐18:00</td>
                 <td>二楼</td>
@@ -228,3 +152,47 @@
         </div>
     </div>
 </div>
+<script id="OptionTemplate" type="text/x-jsrender">
+    <a>就餐日期：</a>
+    <input type="date" data-link="date_from"/>
+    ~
+    <input type="date" data-link="date_to"/>
+    <select data-link="select_area">
+        <option value="0">全部就餐区域</option>
+        {{for area}}
+        <option value="{{:value}}">{{:name}}</option>
+        {{/for }}
+    </select>
+    <select data-link="select_channel">
+        <option value="0">全部接单渠道</option>
+        {{for channel}}
+            <optgroup label="{{:name}}">{{:name}}</optgroup>
+            {{for items}}
+                <option value="{{:value}}">{{:name}}</option>
+            {{/for }}
+        {{/for }}
+    </select>
+    <input type="text" data-link="keyword" placeholder="输入姓名或手机号"/>
+    <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" id="query" value="查询"/>
+</script>
+<script>
+
+    var option = {
+        data_from: "2017/06/10",
+        data_to: "2017/06/09",
+        select_area: 0,
+        select_channel: 0,
+        keyword: "18800184976",
+        area: BanquetExpert.area,
+        channel: BanquetExpert.channel
+    };
+
+    $.templates("#OptionTemplate").link("#option", option);
+
+    $("#area").change(function () {
+        alert("选择区域：" + option.select_area);
+    });
+    $("#query").click(function () {
+        alert("查询：" + option.keyword);
+    });
+</script>
