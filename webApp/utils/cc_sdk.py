@@ -86,7 +86,7 @@ def update_live_room(cc_room_id, publisher_password, play_password, name,
 def query_live_room(cc_room_ids):
     """批量查询直播间状态
 
-    :param cc_room_ids: 需要查询的房间列表
+    :param cc_room_ids: 需要查询的房间列表, 最多100个
     :return
     """
 
@@ -98,6 +98,32 @@ def query_live_room(cc_room_ids):
     query_hash = create_hashed_query_string(query_map)
 
     url = QUERY_LIVE_URL + "?" + query_hash
+    f = urllib.request.urlopen(url)
+
+    content = f.read().decode('utf-8')
+    res = json.loads(content)
+
+    return res
+
+
+def replay_live_room(cc_room_id, page_index, page_num):
+    """直播间回放
+
+    :param cc_room_id: 需要查询的房间
+    :param page_index: 页码
+    :param page_num: 每页的个数
+    :return
+    """
+
+    # 需要传输的参数
+    query_map = {'userid': USER_ID,
+                 'roomids': cc_room_id,
+                 'pageindex': page_index,
+                 'pagenum': page_num}
+    # 加密参数
+    query_hash = create_hashed_query_string(query_map)
+
+    url = REPLAY_LIVE_URL + "?" + query_hash
     f = urllib.request.urlopen(url)
 
     content = f.read().decode('utf-8')

@@ -30,13 +30,14 @@ class List(View):
         :param order: 排序方式
             0: 注册时间升序
             1: 注册时间降序（默认值）
-            2: 昵称升序
-            3: 昵称降序
+            2: 标题升序
+            3: 标题降序
         :return:
             count: 课程总数
             list: 课程列表
                 course_id: ID
                 title: 课程标题
+                pusher: 上传者姓名
                 buyer_count: 已购买数
                 cc_video_id: 对应CC的videoid，如果课程需要付费且当前员工的酒店未付费则返回空
                 price: 价格
@@ -59,13 +60,16 @@ class List(View):
             d = {'course_id': course.id,
                  'price': course.price,
                  'title': course.title,
+                 'pusher': course.staff.name,
                  'tags': course.tags,
                  'buyer_count': course.purchase_records.count(),
                  'description': course.description,
                  'create_time': course.create_time}
+
             # 判断当前员工的酒店是否已经购买该课程，是则返回videoid，否则返回空
-            if course.price == 0 or course.purchase_records.filter(
-                    hotel=request.staff.hotel).exixt():
+            if (course.price == 0) or (course.staff == request.staff) or \
+                    (course.purchase_records.filter(
+                        hotel=request.staff.hotel).exixt()):
                 d['cc_video_id'] = course.cc_video_id
             else:
                 d['cc_video_id'] = ''
@@ -104,7 +108,7 @@ class List(View):
                 course.save()
                 return corr_response()
             except IntegrityError:
-                return err_response('err_5', '服务器上传视频失败')
+                return err_response('err_2', '服务器上传视频失败')
 
 
 class OwnedList(View):

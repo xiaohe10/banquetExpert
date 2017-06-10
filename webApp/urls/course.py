@@ -1,10 +1,12 @@
 from django.conf.urls import url
 
-from webApp.views.course import List
+from webApp.views.course import List, OwnedList
 
 urlpatterns = [
-    # 获取视频列表(get)/上传新的视频(post)
-    url(r'^$', List.as_view(), name='list'),
+    # 获取视频列表(get)
+    url(r'^list/$', List.as_view(), name='list'),
+    # 上传新的视频(post)
+    url(r'^push/$', List.as_view(), name='push'),
     # 获取自己上传的视频列表(get)
-    url(r'^owned/$', List.as_view(), name='list'),
+    url(r'^owned_list/$', OwnedList.as_view(), name='owned_list'),
 ]
