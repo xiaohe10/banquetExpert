@@ -4,7 +4,8 @@ from django.db import models
 from django.utils import timezone
 
 __all__ = ['Admin', 'Hotel', 'HotelBranch', 'Desk', 'Staff', 'ExternalChannel',
-           'User', 'Order', 'OrderScore', 'Course', 'CoursePurchaseRecord']
+           'User', 'Order', 'OrderScore', 'Course', 'CoursePurchaseRecord',
+           'LiveSubscribe']
 
 
 class EnabledManager(models.Manager):
@@ -291,6 +292,9 @@ class User(models.Model):
     wechat = models.CharField(max_length=20, default='')
     # 生日
     birthday = models.DateField(default=None, null=True)
+    # 生日类型
+    birthday_type = models.IntegerField(
+        choices=((0, '阳历'), (1, '农历')), default=0)
     # 所在省
     province = models.CharField(max_length=20, default='')
     # 所在市
@@ -571,8 +575,8 @@ class Live(models.Model):
     # 创建时间
     create_time = models.DateTimeField(default=timezone.now, db_index=True)
 
-    # 直播发布者
-    staff = models.ForeignKey('Staff', models.CASCADE, 'lives')
+    # 直播的发布酒店
+    hotel = models.ForeignKey('Hotel', models.CASCADE, 'lives')
 
     class Meta:
         ordering = ['-create_time']
@@ -589,10 +593,24 @@ class LivePurchaseRecord(models.Model):
     # 创建时间
     create_time = models.DateTimeField(default=timezone.now, db_index=True)
 
-    # 课程
+    # 直播
     live = models.ForeignKey('Live', models.CASCADE, 'purchase_records')
     # 购买者
     hotel = models.ForeignKey('Hotel', models.CASCADE, 'live_purchase_records')
+
+    class Meta:
+        ordering = ['-create_time']
+
+
+class LiveSubscribe(models.Model):
+    """直播预约记录"""
+
+    # 直播
+    live = models.ForeignKey('Live', models.CASCADE, 'subscribes')
+    # 预约者
+    staff = models.ForeignKey('Staff', models.CASCADE, 'subscribe_lives')
+    # 创建时间
+    create_time = models.DateTimeField(default=timezone.now, db_index=True)
 
     class Meta:
         ordering = ['-create_time']

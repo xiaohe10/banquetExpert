@@ -15,4 +15,12 @@ urlpatterns = [
     # 获取员工资料(get)/修改员工资料, 包括账号审核(post)
     url(r'^staff/profile/$', StaffProfile.as_view(),
         name='staff_profile'),
+    # 获取自己酒店的直播间列表(get)
+    url(r'^live/list/$', LiveList.as_view(), name='live_list'),
+    # 创建直播间(post)
+    url(r'^live/push/$', LiveList.as_view(), name='push_live'),
+    # 修改直播间信息(post)
+    url(r'^live/profile/$', LiveProfile.as_view(), name='live_profile'),
+    # 获取直播间的回放列表
+    url(r'^playback/', LivePlayBack.as_view(), name='play_back'),
 ]

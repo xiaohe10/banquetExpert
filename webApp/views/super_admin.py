@@ -280,7 +280,7 @@ class HotelProfile(View):
                  'branches_count': hotel.branches.count(),
                  'owner_name': hotel.owner_name,
                  'is_enabled': hotel.is_enabled,
-                 'create_time': hotel.create_time,}
+                 'create_time': hotel.create_time}
             return corr_response(d)
 
     @validate_args({
