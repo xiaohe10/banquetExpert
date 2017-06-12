@@ -54,15 +54,17 @@ class AdminList(View):
         return corr_response({'count': c, 'list': l})
 
     @validate_args({
+        'token': forms.CharField(min_length=32, max_length=32),
         'username': forms.CharField(min_length=1, max_length=20),
         'password': forms.CharField(min_length=1, max_length=128),
         'type': forms.IntegerField(min_value=0, max_value=1, required=False),
         'hotel_id': forms.IntegerField(required=False),
     })
     @validate_super_admin_token()
-    def post(self, request, username, password, type=0, hotel_id=None):
+    def post(self, request, token, username, password, type=0, hotel_id=None):
         """注册新的管理员
 
+        :param token: 令牌(必传)
         :param username: 用户名(必传)
         :param password: 密码(必传)
         :param type: 管理员类型, 0: 管理员, 1: 超级管理员

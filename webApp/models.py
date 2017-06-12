@@ -349,7 +349,9 @@ class Order(models.Model):
     # 联系人
     name = models.CharField(max_length=20, db_index=True)
     # 联系电话
-    people_number = models.IntegerField(db_index=True)
+    contact = models.CharField(max_length=11, default='')
+    # 到店人数
+    guest_number = models.IntegerField(default=0, db_index=True)
     # 支付金额
     pay_number = models.IntegerField(default=None, db_index=True)
     # 水牌
@@ -365,7 +367,7 @@ class Order(models.Model):
     # 欢迎卡
     welcome_card = models.CharField(max_length=10, default='')
     # 用户上传的图片，最多5张
-    picture = models.CharField(max_length=300, default='')
+    pictures = models.CharField(max_length=300, default='')
     # 背景音乐
     background_music = models.CharField(max_length=20, default='')
     # 是否有蜡烛
@@ -391,10 +393,10 @@ class Order(models.Model):
     # 完成时间
     finish_time = models.DateTimeField(default=None, db_index=True)
     # 撤销时间
-    reverse_time = models.DateTimeField(default=None, db_index=True)
+    cancel_time = models.DateTimeField(default=None, db_index=True)
 
-    # 预定桌位
-    desk = models.ForeignKey('Desk', models.CASCADE, 'orders')
+    # 预定桌位, 可能多桌, 用'|'隔开
+    desks = models.CharField(max_length=50, default='')
     # 顾客(可能是散客)
     user = models.ForeignKey(
         'User', models.CASCADE, 'orders', default=None, null=True)
