@@ -6,9 +6,11 @@ from random import choice
 from django import forms
 from django.db import IntegrityError, transaction
 from django.utils import timezone
-from ..utils.response import corr_response, err_response
+from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import View
 
+
+from ..utils.response import corr_response, err_response
 from ..utils.decorator import validate_args, validate_admin_token
 from ..utils.cc_sdk import create_live_room, update_live_room, replay_live_room
 from ..models import Admin, Hotel, HotelBranch, Staff, Live
@@ -47,6 +49,39 @@ class Token(View):
 class HotelProfile(View):
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
+    })
+    @validate_admin_token()
+    def get(self, request, token, hotel_id):
+        """获取酒店信息
+
+        :param token: 令牌(必传)
+        :return:
+            count: 酒店总数
+            list: 酒店列表
+                hotel_id: ID
+                name: 名称
+                icon: 头像
+                branches_count: 门店数
+                owner_name: 法人代表
+                is_enabled: 是否有效
+                create_time: 创建时间
+        """
+
+        try:
+            hotel = request.admin.hotel.filter(is_enabled=True)
+        except ObjectDoesNotExist:
+            return err_response('err_4', '酒店不存在')
+        else:
+            d = {'hotel_id': hotel.id,
+                 'name': hotel.name,
+                 'icon': hotel.icon,
+                 'branches_count': hotel.branches.count(),
+                 'owner_name': hotel.owner_name,
+                 'create_time': hotel.create_time}
+            return corr_response(d)
+
+    @validate_args({
+        'token': forms.CharField(min_length=32, max_length=32),
         'name': forms.CharField(min_length=1, max_length=20, required=False),
         'owner_name': forms.CharField(min_length=1, max_length=20,
                                       required=False),
@@ -66,13 +101,9 @@ class HotelProfile(View):
         """
 
         try:
-            hotel = Hotel.objects.get(id=hotel_id)
+            hotel = Hotel.enabled_objects.filter(id=hotel_id)
         except Hotel.DoesNotExist:
             return err_response('err_3', '酒店不存在')
-
-        # 管理员只能管理自己的酒店
-        if request.admin.type == 0 and hotel != request.admin.hotel:
-            return err_response('err_2', '权限错误')
 
         name = kwargs.pop('name') if 'name' in kwargs else None
         owner_name = kwargs.pop('owner_name') if \
