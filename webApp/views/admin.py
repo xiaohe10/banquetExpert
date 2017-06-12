@@ -51,7 +51,7 @@ class HotelProfile(View):
         'token': forms.CharField(min_length=32, max_length=32),
     })
     @validate_admin_token()
-    def get(self, request, token, hotel_id):
+    def get(self, request, token):
         """获取酒店信息
 
         :param token: 令牌(必传)
@@ -68,17 +68,19 @@ class HotelProfile(View):
         """
 
         try:
-            hotel = request.admin.hotel.filter(is_enabled=True)
+            hotel = request.admin.hotel
         except ObjectDoesNotExist:
             return err_response('err_4', '酒店不存在')
-        else:
-            d = {'hotel_id': hotel.id,
-                 'name': hotel.name,
-                 'icon': hotel.icon,
-                 'branches_count': hotel.branches.count(),
-                 'owner_name': hotel.owner_name,
-                 'create_time': hotel.create_time}
-            return corr_response(d)
+        if hotel.is_enabled is False:
+            return err_response('err_4', '酒店不存在')
+
+        d = {'hotel_id': hotel.id,
+             'name': hotel.name,
+             'icon': hotel.icon,
+             'branches_count': hotel.branches.count(),
+             'owner_name': hotel.owner_name,
+             'create_time': hotel.create_time}
+        return corr_response(d)
 
     @validate_args({
         'token': forms.CharField(min_length=32, max_length=32),
