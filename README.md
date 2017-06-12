@@ -252,7 +252,6 @@ URL：webApp/staff/profile/ <br>
 | 参数名称       | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------:|
 | token         | 登录口令          |         yes  |
-| staff_id         | 员工账户ID          |         yes  |
 | staff_number      | 员工编号     |         no   |
 | gender      | 性别    |         no   |
 | position      | 职位     |         no   |
@@ -267,7 +266,6 @@ URL：webApp/staff/profile/ <br>
 ```
 {
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
-	"staff_id":1,
 	"staff_number":"2017013434",
 	"name":"小张",
 	"gender":1,
