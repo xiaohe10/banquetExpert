@@ -83,9 +83,9 @@ class List(View):
                  'create_time': live.create_time}
 
             # 判断当前员工的酒店是否已经购买该直播，是则返回播放密码，否则返回空
-            if live.price == 0 or live.hotel == request.staff.hotel or \
-                    live.purchase_records.filter(
-                        hotel=request.staff.hotel).exixt():
+            if (live.price == 0) or (live.hotel == request.staff.hotel) or \
+                    (live.purchase_records.filter(
+                        hotel=request.staff.hotel).exixt()):
                 d['play_password'] = live.play_password
             else:
                 d['play_password'] = ''

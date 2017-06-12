@@ -292,6 +292,9 @@ class User(models.Model):
     wechat = models.CharField(max_length=20, default='')
     # 生日
     birthday = models.DateField(default=None, null=True)
+    # 生日类型
+    birthday_type = models.IntegerField(
+        choices=((0, '阳历'), (1, '农历')), default=0)
     # 所在省
     province = models.CharField(max_length=20, default='')
     # 所在市

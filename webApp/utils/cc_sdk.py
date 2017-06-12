@@ -79,7 +79,7 @@ def update_live_room(cc_room_id, publisher_password, play_password, name,
 
     content = f.read().decode('utf-8')
     res = json.loads(content)
-    print(res)
+
     return res
 
 
