@@ -395,8 +395,8 @@ class Order(models.Model):
     # 撤销时间
     cancel_time = models.DateTimeField(default=None, db_index=True)
 
-    # 预定桌位
-    desk = models.ForeignKey('Desk', models.CASCADE, 'orders')
+    # 预定桌位, 可能多桌, 用'|'隔开
+    desks = models.CharField(max_length=50, default='')
     # 顾客(可能是散客)
     user = models.ForeignKey(
         'User', models.CASCADE, 'orders', default=None, null=True)
