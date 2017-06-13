@@ -1,18 +1,8 @@
 <!--主页/订单管理/来电记录-->
 <!--操作栏-->
 <div class="py-1 bg-info">
-    <div class="p-2 bg-success">
-        <form>
-            <!--查询-->
-            <div class="form-inline p-1">
-                <a>选择日期区间：</a>
-                <input type="date" value="2017/6/8" name="date-from" id="date-from"/>
-                ~
-                <input type="date" value="2017/6/8" name="date-to" id="date-to"/>
-                <input type="text" value="" name="keyword" id="keyword" placeholder="输入姓名或手机号"/>
-                <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" value="查询"/>
-            </div>
-        </form>
+    <div class="p-2 bg-success" id="option">
+
     </div>
 </div>
 <!--内容-->
@@ -29,49 +19,8 @@
                 <td>状态</td>
             </tr>
             </thead>
-            <tbody>
-            <tr align="center">
-                <td>2017-06-08</td>
-                <td>15:03</td>
-                <td>13911461185</td>
-                <td>姜园园</td>
-                <td>无</td>
-            </tr>
-            <tr align="center">
-                <td>2017-06-08</td>
-                <td>15:03</td>
-                <td>13911461185</td>
-                <td>姜园园</td>
-                <td>无</td>
-            </tr>
-            <tr align="center">
-                <td>2017-06-08</td>
-                <td>15:03</td>
-                <td>13911461185</td>
-                <td>姜园园</td>
-                <td>无</td>
-            </tr>
-            <tr align="center">
-                <td>2017-06-08</td>
-                <td>15:03</td>
-                <td>13911461185</td>
-                <td>姜园园</td>
-                <td>无</td>
-            </tr>
-            <tr align="center">
-                <td>2017-06-08</td>
-                <td>15:03</td>
-                <td>13911461185</td>
-                <td>姜园园</td>
-                <td>无</td>
-            </tr>
-            <tr align="center">
-                <td>2017-06-08</td>
-                <td>15:03</td>
-                <td>13911461185</td>
-                <td>姜园园</td>
-                <td>无</td>
-            </tr>
+            <tbody id="table">
+
             </tbody>
         </table>
     </div>
@@ -103,3 +52,44 @@
         </nav>
     </div>
 </div>
+<script id="OptionTemplate" type="text/plain">
+    <form>
+        <!--查询-->
+        <div class="form-inline p-1">
+            <a>选择日期区间：</a>
+            <input type="date" data-link="date-from"/>
+            ~
+            <input type="date" data-link="date-to"/>
+            <input type="text" data-link="keyword" placeholder="输入姓名或手机号"/>
+            <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" id="query" value="查询"/>
+        </div>
+    </form>
+</script>
+<script id="TableTemplate" type="text/plain">
+    {{for table}}
+        <tr align="center">
+            <td>{{:date}}</td>
+            <td>{{:time}}</td>
+            <td>{{:phone}}</td>
+            <td>{{:name}}</td>
+            <td>{{:status}}</td>
+        </tr>
+    {{/for }}
+</script>
+<script>
+    var option = {
+        date_from: "",
+        date_to: "",
+        keyword: ""
+    };
+
+    var data = {
+        table: []
+    };
+
+    for (var i = 0; i < 10; i++) {
+        data.table.push({date: "日期", time: "时间", phone: "来电", name: "姓名", status: "状态"});
+    }
+    $.templates("#OptionTemplate").link("#option", option);
+    $.templates("#TableTemplate").link("#table", data);
+</script>

@@ -20,11 +20,11 @@
                     <form class="">
                         <div class="form-group">
                             <label for="username">用户名：</label>
-                            <input type="text" class="form-control" value="admin" id="username">
+                            <input type="text" class="form-control" value="beijingyan" id="username">
                         </div>
                         <div class="form-group">
                             <label for="password">密码：</label>
-                            <input type="password" class="form-control" value="admin" id="password">
+                            <input type="password" class="form-control" value="beijingyan" id="password">
                         </div>
                         <div class="form-group">
                             <input type="button" class="form-control btn-primary" value="登录" name="login" id="login"/>
@@ -39,27 +39,6 @@
     </div>
 </div>
 
-<script>
-    $("#login").click(function () {
-        var username, password;
-        username = $("#username").val();
-        password = $('#password').val();
-        password = hex_md5(password);
-        $.ajax({
-            url: "/webApp/admin/token/",
-            method: "POST",
-            data: {
-                username: username,
-                password: password
-            },
-            success: function (data, status) {
-                location.href = "index.html";
-            },
-            fail: function (message) {
-                alert("登录失败:" + message)
-            }
-        });
-    });
-</script>
+<script src="js/login.js"></script>
 </body>
 </html>

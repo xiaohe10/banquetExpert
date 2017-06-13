@@ -3,7 +3,8 @@
 <div class="py-1 bg-info">
     <div class="p-2 bg-success">
         <a>>全部桌位，共7个</a>
-        <input class="btn btn-sm btn-secondary ml-1 mr-2" type="button" id="addarea" value="新增餐位"/>
+        <input class="btn btn-sm btn-secondary ml-1 mr-2" type="button" id="sync-area" value="同步区域列表"/>
+        <input class="btn btn-sm btn-secondary ml-1 mr-2" type="button" id="add-area" value="新增区域"/>
         <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" id="save" value="保存"/>
     </div>
 </div>
@@ -19,22 +20,51 @@
                 <td>操作</td>
             </tr>
             </thead>
-            <tbody class="align-content-center" id="area">
+            <tbody class="align-content-center" id="area-info-table">
 
             </tbody>
         </table>
-        <!--<input class="form-check-input form-control-sm" type="checkbox" value="启用" name="enable" checked="checked"/>-->
     </form>
 </div>
-<script type="text/javascript">
-    alert("加载餐位设置！");
-    $.ready(function () {
-        $.templates("#areaTemplate").link("#area", BanquetExpert.area);
-        $("#addarea").click(function () {
-            alert("新增餐位");
-        });
-        $("#save").click(function () {
-            alert("保存");
-        });
+<script id="area_row" type="text/x-jsrender">
+{^{for }}
+    <tr>
+        <td>应用</td>
+        <td><input type="text" data-link="name" name="name"/></td>
+        <td><input type="text" data-link="order" name="order"/></td>
+        <td>
+            <a href="#/SetSeat/{{:value}}">桌位设置</a>
+            <label for="status">
+                <input type="checkbox" id="status" data-link="status" />启用
+            </label>
+        </td>
+    </tr>
+{{/for }}
+</script>
+<script>
+    // 绑定模板
+    $.templates("#area_row").link("#area-info-table", BanquetExpert.area);
+
+    // 事件处理
+    $("#sync-area").click(function () {
+        /***
+         * TODO:同步区域列表
+         */
     });
+    $("#add-area").click(function () {
+        $.observable(BanquetExpert.area).insert({value: 0, name: '区域名', order: 0, status: 1, seat: []});
+    });
+    $("#save").click(function () {
+        $.observable(BanquetExpert.area).remove();
+    });
+
+    // 路由设置
+    routes = {
+        "/SetSeat/:seat_id": function (seat_id) {
+            alert("设置桌位：" + seat_id);
+        }
+    };
+
+    var router = window.Router(routes);
+    router.init();
 </script>

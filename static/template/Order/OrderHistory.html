@@ -1,47 +1,10 @@
 <!--主页/订单管理/历史订单-->
 <!--操作栏-->
-<div class="py-1 bg-info">
-    <div class="p-2 bg-success">
-        <form>
-            <!--查询选项-->
-            <div class="form-inline p-1">
-                <a>就餐日期：</a>
-                <input type="date" value="2017-6-8" name="date-from" id="date-from"/>
-                ~
-                <input type="date" value="2017-6-8" name="date-to" id="date-to"/>
-                <select name="area" id="area">
-                    <option value="0">请选择区域</option>
-                    {{for area}}
-                    <option value="{{:value}}">{{:name}}</option>
-                    {{/for }}
-                </select>
-                <select name="area" id="seat">
-                    <option value="0">请选择餐位</option>
-                    <option value="1">100</option>
-                    <option value="2">101</option>
-                    <option value="3">102</option>
-                    <option value="4">103</option>
-                    <option value="5">104</option>
-                    <option value="6">105</option>
-                </select>
-                <select name="channel" id="channel">
-                    <option value="0">全部接单渠道</option>
-                    {{for channel}}
-                    <optgroup label="{{:name}}">{{:name}}</optgroup>
-                    {{for items}}
-                    <option value="{{:value}}">{{:name}}</option>
-                    {{/for }}
-                    {{/for }}
-                </select>
-                <input type="text" value="18800184976" name="keyword" id="keyword" placeholder="输入姓名或手机号"/>
-                <input class="btn btn-sm btn-primary mx-1 px-2" type="button" id="query" value="查询"/>
-                <input class="btn btn-sm btn-secondary mx-1 px-2" type="button" id="save" value="生成报表"/>
-            </div>
-        </form>
-    </div>
+<div class="py-1 bg-info" id="option">
+
 </div>
 <!--内容-->
-<div class="py-2 px-2 mt-2 bg-info">
+<div class="py-2 px-2 mt-2 bg-info" id="content">
     <!--导航栏-->
     <div class="pb-2">
         <nav class="nav bg-info">
@@ -53,7 +16,7 @@
         </nav>
     </div>
     <!--详细信息-->
-    <div class="p-2 mb-2 bg-success form-inline" ng-init="info={order_count:17,seat_count:17,customer_count:184}">
+    <div class="p-2 mb-2 bg-success form-inline">
         <a>订单总数：3202 就餐人数：29721人 总金额：￥11292410.00 人均消费：￥451.39</a>
         <input class="btn btn-primary btn-sm" type="button" id="append" value="补录订单"/>
     </div>
@@ -91,62 +54,6 @@
                 <td>刘光艳</td>
                 <td><a href="#" data-toggle="modal" data-target=".order-details">订单详情</a></td>
             </tr>
-            <tr align="center">
-                <td>06月08日晚餐18:00</td>
-                <td>二楼</td>
-                <td>(CEIEC)215 [备注]</td>
-                <td>高 女士</td>
-                <td>18510515888</td>
-                <td>18</td>
-                <td>刘光艳</td>
-                <td>2017/6/8 10:57:33</td>
-                <td>流失</td>
-                <td>已订</td>
-                <td>刘光艳</td>
-                <td><a href="#" data-toggle="modal" data-target=".order-details">订单详情</a></td>
-            </tr>
-            <tr align="center">
-                <td>06月08日晚餐18:00</td>
-                <td>二楼</td>
-                <td>(CEIEC)215 [备注]</td>
-                <td>高 女士</td>
-                <td>18510515888</td>
-                <td>18</td>
-                <td>刘光艳</td>
-                <td>2017/6/8 10:57:33</td>
-                <td>流失</td>
-                <td>已订</td>
-                <td>刘光艳</td>
-                <td><a href="#" data-toggle="modal" data-target=".order-details">订单详情</a></td>
-            </tr>
-            <tr align="center">
-                <td>06月08日晚餐18:00</td>
-                <td>二楼</td>
-                <td>(CEIEC)215 [备注]</td>
-                <td>高 女士</td>
-                <td>18510515888</td>
-                <td>18</td>
-                <td>刘光艳</td>
-                <td>2017/6/8 10:57:33</td>
-                <td>流失</td>
-                <td>已订</td>
-                <td>刘光艳</td>
-                <td><a href="#" data-toggle="modal" data-target=".order-details">订单详情</a></td>
-            </tr>
-            <tr align="center">
-                <td>06月08日晚餐18:00</td>
-                <td>二楼</td>
-                <td>(CEIEC)215 [备注]</td>
-                <td>高 女士</td>
-                <td>18510515888</td>
-                <td>18</td>
-                <td>刘光艳</td>
-                <td>2017/6/8 10:57:33</td>
-                <td>流失</td>
-                <td>已订</td>
-                <td>刘光艳</td>
-                <td><a href="#" data-toggle="modal" data-target=".order-details">订单详情</a></td>
-            </tr>
             </tbody>
         </table>
     </div>
@@ -166,14 +73,14 @@
                     <div class="col-sm-2">
                         <!--Nav tabs-->
                         <ul class="nav nav-tabs">
-                            <li class="nav-item active"><a href="#order" role="tab" data-toggle="tab">订单信息</a></li>
-                            <li class="nav-item"><a href="#option" role="tab" data-toggle="tab">操作信息</a></li>
+                            <li class="nav-item active"><a href="#order_pane" role="tab" data-toggle="tab">订单信息</a></li>
+                            <li class="nav-item"><a href="#option_pane" role="tab" data-toggle="tab">操作信息</a></li>
                         </ul>
                     </div>
                     <div class="col-sm-8">
                         <!--Tab panes-->
                         <div class="tab-content">
-                            <div role="tabpanel" class="tab-pane active" id="order">
+                            <div role="tabpanel" class="tab-pane active" id="order_pane">
                                 <div class="text-info">
                                     <p><strong>三楼 315</strong></p>
                                     <p><strong>张 先生 100 0000 0000 6人 未分类客户</strong></p>
@@ -200,7 +107,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div role="tabpanel" class="tab-pane" id="option">
+                            <div role="tabpanel" class="tab-pane" id="option_pane">
                                 <p><a>2017/6/1 13:24:42 预订单修改 单蕾</a></p>
                                 <p class="text-info">对张先生18614023307预订的2017-06-02晚餐段315桌位</p>
                                 <p><a>2017/6/1 13:24:42 预订单修改 单蕾</a></p>
@@ -217,8 +124,79 @@
         </div>
     </div>
 </div>
+<!--操作栏模板--><!--查询选项-->
+<script id="OptionTemplate" type="text/x-jsrender">
+    <div class="p-2 bg-success">
+        <div class="form-inline p-1">
+            <a>就餐日期：</a>
+            <input type="date" data-link="date_from"/>
+            ~
+            <input type="date" data-link="date_to"/>
+            <select id="area" data-link="select_area">
+                <option value="-1">请选择区域</option>
+                {{for area}}
+                <option value="{{:value}}">{{:name}}</option>
+                {{/for }}
+            </select>
+            <select id="seat" data-link="select_seat">
+                <option value="-1">请选择餐位</option>
+                {{for seat}}
+                <option value="{{:value}}">{{:name}}</option>
+                {{/for }}
+            </select>
+            <select data-link="select_channel">
+                <option value="0">全部接单渠道</option>
+                {{for channel}}
+                    <optgroup label="{{:name}}">{{:name}}</optgroup>
+                    {{for items}}
+                        <option value="{{:value}}">{{:name}}</option>
+                    {{/for }}
+                {{/for }}
+            </select>
+            <input type="text" value="18800184976" data-link="keyword" placeholder="输入姓名或手机号"/>
+            <input class="btn btn-sm btn-primary mx-1 px-2" type="button" id="query" value="查询"/>
+            <input class="btn btn-sm btn-secondary mx-1 px-2" type="button" id="save" value="生成报表"/>
+        </div>
+    </div>
+</script>
+<!--表格模板-->
 <script>
-    $("#area").selected(function () {
 
-    })
+    var option = {
+        data_from: "2017/06/10",
+        data_to: "2017/06/09",
+        select_area: -1,
+        select_seat: -1,
+        select_channel: 0,
+        keyword: "",
+        area: BanquetExpert.area,
+        seat: [],
+        channel: BanquetExpert.channel
+    };
+
+    $.templates("#OptionTemplate").link("#option", option);
+
+    $("#area").change(function () {
+        var index = $("#area").val();
+        if (index === -1) {
+            alert("选择区域：" + index);
+            $.observable(option).setProperty({select_seat: -1, seat: []});
+        } else {
+            alert("选择区域：" + index);
+            var seat = BanquetExpert.area[index].seat;
+            $.observable(option).setProperty({select_seat: -1, seat: seat});
+        }
+    });
+
+    $("#query").click(function () {
+        var json = {
+            data_from: option.data_from,
+            data_to: option.data_to,
+            select_area: option.select_area,
+            select_seat: option.select_seat,
+            select_channel: option.select_channel,
+            keyword: option.keyword
+        };
+        alert(JSON.stringify(json));
+    });
 </script>
