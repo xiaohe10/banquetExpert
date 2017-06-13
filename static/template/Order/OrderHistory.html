@@ -7,18 +7,18 @@
 <div class="py-2 px-2 mt-2 bg-info" id="content">
     <!--导航栏-->
     <div class="pb-2">
-        <nav class="nav bg-info">
-            <a class="nav-link active" href="#">有效订单</a>
-            <a class="nav-link" href="#">撤单</a>
-            <a class="nav-link" href="#">红包</a>
-            <a class="nav-link" href="#">散客</a>
-            <a class="nav-link" href="#">全部订单</a>
-        </nav>
+        <ul class="nav nav-tabs nav-justified">
+            <li class="active" href="#/Order/OrderHistory/Filter/Valid">有效订单</li>
+            <li href="#/Order/OrderHistory/Filter/Canceled">撤单</li>
+            <li href="#/Order/OrderHistory/Filter/RedBag">红包</li>
+            <li href="#/Order/OrderHistory/Filter/Scattered">散客</li>
+            <li href="#/Order/OrderHistory/Filter/All">全部订单</li>
+        </ul>
     </div>
     <!--详细信息-->
     <div class="p-2 mb-2 bg-success form-inline">
         <a>订单总数：3202 就餐人数：29721人 总金额：￥11292410.00 人均消费：￥451.39</a>
-        <input class="btn btn-primary btn-sm" type="button" id="append" value="补录订单"/>
+        <!--<input class="btn btn-primary btn-sm" type="button" id="append" value="补录订单"/>-->
     </div>
     <!--表格-->
     <div class="p-2 mb-2 bg-faded">
@@ -124,7 +124,23 @@
         </div>
     </div>
 </div>
-<!--操作栏模板--><!--查询选项-->
+<!--对话框/补录订单-->
+<div class="modal order-append" id="order-append" role="dialog" aria-labelledby="order-append">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <a>补录订单</a>
+            </div>
+            <div class="modal-body">
+                表单
+            </div>
+            <div class="modal-footer">
+                操作栏
+            </div>
+        </div>
+    </div>
+</div>
+<!--操作栏模板-->
 <script id="OptionTemplate" type="text/x-jsrender">
     <div class="p-2 bg-success">
         <div class="form-inline p-1">
@@ -156,6 +172,7 @@
             <input type="text" value="18800184976" data-link="keyword" placeholder="输入姓名或手机号"/>
             <input class="btn btn-sm btn-primary mx-1 px-2" type="button" id="query" value="查询"/>
             <input class="btn btn-sm btn-secondary mx-1 px-2" type="button" id="save" value="生成报表"/>
+            <a class="btn btn-sm btn-secondary mx-1 px-2" href="#" data-toggle="modal" data-target=".order-append">补录订单</a>
         </div>
     </div>
 </script>
@@ -199,4 +216,12 @@
         };
         alert(JSON.stringify(json));
     });
+
+    var routes = {
+        "/Order/OrderHistory/Filter/:type": function (type) {
+            alert("选择了：" + type);
+        }
+    };
+    var router = window.Router(routes);
+    router.init();
 </script>

@@ -1,39 +1,38 @@
 <!--主页/账户管理/修改密码-->
 <!--内容-->
 <div class="py-2 px-2 mt-2 bg-info">
-    <!--详细信息-->
-    <div class="p-2 mb-2 bg-success">
-        <a class="">&rsaquo;修改密码</a>
-    </div>
     <!--表单-->
     <div class="p-2 mb-2 bg-faded">
-        <form>
+        <form class="form-horizontal">
+            <div id="legend" class="">
+                <legend class="">修改密码</legend>
+            </div>
             <div class="form-group">
-                <label class="col-sm-2 form-control-label">用户名：</label>
-                <div class="col-sm-5">
-                    <input class="form-control" type="text" name="username" value="10000000000" disabled="disabled"/>
+                <label class="control-label">用户名：</label>
+                <div class="controls">
+                    <input class="form-control" type="text" name="username" placeholder="10000000000" />
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 form-control-label">密码：</label>
-                <div class="col-sm-5">
-                    <input class="form-control" type="text" name="password" value="10000000000"/>
+                <label class="control-label">密码：</label>
+                <div class="controls">
+                    <input class="form-control" type="text" name="password" placeholder="10000000000"/>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 form-control-label">新密码：</label>
-                <div class="col-sm-5">
-                    <input class="form-control" type="text" name="new-password" value="10000000000"/>
+                <label class="control-label">新密码：</label>
+                <div class="controls">
+                    <input class="form-control" type="text" name="new-password" placeholder="10000000000"/>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 form-control-label">新密码验证：</label>
-                <div class="col-sm-5">
-                    <input class="form-control" type="text" name="new-password-acc" value="10000000000"/>
+                <label class="control-label">新密码验证：</label>
+                <div class="controls">
+                    <input class="form-control" type="text" name="new-password-acc" placeholder="10000000000"/>
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-5">
+                <div class="controls">
                     <input class="btn btn-primary" type="submit" name="save" value="保存"/>
                 </div>
             </div>

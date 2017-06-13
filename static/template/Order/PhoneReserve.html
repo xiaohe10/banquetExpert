@@ -11,7 +11,7 @@
     <div class="p-2 mb-2 bg-faded">
         <table class="table table-hover table-bordered small">
             <thead class="bg-info">
-            <tr align="center">
+            <tr align="middle">
                 <td>日期</td>
                 <td>时间</td>
                 <td>来电</td>
@@ -64,6 +64,7 @@
             <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" id="query" value="查询"/>
         </div>
     </form>
+
 </script>
 <script id="TableTemplate" type="text/plain">
     {{for table}}
@@ -75,6 +76,7 @@
             <td>{{:status}}</td>
         </tr>
     {{/for }}
+
 </script>
 <script>
     var option = {
@@ -87,8 +89,8 @@
         table: []
     };
 
-    for (var i = 0; i < 10; i++) {
-        data.table.push({date: "日期", time: "时间", phone: "来电", name: "姓名", status: "状态"});
+    for (var i = 0; i < 6; i++) {
+        data.table.push({date: "2017-06-13", time: "14:24:15", phone: "10000000000", name: "凌乱了", status: "未处理"});
     }
     $.templates("#OptionTemplate").link("#option", option);
     $.templates("#TableTemplate").link("#table", data);
