@@ -19,6 +19,7 @@
     <div class="p-2 mb-2 bg-success form-inline">
         <a>订单总数：3202 就餐人数：29721人 总金额：￥11292410.00 人均消费：￥451.39</a>
         <!--<input class="btn btn-primary btn-sm" type="button" id="append" value="补录订单"/>-->
+        <a class="btn btn-sm btn-secondary mx-1 px-2" href="#" data-toggle="modal" data-target=".order-append">补录订单</a>
     </div>
     <!--表格-->
     <div class="p-2 mb-2 bg-faded">
@@ -62,7 +63,7 @@
 <div class="modal order-details" id="order-details" role="dialog" aria-labelledby="order-details">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-primary">
+            <div class="modal-header bg-primary" style="height: 35px;">
                 <a>订单详情</a>
             </div>
             <div class="modal-body">
@@ -119,7 +120,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                This is footer
+                <input class="btn btn-secondary" type="button" value="关闭" id="close" />
             </div>
         </div>
     </div>
@@ -128,14 +129,144 @@
 <div class="modal order-append" id="order-append" role="dialog" aria-labelledby="order-append">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-primary">
+            <div class="modal-header bg-primary" style="height: 35px">
                 <a>补录订单</a>
             </div>
             <div class="modal-body">
-                表单
+                <table>
+                    <tbody>
+                    <tr>
+                        <th align="right"><span class="error">*</span>电话</th>
+                        <td><input name="CustomerPhoneNumber" type="text" id="CustomerTelephone" maxlength="12"></td>
+                        <th align="right"><span class="error">*</span>姓名</th>
+                        <td><input type="text" name="CustomerName" id="CustomerName"></td>
+                        <td colspan="2"><span class="error">*</span>
+                            <label><input name="CustomerGender" type="radio" value="False"> 先生 </label>
+                            <label><input name="CustomerGender" type="radio" value="True"> 女士</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><span class="error">*</span>人数</th>
+                        <td colspan="5">
+                            <input id="People" name="People" type="text" size="8" onpaste="return false">
+                            <ul class="nav nav-list">
+                                <li class="first"><a href="#/Dialog/People/SetCount/4">4</a></li>
+                                <li><a href="#/Dialog/People/SetCount/5">5</a></li>
+                                <li><a href="#/Dialog/People/SetCount/6">6</a></li>
+                                <li><a href="#/Dialog/People/SetCount/7">7</a></li>
+                                <li><a href="#/Dialog/People/SetCount/8">8</a></li>
+                                <li><a href="#/Dialog/People/SetCount/9">9</a></li>
+                                <li><a href="#/Dialog/People/SetCount/10">10</a></li>
+                                <li><a href="#/Dialog/People/SetCount/11">11</a></li>
+                                <li class="last"><a href="#/Dialog/People/SetCount/0">12</a></li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>单位</th>
+                        <td>
+                            <input name="CustomerUnit" type="text" size="20" id="CustomerUnit"></td>
+                        <th><span class="obli">*</span>接单渠道</th>
+                        <td>
+                            <select name="UserSeviceGuid" id="UserSeviceGuid">
+                                <optgroup label="内部渠道"></optgroup>
+                                <option>预订台</option>
+                                <option>微官网</option>
+                                <option>格桑拉吉</option>
+                                <option>韩麦艳</option>
+                                <optgroup label="外部渠道"></optgroup>
+                                <option>常客</option>
+                                <option>点评预订</option>
+                            </select>
+                        </td>
+                        <th>订金</th>
+                        <td>
+                            <input name="Deposit" type="text" size="8" id="Deposit" onpaste="return false"></td>
+                    </tr>
+                    <tr>
+                        <th><span class="obli">*</span>日期</th>
+                        <td>
+                            <div class="data">
+                                <select id="Orderfor" name="Orderfor" onchange="coupon_load($('#CustomerTelephone').val(),$(this).val())">
+                                    <option>请选择就餐日期</option>
+                                    <option>2017/6/6</option>
+                                    <option>2017/6/7</option>
+                                    <option>2017/6/8</option>
+                                    <option>2017/6/9</option>
+                                    <option>2017/6/10</option>
+                                    <option>2017/6/11</option>
+                                    <option>2017/6/12</option>
+                                    <option>2017/6/13</option>
+                                </select>
+                            </div>
+                        </td>
+                        <th><span class="obli">*</span>餐段</th>
+                        <td colspan="3">
+                            <div class="meal_time_set">
+                                <input id="data_time3" name="Mealtimes" type="text" value="请选择餐段" onchange="    (function () {
+
+    $('#RestaurantMealsTimeGuid').val($('#data_time3').attr('data-period'));
+    $('#RestaurantMealsTimeClassificationID').val($('#data_time3').attr('data-class'));
+
+})()" readonly="" style="width: 90px" data-period="">
+                                <input id="RestaurantMealsTimeGuid" name="RestaurantMealsTimeGuid" type="hidden">
+                                <input id="RestaurantMealsTimeClassificationID" name="RestaurantMealsTimeClassificationID" type="hidden">
+
+                                <a href="javascript:picker_customer($('#Orderfor'), $('#data_time3'));" class="drop"></a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><span class="obli">*</span>区域</th>
+                        <td colspan="5">
+                            <select id="areaSelector_1" class="tableSelector" data-bind="tableSelector_1" name="area">
+                                <option data-save="1" value="0">请选择区域</option>
+                                <option>一楼</option>
+                                <option>二楼</option>
+                                <option>三楼</option>
+                                <option>五楼</option>
+                                <option>六楼</option>
+                                <option>六楼散台</option>
+                                <option>二楼散台</option>
+                                <option>外卖</option>
+                                <option>测试台</option>
+                            </select>
+                            <select id="tableSelector_1" name="DeskID">
+                                <option data-save="1" value="0">请选择餐位</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr data-type="template" style="display: none">
+                        <th>区域</th>
+                        <td colspan="5">
+                            <select name="area">
+                                <option data-save="1" value="0">请选择区域</option>
+                                <option>一楼</option>
+                                <option>二楼</option>
+                                <option>三楼</option>
+                                <option>五楼</option>
+                                <option>六楼</option>
+                                <option>六楼散台</option>
+                                <option>二楼散台</option>
+                                <option>外卖</option>
+                                <option>测试台</option>
+                            </select>
+                            <select id="tableSelector_NOM" name="DeskID">
+                                <option data-save="1" value="0">请选择餐位</option>
+                            </select>
+                            <a data-type="table_remove" href="#/Table/Remove/table_id" class="gray_2">删除</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <td colspan="5"><a class="btn btn-link btn-primary">增加餐位</a></td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
             <div class="modal-footer">
-                操作栏
+                <input class="btn btn-primary" type="submit" value="提交" id="submit" />
+                <input class="btn btn-secondary" type="button" value="取消" id="cancel" />
             </div>
         </div>
     </div>
@@ -172,9 +303,17 @@
             <input type="text" value="18800184976" data-link="keyword" placeholder="输入姓名或手机号"/>
             <input class="btn btn-sm btn-primary mx-1 px-2" type="button" id="query" value="查询"/>
             <input class="btn btn-sm btn-secondary mx-1 px-2" type="button" id="save" value="生成报表"/>
-            <a class="btn btn-sm btn-secondary mx-1 px-2" href="#" data-toggle="modal" data-target=".order-append">补录订单</a>
         </div>
     </div>
+
+
+
+
+
+
+
+
+
 </script>
 <!--表格模板-->
 <script>
