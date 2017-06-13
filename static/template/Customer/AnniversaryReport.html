@@ -1,6 +1,57 @@
 <!--主页/客户管理/纪念日查询报表-->
+<!--操作栏-->
 <div class="p-1">
     <div class="p-2 bg-success">
-        <div class="alert alert-warning alert-dismissible" role="alert">纪念日查询报表</div>
+        <div class="form-inline p-1">
+            <input type="date" id="date-from"/>
+            ~
+            <input type="date" id="date-to"/>
+            <select id="classify">
+                <option value="-1" selected>请选择分类</option>
+                <option value="7">生日</option>
+                <option value="5">满月</option>
+                <option value="1">百天</option>
+                <option value="3">过寿</option>
+                <option value="6">求婚日</option>
+                <option value="2">订婚日</option>
+                <option value="4">结婚日</option>
+                <option value="8">周年庆</option>
+            </select>
+            <button id="query" value="查询"><a class="icon-search"></a>查询</button>
+        </div>
+    </div>
+</div>
+<!--内容-->
+<div class="py-2 px-2 mt-2 bg-info">
+    <!--表格-->
+    <div class="p-2 mb-2 bg-faded">
+        <table class="table table-hover table-bordered small">
+            <thead class="bg-info">
+            <tr>
+                <th>纪念日</th>
+                <th>关系</th>
+                <th>本年对应日期</th>
+                <th>距离天数</th>
+                <th>客户信息</th>
+                <th>联系电话</th>
+                <th>客户类别</th>
+                <th>维护人</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>纪念日</td>
+                <td>关系</td>
+                <td>本年对应日期</td>
+                <td>距离天数</td>
+                <td>客户信息</td>
+                <td>联系电话</td>
+                <td>客户类别</td>
+                <td>维护人</td>
+                <td>操作</td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>

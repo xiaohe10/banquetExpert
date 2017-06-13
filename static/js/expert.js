@@ -142,7 +142,7 @@ BanquetExpert = {
             item: [
                 {title: "财务报表", item_id: "FinanceManage"},
                 {title: "短信详单", item_id: "SMSDetails"},
-                {title: "餐厅基本信息", item_id: "Restaurant"},
+                {title: "酒店基本信息", item_id: "Restaurant"},
                 {title: "修改密码", item_id: "AccountManage"}
             ]
         },
@@ -150,7 +150,7 @@ BanquetExpert = {
             title: "评分审阅",
             menu_id: "Review",
             item: [
-                {title: "餐厅排名", item_id: "Rank"},
+                {title: "酒店排名", item_id: "Rank"},
                 {title: "中国服务私人订制标准视频教程", item_id: "Tutorial"}
             ]
         }
@@ -161,6 +161,17 @@ BanquetExpert = {
         {title: "餐段设置"}
     ]
 };
+
+$.get({
+    url: "/webApp/admin/hotel/profile/",
+    data: {
+        token: window.Login.token
+    },
+    success: function (data) {
+        console.log(window.Login.token);
+        BanquetExpert.data = eval(data);
+    }
+});
 
 var templates = {};
 var log = {

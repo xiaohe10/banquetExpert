@@ -1,6 +1,68 @@
 <!--主页/订单管理/订单金额录入-->
+<!--操作栏-->
 <div class="p-1">
     <div class="p-2 bg-success">
-        <div class="alert alert-warning alert-dismissible" role="alert">订单金额录入</div>
+        <div class="form-inline p-1">
+            <a>只能录入最近七日内订单</a>
+            <select>
+                <option>2017-6-13</option>
+                <option>2017-6-13</option>
+                <option>2017-6-13</option>
+                <option>2017-6-13</option>
+                <option>2017-6-13</option>
+                <option>2017-6-13</option>
+                <option>2017-6-13</option>
+            </select>
+            <select>
+                <option>全部接单渠道</option>
+                <optgroup label="内部渠道"></optgroup>
+                <option>内部渠道</option>
+                <option>内部渠道</option>
+                <option>内部渠道</option>
+                <optgroup label="外部渠道"></optgroup>
+                <option>外部渠道</option>
+                <option>外部渠道</option>
+                <option>外部渠道</option>
+            </select>
+            <input type="button" id="search" value="搜索"/>
+        </div>
+    </div>
+</div>
+<!--内容-->
+<div class="py-2 px-2 mt-2 bg-info">
+    <!--表格-->
+    <div class="p-2 mb-2 bg-faded">
+        <table class="table table-hover table-bordered small">
+            <thead class="bg-info">
+            <tr align="center">
+                <th>预订人</th>
+                <th>手机</th>
+                <th>单位</th>
+                <th>区域</th>
+                <th>桌位</th>
+                <th>人数</th>
+                <th>就餐时间</th>
+                <th>消费金额</th>
+                <th>操作员</th>
+                <th>接单渠道</th>
+                <th>订单状态</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr align="center">
+                <td>预订人</td>
+                <td>手机</td>
+                <td>单位</td>
+                <td>区域</td>
+                <td>桌位</td>
+                <td><input type="number" value="9"/></td>
+                <td>就餐时间</td>
+                <td><input type="number" value="9000.00"/></td>
+                <td>操作员</td>
+                <td>接单渠道</td>
+                <td>订单状态</td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>

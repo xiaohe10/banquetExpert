@@ -1,6 +1,68 @@
 <!--主页/订单管理/操作日志-->
+<!--操作栏-->
 <div class="p-1">
     <div class="p-2 bg-success">
-        <div class="alert alert-warning alert-dismissible" role="alert">操作日志</div>
+        <div class="form-inline p-1">
+            <input type="date" id="date-from"/>
+            ~
+            <input type="date" id="date-to"/>
+            <select id="staff">
+                <option>全部操作员</option>
+                <option>2017-06-13</option>
+                <option>2017-06-12</option>
+                <option>2017-06-11</option>
+                <option>2017-06-10</option>
+                <option>2017-06-09</option>
+                <option>2017-06-08</option>
+                <option>2017-06-07</option>
+            </select>
+            <select id="area">
+                <option>请选择区域</option>
+                <option>区域</option>
+                <option>区域</option>
+                <option>区域</option>
+                <option>区域</option>
+                <option>区域</option>
+                <option>区域</option>
+                <option>区域</option>
+            </select>
+            <select id="seat">
+                <option>请选择餐位</option>
+                <option>餐位</option>
+                <option>餐位</option>
+                <option>餐位</option>
+                <option>餐位</option>
+                <option>餐位</option>
+                <option>餐位</option>
+                <option>餐位</option>
+            </select>
+            <input type="button" id="search" value="搜索"/>
+        </div>
+    </div>
+</div>
+<!--内容-->
+<div class="py-2 px-2 mt-2 bg-info">
+    <!--表格-->
+    <div class="p-2 mb-2 bg-faded">
+        <table class="table table-hover table-bordered small">
+            <thead class="bg-info">
+            <tr id="center">
+                <th align="center">操作时间</th>
+                <th>操作人</th>
+                <th>操作类型</th>
+                <th>操作内容</th>
+                <th>订单信息</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr align="center">
+                <td style="width:120px;">6月13日 10:27:42</td>
+                <td>孙佳玥</td>
+                <td>预订单撤销</td>
+                <td>撤销时先生预订的2017-06-13午餐段518桌位</td>
+                <td>6月13日午餐12:00时先生13501350028</td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>
