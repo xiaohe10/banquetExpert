@@ -1,8 +1,9 @@
 <!--主页/订单管理/来电记录-->
 <!--操作栏-->
 <div class="py-1 bg-info">
-    <div class="p-2 bg-success" id="option">
-
+    <div class="p-2 bg-success">
+        <div class="form-inline p-1" id="option">
+        </div>
     </div>
 </div>
 <!--内容-->
@@ -65,6 +66,7 @@
         </div>
     </form>
 
+
 </script>
 <script id="TableTemplate" type="text/plain">
     {{for table}}
@@ -76,6 +78,7 @@
             <td>{{:status}}</td>
         </tr>
     {{/for }}
+
 
 </script>
 <script>

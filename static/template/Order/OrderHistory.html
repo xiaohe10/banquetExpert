@@ -7,13 +7,13 @@
 <div class="py-2 px-2 mt-2 bg-info" id="content">
     <!--导航栏-->
     <div class="pb-2">
-        <ul class="nav nav-tabs nav-justified">
-            <li class="active" href="#/Order/OrderHistory/Filter/Valid">有效订单</li>
-            <li href="#/Order/OrderHistory/Filter/Canceled">撤单</li>
-            <li href="#/Order/OrderHistory/Filter/RedBag">红包</li>
-            <li href="#/Order/OrderHistory/Filter/Scattered">散客</li>
-            <li href="#/Order/OrderHistory/Filter/All">全部订单</li>
-        </ul>
+        <nav class="nav nav-tabs">
+            <a class="nav-link" href="#/Order/OrderHistory/Filter/Valid">有效订单</a>
+            <a class="nav-link" href="#/Order/OrderHistory/Filter/Canceled">撤单</a>
+            <a class="nav-link" href="#/Order/OrderHistory/Filter/RedBag">红包</a>
+            <a class="nav-link" href="#/Order/OrderHistory/Filter/Scattered">散客</a>
+            <a class="nav-link" href="#/Order/OrderHistory/Filter/All">全部订单</a>
+        </nav>
     </div>
     <!--详细信息-->
     <div class="p-2 mb-2 bg-success form-inline">
@@ -141,7 +141,7 @@
     </div>
 </div>
 <!--操作栏模板-->
-<script id="OptionTemplate" type="text/x-jsrender">
+<script id="OptionTemplate" type="text/plain">
     <div class="p-2 bg-success">
         <div class="form-inline p-1">
             <a>就餐日期：</a>
