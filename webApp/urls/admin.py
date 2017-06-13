@@ -16,6 +16,12 @@ urlpatterns = [
     # 删除门店(delete)
     url(r'^hotel_branch/delete/$',
         HotelBranchList.as_view(), name='hotel_branch_delete'),
+    # 获取门店资料(get)/修改门店资料(post)
+    url(r'^hotel_branch/profile/$', HotelBranchProfile.as_view(),
+        name='hotel_branch_profile'),
+    # 增加门店介绍图片(post)/删除门店介绍图片(delete)
+    url(r'^hotel_branch/picture/$', HotelBranchPicture.as_view(),
+        name='hotel_branch_picture'),
     # 获取酒店员工列表(get)
     url(r'^staff/list/$', StaffList.as_view(), name='staff_list'),
     # 注册新的员工(post)

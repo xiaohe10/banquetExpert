@@ -86,7 +86,7 @@ class HotelBranch(models.Model):
     # 头像
     icon = models.CharField(max_length=100, default='')
     # 酒店门店介绍图片，最多5张
-    picture = models.CharField(max_length=300, default='')
+    pictures = models.CharField(max_length=300, default='')
     # 所属省
     province = models.CharField(max_length=20, default='')
     # 所属市
@@ -395,7 +395,7 @@ class Order(models.Model):
     # 撤销时间
     cancel_time = models.DateTimeField(default=None, db_index=True)
 
-    # 预定桌位, 可能多桌, 用'|'隔开
+    # 预定桌位, 可能多桌
     desks = models.CharField(max_length=50, default='')
     # 顾客(可能是散客)
     user = models.ForeignKey(

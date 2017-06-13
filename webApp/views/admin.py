@@ -1,5 +1,6 @@
 import os
 import string
+import json
 
 from PIL import Image
 from random import choice
@@ -15,8 +16,9 @@ from ..utils.decorator import validate_args, validate_admin_token
 from ..utils.cc_sdk import create_live_room, update_live_room, replay_live_room
 from ..models import Admin, Hotel, HotelBranch, Staff, Live
 
-__all__ = ['Token', 'HotelProfile', 'HotelBranchList', 'StaffList',
-           'StaffProfile', 'LiveList', 'LiveProfile', 'LivePlayBack']
+__all__ = ['Token', 'HotelProfile', 'HotelBranchList', 'HotelBranchProfile',
+           'HotelBranchPicture', 'StaffList', 'StaffProfile', 'LiveList',
+           'LiveProfile', 'LivePlayBack']
 
 
 class Token(View):
@@ -37,7 +39,7 @@ class Token(View):
         except Admin.DoesNotExist:
             return err_response('err_2', '管理员不存在')
         else:
-            if not admin.is_enabled:
+            if (not admin.is_enabled) or (admin.type != 0):
                 return err_response('err_2', '管理员不存在')
             if admin.password != password:
                 return err_response('err_4', '密码错误')
@@ -107,6 +109,10 @@ class HotelProfile(View):
         except Hotel.DoesNotExist:
             return err_response('err_3', '酒店不存在')
 
+        # 管理员只能管理自己酒店
+        if hotel != request.admin.hotel:
+            return err_response('err_2', '权限错误')
+
         name = kwargs.pop('name') if 'name' in kwargs else None
         owner_name = kwargs.pop('owner_name') if \
             'owner_name' in kwargs else None
@@ -121,24 +127,24 @@ class HotelProfile(View):
         if 'icon' in request.FILES:
             icon = request.FILES['icon']
 
-            if icon:
-                icon_time = timezone.now().strftime('%H%M%S%f')
-                icon_tail = str(icon).split('.')[-1]
-                dir_name = 'uploaded/icon/hotel/%d/' % request.staff.id
-                os.makedirs(dir_name, exist_ok=True)
-                file_name = dir_name + '%s.%s' % (icon_time, icon_tail)
+            icon_time = timezone.now().strftime('%H%M%S%f')
+            icon_tail = str(icon).split('.')[-1]
+            dir_name = 'uploaded/icon/hotel/%d/' % hotel.id
+            os.makedirs(dir_name, exist_ok=True)
+            file_name = dir_name + '%s.%s' % (icon_time, icon_tail)
+            try:
                 img = Image.open(icon)
                 img.save(file_name, quality=90)
+            except OSError:
+                return err_response('err4', '图片为空或图片格式错误')
 
-                # 删除旧文件, 保存新的文件路径
-                if hotel.icon:
-                    try:
-                        os.remove(hotel.icon)
-                    except OSError:
-                        pass
-                hotel.icon = file_name
-
-            return err_response('err_4', '图片为空')
+            # 删除旧文件, 保存新的文件路径
+            if hotel.icon:
+                try:
+                    os.remove(hotel.icon)
+                except OSError:
+                    pass
+            hotel.icon = file_name
 
         hotel.save()
         return corr_response()
@@ -171,22 +177,22 @@ class HotelBranchList(View):
             2: 昵称升序
             3: 昵称降序
         :return:
-            count: 员工总数
-            list: 员工列表
+            count: 门店总数
+            list: 门店列表
                 branch_id: ID
                 name: 名称
                 icon: 头像
-                picture: 图片(最多5张，用"|"分割)
+                pictures: 图片(最多5张，json数组)
                 province: 省
                 city: 市
                 county: 区/县
                 address: 详细地址
                 facility: 设施(json字符串)
                 pay_card: 可以刷哪些卡(json字符串)
-                phone: 联系电话(最多3个，用"|"分割)
+                phone: 联系电话(最多3个，json数组)
                 cuisine: 菜系(json字符串)
                 hotel_name: 所属酒店名
-                manager: 店长
+                manager_name: 店长名字
                 create_time: 创建时间
         """
 
@@ -196,7 +202,7 @@ class HotelBranchList(View):
             return err_response('err_3', '酒店不存在')
 
         # 管理员只能查看自己酒店的门店
-        if request.admin.type == 0 and hotel != request.admin.hotel:
+        if hotel != request.admin.hotel:
             return err_response('err_2', '权限错误')
         c = HotelBranch.objects.filter(
             hotel=hotel, is_enabled=is_enabled).count()
@@ -207,7 +213,7 @@ class HotelBranchList(View):
         l = [{'branch_id': b.id,
               'name': b.name,
               'icon': b.icon,
-              'picture': b.picture,
+              'pictures': b.pictures,
               'province': b.province,
               'city': b.city,
               'county': b.county,
@@ -217,7 +223,7 @@ class HotelBranchList(View):
               'phone': b.phone,
               'cuisine': b.cuisine,
               'hotel_name': b.hotel.hotel.name,
-              'manager': b.manager,
+              'manager_name': b.manager.name,
               'create_time': b.create_time} for b in branches]
         return corr_response({'count': c, 'list': l})
 
@@ -247,7 +253,7 @@ class HotelBranchList(View):
             city: 市(必传)
             county: 区/县(必传)
             address: 详细地址(必传)
-            phone: 联系电话(最多3个，用"|"分割，必传)
+            phone: 联系电话(最多3个，json数组)
             facility: 设施(json字符串)
             pay_card: 可以刷哪些卡(json字符串)
             cuisine: 菜系(json字符串)
@@ -297,6 +303,232 @@ class HotelBranchList(View):
             branch.is_enabled = False
             branch.save()
             return corr_response()
+
+
+class HotelBranchProfile(View):
+
+    @validate_args({
+        'token': forms.CharField(min_length=32, max_length=32),
+        'branch_id': forms.IntegerField(),
+    })
+    @validate_admin_token()
+    def get(self, request, token, branch_id, **kwargs):
+        """获取酒店门店列表
+
+        :param token: 令牌(必传)
+        :param branch_id: 门店ID(必传)
+        :return
+            name: 名称
+            icon: 头像
+            pictures: 图片(最多5张，json数组)
+            province: 省
+            city: 市
+            county: 区/县
+            address: 详细地址
+            facility: 设施(json字符串)
+            pay_card: 可以刷哪些卡(json字符串)
+            phone: 联系电话(最多3个，json数组)
+            cuisine: 菜系(json字符串)
+            hotel_name: 所属酒店名
+            manager_name: 店长名字
+            is_enabled: 是否有效
+            create_time: 创建时间
+        """
+
+        try:
+            branch = HotelBranch.objects.get(id=branch_id)
+        except ObjectDoesNotExist:
+            return err_response('err_3', '门店不存在')
+
+        # 管理员只能查看自己酒店的门店
+        if branch.hotel != request.admin.hotel:
+            return err_response('err_2', '权限错误')
+
+        d = {'branch_id': branch.id,
+             'name': branch.name,
+             'icon': branch.icon,
+             'pictures': branch.pictures,
+             'province': branch.province,
+             'city': branch.city,
+             'county': branch.county,
+             'address': branch.address,
+             'facility': branch.facility,
+             'pay_card': branch.pay_card,
+             'phone': branch.phone,
+             'cuisine': branch.cuisine,
+             'hotel_name': branch.hotel.hotel.name,
+             'manager_name': branch.manager_name,
+             'is_enabled': branch.is_enabled,
+             'create_time': branch.create_time}
+        return corr_response(d)
+
+    @validate_args({
+        'token': forms.CharField(min_length=32, max_length=32),
+        'branch_id': forms.IntegerField(),
+        'staff_id': forms.IntegerField(required=False),
+        'name': forms.CharField(min_length=1, max_length=20, required=False),
+        'province': forms.CharField(min_length=1, max_length=20,
+                                    required=False),
+        'city': forms.CharField(min_length=1, max_length=20, required=False),
+        'county': forms.CharField(min_length=1, max_length=20, required=False),
+        'address': forms.CharField(min_length=1, max_length=50, required=False),
+        'phone': forms.CharField(min_length=1, max_length=50, required=False),
+        'facility': forms.CharField(max_length=100, required=False),
+        'pay_card': forms.CharField(max_length=20, required=False),
+        'cuisine': forms.CharField(max_length=100, required=False),
+        'is_enabled': forms.BooleanField(required=False),
+    })
+    @validate_admin_token()
+    def post(self, request, token, branch_id, staff_id=None, **kwargs):
+        """修改门店信息
+        :param token: 令牌(必传)
+        :param branch_id: 酒店ID(必传)
+        :param staff_id: 店长ID
+        :param kwargs
+            name: 名称
+            province: 省
+            city: 市
+            county: 区/县
+            address: 详细地址
+            phone: 联系电话(最多3个，json数组)
+            facility: 设施(json字符串)
+            pay_card: 可以刷哪些卡(json字符串)
+            cuisine: 菜系(json字符串)
+            is_enabled: 是否有效
+            icon: 头像, [file]格式图片
+        :return 200/400
+        """
+
+        try:
+            branch = HotelBranch.objects.get(id=branch_id)
+        except ObjectDoesNotExist:
+            return err_response('err_3', '酒店不存在')
+
+        if staff_id is not None:
+            try:
+                staff = Staff.enabled_objects.get(id=staff_id)
+            except Staff.DoesNotExist:
+                return err_response('err_4', '员工不存在')
+            branch.manager = staff
+
+        branch_keys = ('name', 'province', 'city', 'county', 'address', 'phone',
+                       'facility', 'pay_card', 'cuisine', 'is_enabled')
+
+        for k in branch_keys:
+            if k in kwargs:
+                setattr(branch, k, kwargs[k])
+
+        # 修改头像
+        if 'icon' in request.FILES:
+            icon = request.FILES['icon']
+
+            icon_time = timezone.now().strftime('%H%M%S%f')
+            icon_tail = str(icon).split('.')[-1]
+            dir_name = 'uploaded/icon/branch/%d/' % branch.id
+            os.makedirs(dir_name, exist_ok=True)
+            file_name = dir_name + '%s.%s' % (icon_time, icon_tail)
+            try:
+                img = Image.open(icon)
+                img.save(file_name, quality=90)
+            except OSError:
+                return err_response('err4', '图片为空或图片格式错误')
+
+            # 删除旧文件, 保存新的文件路径
+            if branch.icon:
+                try:
+                    os.remove(branch.icon)
+                except OSError:
+                    pass
+            branch.icon = file_name
+
+        branch.save()
+        return corr_response()
+
+
+class HotelBranchPicture(View):
+
+    @validate_args({
+        'token': forms.CharField(min_length=32, max_length=32),
+        'branch_id': forms.IntegerField(),
+    })
+    @validate_admin_token()
+    def post(self, request, token, branch_id):
+        """增加门店图片
+
+        :param token: 令牌(必传)
+        :param branch_id: 酒店ID(必传)
+        :param picture: 酒店介绍图片, [file]格式图片, 增加图片时传
+        :return 200/400
+        """
+
+        try:
+            branch = HotelBranch.objects.get(id=branch_id)
+        except ObjectDoesNotExist:
+            return err_response('err_3', '酒店不存在')
+
+        pictures = json.loads(branch.pictures)
+
+        # 添加图片
+        if 'picture' in request.FILES:
+            picture = request.FILES['picture']
+
+            if len(pictures) >= 5:
+                return err_response('err5', '图片数量已超过限制')
+
+            picture_time = timezone.now().strftime('%H%M%S%f')
+            picture_tail = str(picture).split('.')[-1]
+            dir_name = 'uploaded/picture/branch/%d/' % branch.id
+            os.makedirs(dir_name, exist_ok=True)
+            file_name = dir_name + '%s.%s' % (picture_time, picture_tail)
+            try:
+                img = Image.open(picture)
+                img.save(file_name, quality=90)
+            except OSError:
+                return err_response('err4', '图片为空或图片格式错误')
+
+            pictures.append(file_name)
+            branch.pictures = json.dumps(pictures)
+
+            branch.save()
+            return corr_response()
+        else:
+            return err_response('err1', '参数不正确（缺少参数或者不符合格式）')
+
+    @validate_args({
+        'token': forms.CharField(min_length=32, max_length=32),
+        'branch_id': forms.IntegerField(),
+        'pictures': forms.CharField(max_length=300),
+    })
+    @validate_admin_token()
+    def delete(self, request, token, branch_id, pictures):
+        """删除酒店介绍图片
+
+        :param token: 令牌(必传)
+        :param branch_id: 酒店ID(必传)
+        :param pictures: 需要删除的酒店介绍图片, json数组, 最多5张
+        :return:
+        """
+
+        try:
+            branch = HotelBranch.objects.get(id=branch_id)
+        except ObjectDoesNotExist:
+            return err_response('err_3', '酒店不存在')
+
+        try:
+            picture_list = json.loads(pictures)
+        except ValueError:
+            return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+
+        pictures_tmp = json.loads(branch.pictures)
+        for picture in picture_list:
+            if picture in pictures_tmp:
+                pictures_tmp.remove(picture)
+            else:
+                return err_response('err_4', '图片不存在')
+
+        branch.pictures = json.dumps(pictures_tmp)
+        branch.save()
+        return corr_response()
 
 
 class StaffList(View):
@@ -349,7 +581,7 @@ class StaffList(View):
             return err_response('err_4', '酒店不存在')
 
         # 管理员只能查看自己酒店的员工
-        if request.admin.type == 0 and hotel != request.admin.hotel:
+        if hotel != request.admin.hotel:
             return err_response('err_2', '权限错误')
         c = Staff.objects.filter(hotel=hotel, status=status,
                                  is_enabled=is_enabled).count()
@@ -401,7 +633,7 @@ class StaffList(View):
         except Hotel.DoesNotExist:
             return err_response('err_4', '酒店不存在')
         # 管理员只能添加自己酒店的员工
-        if request.admin.type == 0 and hotel != request.admin.hotel:
+        if hotel != request.admin.hotel:
             return err_response('err_2', '权限错误')
 
         if Staff.objects.filter(phone=phone).exists():
@@ -439,7 +671,7 @@ class StaffList(View):
         except Staff.DoesNotExist:
             return err_response('err_3', '员工不存在')
         # 管理员只能管理自己酒店的员工
-        if request.admin.type == 0 and staff.hotel != request.admin.hotel:
+        if staff.hotel != request.admin.hotel:
             return err_response('err_2', '权限错误')
 
         staff.is_enabled = False
@@ -481,7 +713,7 @@ class StaffProfile(View):
             return err_response('err_3', '员工不存在')
 
         # 管理员只能查看自己酒店的员工
-        if request.admin.type == 0 and staff.hotel != request.admin.hotel:
+        if staff.hotel != request.admin.hotel:
             return err_response('err_2', '权限错误')
 
         d = {'staff_id': staff.id,
@@ -534,7 +766,7 @@ class StaffProfile(View):
             return err_response('err_3', '员工不存在')
 
         # 管理员只能管理自己酒店的员工
-        if request.admin.type == 0 and staff.hotel != request.admin.hotel:
+        if staff.hotel != request.admin.hotel:
             return err_response('err_2', '权限错误')
 
         staff_keys = ('staff_number', 'gender', 'position', 'guest_channel',
@@ -542,6 +774,30 @@ class StaffProfile(View):
         for k in staff_keys:
             if k in kwargs:
                 setattr(staff, k, kwargs[k])
+
+        # 修改头像
+        if 'icon' in request.FILES:
+            icon = request.FILES['icon']
+
+            icon_time = timezone.now().strftime('%H%M%S%f')
+            icon_tail = str(icon).split('.')[-1]
+            dir_name = 'uploaded/icon/staff/%d/' % staff.id
+            os.makedirs(dir_name, exist_ok=True)
+            file_name = dir_name + '%s.%s' % (icon_time, icon_tail)
+            try:
+                img = Image.open(icon)
+                img.save(file_name, quality=90)
+            except OSError:
+                return err_response('err4', '图片为空或图片格式错误')
+
+            # 删除旧文件, 保存新的文件路径
+            if staff.icon:
+                try:
+                    os.remove(staff.icon)
+                except OSError:
+                    pass
+            staff.icon = file_name
+
         staff.save()
         return corr_response()
 
@@ -637,6 +893,7 @@ class LiveList(View):
 
         live_keys = ('start_date', 'end_date', 'start_time', 'end_time',
                      'price')
+
         # 生成推送和播放随机密码
         chars = string.ascii_letters + string.digits
         publisher_password = ''.join([choice(chars) for i in range(6)])
@@ -705,8 +962,9 @@ class LiveProfile(View):
             return err_response('err_4', '直播间不存在')
 
         # 管理员只能管理自己酒店的直播间
-        if request.admin.type == 0 and live.hotel != request.admin.hotel:
+        if live.hotel != request.admin.hotel:
             return err_response('err_2', '权限错误')
+
         name = kwargs.pop('name') if 'name' in kwargs else None
         description = kwargs.pop('description') \
             if 'description' in kwargs else None

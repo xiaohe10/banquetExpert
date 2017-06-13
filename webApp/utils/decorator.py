@@ -41,6 +41,8 @@ def validate_admin_token():
             except ObjectDoesNotExist:
                 return err_response('err_3', '不存在该管理员')
             else:
+                if admin.type != 0:
+                    return err_response('err_2', '权限错误')
                 if admin.is_enabled is not True:
                     return err_response('err_3', '不存在该管理员')
                 request.admin = admin

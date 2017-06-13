@@ -404,6 +404,9 @@ URL：webApp/order/search/ <br>
 |:------------- |:---------------| :-------------:|
 | token         | 登录口令          |         yes  |
 | staff_id         | 员工账户ID          |         yes  |
+| order_date    | 下单日期  |   no |
+| dinner_period | 餐段    |   no |
+| dinner_time   | 用餐时间  |   no  |
 | state | 订单状态（默认缺省表示所有未完成订单列表，没有限制，finished 表示未完成，processing 表示进行中）  | no |
 | search_key | 搜索关键词（如姓名、手机等进行模糊搜索） | no |
 

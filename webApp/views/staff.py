@@ -244,22 +244,24 @@ class Profile(View):
         if 'icon' in request.FILES:
             icon = request.FILES['icon']
 
-            if icon:
-                icon_time = timezone.now().strftime('%H%M%S%f')
-                icon_tail = str(icon).split('.')[-1]
-                dir_name = 'uploaded/icon/staff/%d/' % request.staff.id
-                os.makedirs(dir_name, exist_ok=True)
-                file_name = dir_name + '%s.%s' % (icon_time, icon_tail)
+            icon_time = timezone.now().strftime('%H%M%S%f')
+            icon_tail = str(icon).split('.')[-1]
+            dir_name = 'uploaded/icon/staff/%d/' % request.staff.id
+            os.makedirs(dir_name, exist_ok=True)
+            file_name = dir_name + '%s.%s' % (icon_time, icon_tail)
+            try:
                 img = Image.open(icon)
                 img.save(file_name, quality=90)
+            except OSError:
+                return err_response('err4', '图片为空或图片格式错误')
 
-                # 删除旧文件, 保存新的文件路径
-                if request.staff.icon:
-                    try:
-                        os.remove(request.staff.icon)
-                    except OSError:
-                        pass
-                request.staff.icon = file_name
+            # 删除旧文件, 保存新的文件路径
+            if request.staff.icon:
+                try:
+                    os.remove(request.staff.icon)
+                except OSError:
+                    pass
+            request.staff.icon = file_name
 
         request.staff.save()
         return corr_response()
