@@ -39,6 +39,7 @@ URL：webApp/staff/register <br>
 |:------------- |:---------------| :-------------:|
 | phone         | 手机号          |         yes    |
 | password      | 密码            |         yes    |
+| validation_code   | 验证码   |   yes |
 | hotel_id      | 酒店ID          |         yes    |
 | staff_number  | 员工编号        |         yes    |
 | name          | 姓名            |         yes    |
@@ -52,6 +53,7 @@ URL：webApp/staff/register <br>
 {
 	"phone":"18813101211",
 	"password":"pass",
+	"validation_code":"123456",
 	"hotel_id":12,
 	"staff_number":"2017213464",
 	"name":"小张",
@@ -183,8 +185,8 @@ URL：webApp/staff/pass_modify <br>
 
 
 ## 获取员工信息
-URL：webApp/staff/profile/ <br>
-请求方式：GET <br>
+URL：webApp/staff/profile/get/ <br>
+请求方式：POST <br>
 请求参数：
 
 | 参数名称       | 含义             | 是否必选       |
@@ -246,7 +248,7 @@ URL：webApp/staff/profile/ <br>
 | err_3 | 不存在该员工 |
 
 ## 修改员工信息
-URL：webApp/staff/profile/ <br>
+URL：webApp/staff/profile/modify/ <br>
 请求方式：POST <br>
 
 | 参数名称       | 含义             | 是否必选       |
@@ -404,6 +406,9 @@ URL：webApp/order/search/ <br>
 |:------------- |:---------------| :-------------:|
 | token         | 登录口令          |         yes  |
 | staff_id         | 员工账户ID          |         yes  |
+| order_date    | 下单日期  |   no |
+| dinner_period | 餐段    |   no |
+| dinner_time   | 用餐时间  |   no  |
 | state | 订单状态（默认缺省表示所有未完成订单列表，没有限制，finished 表示未完成，processing 表示进行中）  | no |
 | search_key | 搜索关键词（如姓名、手机等进行模糊搜索） | no |
 

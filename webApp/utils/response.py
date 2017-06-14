@@ -16,7 +16,6 @@ def corr_response(data=None):
             "status": "true",
             "data": data
         }
-    print(params)
     return JsonResponse(params)
 
 

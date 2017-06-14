@@ -11,7 +11,7 @@ def validate_super_admin_token():
     """对被装饰的方法根据token对超级管理者进行身份认证"""
     def decorator(function):
         @wraps(function)
-        def returned_wrapper(self, request, *args, **kwargs):
+        def returned_wrapper(request, *args, **kwargs):
             if 'token' not in kwargs:
                 return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
             try:
@@ -24,7 +24,7 @@ def validate_super_admin_token():
                 if admin.is_enabled is not True:
                     return err_response('err_3', '不存在该管理员')
                 request.admin = admin
-            return function(self, request, *args, **kwargs)
+            return function(request, *args, **kwargs)
         return returned_wrapper
     return decorator
 
@@ -33,7 +33,7 @@ def validate_admin_token():
     """对被装饰的方法根据token对管理者进行身份认证"""
     def decorator(function):
         @wraps(function)
-        def returned_wrapper(self, request, *args, **kwargs):
+        def returned_wrapper(request, *args, **kwargs):
             if 'token' not in kwargs:
                 return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
             try:
@@ -41,10 +41,12 @@ def validate_admin_token():
             except ObjectDoesNotExist:
                 return err_response('err_3', '不存在该管理员')
             else:
+                if admin.type != 0:
+                    return err_response('err_2', '权限错误')
                 if admin.is_enabled is not True:
                     return err_response('err_3', '不存在该管理员')
                 request.admin = admin
-            return function(self, request, *args, **kwargs)
+            return function(request, *args, **kwargs)
         return returned_wrapper
     return decorator
 
@@ -53,7 +55,7 @@ def validate_staff_token():
     """对被装饰的方法根据token对员工进行身份认证"""
     def decorator(function):
         @wraps(function)
-        def returned_wrapper(self, request, *args, **kwargs):
+        def returned_wrapper(request, *args, **kwargs):
             if 'token' not in kwargs:
                 return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
             try:
@@ -66,7 +68,7 @@ def validate_staff_token():
                 if staff.status == 0:
                     return err_response('err_3', '不存在该员工')
                 request.staff = staff
-            return function(self, request, *args, **kwargs)
+            return function(request, *args, **kwargs)
         return returned_wrapper
     return decorator
 
@@ -75,7 +77,7 @@ def validate_user_token():
     """对被装饰的方法根据token对用户进行身份认证"""
     def decorator(function):
         @wraps(function)
-        def returned_wrapper(self, request, *args, **kwargs):
+        def returned_wrapper(request, *args, **kwargs):
             if 'token' not in kwargs:
                 return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
             try:
@@ -86,7 +88,7 @@ def validate_user_token():
                 if user.is_enabled is not True:
                     return err_response('err_3', '不存在该用户')
                 request.user = user
-            return function(self, request, *args, **kwargs)
+            return function(request, *args, **kwargs)
         return returned_wrapper
     return decorator
 
@@ -97,7 +99,7 @@ def validate_args(dic):
     """
     def decorator(function):
         @wraps(function)
-        def returned_wrapper(self, request, *args, **kwargs):
+        def returned_wrapper(request, *args, **kwargs):
             if request.method == "GET":
                 data = request.GET
             elif request.method == "POST":
@@ -114,6 +116,6 @@ def validate_args(dic):
                 except ValidationError:
                     return err_response(
                         'err_1', '参数不正确（缺少参数或者不符合格式）')
-            return function(self, request, *args, **kwargs)
+            return function(request, *args, **kwargs)
         return returned_wrapper
     return decorator

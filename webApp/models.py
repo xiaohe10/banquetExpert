@@ -86,7 +86,7 @@ class HotelBranch(models.Model):
     # 头像
     icon = models.CharField(max_length=100, default='')
     # 酒店门店介绍图片，最多5张
-    picture = models.CharField(max_length=300, default='')
+    pictures = models.CharField(max_length=300, default='')
     # 所属省
     province = models.CharField(max_length=20, default='')
     # 所属市
@@ -395,7 +395,7 @@ class Order(models.Model):
     # 撤销时间
     cancel_time = models.DateTimeField(default=None, db_index=True)
 
-    # 预定桌位, 可能多桌, 用'|'隔开
+    # 预定桌位, 可能多桌
     desks = models.CharField(max_length=50, default='')
     # 顾客(可能是散客)
     user = models.ForeignKey(
@@ -616,3 +616,49 @@ class LiveSubscribe(models.Model):
 
     class Meta:
         ordering = ['-create_time']
+
+
+class ValidationCode(models.Model):
+    """验证码"""
+
+    phone_number = models.CharField(max_length=11, primary_key=True)
+    code = models.CharField(max_length=6, default=None)
+    time_expired = models.DateTimeField()
+
+    @classmethod
+    def verify(cls, phone_number, code):
+        """校验验证码"""
+
+        try:
+            now = timezone.now()
+            r = cls.objects.get(phone_number=phone_number)
+        except cls.DoesNotExist:
+            return False
+        else:
+            return True if code == r.code and now <= r.time_expired else False
+
+    @classmethod
+    def generate(cls, phone_number, minutes=3):
+        """为某个手机号生成验证码"""
+
+        from datetime import timedelta
+        from random import Random
+
+        try:
+            r = cls.objects.get(phone_number=phone_number)
+            # 接口访问频率限制, 1分钟
+            if r.time_expired <= timezone.now() + timedelta(minutes=1):
+                return ''
+        except cls.DoesNotExist:
+            r = cls(phone_number)
+        r.time_expired = timezone.now() + timedelta(minutes=minutes)
+        random = Random()
+        while True:
+            code = ''
+            for i in range(6):
+                code += str(random.choice(range(0, 10)))
+            if code != r.code:
+                r.code = code
+                break
+        r.save()
+        return r.code
