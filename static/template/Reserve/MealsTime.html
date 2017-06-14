@@ -20,133 +20,124 @@
             </tr>
             </thead>
             <tbody class="align-content-center" id="MealsTime">
-
+            {{for Table ~lunch=Lunch ~dinner=Dinner ~supper=Supper}}
+            <tr class="table-info">
+                <td>{{:dayofweek}}</td>
+                <td>
+                    <select name="lunch_from">
+                        {{for ~lunch}}
+                        {{if ~lunch[#index] === ~lunch_from}}
+                        <option>午餐{{:element}}</option>
+                        {{else}}
+                        <option selected>午餐{{:element}}</option>
+                        {{/if}}
+                        {{/for }}
+                    </select>
+                    ~
+                    <select name="lunch_to">
+                        {{for ~lunch}}
+                        {{if element == lunch_to}}
+                        <option>午餐{{:lunch[#index]}}</option>
+                        {{else}}
+                        <option selected>午餐{{:lunch[#index]}}</option>
+                        {{/if}}
+                        {{/for }}
+                    </select>
+                </td>
+                <td>
+                    <select name="dinner_from">
+                        {{for ~dinner}}
+                        {{if element == dinner_from}}
+                        <option>晚餐{{:dinner[#index]}}</option>
+                        {{else}}
+                        <option selected>晚餐{{:dinner[#index]}}</option>
+                        {{/if}}
+                        {{/for }}
+                    </select>
+                    ~
+                    <select name="dinner_to">
+                        {{for ~dinner}}
+                        {{if element == dinner_to}}
+                        <option>晚餐{{:dinner[#index]}}</option>
+                        {{else}}
+                        <option selected>晚餐{{:~dinner_to[#index]}}</option>
+                        {{/if}}
+                        {{/for }}
+                    </select>
+                </td>
+                <td>
+                    <select name="from">
+                        {{for ~supper}}
+                        {{if element == from}}
+                        <option>夜宵{{:~supper[#index]}}</option>
+                        {{else}}
+                        <option selected>夜宵{{:~supper[#index]}}</option>
+                        {{/if}}
+                        {{/for }}
+                    </select>
+                    ~
+                    <select name="to">
+                        {{for ~supper}}
+                        {{if element == to}}
+                        <option>夜宵{{:~supper[#index]}}</option>
+                        {{else}}
+                        <option selected>夜宵{{:~supper[#index]}}</option>
+                        {{/if}}
+                        {{/for }}
+                    </select>
+                </td>
+            </tr>
+            {{/for }}
             </tbody>
         </table>
     </form>
 </div>
-<script id="MealsTimeTemplate" type="text/x-jsrender">
-    {{for table ~lunch=Lunch ~dinner=Dinner ~supper=Supper}}
-    <tr class="table-info">
-        <td>{{:dayofweek}}</td>
-        <td>
-            <select name="lunch_from">
-                {{for ~lunch}}
-                    {{if ~lunch[#index] === ~lunch_from}}
-                        <option>午餐{{:element}}</option>
-                    {{else}}
-                        <option selected>午餐{{:element}}</option>
-                    {{/if}}
-                {{/for }}
-            </select>
-            ~
-            <select name="lunch_to">
-                {{for ~lunch}}
-                    {{if element == lunch_to}}
-                        <option>午餐{{:lunch[#index]}}</option>
-                    {{else}}
-                        <option selected>午餐{{:lunch[#index]}}</option>
-                    {{/if}}
-                {{/for }}
-            </select>
-        </td>
-        <td></td>
-        <td></td>
-    </tr>
-    {{/for }}
+<script id="MealsTimeTemplate" type="text/plain">
+
 </script>
 <script>
     var MealsTime = {
         Lunch: BanquetExpert.meals.lunch,
         Dinner: BanquetExpert.meals.dinner,
         Supper: BanquetExpert.meals.supper,
-        Table: [
-            {
-                dayofweek: "星期一",
-                lunch_from: "08:30", lunch_to: "11:30",
-                dinner_from: "15:00", dinner_to: "23:45",
-                supper_from: "22:00", supper_to: "04:00"
+        Table: {
+            "Monday": {
+                lunch: {from: "08:30", to: "11:30"},
+                dinner: {from: "15:00", to: "23:45"},
+                supper: {from: "22:00", to: "04:00"}
             },
-            {
-                dayofweek: "星期二",
-                lunch_from: "08:30", lunch_to: "11:30",
-                dinner_from: "15:00", dinner_to: "23:45",
-                supper_from: "22:00", supper_to: "04:00"
+            "Tuesday": {
+                lunch: {from: "08:30", to: "11:30"},
+                dinner: {from: "15:00", to: "23:45"},
+                supper: {from: "22:00", to: "04:00"}
             },
-            {
-                dayofweek: "星期三",
-                lunch_from: "08:30", lunch_to: "11:30",
-                dinner_from: "15:00", dinner_to: "23:45",
-                supper_from: "22:00", supper_to: "04:00"
+            "Wednesday": {
+                lunch: {from: "08:30", to: "11:30"},
+                dinner: {from: "15:00", to: "23:45"},
+                supper: {from: "22:00", to: "04:00"}
             },
-            {
-                dayofweek: "星期四",
-                lunch_from: "08:30", lunch_to: "11:30",
-                dinner_from: "15:00", dinner_to: "23:45",
-                supper_from: "22:00", supper_to: "04:00"
+            "Thursday": {
+                lunch: {from: "08:30", to: "11:30"},
+                dinner: {from: "15:00", to: "23:45"},
+                supper: {from: "22:00", to: "04:00"}
             },
-            {
-                dayofweek: "星期五",
-                lunch_from: "08:30", lunch_to: "11:30",
-                dinner_from: "15:00", dinner_to: "23:45",
-                supper_from: "22:00", supper_to: "04:00"
+            "Friday": {
+                lunch: {from: "08:30", to: "11:30"},
+                dinner: {from: "15:00", to: "23:45"},
+                supper: {from: "22:00", to: "04:00"}
             },
-            {
-                dayofweek: "星期六",
-                lunch_from: "08:30", lunch_to: "11:30",
-                dinner_from: "15:00", dinner_to: "23:45",
-                supper_from: "22:00", supper_to: "04:00"
+            "Saturday": {
+                lunch: {from: "08:30", to: "11:30"},
+                dinner: {from: "15:00", to: "23:45"},
+                supper: {from: "22:00", to: "04:00"}
             },
-            {
-                dayofweek: "星期日",
-                lunch_from: "08:30", lunch_to: "11:30",
-                dinner_from: "15:00", dinner_to: "23:45",
-                supper_from: "22:00", supper_to: "04:00"
+            "Sunday": {
+                lunch: {from: "08:30", to: "11:30"},
+                dinner: {from: "15:00", to: "23:45"},
+                supper: {from: "22:00", to: "04:00"}
             }
-        ]
+        }
     };
 
     $.templates("#MealsTimeTemplate").link("#MealsTime", MealsTime);
 </script>
-        <!--<td>-->
-            <!--<select name="dinner_from">-->
-                <!--{{for ~dinner}}-->
-                    <!--{{if element == dinner_from}}-->
-                        <!--<option>晚餐{{:dinner[#index]}}</option>-->
-                    <!--{{else}}-->
-                        <!--<option selected>晚餐{{:dinner[#index]}}</option>-->
-                    <!--{{/if}}-->
-                <!--{{/for }}-->
-            <!--</select>-->
-            <!--~-->
-            <!--<select name="dinner_to">-->
-                <!--{{for ~dinner}}-->
-                    <!--{{if element == dinner_to}}-->
-                        <!--<option>晚餐{{:dinner[#index]}}</option>-->
-                    <!--{{else}}-->
-                        <!--<option selected>晚餐{{:~dinner_to[#index]}}</option>-->
-                    <!--{{/if}}-->
-                <!--{{/for }}-->
-            <!--</select>-->
-        <!--</td>-->
-        <!--<td>-->
-            <!--<select name="supper_from">-->
-                <!--{{for ~supper}}-->
-                    <!--{{if element == supper_from}}-->
-                        <!--<option>夜宵{{:~supper[#index]}}</option>-->
-                    <!--{{else}}-->
-                        <!--<option selected>夜宵{{:~supper[#index]}}</option>-->
-                    <!--{{/if}}-->
-                <!--{{/for }}-->
-            <!--</select>-->
-            <!--~-->
-            <!--<select name="supper_to">-->
-                <!--{{for ~supper}}-->
-                    <!--{{if element == supper_to}}-->
-                        <!--<option>夜宵{{:~supper[#index]}}</option>-->
-                    <!--{{else}}-->
-                        <!--<option selected>夜宵{{:~supper[#index]}}</option>-->
-                    <!--{{/if}}-->
-                <!--{{/for }}-->
-            <!--</select>-->
-        <!--</td>-->

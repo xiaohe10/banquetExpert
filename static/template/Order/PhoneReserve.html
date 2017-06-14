@@ -1,8 +1,9 @@
 <!--主页/订单管理/来电记录-->
 <!--操作栏-->
 <div class="py-1 bg-info">
-    <div class="p-2 bg-success" id="option">
-
+    <div class="p-2 bg-success">
+        <div class="form-inline p-1" id="option">
+        </div>
     </div>
 </div>
 <!--内容-->
@@ -11,7 +12,7 @@
     <div class="p-2 mb-2 bg-faded">
         <table class="table table-hover table-bordered small">
             <thead class="bg-info">
-            <tr align="center">
+            <tr align="middle">
                 <td>日期</td>
                 <td>时间</td>
                 <td>来电</td>
@@ -27,15 +28,15 @@
     <!--分页导航-->
     <div class="row m-2">
         <nav aria-label="Page navigation">
-            <ul class="pagination pagination-lg">
+            <ul class="pagination">
                 <li>
                     <a href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
+                        <span aria-hidden="true">«</span>
                     </a>
                 </li>
                 <li><a href="#">1</a></li>
                 <li><a href="#">2</a></li>
-                <li class="active"><a href="#">3</a></li>
+                <li><a href="#">3</a></li>
                 <li><a href="#">4</a></li>
                 <li><a href="#">5</a></li>
                 <li><a href="#">6</a></li>
@@ -45,7 +46,7 @@
                 <li><a href="#">10</a></li>
                 <li>
                     <a href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
+                        <span aria-hidden="true">»</span>
                     </a>
                 </li>
             </ul>
@@ -57,10 +58,10 @@
         <!--查询-->
         <div class="form-inline p-1">
             <a>选择日期区间：</a>
-            <input type="date" data-link="date-from"/>
+            <input class="form-control form-control-sm" type="date" id="date_from" data-link="date_from"/>
             ~
-            <input type="date" data-link="date-to"/>
-            <input type="text" data-link="keyword" placeholder="输入姓名或手机号"/>
+            <input class="form-control form-control-sm" type="date" id="date_to" data-link="date_to"/>
+            <input class="form-control form-control-sm" type="text" id="keyword" data-link="keyword" placeholder="输入姓名或手机号"/>
             <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" id="query" value="查询"/>
         </div>
     </form>
@@ -77,6 +78,7 @@
     {{/for }}
 </script>
 <script>
+    var TAG = "#/Order/PhoneReserve";
     var option = {
         date_from: "",
         date_to: "",
@@ -87,9 +89,26 @@
         table: []
     };
 
-    for (var i = 0; i < 10; i++) {
-        data.table.push({date: "日期", time: "时间", phone: "来电", name: "姓名", status: "状态"});
+    for (var i = 0; i < 16; i++) {
+        data.table.push({date: "2017-06-13", time: "14:24:15", phone: "100 0000 0000", name: "凌乱了", status: "未处理"});
     }
     $.templates("#OptionTemplate").link("#option", option);
     $.templates("#TableTemplate").link("#table", data);
+
+    $("#date_from").change(function () {
+        // TODO: 根据起始日期筛选数据
+        Log.i(TAG, "根据起始日期筛选数据：" + option.date_from);
+    });
+    $("#date_to").change(function () {
+        // TODO: 根据结束日期筛选数据
+        Log.i(TAG, "根据结束日期筛选数据：" + option.date_to);
+    });
+    $("#keyword").change(function () {
+        // TODO: 根据关键字查找数据
+        Log.i(TAG, "根据关键字查找数据：" + option.keyword);
+    });
+    $("#query").click(function () {
+        // TODO: 根据日期和关键字查找数据
+        Log.i(TAG, JSON.stringify(option));
+    });
 </script>

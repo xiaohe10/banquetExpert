@@ -1,10 +1,10 @@
 <!--主页/订单管理/订单金额录入-->
 <!--操作栏-->
-<div class="p-1">
+<div class="py-1 bg-info">
     <div class="p-2 bg-success">
         <div class="form-inline p-1">
             <a>只能录入最近七日内订单</a>
-            <select>
+            <select class="form-control form-control-sm" id="date">
                 <option>2017-6-13</option>
                 <option>2017-6-13</option>
                 <option>2017-6-13</option>
@@ -13,7 +13,7 @@
                 <option>2017-6-13</option>
                 <option>2017-6-13</option>
             </select>
-            <select>
+            <select class="form-control form-control-sm" id="channel">
                 <option>全部接单渠道</option>
                 <optgroup label="内部渠道"></optgroup>
                 <option>内部渠道</option>
@@ -24,7 +24,8 @@
                 <option>外部渠道</option>
                 <option>外部渠道</option>
             </select>
-            <input type="button" id="search" value="搜索"/>
+            <input class="btn btn-primary btn-sm ml-2 mr-1" type="button" id="search" value="搜索"/>
+            <input class="btn btn-secondary btn-sm ml-1 mr-2" type="button" id="save" value="保存"/>
         </div>
     </div>
 </div>
@@ -35,17 +36,17 @@
         <table class="table table-hover table-bordered small">
             <thead class="bg-info">
             <tr align="center">
-                <th>预订人</th>
-                <th>手机</th>
-                <th>单位</th>
-                <th>区域</th>
-                <th>桌位</th>
-                <th>人数</th>
-                <th>就餐时间</th>
-                <th>消费金额</th>
-                <th>操作员</th>
-                <th>接单渠道</th>
-                <th>订单状态</th>
+                <td>预订人</td>
+                <td>手机</td>
+                <td>单位</td>
+                <td>区域</td>
+                <td>桌位</td>
+                <td>人数</td>
+                <td>就餐时间</td>
+                <td>消费金额</td>
+                <td>操作员</td>
+                <td>接单渠道</td>
+                <td>订单状态</td>
             </tr>
             </thead>
             <tbody>
@@ -66,3 +67,14 @@
         </table>
     </div>
 </div>
+<script>
+
+    // TODO: 绑定数据与模板
+
+    $("#date").change(function () {
+        // TODO: 选择日期
+    });
+    $("#channel").change(function () {
+        // TODO: 选择渠道
+    });
+</script>

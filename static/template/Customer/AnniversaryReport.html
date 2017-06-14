@@ -1,12 +1,12 @@
 <!--主页/客户管理/纪念日查询报表-->
 <!--操作栏-->
-<div class="p-1">
+<div class="py-1 bg-info">
     <div class="p-2 bg-success">
         <div class="form-inline p-1">
-            <input type="date" id="date-from"/>
+            <input class="form-control form-control-sm mx-1" type="date" id="date-from"/>
             ~
-            <input type="date" id="date-to"/>
-            <select id="classify">
+            <input class="form-control form-control-sm mx-1" type="date" id="date-to"/>
+            <select class="form-control form-control-sm mx-1" id="classify">
                 <option value="-1" selected>请选择分类</option>
                 <option value="7">生日</option>
                 <option value="5">满月</option>
@@ -17,7 +17,7 @@
                 <option value="4">结婚日</option>
                 <option value="8">周年庆</option>
             </select>
-            <button id="query" value="查询"><a class="icon-search"></a>查询</button>
+            <button class="btn btn-primary btn-sm mx-1" id="query" value="查询"><a class="icon-search"></a>查询</button>
         </div>
     </div>
 </div>

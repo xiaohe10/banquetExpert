@@ -7,18 +7,19 @@
 <div class="py-2 px-2 mt-2 bg-info" id="content">
     <!--导航栏-->
     <div class="pb-2">
-        <nav class="nav bg-info">
-            <a class="nav-link active" href="#">有效订单</a>
-            <a class="nav-link" href="#">撤单</a>
-            <a class="nav-link" href="#">红包</a>
-            <a class="nav-link" href="#">散客</a>
-            <a class="nav-link" href="#">全部订单</a>
-        </nav>
+        <ul class="nav nav-tabs">
+            <li class="nav-item" ><a href="#/Order/OrderHistory/Filter/Valid">有效订单</a></li>
+            <li class="nav-item" ><a href="#/Order/OrderHistory/Filter/Canceled">撤单</a></li>
+            <li class="nav-item" ><a href="#/Order/OrderHistory/Filter/RedBag">红包</a></li>
+            <li class="nav-item" ><a href="#/Order/OrderHistory/Filter/Scattered">散客</a></li>
+            <li class="nav-item" ><a href="#/Order/OrderHistory/Filter/All">全部订单</a></li>
+        </ul>
     </div>
     <!--详细信息-->
     <div class="p-2 mb-2 bg-success form-inline">
         <a>订单总数：3202 就餐人数：29721人 总金额：￥11292410.00 人均消费：￥451.39</a>
-        <input class="btn btn-primary btn-sm" type="button" id="append" value="补录订单"/>
+        <!--<input class="btn btn-primary btn-sm" type="button" id="append" value="补录订单"/>-->
+        <a class="btn btn-sm btn-secondary mx-1 px-2" href="#" data-toggle="modal" data-target=".order-append">补录订单</a>
     </div>
     <!--表格-->
     <div class="p-2 mb-2 bg-faded">
@@ -62,7 +63,7 @@
 <div class="modal order-details" id="order-details" role="dialog" aria-labelledby="order-details">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-primary">
+            <div class="modal-header bg-primary" style="height: 35px;">
                 <a>订单详情</a>
             </div>
             <div class="modal-body">
@@ -119,32 +120,178 @@
                 </div>
             </div>
             <div class="modal-footer">
-                This is footer
+                <input class="btn btn-secondary" type="button" value="关闭" id="close"/>
             </div>
         </div>
     </div>
 </div>
-<!--操作栏模板--><!--查询选项-->
-<script id="OptionTemplate" type="text/x-jsrender">
+<!--对话框/补录订单-->
+<div class="modal order-append" id="order-append" role="dialog" aria-labelledby="order-append">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary" style="height: 35px">
+                <a>补录订单</a>
+            </div>
+            <div class="modal-body">
+                <table>
+                    <tbody>
+                    <tr>
+                        <th align="right"><span class="error">*</span>电话</th>
+                        <td><input name="CustomerPhoneNumber" type="text" id="CustomerTelephone" maxlength="12"></td>
+                        <th align="right"><span class="error">*</span>姓名</th>
+                        <td><input type="text" name="CustomerName" id="CustomerName"></td>
+                        <td colspan="2"><span class="error">*</span>
+                            <label><input name="CustomerGender" type="radio" value="False"> 先生 </label>
+                            <label><input name="CustomerGender" type="radio" value="True"> 女士</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><span class="error">*</span>人数</th>
+                        <td colspan="5">
+                            <input id="People" name="People" type="text" size="8" onpaste="return false">
+                            <ul class="nav nav-list">
+                                <li class="first"><a href="#/Dialog/People/SetCount/4">4</a></li>
+                                <li><a href="#/Dialog/People/SetCount/5">5</a></li>
+                                <li><a href="#/Dialog/People/SetCount/6">6</a></li>
+                                <li><a href="#/Dialog/People/SetCount/7">7</a></li>
+                                <li><a href="#/Dialog/People/SetCount/8">8</a></li>
+                                <li><a href="#/Dialog/People/SetCount/9">9</a></li>
+                                <li><a href="#/Dialog/People/SetCount/10">10</a></li>
+                                <li><a href="#/Dialog/People/SetCount/11">11</a></li>
+                                <li class="last"><a href="#/Dialog/People/SetCount/0">12</a></li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>单位</th>
+                        <td>
+                            <input name="CustomerUnit" type="text" size="20" id="CustomerUnit"></td>
+                        <th><span class="obli">*</span>接单渠道</th>
+                        <td>
+                            <select name="UserSeviceGuid" id="UserSeviceGuid">
+                                <optgroup label="内部渠道"></optgroup>
+                                <option>预订台</option>
+                                <option>微官网</option>
+                                <option>格桑拉吉</option>
+                                <option>韩麦艳</option>
+                                <optgroup label="外部渠道"></optgroup>
+                                <option>常客</option>
+                                <option>点评预订</option>
+                            </select>
+                        </td>
+                        <th>订金</th>
+                        <td>
+                            <input name="Deposit" type="text" size="8" id="Deposit" onpaste="return false"></td>
+                    </tr>
+                    <tr>
+                        <th><span class="obli">*</span>日期</th>
+                        <td>
+                            <div class="data">
+                                <select id="Orderfor" name="Orderfor" onchange="coupon_load($('#CustomerTelephone').val(),$(this).val())">
+                                    <option>请选择就餐日期</option>
+                                    <option>2017/6/6</option>
+                                    <option>2017/6/7</option>
+                                    <option>2017/6/8</option>
+                                    <option>2017/6/9</option>
+                                    <option>2017/6/10</option>
+                                    <option>2017/6/11</option>
+                                    <option>2017/6/12</option>
+                                    <option>2017/6/13</option>
+                                </select>
+                            </div>
+                        </td>
+                        <th><span class="obli">*</span>餐段</th>
+                        <td colspan="3">
+                            <div class="meal_time_set">
+                                <input id="data_time3" name="Mealtimes" type="text" value="请选择餐段" onchange="    (function () {
+
+    $('#RestaurantMealsTimeGuid').val($('#data_time3').attr('data-period'));
+    $('#RestaurantMealsTimeClassificationID').val($('#data_time3').attr('data-class'));
+
+})()" readonly="" style="width: 90px" data-period="">
+                                <input id="RestaurantMealsTimeGuid" name="RestaurantMealsTimeGuid" type="hidden">
+                                <input id="RestaurantMealsTimeClassificationID" name="RestaurantMealsTimeClassificationID" type="hidden">
+
+                                <a href="javascript:picker_customer($('#Orderfor'), $('#data_time3'));" class="drop"></a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><span class="obli">*</span>区域</th>
+                        <td colspan="5">
+                            <select id="areaSelector_1" class="tableSelector" data-bind="tableSelector_1" name="area">
+                                <option data-save="1" value="0">请选择区域</option>
+                                <option>一楼</option>
+                                <option>二楼</option>
+                                <option>三楼</option>
+                                <option>五楼</option>
+                                <option>六楼</option>
+                                <option>六楼散台</option>
+                                <option>二楼散台</option>
+                                <option>外卖</option>
+                                <option>测试台</option>
+                            </select>
+                            <select id="tableSelector_1" name="DeskID">
+                                <option data-save="1" value="0">请选择餐位</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr data-type="template" style="display: none">
+                        <th>区域</th>
+                        <td colspan="5">
+                            <select name="area">
+                                <option data-save="1" value="0">请选择区域</option>
+                                <option>一楼</option>
+                                <option>二楼</option>
+                                <option>三楼</option>
+                                <option>五楼</option>
+                                <option>六楼</option>
+                                <option>六楼散台</option>
+                                <option>二楼散台</option>
+                                <option>外卖</option>
+                                <option>测试台</option>
+                            </select>
+                            <select id="tableSelector_NOM" name="DeskID">
+                                <option data-save="1" value="0">请选择餐位</option>
+                            </select>
+                            <a data-type="table_remove" href="#/Table/Remove/table_id" class="gray_2">删除</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <td colspan="5"><a class="btn btn-link btn-primary">增加餐位</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <input class="btn btn-primary" type="submit" value="提交" id="submit"/>
+                <input class="btn btn-secondary" type="button" value="取消" id="cancel"/>
+            </div>
+        </div>
+    </div>
+</div>
+<!--操作栏模板-->
+<script id="OptionTemplate" type="text/plain">
     <div class="p-2 bg-success">
         <div class="form-inline p-1">
             <a>就餐日期：</a>
-            <input type="date" data-link="date_from"/>
+            <input class="form-control form-control-sm" type="date" data-link="date_from"/>
             ~
-            <input type="date" data-link="date_to"/>
-            <select id="area" data-link="select_area">
+            <input class="form-control form-control-sm" type="date" data-link="date_to"/>
+            <select class="form-control form-control-sm" id="area" data-link="select_area">
                 <option value="-1">请选择区域</option>
                 {{for area}}
                 <option value="{{:value}}">{{:name}}</option>
                 {{/for }}
             </select>
-            <select id="seat" data-link="select_seat">
+            <select class="form-control form-control-sm" id="seat" data-link="select_seat">
                 <option value="-1">请选择餐位</option>
                 {{for seat}}
                 <option value="{{:value}}">{{:name}}</option>
                 {{/for }}
             </select>
-            <select data-link="select_channel">
+            <select class="form-control form-control-sm" id="channel" data-link="select_channel">
                 <option value="0">全部接单渠道</option>
                 {{for channel}}
                     <optgroup label="{{:name}}">{{:name}}</optgroup>
@@ -153,15 +300,17 @@
                     {{/for }}
                 {{/for }}
             </select>
-            <input type="text" value="18800184976" data-link="keyword" placeholder="输入姓名或手机号"/>
+            <input class="form-control form-control-sm" type="text" value="18800184976" data-link="keyword" placeholder="输入姓名或手机号"/>
             <input class="btn btn-sm btn-primary mx-1 px-2" type="button" id="query" value="查询"/>
-            <input class="btn btn-sm btn-secondary mx-1 px-2" type="button" id="save" value="生成报表"/>
+            <input class="btn btn-sm btn-secondary mx-1 px-2" type="button" id="export" value="生成报表"/>
         </div>
     </div>
+
 </script>
 <!--表格模板-->
 <script>
-
+    var TAG = "#/Order/OrderHistory/";
+    // 子页面对象
     var option = {
         data_from: "2017/06/10",
         data_to: "2017/06/09",
@@ -173,22 +322,42 @@
         seat: [],
         channel: BanquetExpert.channel
     };
-
+    // 绑定模板
     $.templates("#OptionTemplate").link("#option", option);
-
+    // 事件处理
+    $("#data-from").change(function () {
+        // TODO: 选择开始日期
+        Log.i(TAG, "选择开始日期：" + $(this).val());
+    });
+    $("#data-to").change(function () {
+        // TODO: 选择结束日期
+        Log.i(TAG, "选择结束日期：" + $(this).val());
+    });
     $("#area").change(function () {
+        // TODO: 选择区域
+        Log.i(TAG, "选择区域：" + $(this).val());
         var index = $("#area").val();
         if (index === -1) {
-            alert("选择区域：" + index);
             $.observable(option).setProperty({select_seat: -1, seat: []});
         } else {
-            alert("选择区域：" + index);
             var seat = BanquetExpert.area[index].seat;
             $.observable(option).setProperty({select_seat: -1, seat: seat});
         }
     });
-
+    $("#seat").change(function () {
+        // TODO: 选择餐位
+        Log.i(TAG, "选择餐位：" + $(this).val());
+    });
+    $("#channel").change(function () {
+        // TODO: 选择渠道
+        Log.i(TAG, "选择渠道：" + $(this).val());
+    });
+    $("#keyword").change(function () {
+        // TODO: 查询关键字
+        Log.i(TAG, "查询关键字：" + $(this).val());
+    });
     $("#query").click(function () {
+        // TODO: 查询订单数据
         var json = {
             data_from: option.data_from,
             data_to: option.data_to,
@@ -197,6 +366,19 @@
             select_channel: option.select_channel,
             keyword: option.keyword
         };
-        alert(JSON.stringify(json));
+        Log.i(TAG, "查询订单数据：" + JSON.stringify(json));
     });
+    $("#export").click(function () {
+        // TODO: 生成报表
+        Log.i(TAG, "生成报表");
+    });
+    // 路由设置
+    var routes = {
+        "/Order/OrderHistory/Filter/:type": function (type) {
+            // TODO: 根据订单类型过滤订单
+            Log.i(TAG, "选择了：" + type);
+        }
+    };
+    var router = window.Router(routes);
+    router.init();
 </script>

@@ -1,9 +1,9 @@
 <!--主页/客户管理/客户档案列表-->
 <!--操作栏-->
-<div class="p-1">
+<div class="py-1 bg-info">
     <div class="p-2 bg-success">
         <div class="form-inline p-1">
-            <select id="channel">
+            <select class="form-control form-control-sm" id="channel">
                 <option>全部接单渠道</option>
                 <optgroup label="内部渠道"></optgroup>
                 <option>内部渠道</option>
@@ -14,15 +14,15 @@
                 <option>外部渠道</option>
                 <option>外部渠道</option>
             </select>
-            <input type="date" id="keyword" placeholder="输入姓名或手机号"/>
-            <button id="query" value="查询"><i class="icon-search"></i>查询</button>
-            <input type="button" id="export" value="高级筛选+导出"/>
-            <input type="button" id="add" value="+添加档案"/>
-            <input type="button" id="import" value="批量导入"/>
-            <input type="button" id="member" value="会员价值设置"/>
-            <label for="we_chat"><input type="checkbox" id="we_chat"/>绑定微信</label>
-            <label for="no_phone_number"><input type="checkbox" id="no_phone_number"/>非手机号码</label>
-            <label for="no_marketing"><input type="checkbox" id="no_marketing"/>不接受营销</label>
+            <input class="form-control form-control-sm mx-1" type="date" id="keyword" placeholder="输入姓名或手机号"/>
+            <button class="btn btn-primary btn-sm mx-1" id="query" value="查询"><i class="icon-search mr-2"></i>查询</button>
+            <input class="btn btn-primary btn-sm mx-1" type="button" id="export" value="高级筛选+导出"/>
+            <input class="btn btn-primary btn-sm mx-1" type="button" id="add" value="+添加档案"/>
+            <input class="btn btn-primary btn-sm mx-1" type="button" id="import" value="批量导入"/>
+            <input class="btn btn-primary btn-sm mx-1" type="button" id="member" value="会员价值设置"/>
+            <label for="we_chat"><input class="form-check form-check-input mx-1" type="checkbox" id="we_chat"/>绑定微信</label>
+            <label for="no_phone_number"><input class="form-check form-check-input mx-1" type="checkbox" id="no_phone_number"/>非手机号码</label>
+            <label for="no_marketing"><input class="form-check form-check-input mx-1" type="checkbox" id="no_marketing"/>不接受营销</label>
         </div>
     </div>
 </div>
@@ -30,18 +30,18 @@
 <div class="py-2 px-2 mt-2 bg-info">
     <!--表格-->
     <div class="p-2 mb-2 bg-faded">
-        <table class="table table-hover table-bordered small">
+        <table class="table table-bordered table-hover table-responsive small">
             <thead class="bg-info">
             <tr>
-                <th><label> <input type="checkbox" value="">全选</label></th>
+                <th><label><input type="checkbox" id="select-all" value="">全选</label></th>
                 <th>姓名</th>
                 <th>性别</th>
                 <th>手机</th>
                 <th>单位</th>
                 <th>撤单率</th>
                 <th>网订信誉</th>
-                <th>总订单数<a class="sort_down" href=""></a></th>
-                <th>总消费额<a class="sort_down" href=""></a></th>
+                <th>总订单数<a class="icon-print" href=""></a></th>
+                <th>总消费额<a class="icon-book" href=""></a></th>
                 <th>最后就餐时间</th>
                 <th>分类</th>
                 <th>维护渠道</th>
@@ -50,8 +50,8 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td><input name="ck" type="checkbox" value="ac59cf86-2c0b-42bb-b8bb-d7007f27fe90"></td>
+            <tr class="table-info">
+                <td><input name="ck" type="checkbox" value=""></td>
                 <td>南</td>
                 <td>先生</td>
                 <td>15811111881</td>
@@ -63,10 +63,42 @@
                 <td>2017年04月08日</td>
                 <td style="cursor: pointer"> 常旅客;(沉睡)</td>
                 <td>王唯唯</td>
-                <td><a href="#/customer/update/:customerId">编辑</a></td>
-                <td><a href="#/customer/SetCustomerMarketing/:customerId">开</a></td>
+                <td><a href="#/Customer/CustomerProfiles/Customer/Edit/0">编辑</a></td>
+                <td><label><input type="checkbox" data-link="SetCustomerMarketing"/>开</label></td>
+            </tr>
+            <tr class="table-info">
+                <td><input name="ck" type="checkbox" value=""></td>
+                <td>南</td>
+                <td>先生</td>
+                <td>15811111881</td>
+                <td></td>
+                <td>53.51%</td>
+                <td></td>
+                <td>867</td>
+                <td>2387457.00</td>
+                <td>2017年04月08日</td>
+                <td style="cursor: pointer"> 常旅客;(沉睡)</td>
+                <td>王唯唯</td>
+                <td><a href="#/Customer/CustomerProfiles/Customer/Edit/1">编辑</a></td>
+                <td><label><input type="checkbox" data-link="SetCustomerMarketing"/>开</label></td>
             </tr>
             </tbody>
         </table>
     </div>
 </div>
+<script>
+    var TAG = "#/Customer/CustomerProfiles/";
+    // 事件处理
+    $("#select-all").change(function () {
+        Log.i(TAG, $(this).val());
+    });
+    // 路由设置
+    var routes = {
+        "/Customer/CustomerProfiles/Customer/Edit/:customerId": function (customerId) {
+            Log.i(TAG, "编辑客户：" + customerId);
+        }
+    };
+
+    var router = window.Router(routes);
+    router.init();
+</script>

@@ -3,22 +3,24 @@
 <div class="py-1 bg-info">
     <div class="p-2 bg-success">
         <div class="form-inline p-1">
-            <label for="date-from">发送日期：</label>
-            <input type="date" id="date-from" value="2017-06-09"/>
-            <label for="date-to">~</label>
-            <input type="date" id="date-to" value="2017-06-09"/>
-            <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" value="查询"/>
+            <label class="form-control-label" for="date-from">发送日期：</label>
+            <input class="form-control form-control form-control-sm mx-1" type="date" id="date-from" value="2017-06-09"/>
+            <label class="form-control-label" for="date-to">~</label>
+            <input class="form-control form-control form-control-sm mx-1" type="date" id="date-to" value="2017-06-09"/>
+            <input class="btn btn-sm btn-primary mx-1" type="button" value="查询"/>
         </div>
     </div>
 </div>
 <!--内容-->
 <div class="py-2 px-2 mt-2 bg-info">
+    <!--<div class="tabbable">-->
     <!--HabHost-->
     <nav class="mb-2">
+        <!--等宽Tab-->
         <ul class="nav nav-tabs">
-            <li class="nav-item p-2 bg-success active"><a href="#yxdx" role="tab" data-toggle="tab">营销短信</a></li>
-            <li class="nav-item p-2 bg-success"><a href="#tzdx" role="tab" data-toggle="tab">通知短信</a></li>
-            <li class="nav-item p-2 bg-success"><a href="#wxts" role="tab" data-toggle="tab">微信推送</a></li>
+            <li class="nav-item p-2 active"><a href="#yxdx" role="tab" data-toggle="tab">营销短信</a></li>
+            <li class="nav-item p-2"><a href="#tzdx" role="tab" data-toggle="tab">通知短信</a></li>
+            <li class="nav-item p-2"><a href="#wxts" role="tab" data-toggle="tab">微信推送</a></li>
         </ul>
     </nav>
     <!--详细信息-->
@@ -27,6 +29,7 @@
     </div>
     <!--TabContent-->
     <div class="tab-content">
+        <!--营销短信-->
         <div class="tab-pane active" role="tabpanel" id="yxdx">
             <table class="table table-bordered table-hover small table-responsive">
                 <thead class="bg-info">
@@ -47,6 +50,7 @@
                 </tbody>
             </table>
         </div>
+        <!--通知短信-->
         <div class="tab-pane" role="tabpanel" id="tzdx">
             <table class="table table-bordered table-hover small table-responsive">
                 <thead class="bg-info">
@@ -67,6 +71,7 @@
                 </tbody>
             </table>
         </div>
+        <!--微信推送-->
         <div class="tab-pane" role="tabpanel" id="wxts">
             <table class="table table-bordered table-hover small table-responsive">
                 <thead class="bg-info">
@@ -88,4 +93,5 @@
             </table>
         </div>
     </div>
+    <!--</div>-->
 </div>

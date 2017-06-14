@@ -2,41 +2,64 @@
 <!--操作栏-->
 <div class="py-1 bg-info">
     <div class="p-2 bg-success">
-        <form>
-            <!--查询报表-->
-            <div class="form-inline p-1" id="option">
-
-            </div>
-            <!--报表下载-->
-            <div class="form-inline p-1">
-                <select name="daily-report" id="daily-report">
-                    <optgroup label="销售渠道业绩日报表下载">销售渠道业绩日报表下载</optgroup>
-                    <option value="0"><a class="carousel-control-prev-icon">2017-6-3报表</a></option>
-                    <option value="1"><a class="carousel-control-prev-icon">2017-6-4报表</a></option>
-                    <option value="2"><a class="carousel-control-prev-icon">2017-6-5报表</a></option>
-                    <option value="3"><a class="carousel-control-prev-icon">2017-6-6报表</a></option>
-                    <option value="4"><a class="carousel-control-prev-icon">2017-6-7报表</a></option>
-                    <option value="5"><a class="carousel-control-prev-icon">2017-6-8报表</a></option>
-                </select>
-                <input class="btn btn-sm btn-secondary ml-1 mr-2" type="button" value="生成报表"/>
-            </div>
-        </form>
+        <div class="form-inline p-1">
+            <a>就餐日期：</a>
+            <input class="form-control form-control-sm" type="date" data-link="date_from"/>
+            ~
+            <input class="form-control form-control-sm" type="date" data-link="date_to"/>
+            <select class="form-control form-control-sm" data-link="select_area">
+                <option value="0">全部就餐区域</option>
+                <option value="就餐区域">就餐区域A</option>
+                <option value="就餐区域">就餐区域B</option>
+                <option value="就餐区域">就餐区域C</option>
+                <option value="就餐区域">就餐区域D</option>
+                <option value="就餐区域">就餐区域E</option>
+            </select>
+            <select class="form-control form-control-sm" data-link="select_channel">
+                <option value="0">全部接单渠道</option>
+                <optgroup label="内部渠道">内部渠道</optgroup>
+                <option value="0">内部渠道0</option>
+                <option value="1">内部渠道1</option>
+                <option value="2">内部渠道2</option>
+                <option value="3">内部渠道3</option>
+                <optgroup label="内部渠道">内部渠道</optgroup>
+                <option value="4">外部渠道1</option>
+                <option value="5">外部渠道2</option>
+                <option value="6">外部渠道3</option>
+                <option value="7">外部渠道4</option>
+            </select>
+            <input class="form-control form-control-sm" type="text" data-link="keyword" placeholder="输入姓名或手机号"/>
+            <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" id="query" value="查询"/>
+        </div>
+        <!--报表下载-->
+        <div class="form-inline p-1">
+            <select name="daily-report" id="daily-report">
+                <optgroup label="销售渠道业绩日报表下载">销售渠道业绩日报表下载</optgroup>
+                <option value="0"><a class="icon-arrow-left">2017-6-3报表</a></option>
+                <option value="1"><a class="icon-arrow-left">2017-6-4报表</a></option>
+                <option value="2"><a class="icon-arrow-left">2017-6-5报表</a></option>
+                <option value="3"><a class="icon-arrow-left">2017-6-6报表</a></option>
+                <option value="4"><a class="icon-arrow-left">2017-6-7报表</a></option>
+                <option value="5"><a class="icon-arrow-left">2017-6-8报表</a></option>
+            </select>
+            <input class="btn btn-sm btn-secondary ml-1 mr-2" type="button" value="生成报表"/>
+        </div>
     </div>
 </div>
 <!--内容-->
 <div class="py-2 px-2 mt-2 bg-info">
     <!--导航栏-->
     <div class="pb-2">
-        <nav class="nav bg-info">
-            <a class="nav-link active" href="#">今日报表</a>
-            <a class="nav-link" href="#">午餐</a>
-            <a class="nav-link" href="#">晚餐</a>
-            <a class="nav-link" href="#">已撤销订单</a>
-            <a class="nav-link" href="#">散客订单</a>
-        </nav>
+        <ul class="nav nav-tabs">
+            <li class="nav-item"><a href="#/Order/ReserveNotice/Today/All">今日报表</a></li>
+            <li class="nav-item"><a href="#/Order/ReserveNotice/Today/Lunch">午餐</a></li>
+            <li class="nav-item"><a href="#/Order/ReserveNotice/Today/Dinner">晚餐</a></li>
+            <li class="nav-item"><a href="#/Order/ReserveNotice/Today/Canceled">已撤销订单</a></li>
+            <li class="nav-item"><a href="#/Order/ReserveNotice/Today/Scattered">散客订单</a></li>
+        </ul>
     </div>
     <!--详细信息-->
-    <div class="p-2 mb-2 bg-success" ng-init="info={order_count:17,seat_count:17,customer_count:184}">
+    <div class="p-2 mb-2 bg-success">
         <a>订单数：17 桌位数：17 就餐人数：17</a>
         <label>
             <input type="checkbox" name="phone-mask" value="电话号码以'*'代替" checked="checked"/>
@@ -46,40 +69,84 @@
             <input type="checkbox" name="seat-marge" value="一单多桌合并成一行" checked="checked"/>
             一单多桌合并成一行
         </label>
+        <select data-link="size">
+            <option><a class="icon-print">A4完整打印</a></option>
+            <option><a class="icon-print">A4精简版打印</a></option>
+            <option><a class="icon-print">58mm打印</a></option>
+            <option><a class="icon-print">80mm打印</a></option>
+        </select>
         <input class="btn btn-primary btn-sm" type="button" value="打印"/>
     </div>
     <!--表格-->
     <div class="p-2 mb-2 bg-faded">
-        <table class="table table-hover table-bordered small">
+        <table class="table table-hover table-bordered table-responsive small">
             <thead class="bg-info">
             <tr align="center">
-                <td>就餐时间</td>
-                <td>区域</td>
-                <td>桌号</td>
+                <td>
+                    <a href="#/Order/ReserveNotice/Sort/就餐时间">
+                        就餐时间 <i class="icon-chevron-down"></i>
+                    </a>
+                </td>
+                <td>
+                    <a href="#/Order/ReserveNotice/Sort/区域">
+                        区域 <i class="icon-chevron-down"></i>
+                    </a>
+                </td>
+                <td>
+                    <a href="#/Order/ReserveNotice/Sort/桌号">
+                        桌号<i class="icon-chevron-down"></i>
+                    </a>
+                </td>
                 <td>姓名</td>
                 <td>手机</td>
                 <td>人数</td>
-                <td>接单渠道</td>
-                <td>下单时间</td>
+                <td>
+                    <a href="#/Order/ReserveNotice/Sort/接单渠道">
+                        接单渠道<i class="icon-chevron-down"></i>
+                    </a>
+                </td>
+                <td style="display: none">维护渠道</td>
+                <td>
+                    <a href="#/Order/ReserveNotice/Sort/下单时间">
+                        下单时间<i class="icon-chevron-down"></i>
+                    </a>
+                </td>
                 <td>分类</td>
+                <td style="display: none">单位</td>
                 <td>订单状态</td>
-                <td>操作员</td>
-                <td>订单详情</td>
+                <td style="width: 80px;">操作员</td>
+                <td style="width: 80px;">订单详情</td>
             </tr>
             </thead>
             <tbody>
             <tr align="center">
+                <!--就餐时间-->
                 <td>06月08日晚餐18:00</td>
+                <!--区域-->
                 <td>二楼</td>
-                <td>(CEIEC)215 [备注]</td>
+                <!--桌号-->
+                <td>(CEIEC)215 <span style="color: lightgreen">[备注]</span></td>
+                <!--客户姓名性别-->
                 <td>高 女士</td>
+                <!--电话-->
                 <td>18510515888</td>
+                <!--人数-->
                 <td>18</td>
+                <!--接单渠道-->
                 <td>刘光艳</td>
+                <!--维护渠道-->
+                <td style="display: none">刘光艳</td>
+                <!--下单时间-->
                 <td>2017/6/8 10:57:33</td>
+                <!--分类-->
                 <td>流失</td>
+                <!--单位-->
+                <td style="display: none">单位</td>
+                <!--订单状态及备注-->
                 <td>已订</td>
+                <!--操作员显创建订单人-->
                 <td>刘光艳</td>
+                <!--订单详情-->
                 <td><a href="#" data-toggle="modal" data-target=".order-details">订单详情</a></td>
             </tr>
             </tbody>
@@ -98,17 +165,18 @@
                     <div class="px-3 py-2">2017年6月7日 周三 晚餐</div>
                 </div>
                 <div class="row mt-2">
+                    <!--导航菜单-->
                     <div class="col-sm-2">
-                        <!--Nav tabs-->
-                        <ul class="nav nav-tabs">
-                            <li class="nav-item active"><a href="#order" role="tab" data-toggle="tab">订单信息</a></li>
-                            <li class="nav-item"><a href="#option" role="tab" data-toggle="tab">操作信息</a></li>
+                        <ul class="nav nav-tabs nav-stacked">
+                            <li class="nav-item active"><a href="#ddxx" role="tab" data-toggle="tab">订单信息</a></li>
+                            <li class="nav-item"><a href="#czxx" role="tab" data-toggle="tab">操作信息</a></li>
                         </ul>
                     </div>
+                    <!--内容面板-->
                     <div class="col-sm-8">
-                        <!--Tab panes-->
                         <div class="tab-content">
-                            <div role="tabpanel" class="tab-pane active" id="order">
+                            <!--订单信息-->
+                            <div role="tabpanel" class="tab-pane active" id="ddxx">
                                 <div class="text-info">
                                     <p><strong>三楼 315</strong></p>
                                     <p><strong>张 先生 100 0000 0000 6人 未分类客户</strong></p>
@@ -120,11 +188,13 @@
                                 </div>
                                 <div class="row m-2">
                                     <div class="col-sm-10 d-inline">
-                                        <div class="img-thumbnail p-2 m-1">IMG1</div>
-                                        <div class="img-thumbnail p-2 m-1">IMG2</div>
-                                        <div class="img-thumbnail p-2 m-1">IMG3</div>
-                                        <div class="img-thumbnail p-2 m-1">IMG4</div>
-                                        <div class="img-thumbnail p-2 m-1">IMG5</div>
+                                        <ul class="list-group nav nav-tabs">
+                                            <li class="list-group-item img-thumbnail p-2 m-1">IMG1</li>
+                                            <li class="list-group-item img-thumbnail p-2 m-1">IMG2</li>
+                                            <li class="list-group-item img-thumbnail p-2 m-1">IMG3</li>
+                                            <li class="list-group-item img-thumbnail p-2 m-1">IMG4</li>
+                                            <li class="list-group-item img-thumbnail p-2 m-1">IMG5</li>
+                                        </ul>
                                     </div>
                                     <div class="col-4">
                                         <div class="row my-3 text-sm-center">已选0</div>
@@ -135,7 +205,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div role="tabpanel" class="tab-pane" id="option">
+                            <!--操作信息-->
+                            <div role="tabpanel" class="tab-pane" id="czxx">
                                 <p><a>2017/6/1 13:24:42 预订单修改 单蕾</a></p>
                                 <p class="text-info">对张先生18614023307预订的2017-06-02晚餐段315桌位</p>
                                 <p><a>2017/6/1 13:24:42 预订单修改 单蕾</a></p>
@@ -152,31 +223,12 @@
         </div>
     </div>
 </div>
+<!--操作栏模板-->
 <script id="OptionTemplate" type="text/x-jsrender">
-    <a>就餐日期：</a>
-    <input type="date" data-link="date_from"/>
-    ~
-    <input type="date" data-link="date_to"/>
-    <select data-link="select_area">
-        <option value="0">全部就餐区域</option>
-        {{for area}}
-        <option value="{{:value}}">{{:name}}</option>
-        {{/for }}
-    </select>
-    <select data-link="select_channel">
-        <option value="0">全部接单渠道</option>
-        {{for channel}}
-            <optgroup label="{{:name}}">{{:name}}</optgroup>
-            {{for items}}
-                <option value="{{:value}}">{{:name}}</option>
-            {{/for }}
-        {{/for }}
-    </select>
-    <input type="text" data-link="keyword" placeholder="输入姓名或手机号"/>
-    <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" id="query" value="查询"/>
+
 </script>
 <script>
-
+    var TAG = "#/Order/ReserveNotice";
     var option = {
         data_from: "2017/06/10",
         data_to: "2017/06/09",
@@ -187,12 +239,35 @@
         channel: BanquetExpert.channel
     };
 
-    $.templates("#OptionTemplate").link("#option", option);
+    // $.templates("#OptionTemplate").link("#option", option);
 
     $("#area").change(function () {
-        alert("选择区域：" + option.select_area);
+        /**
+         * TODO: 根据选择区域过滤列表数据
+         */
+        Log.i(TAG, "查询区域：" + option.select_area);
     });
     $("#query").click(function () {
-        alert("查询：" + option.keyword);
+        /**
+         * TODO: 根据keyword和其他参数查询列表
+         */
+        Log.i(TAG, "查询关键字：" + option.keyword);
     });
+
+    var routes = {
+        "/Order/ReserveNotice/Sort/:tag": function (tag) {
+            /**
+             * TODO: 按tag对列表排序
+             */
+            Log.i(TAG, "根据" + tag + "对列表排序");
+        },
+        "/Order/ReserveNotice/Today/:tag": function (tag) {
+            /**
+             * TODO: 根据tag过滤列表数据
+             */
+            Log.i(TAG, "根据" + tag + "过滤列表数据");
+        }
+    };
+    var router = window.Router(routes);
+    router.init();
 </script>
