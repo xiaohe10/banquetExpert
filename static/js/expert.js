@@ -8,6 +8,12 @@
  */
 BanquetExpert = {
     keu: "宴专家",
+    en: {
+        display: "显示"
+    },
+    zh_ch: {
+        display: "Display"
+    },
     meals: {
         lunch: [
             "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "11:45",
@@ -160,7 +166,8 @@ BanquetExpert = {
         {title: "预订管理"},
         {title: "餐段设置"}
     ]
-};
+}
+;
 
 $.get({
     url: "/webApp/admin/hotel/profile/",
@@ -223,7 +230,7 @@ var Templates = {
         Customer: {
             AnniversaryReport: "Customer/AnniversaryReport.html", //
             CustomerAnalysis: "Customer/CustomerAnalysis.html", // 客源情况分析
-            CustomerProfiles: "Customer/CustomerProfiles.html", // 客户档案列表
+            CustomerProfiles: "Customer/CustomerProfiles/AddCustomerProfiles.html", // 客户档案列表*** AddCustomerProfiles BatchExport
             CustomerRecycleBin: "Customer/CustomerRecycleBin.html", // 客户档案回收站
             MemberValue: "Customer/MemberValue.html" // 会员价值设置
         },
@@ -239,6 +246,21 @@ var Templates = {
             Rank: "Review/Rank.html", // 餐厅排名
             Tutorial: "Review/Tutorial.html" // 中国服务私人订制标准视频教程
         }
+    }
+};
+
+var Log = {
+    i: function (tag, msg) {
+        console.log("BanquetExpert: " + tag + ": " + msg);
+    },
+    w: function (tag, msg) {
+        console.warn("BanquetExpert: " + tag + ": " + msg);
+    },
+    e: function (tag, msg) {
+        console.error("BanquetExpert: " + tag + ": " + msg);
+    },
+    d: function (tag, msg) {
+        console.debug("BanquetExpert: " + tag + ": " + msg);
     }
 };
 
@@ -416,4 +438,5 @@ $(document).ready(function () {
     };
     var router = window.Router(routes);
     router.init();
+
 });
