@@ -50,13 +50,13 @@
 <div class="py-2 px-2 mt-2 bg-info">
     <!--导航栏-->
     <div class="pb-2">
-        <nav class="nav nav-tabs">
-            <a class="nav-link active" href="#/Order/ReserveNotice/Today/All">今日报表</a>
-            <a class="nav-link" href="#/Order/ReserveNotice/Today/Lunch">午餐</a>
-            <a class="nav-link" href="#/Order/ReserveNotice/Today/Dinner">晚餐</a>
-            <a class="nav-link" href="#/Order/ReserveNotice/Today/Canceled">已撤销订单</a>
-            <a class="nav-link" href="#/Order/ReserveNotice/Today/Scattered">散客订单</a>
-        </nav>
+        <ul class="nav nav-tabs">
+            <li class="nav-item"><a href="#/Order/ReserveNotice/Today/All">今日报表</a></li>
+            <li class="nav-item"><a href="#/Order/ReserveNotice/Today/Lunch">午餐</a></li>
+            <li class="nav-item"><a href="#/Order/ReserveNotice/Today/Dinner">晚餐</a></li>
+            <li class="nav-item"><a href="#/Order/ReserveNotice/Today/Canceled">已撤销订单</a></li>
+            <li class="nav-item"><a href="#/Order/ReserveNotice/Today/Scattered">散客订单</a></li>
+        </ul>
     </div>
     <!--详细信息-->
     <div class="p-2 mb-2 bg-success">
@@ -79,18 +79,38 @@
     </div>
     <!--表格-->
     <div class="p-2 mb-2 bg-faded">
-        <table class="table table-hover table-bordered small">
+        <table class="table table-hover table-bordered table-responsive small">
             <thead class="bg-info">
             <tr align="center">
-                <td><a href="#/Order/ReserveNotice/Sort/就餐时间">就餐时间<i class="icon-arrow-down"></i></a></td>
-                <td><a href="#/Order/ReserveNotice/Sort/区域">区域<i class="icon-arrow-down"></i></a></td>
-                <td><a href="#/Order/ReserveNotice/Sort/桌号">桌号<i class="icon-arrow-down"></i></a></td>
+                <td>
+                    <a href="#/Order/ReserveNotice/Sort/就餐时间">
+                        就餐时间 <i class="icon-chevron-down"></i>
+                    </a>
+                </td>
+                <td>
+                    <a href="#/Order/ReserveNotice/Sort/区域">
+                        区域 <i class="icon-chevron-down"></i>
+                    </a>
+                </td>
+                <td>
+                    <a href="#/Order/ReserveNotice/Sort/桌号">
+                        桌号<i class="icon-chevron-down"></i>
+                    </a>
+                </td>
                 <td>姓名</td>
                 <td>手机</td>
                 <td>人数</td>
-                <td><a href="#/Order/ReserveNotice/Sort/接单渠道">接单渠道<i class="icon-arrow-down"></i></a></td>
+                <td>
+                    <a href="#/Order/ReserveNotice/Sort/接单渠道">
+                        接单渠道<i class="icon-chevron-down"></i>
+                    </a>
+                </td>
                 <td style="display: none">维护渠道</td>
-                <td><a href="#/Order/ReserveNotice/Sort/下单时间">下单时间<i class="icon-arrow-down"></i></a></td>
+                <td>
+                    <a href="#/Order/ReserveNotice/Sort/下单时间">
+                        下单时间<i class="icon-chevron-down"></i>
+                    </a>
+                </td>
                 <td>分类</td>
                 <td style="display: none">单位</td>
                 <td>订单状态</td>

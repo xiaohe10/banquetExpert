@@ -1,0 +1,167 @@
+<!--主页/客户管理/客户档案列表/批量导出-->
+<!--内容-->
+<div class="py-2 px-2 mt-2 bg-info">
+    <!--表单-->
+    <div class="p-2 mb-2 bg-faded">
+        <form class="form-horizontal">
+            <fieldset>
+                <!--批量导出客户档案-->
+                <div id="legend" class="col-form-legend">
+                    <legend class="">批量导出客户档案</legend>
+                </div>
+                <!--按时间筛选-->
+                <div class="control-group">
+                    <label class="control-label"><input type="checkbox" name="ByTime"/>按时间筛选：</label>
+                    <div class="controls">
+                        <input class="form-control-sm mx-1" type="date"/>
+                        ~
+                        <input class="form-control-sm mx-1" type="date"/>
+                        有订单客户
+                    </div>
+                </div>
+                <!--按订单总量-->
+                <div class="control-group">
+                    <label class="control-label"><input type="checkbox" name="ByOrder"/>按订单总量：</label>
+                    <div class="controls">
+                        <input class="form-control-sm mx-1" type="number"/>
+                        ~
+                        <input class="form-control-sm mx-1" type="number"/>
+                        单
+                    </div>
+                </div>
+                <!--按消费金额-->
+                <div class="control-group">
+                    <label class="control-label"><input type="checkbox" name="ByMoney"/>按消费金额：</label>
+                    <div class="controls">
+                        <ul>
+                            <li>
+                                <label class="radio inline">
+                                    <input type="radio" name="consume_amount" value="0"/>按消费总额
+                                </label>
+                                <input class="form-control-sm mx-1" type="number"/>
+                                ~
+                                <input class="form-control-sm mx-1" type="number"/>
+                                元
+                            </li>
+                            <li>
+                                <label class="radio inline">
+                                    <input type="radio" name="consume_amount" value="1"/>按人均消费
+                                </label>
+                                <input class="form-control-sm mx-1" type="number"/>
+                                ~
+                                <input class="form-control-sm mx-1" type="number"/>
+                                元
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!--按维护渠道 TODO: 按维护渠道-->
+                <div class="control-group">
+                    <label class="control-label"><input type="checkbox" name="ByChannel"/>按维护渠道：</label>
+                    <div class="controls">
+                        <!--已选择渠道列表-->
+
+                        <!--渠道列表-->
+
+                    </div>
+                </div>
+                <!--按会员分类-->
+                <div class="control-group">
+                    <label class="control-label"><input type="checkbox" name="ByMember"/>按会员分类：</label>
+                    <div class="controls">
+                        <ul class="list-group">
+                            <li>
+                                <label>
+                                    <input type="radio" name="member" value="0"/>RMF活跃会员
+                                </label>
+                                <ul class="inline">
+                                    <li>
+                                        <label class="checkbox inline">
+                                            <input type="checkbox" name="member_class" value="0">活跃
+                                        </label>
+                                    </li>
+                                    <li>
+                                        <label class="checkbox inline">
+                                            <input type="checkbox" name="member_class" value="1">沉睡
+                                        </label>
+                                    </li>
+                                    <li>
+                                        <label class="checkbox inline">
+                                            <input type="checkbox" name="member_class" value="2">流失
+                                        </label>
+                                    </li>
+                                    <li>
+                                        <label class="checkbox inline">
+                                            <input type="checkbox" name="member_class" value="3">高价值
+                                        </label>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <label>
+                                    <input type="radio" name="member" value="1"/>自定义分类
+                                </label>
+                                <ul class="inline">
+                                    <li>
+                                        <label class="checkbox inline">
+                                            <input type="checkbox" name="member_class" value="0">活跃
+                                        </label>
+                                    </li>
+                                    <li>
+                                        <label class="checkbox inline">
+                                            <input type="checkbox" name="member_class" value="1">沉睡
+                                        </label>
+                                    </li>
+                                    <li>
+                                        <label class="checkbox inline">
+                                            <input type="checkbox" name="member_class" value="2">流失
+                                        </label>
+                                    </li>
+                                    <li>
+                                        <label class="checkbox inline">
+                                            <input type="checkbox" name="member_class" value="3">高价值
+                                        </label>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!--按餐段选择-->
+                <div class="control-group">
+                    <label class="control-label"><input type="checkbox" name="ByMealPeriod"/>按餐段选择：</label>
+                    <div class="controls">
+                        <label class="radio inline">
+                            <input type="radio" name="meals_time" value="0"/>午餐
+                        </label>
+                        <label class="radio inline">
+                            <input type="radio" name="meals_time" value="1"/>晚餐
+                        </label>
+                    </div>
+                </div>
+                <!--按性别选择-->
+                <div class="control-group">
+                    <label class="control-label"><input type="checkbox" name="ByGender"/>按时间筛选：</label>
+                    <div class="controls">
+                        <label class="radio inline">
+                            <input type="radio" name="gender" value="0"/>先生
+                        </label>
+                        <label class="radio inline">
+                            <input type="radio" name="gender" value="1"/>女士
+                        </label>
+                    </div>
+                </div>
+                <!--操作栏-->
+                <div class="control-group">
+                    <label class="control-label"></label>
+                    <div class="controls">
+                        <div class="py-2">
+                            <button class="btn btn-primary btn-sm mx-1">导出客户档案</button>
+                            <button class="btn btn-primary btn-sm mx-1">导出全部客户档案</button>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>

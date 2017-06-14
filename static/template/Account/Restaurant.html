@@ -3,7 +3,7 @@
 <div class="py-2 px-2 mt-2 bg-info">
     <!--HabHost-->
     <nav class="mb-2">
-        <ul class="nav nav-tabs nav-justified">
+        <ul class="nav nav-tabs">
             <li class="nav-item p-2 active"><a href="#jbxx" role="tab" data-toggle="tab">基本信息</a></li>
             <li class="nav-item p-2"><a href="#cxxx" role="tab" data-toggle="tab">菜系信息</a></li>
             <li class="nav-item p-2"><a href="#jtxx" role="tab" data-toggle="tab">交通信息</a></li>
@@ -14,53 +14,153 @@
     <div class="tab-content">
         <!--基本信息-->
         <div class="tab-pane active" role="tabpanel" id="jbxx">
+            <!--表单-->
             <form class="form-horizontal">
                 <fieldset>
-                    <div id="legend" class="">
-                        <legend class="">表单名</legend>
+                    <!--标题-->
+                    <div id="legend" class="col-form-legend">
+                        <legend class="">酒店基本信息</legend>
                     </div>
+                    <!--餐厅名称-->
                     <div class="control-group">
-                        <label class="control-label">Inline Checkboxes</label>
-
-                        <!-- Multiple Checkboxes -->
+                        <label class="control-label">餐厅名称：</label>
                         <div class="controls">
-                            <label class="checkbox inline">
-                                <input type="checkbox" value="1"> 1
-                            </label>
-                            <label class="checkbox inline">
-                                <input type="checkbox" value="2"> 2
-                            </label>
-                            <label class="checkbox inline">
-                                <input type="checkbox" value="3"> 3
-                            </label>
-                        </div>
-
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label">Inline radios</label>
-                        <div class="controls">
-
-                            <!-- Inline Radios -->
-                            <label class="radio inline">
-                                <input type="radio" value="1" checked="checked" name="group">
-                                1
-                            </label>
-                            <label class="radio inline">
-                                <input type="radio" value="2" name="group">
-                                2
-                            </label>
-                            <label class="radio inline">
-                                <input type="radio" value="3">
-                                3
-                            </label>
+                            北京宴总店
                         </div>
                     </div>
+                    <!--所在城市-->
                     <div class="control-group">
-                        <label class="control-label">Button</label>
-
-                        <!-- Button -->
+                        <label class="control-label">所在城市：</label>
                         <div class="controls">
-                            <button class="btn btn-success">Button</button>
+                            <!--省-->
+                            <select class="form-control-sm inline">
+                                <option>北京</option>
+                                <option>北京</option>
+                                <option>北京</option>
+                                <option>北京</option>
+                                <option>北京</option>
+                                <option>北京</option>
+                                <option>北京</option>
+                                <option>北京</option>
+                                <option>北京</option>
+                            </select>
+                            <!--市-->
+                            <select class="form-control-sm inline">
+                                <option>北京</option>
+                                <option>北京</option>
+                                <option>北京</option>
+                                <option>北京</option>
+                                <option>北京</option>
+                                <option>北京</option>
+                                <option>北京</option>
+                            </select>
+                            <!--县-->
+                            <select class="form-control-sm inline">
+                                <option>北京</option>
+                                <option>北京</option>
+                                <option>北京</option>
+                                <option>北京</option>
+                                <option>北京</option>
+                                <option>北京</option>
+                                <option>北京</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!--详细地址-->
+                    <div class="control-group">
+                        <label class="control-label">详细地址：</label>
+                        <div class="controls">
+                            <input type="text" value="丰台区靛厂路3号(永辉超市东侧)"/>
+                        </div>
+                    </div>
+                    <!--预订电话-->
+                    <div class="control-group">
+                        <label class="control-label">预订电话：</label>
+                        <div class="controls">
+                            <input class="mx-1" type="text" value="01088177777"/>
+                            <input class="btn btn-primary btn-sm mx-1" type="button" value="修改"/>
+                            <input class="btn btn-primary btn-sm mx-1" type="button" value="添加"/>
+                        </div>
+                    </div>
+                    <!--餐厅面积-->
+                    <div class="control-group">
+                        <label class="control-label">餐厅面积：</label>
+                        <div class="controls">
+                            <input class="mx-1" type="text" value="1700"/> 平米
+                        </div>
+                    </div>
+                    <!--人均消费-->
+                    <div class="control-group">
+                        <label class="control-label">人均消费：</label>
+                        <div class="controls">
+                            <input class="mx-1" type="text" value="1700"/> 元/人 ~
+                            <input class="mx-1" type="text" value="1700"/> 元/人
+                        </div>
+                    </div>
+                    <!--餐厅设施-->
+                    <div class="control-group">
+                        <label class="control-label">餐厅设施：</label>
+                        <div class="controls">
+                            <div>
+                                <label class="checkbox inline"><input type="checkbox" name="facility" value="1">万事达(Master)</label>
+                                <label class="checkbox inline"><input type="checkbox" name="facility" value="2">可以刷卡</label>
+                                <label class="checkbox inline"><input type="checkbox" name="facility" value="3">有停车位</label>
+                                <label class="checkbox inline"><input type="checkbox" name="facility" value="4">全场禁烟</label>
+                            </div>
+                            <div>
+                                <label class="checkbox inline"><input type="checkbox" name="facility" value="5">区分烟区</label>
+                                <label class="checkbox inline"><input type="checkbox" name="facility" value="6">无线上网</label>
+                                <label class="checkbox inline"><input type="checkbox" name="facility" value="7">露天位</label>
+                                <label class="checkbox inline"><input type="checkbox" name="facility" value="8">有舞台</label>
+                                <label class="checkbox inline"><input type="checkbox" name="facility" value="9">有表演</label>
+                            </div>
+                            <div>
+                                <label class="checkbox inline"><input type="checkbox" name="facility" value="10">下午茶</label>
+                                <label class="checkbox inline"><input type="checkbox" name="facility" value="11">夜宵</label>
+                                <label class="checkbox inline"><input type="checkbox" name="facility" value="12">四合院</label>
+                            </div>
+                        </div>
+                    </div>
+                    <!--可以刷卡-->
+                    <div class="control-group">
+                        <label class="control-label">可以刷卡：</label>
+                        <div class="controls">
+                            <label class="checkbox inline"><input type="checkbox" name="VISA" value="2">VISA</label>
+                            <label class="checkbox inline"><input type="checkbox" name="UnionPay" value="3">银联卡</label>
+                        </div>
+                    </div>
+                    <!--上传Logo-->
+                    <div class="control-group">
+                        <label class="control-label">上传Logo：</label>
+                        <div class="controls">
+                            <div class="py-2">
+                                <img src="/static/bootstrap/css/img/glyphicons-halflings.png">
+                            </div>
+                            <div class="py-2">
+                                <button class="btn btn-primary btn-sm">上传Logo</button>
+                                <button class="btn btn-primary btn-sm">清除Logo</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!--上传大图-->
+                    <div class="control-group">
+                        <label class="control-label">上传大图：</label>
+                        <div class="controls">
+                            <div class="py-2">
+                                <img src="/static/bootstrap/css/img/glyphicons-halflings.png">
+                            </div>
+                            <div class="py-2">
+                                <button class="btn btn-primary btn-sm">上传图片</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!--提交-->
+                    <div class="control-group">
+                        <label class="control-label"></label>
+                        <div class="controls">
+                            <div class="py-2">
+                                <button class="btn btn-primary btn-sm">提交</button>
+                            </div>
                         </div>
                     </div>
                 </fieldset>
@@ -68,11 +168,47 @@
         </div>
         <!--菜系信息-->
         <div class="tab-pane" role="tabpanel" id="cxxx">
-            菜系信息
+            <div class="row">
+                <div class="col-3">
+                    菜系列表
+
+                </div>
+                <div class="col-3">
+                    已选菜系
+                </div>
+            </div>
         </div>
         <!--交通信息-->
         <div class="tab-pane" role="tabpanel" id="jtxx">
-            交通信息
+            <!--详细信息-->
+            <div class="p-2 mb-2 bg-success">
+                <a>餐厅电子地图</a>
+            </div>
+            <!--坐标栏-->
+            <div class="p-2 mb-2 bg-success">
+                <div class="form-group form-inline">
+                    <!--经度-->
+                    <div class="input-group">
+                        经度： <input class="form-control" type="text" placeholder=""/>
+                    </div>
+                    <!--纬度-->
+                    <div class="input-group">
+                        纬度： <input class="form-control" type="text" placeholder=""/>
+                    </div>
+                </div>
+            </div>
+            <!--地址-->
+            <div class="p-2 mb-2 bg-success">
+                <a>地址：北京市丰台区靛厂路48号院</a>
+            </div>
+            <!--百度地图-->
+            <div class="p-2 mb-2 bg-success">
+                <img src="/static/bootstrap/css/img/glyphicons-halflings.png" width="469" height="133"/>
+            </div>
+            <!--操作栏-->
+            <div class="p-2 mb-2 bg-success">
+                <button class="btn btn-primary btn-sm">提交</button>
+            </div>
         </div>
         <!--设置-->
         <div class="tab-pane" role="tabpanel" id="sz">
