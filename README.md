@@ -185,8 +185,8 @@ URL：webApp/staff/pass_modify <br>
 
 
 ## 获取员工信息
-URL：webApp/staff/profile/ <br>
-请求方式：GET <br>
+URL：webApp/staff/profile/get/ <br>
+请求方式：POST <br>
 请求参数：
 
 | 参数名称       | 含义             | 是否必选       |
@@ -248,7 +248,7 @@ URL：webApp/staff/profile/ <br>
 | err_3 | 不存在该员工 |
 
 ## 修改员工信息
-URL：webApp/staff/profile/ <br>
+URL：webApp/staff/profile/modify/ <br>
 请求方式：POST <br>
 
 | 参数名称       | 含义             | 是否必选       |

@@ -3,14 +3,14 @@ from django.conf.urls import url
 from webApp.views.staff import *
 
 urlpatterns = [
-    # 获取员工列表(get)
-    url(r'^$', List.as_view(), name='staffs'),
-    # 员工注册(post)
-    url(r'^register/$', List.as_view(), name='register'),
-    # 登录(post)
-    url(r'^login/$', Token.as_view(), name='login'),
-    # 修改密码(post)
-    url(r'^pass_modify/$', Password.as_view(), name='pass_modify'),
-    # 获取资料(get)/修改个人资料(post)
-    url(r'^profile/$', Profile.as_view(), name='profile'),
+    # 员工注册
+    url(r'^register/$', register, name='register'),
+    # 登录
+    url(r'^login/$', login, name='login'),
+    # 修改密码
+    url(r'^pass_modify/$', modify_password, name='modify_password'),
+    # 获取资料
+    url(r'^profile/get/$', get_profile, name='get_profile'),
+    # 修改个人资料
+    url(r'^profile/modify/$', modify_password, name='modify_profile'),
 ]

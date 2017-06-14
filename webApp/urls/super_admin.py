@@ -3,20 +3,23 @@ from django.conf.urls import url
 from webApp.views.super_admin import *
 
 urlpatterns = [
-    # 获取管理者列表(get)
-    url(r'^list/$', AdminList.as_view(), name='list'),
-    # 注册新的管理者(post)
-    url(r'^register/$', AdminList.as_view(), name='register'),
-    # 删除管理者(delete)
-    url(r'^delete/$', AdminList.as_view(), name='delete'),
-    # 登录(post)
-    url(r'^login/$', Token.as_view(), name='login'),
-    # 获取酒店列表(get)
-    url(r'^hotel/list/$', HotelList.as_view(), name='hotel_list'),
-    # 注册新的酒店(post)
-    url(r'^hotel/register/$', HotelList.as_view(), name='hotel_register'),
-    # 删除酒店(delete)
-    url(r'^hotel/delete/$', HotelList.as_view(), name='hotel_delete'),
-    # 获取酒店资料(get)/修改酒店资料(post)
-    url(r'^hotel/profile/$', HotelProfile.as_view(), name='hotel_profile'),
+    # 获取管理者列表
+    url(r'^list/$', get_admins, name='list'),
+    # 注册新的管理者
+    url(r'^register/$', register, name='register'),
+    # 删除管理者
+    url(r'^delete/$', delete_admin, name='delete'),
+    # 登录
+    url(r'^login/$', login, name='login'),
+    # 获取酒店列表
+    url(r'^hotel/list/$', get_hotels, name='hotel_list'),
+    # 注册新的酒店
+    url(r'^hotel/register/$', register_hotel, name='register_hotel'),
+    # 删除酒店
+    url(r'^hotel/delete/$', delete_hotel, name='delete_hotel'),
+    # 获取酒店资料
+    url(r'^hotel/profile/get/$', get_hotel_profile, name='get_hotel_profile'),
+    # 修改酒店资料
+    url(r'^hotel/profile/modify/$', modify_hotel_profile,
+        name='modify_hotel_profile'),
 ]
