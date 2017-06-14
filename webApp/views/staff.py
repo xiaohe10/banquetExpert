@@ -9,9 +9,31 @@ from django.views.generic import View
 
 from ..utils.decorator import validate_args, validate_staff_token
 from ..utils.response import corr_response, err_response
-from ..models import Staff, Hotel
+from ..models import Staff, Hotel, ValidationCode as ValidationCodeModel
 
-__all__ = ['List', 'Token', 'Password', 'Profile']
+__all__ = ['ValidationCode', 'List', 'Token', 'Password', 'Profile']
+
+
+class ValidationCode(View):
+    @validate_args({
+        'phone': forms.RegexField(r'[0-9]{11}'),
+    })
+    @validate_staff_token()
+    def get(self, request, phone):
+        """获取短信验证码
+
+        :param phone:
+        :return:
+        """
+
+        code = ValidationCodeModel.generate(phone)
+        if code:
+            # 调用第三方短信平台给手机号发短信
+            # todo
+            # send_message(phone_number, code)
+            return corr_response()
+        else:
+            return err_response('err_3', '接口访问频率限制')
 
 
 class List(View):
@@ -68,6 +90,7 @@ class List(View):
     @validate_args({
         'phone': forms.RegexField(r'[0-9]{11}'),
         'password': forms.CharField(min_length=1, max_length=128),
+        'validation_code': forms.CharField(min_length=6, max_length=6),
         'staff_number': forms.CharField(
             min_length=1, max_length=20, required=False),
         'name': forms.CharField(min_length=1, max_length=20),
@@ -76,11 +99,13 @@ class List(View):
         'id_number': forms.CharField(min_length=18, max_length=18),
         'hotel_id': forms.IntegerField(),
     })
-    def post(self, request, phone, password, hotel_id, **kwargs):
+    def post(self, request, phone, password, validation_code, hotel_id,
+             **kwargs):
         """员工注册
 
         :param phone: 手机号(必传)
         :param password: 密码(必传)
+        :param validation_code: 验证码(必传)
         :param hotel_id: 酒店ID(必传)
         :param kwargs:
             staff_number: 员工编号
@@ -98,6 +123,10 @@ class List(View):
 
         if Staff.objects.filter(phone=phone).exists():
             return err_response('err_2', '该手机号已经注册过')
+
+        if not ValidationCodeModel.verify(phone, validation_code):
+            return err_response('err_4', '验证码错误或超时')
+
         staff_keys = ('staff_number', 'name', 'gender', 'position', 'id_number')
         with transaction.atomic():
             try:
@@ -109,7 +138,7 @@ class List(View):
                 staff.save()
                 return corr_response({'staff_id': staff.id})
             except IntegrityError:
-                return err_response('err_4', '服务器创建员工错误')
+                return err_response('err_5', '服务器创建员工错误')
 
 
 class Token(View):

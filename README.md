@@ -39,6 +39,7 @@ URL：webApp/staff/register <br>
 |:------------- |:---------------| :-------------:|
 | phone         | 手机号          |         yes    |
 | password      | 密码            |         yes    |
+| validation_code   | 验证码   |   yes |
 | hotel_id      | 酒店ID          |         yes    |
 | staff_number  | 员工编号        |         yes    |
 | name          | 姓名            |         yes    |
@@ -52,6 +53,7 @@ URL：webApp/staff/register <br>
 {
 	"phone":"18813101211",
 	"password":"pass",
+	"validation_code":"123456",
 	"hotel_id":12,
 	"staff_number":"2017213464",
 	"name":"小张",
