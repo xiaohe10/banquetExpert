@@ -95,6 +95,8 @@ class HotelBranch(models.Model):
     county = models.CharField(max_length=20, default='')
     # 详细地址
     address = models.CharField(max_length=50, default='')
+    # 餐段
+    meal_period = models.CharField(max_length=500, default='')
     # 设施
     facility = models.CharField(max_length=100, default='')
     # 可以刷哪些卡

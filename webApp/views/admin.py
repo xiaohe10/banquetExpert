@@ -50,15 +50,12 @@ def get_hotel_profile(request, token):
 
     :param token: 令牌(必传)
     :return:
-        count: 酒店总数
-        list: 酒店列表
-            hotel_id: ID
-            name: 名称
-            icon: 头像
-            branches_count: 门店数
-            owner_name: 法人代表
-            is_enabled: 是否有效
-            create_time: 创建时间
+        hotel_id: ID
+        name: 名称
+        icon: 头像
+        branches_count: 门店数
+        owner_name: 法人代表
+        create_time: 创建时间
     """
 
     try:
@@ -316,6 +313,7 @@ def get_branch_profile(request, token, branch_id, **kwargs):
         city: 市
         county: 区/县
         address: 详细地址
+        meal_period: 餐段设置(json字符串)
         facility: 设施(json字符串)
         pay_card: 可以刷哪些卡(json字符串)
         phone: 联系电话(最多3个，json数组)
@@ -343,6 +341,7 @@ def get_branch_profile(request, token, branch_id, **kwargs):
          'city': branch.city,
          'county': branch.county,
          'address': branch.address,
+         'meal_period': branch.meal_period,
          'facility': branch.facility,
          'pay_card': branch.pay_card,
          'phone': branch.phone,
@@ -371,8 +370,7 @@ def get_branch_profile(request, token, branch_id, **kwargs):
     'is_enabled': forms.BooleanField(required=False),
 })
 @validate_admin_token()
-def modify_branch_profile(request, token, branch_id, staff_id=None,
-                          **kwargs):
+def modify_branch_profile(request, token, branch_id, staff_id=None, **kwargs):
     """修改门店信息
     :param token: 令牌(必传)
     :param branch_id: 酒店ID(必传)
@@ -441,14 +439,81 @@ def modify_branch_profile(request, token, branch_id, staff_id=None,
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
     'branch_id': forms.IntegerField(),
+    'meal_period': forms.CharField(max_length=500),
+})
+@validate_admin_token()
+def modify_meal_period(request, token, branch_id, meal_period):
+    """修改门店的餐段
+
+    :param token: 令牌(必传)
+    :param branch_id: 酒店门店ID(必传)
+    :param meal_period: 餐段设置, json字符串, 格式如下
+        {
+            "Monday": {
+                "from": "8:30",
+                "to": "12:00",
+            }
+            "TuesDay": {
+                "from": "8:30",
+                "to": "12:00",
+            }
+            ...
+        }
+    :return:
+    """
+    days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
+            'Saturday', 'Sunday']
+
+    try:
+        branch = HotelBranch.objects.get(id=branch_id)
+    except ObjectDoesNotExist:
+        return err_response('err_3', '酒店不存在')
+
+    # 解析餐段json字符串
+    try:
+        meal_period_dict = json.loads(meal_period)
+        with open('data/meal_period.json') as json_file:
+            data = json.load(json_file)
+        result = {}
+        for day in days:
+            # 午餐
+            lunch = data['lunch']
+            if 'lunch' in meal_period_dict[day]:
+                begin = meal_period_dict[day]['lunch']['from']
+                end = meal_period_dict[day]['lunch']['to']
+                result['lunch'] = \
+                    lunch[lunch.index(begin): lunch.index(end) + 1]
+            # 晚餐
+            dinner = data['dinner']
+            if 'dinner' in meal_period_dict[day]:
+                begin = meal_period_dict[day]['dinner']['from']
+                end = meal_period_dict[day]['dinner']['to']
+                result['dinner'] = \
+                    dinner[dinner.index(begin): dinner.index(end) + 1]
+            # 夜宵
+            supper = data['supper']
+            if 'supper' in meal_period_dict[day]:
+                begin = meal_period_dict[day]['supper']['from']
+                end = meal_period_dict[day]['supper']['to']
+                result['supper'] = \
+                    supper[supper.index(begin): supper.index(end) + 1]
+        branch.meal_period = json.dumps(result)
+    except ValueError or KeyError:
+        return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+    'branch_id': forms.IntegerField(),
 })
 @validate_admin_token()
 def add_branch_picture(request, token, branch_id):
     """增加门店图片
 
     :param token: 令牌(必传)
-    :param branch_id: 酒店ID(必传)
-    :param picture: 酒店介绍图片, [file]格式图片, 增加图片时传
+    :param branch_id: 酒店门店ID(必传)
+    :param picture: 酒店门店介绍图片, [file]格式图片, 增加图片时传
     :return 200/400
     """
 

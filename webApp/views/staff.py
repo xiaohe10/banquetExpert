@@ -8,7 +8,8 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from ..utils.decorator import validate_args, validate_staff_token
 from ..utils.response import corr_response, err_response
-from ..models import Staff, Hotel, ValidationCode as ValidationCodeModel
+from ..models import Staff, Hotel, HotelBranch, \
+    ValidationCode as ValidationCodeModel
 
 
 @validate_args({
@@ -236,3 +237,145 @@ def modify_profile(request, token, **kwargs):
 
     request.staff.save()
     return corr_response()
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+})
+@validate_staff_token()
+def get_hotel(request, token):
+    """获取员工所在酒店
+
+    :param token: 令牌(必传)
+    :return:
+        hotel_id: ID
+        name: 名称
+        icon: 头像
+        branches_count: 门店数
+        owner_name: 法人代表
+        create_time: 创建时间
+    """
+
+    try:
+        hotel = request.staff.hotel
+    except ObjectDoesNotExist:
+        return err_response('err_4', '酒店不存在')
+    if hotel.is_enabled is False:
+        return err_response('err_4', '酒店不存在')
+
+    d = {'hotel_id': hotel.id,
+         'name': hotel.name,
+         'icon': hotel.icon,
+         'branches_count': hotel.branches.count(),
+         'owner_name': hotel.owner_name,
+         'create_time': hotel.create_time}
+    return corr_response(d)
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+    'offset': forms.IntegerField(min_value=0, required=False),
+    'limit': forms.IntegerField(min_value=0, required=False),
+    'order': forms.IntegerField(min_value=0, max_value=3, required=False),
+})
+@validate_staff_token()
+def get_branches(request, token, offset=0, limit=10, order=1):
+    """获取员工所在酒店的门店列表
+
+    :param token: 令牌(必传)
+    :param offset: 起始值
+    :param limit: 偏移量
+    :param order: 排序方式
+        0: 注册时间升序
+        1: 注册时间降序（默认值）
+        2: 昵称升序
+        3: 昵称降序
+    :return:
+        count: 门店总数
+        list: 门店列表
+            branch_id: ID
+            name: 名称
+            icon: 头像
+            province: 省
+            city: 市
+            county: 区/县
+            address: 详细地址
+            hotel_name: 所属酒店名
+            manager_name: 店长名字
+            create_time: 创建时间
+    """
+    ORDERS = ('create_time', '-create_time', 'name', '-name')
+
+    c = request.staff.hotel.branches.count()
+    branches = request.staff.hotel.branches.order_by(
+        ORDERS[order])[offset:offset + limit]
+
+    l = [{'branch_id': b.id,
+          'name': b.name,
+          'icon': b.icon,
+          'province': b.province,
+          'city': b.city,
+          'county': b.county,
+          'address': b.address,
+          'hotel_name': b.hotel.hotel.name,
+          'manager_name': b.manager.name,
+          'create_time': b.create_time} for b in branches]
+    return corr_response({'count': c, 'list': l})
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+    'branch_id': forms.IntegerField(),
+})
+@validate_staff_token()
+def get_branch_profile(request, token, branch_id, **kwargs):
+    """获取酒店门店详情
+
+    :param token: 令牌(必传)
+    :param branch_id: 门店ID(必传)
+    :return
+        name: 名称
+        icon: 头像
+        pictures: 图片(最多5张，json数组)
+        province: 省
+        city: 市
+        county: 区/县
+        address: 详细地址
+        meal_period: 餐段设置(json字符串)
+        facility: 设施(json字符串)
+        pay_card: 可以刷哪些卡(json字符串)
+        phone: 联系电话(最多3个，json数组)
+        cuisine: 菜系(json字符串)
+        hotel_name: 所属酒店名
+        manager_name: 店长名字
+        is_enabled: 是否有效
+        create_time: 创建时间
+    """
+
+    try:
+        branch = HotelBranch.enabled_objects.get(id=branch_id)
+    except ObjectDoesNotExist:
+        return err_response('err_3', '门店不存在')
+
+    # 只能查看自己酒店的门店
+    if branch.hotel != request.staff.hotel:
+        return err_response('err_2', '权限错误')
+
+    d = {'branch_id': branch.id,
+         'name': branch.name,
+         'icon': branch.icon,
+         'pictures': branch.pictures,
+         'province': branch.province,
+         'city': branch.city,
+         'county': branch.county,
+         'address': branch.address,
+         'meal_period': branch.meal_period,
+         'facility': branch.facility,
+         'pay_card': branch.pay_card,
+         'phone': branch.phone,
+         'cuisine': branch.cuisine,
+         'hotel_name': branch.hotel.hotel.name,
+         'manager_name': branch.manager_name,
+         'is_enabled': branch.is_enabled,
+         'create_time': branch.create_time}
+    return corr_response(d)

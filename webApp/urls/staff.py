@@ -13,4 +13,11 @@ urlpatterns = [
     url(r'^profile/get/$', get_profile, name='get_profile'),
     # 修改个人资料
     url(r'^profile/modify/$', modify_password, name='modify_profile'),
+    # 获取员工所在酒店的门店列表
+    url(r'^hotel/', get_hotel, name='get_hotel'),
+    # 获取员工所在酒店的门店列表
+    url(r'^hotel_branches/', get_branches, name='get_branches'),
+    # 获取门店的详情
+    url(r'^hotel_branch/profile/', get_branch_profile,
+        name='get_branch_profile'),
 ]
