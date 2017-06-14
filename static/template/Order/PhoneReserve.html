@@ -58,15 +58,13 @@
         <!--查询-->
         <div class="form-inline p-1">
             <a>选择日期区间：</a>
-            <input type="date" data-link="date-from"/>
+            <input class="form-control form-control-sm" type="date" id="date_from" data-link="date_from"/>
             ~
-            <input type="date" data-link="date-to"/>
-            <input type="text" data-link="keyword" placeholder="输入姓名或手机号"/>
+            <input class="form-control form-control-sm" type="date" id="date_to" data-link="date_to"/>
+            <input class="form-control form-control-sm" type="text" id="keyword" data-link="keyword" placeholder="输入姓名或手机号"/>
             <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" id="query" value="查询"/>
         </div>
     </form>
-
-
 </script>
 <script id="TableTemplate" type="text/plain">
     {{for table}}
@@ -78,10 +76,9 @@
             <td>{{:status}}</td>
         </tr>
     {{/for }}
-
-
 </script>
 <script>
+    var TAG = "#/Order/PhoneReserve";
     var option = {
         date_from: "",
         date_to: "",
@@ -92,9 +89,26 @@
         table: []
     };
 
-    for (var i = 0; i < 6; i++) {
-        data.table.push({date: "2017-06-13", time: "14:24:15", phone: "10000000000", name: "凌乱了", status: "未处理"});
+    for (var i = 0; i < 16; i++) {
+        data.table.push({date: "2017-06-13", time: "14:24:15", phone: "100 0000 0000", name: "凌乱了", status: "未处理"});
     }
     $.templates("#OptionTemplate").link("#option", option);
     $.templates("#TableTemplate").link("#table", data);
+
+    $("#date_from").change(function () {
+        // TODO: 根据起始日期筛选数据
+        Log.i(TAG, "根据起始日期筛选数据：" + option.date_from);
+    });
+    $("#date_to").change(function () {
+        // TODO: 根据结束日期筛选数据
+        Log.i(TAG, "根据结束日期筛选数据：" + option.date_to);
+    });
+    $("#keyword").change(function () {
+        // TODO: 根据关键字查找数据
+        Log.i(TAG, "根据关键字查找数据：" + option.keyword);
+    });
+    $("#query").click(function () {
+        // TODO: 根据日期和关键字查找数据
+        Log.i(TAG, JSON.stringify(option));
+    });
 </script>

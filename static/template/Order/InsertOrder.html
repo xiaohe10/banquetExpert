@@ -4,7 +4,7 @@
     <div class="p-2 bg-success">
         <div class="form-inline p-1">
             <a>只能录入最近七日内订单</a>
-            <select>
+            <select class="form-control form-control-sm" id="date">
                 <option>2017-6-13</option>
                 <option>2017-6-13</option>
                 <option>2017-6-13</option>
@@ -13,7 +13,7 @@
                 <option>2017-6-13</option>
                 <option>2017-6-13</option>
             </select>
-            <select>
+            <select class="form-control form-control-sm" id="channel">
                 <option>全部接单渠道</option>
                 <optgroup label="内部渠道"></optgroup>
                 <option>内部渠道</option>
@@ -24,8 +24,8 @@
                 <option>外部渠道</option>
                 <option>外部渠道</option>
             </select>
-            <input type="button" id="search" value="搜索"/>
-            <input type="button" id="save" value="保存"/>
+            <input class="btn btn-primary btn-sm ml-2 mr-1" type="button" id="search" value="搜索"/>
+            <input class="btn btn-secondary btn-sm ml-1 mr-2" type="button" id="save" value="保存"/>
         </div>
     </div>
 </div>
@@ -67,3 +67,14 @@
         </table>
     </div>
 </div>
+<script>
+
+    // TODO: 绑定数据与模板
+
+    $("#date").change(function () {
+        // TODO: 选择日期
+    });
+    $("#channel").change(function () {
+        // TODO: 选择渠道
+    });
+</script>

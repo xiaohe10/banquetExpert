@@ -120,7 +120,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <input class="btn btn-secondary" type="button" value="关闭" id="close" />
+                <input class="btn btn-secondary" type="button" value="关闭" id="close"/>
             </div>
         </div>
     </div>
@@ -265,8 +265,8 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <input class="btn btn-primary" type="submit" value="提交" id="submit" />
-                <input class="btn btn-secondary" type="button" value="取消" id="cancel" />
+                <input class="btn btn-primary" type="submit" value="提交" id="submit"/>
+                <input class="btn btn-secondary" type="button" value="取消" id="cancel"/>
             </div>
         </div>
     </div>
@@ -276,22 +276,22 @@
     <div class="p-2 bg-success">
         <div class="form-inline p-1">
             <a>就餐日期：</a>
-            <input type="date" data-link="date_from"/>
+            <input class="form-control form-control-sm" type="date" data-link="date_from"/>
             ~
-            <input type="date" data-link="date_to"/>
-            <select id="area" data-link="select_area">
+            <input class="form-control form-control-sm" type="date" data-link="date_to"/>
+            <select class="form-control form-control-sm" id="area" data-link="select_area">
                 <option value="-1">请选择区域</option>
                 {{for area}}
                 <option value="{{:value}}">{{:name}}</option>
                 {{/for }}
             </select>
-            <select id="seat" data-link="select_seat">
+            <select class="form-control form-control-sm" id="seat" data-link="select_seat">
                 <option value="-1">请选择餐位</option>
                 {{for seat}}
                 <option value="{{:value}}">{{:name}}</option>
                 {{/for }}
             </select>
-            <select data-link="select_channel">
+            <select class="form-control form-control-sm" id="channel" data-link="select_channel">
                 <option value="0">全部接单渠道</option>
                 {{for channel}}
                     <optgroup label="{{:name}}">{{:name}}</optgroup>
@@ -300,24 +300,17 @@
                     {{/for }}
                 {{/for }}
             </select>
-            <input type="text" value="18800184976" data-link="keyword" placeholder="输入姓名或手机号"/>
+            <input class="form-control form-control-sm" type="text" value="18800184976" data-link="keyword" placeholder="输入姓名或手机号"/>
             <input class="btn btn-sm btn-primary mx-1 px-2" type="button" id="query" value="查询"/>
-            <input class="btn btn-sm btn-secondary mx-1 px-2" type="button" id="save" value="生成报表"/>
+            <input class="btn btn-sm btn-secondary mx-1 px-2" type="button" id="export" value="生成报表"/>
         </div>
     </div>
-
-
-
-
-
-
-
-
 
 </script>
 <!--表格模板-->
 <script>
-
+    var TAG = "#/Order/OrderHistory/";
+    // 子页面对象
     var option = {
         data_from: "2017/06/10",
         data_to: "2017/06/09",
@@ -329,22 +322,42 @@
         seat: [],
         channel: BanquetExpert.channel
     };
-
+    // 绑定模板
     $.templates("#OptionTemplate").link("#option", option);
 
+    $("#data-from").change(function () {
+        // TODO: 选择开始日期
+        Log.i(TAG, "选择开始日期：" + $(this).val());
+    });
+    $("#data-to").change(function () {
+        // TODO: 选择结束日期
+        Log.i(TAG, "选择结束日期：" + $(this).val());
+    });
     $("#area").change(function () {
+        // TODO: 选择区域
+        Log.i(TAG, "选择区域：" + $(this).val());
         var index = $("#area").val();
         if (index === -1) {
-            alert("选择区域：" + index);
             $.observable(option).setProperty({select_seat: -1, seat: []});
         } else {
-            alert("选择区域：" + index);
             var seat = BanquetExpert.area[index].seat;
             $.observable(option).setProperty({select_seat: -1, seat: seat});
         }
     });
-
+    $("#seat").change(function () {
+        // TODO: 选择餐位
+        Log.i(TAG, "选择餐位：" + $(this).val());
+    });
+    $("#channel").change(function () {
+        // TODO: 选择渠道
+        Log.i(TAG, "选择渠道：" + $(this).val());
+    });
+    $("#keyword").change(function () {
+        // TODO: 查询关键字
+        Log.i(TAG, "查询关键字：" + $(this).val());
+    });
     $("#query").click(function () {
+        // TODO: 查询订单数据
         var json = {
             data_from: option.data_from,
             data_to: option.data_to,
@@ -353,12 +366,17 @@
             select_channel: option.select_channel,
             keyword: option.keyword
         };
-        alert(JSON.stringify(json));
+        Log.i(TAG, "查询订单数据：" + JSON.stringify(json));
+    });
+    $("#export").click(function () {
+        // TODO: 生成报表
+        Log.i(TAG, "生成报表");
     });
 
     var routes = {
         "/Order/OrderHistory/Filter/:type": function (type) {
-            alert("选择了：" + type);
+            // TODO: 根据订单类型过滤订单
+            Log.i(TAG, "选择了：" + type);
         }
     };
     var router = window.Router(routes);
