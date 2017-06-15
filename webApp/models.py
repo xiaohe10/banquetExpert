@@ -417,8 +417,6 @@ class Order(models.Model):
 
     # 预定桌位, 可能多桌
     desks = models.CharField(max_length=50, default='')
-    # 接单人
-    staff = models.ForeignKey('Staff', models.CASCADE, 'orders')
     # 顾客(可能是散客)
     user = models.ForeignKey(
         'User', models.CASCADE, 'orders', default=None, null=True)

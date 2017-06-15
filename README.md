@@ -511,7 +511,6 @@ URL：webApp/order/detail/ <br>
 | 参数名称       | 含义             |
 |:------------- |:---------------|
 | order_id| 订单ID |
-| staff_name | 接单人 |
 | create_time | 创建日期 |
 | cancel_time | 撤销日期 |
 | arrival_time  | 客到日期 |
