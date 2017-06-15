@@ -95,6 +95,8 @@ class HotelBranch(models.Model):
     county = models.CharField(max_length=20, default='')
     # 详细地址
     address = models.CharField(max_length=50, default='')
+    # 餐段
+    meal_period = models.CharField(max_length=500, default='')
     # 设施
     facility = models.CharField(max_length=100, default='')
     # 可以刷哪些卡
@@ -122,21 +124,35 @@ class HotelBranch(models.Model):
         ordering = ['-create_time']
 
 
+class Area(models.Model):
+    """餐厅区域模型"""
+
+    # 名称
+    name = models.CharField(max_length=10, unique=True)
+    # 排序
+    order = models.IntegerField(default=0, db_index=True)
+    # 是否有效
+    is_enabled = models.BooleanField(default=True, db_index=True)
+
+    # 创建时间
+    create_time = models.DateTimeField(default=timezone.now, db_index=True)
+
+    # 所属门店
+    branch = models.ForeignKey('HotelBranch', models.CASCADE, 'areas')
+
+    class Meta:
+        ordering = ['-create_time']
+
+
 class Desk(models.Model):
     """桌位模型"""
 
     # 桌位号
     number = models.CharField(max_length=10)
-    # 位置
-    position = models.CharField(max_length=10)
-    # 状态
-    state = models.IntegerField(
-        choices=((0, '空闲'), (1, '预定中'), (2, '用餐中')),
-        default=0, db_index=True)
     # 排序
-    order = models.IntegerField(db_index=True)
+    order = models.IntegerField(default=0, db_index=True)
     # 费用说明
-    expense = models.IntegerField(default=None, null=True)
+    expense = models.CharField(max_length=100, default='')
     # 房间类型
     type = models.CharField(max_length=10, default='', db_index=True)
     # 设施
@@ -146,19 +162,19 @@ class Desk(models.Model):
     # 是否靠窗
     is_beside_window = models.BooleanField(default=False)
     # 最小可容纳人数
-    min_people_number = models.IntegerField(default=None, null=True)
+    min_guest_number = models.IntegerField(default=None, null=True)
     # 最大可容纳人数
-    max_people_number = models.IntegerField(default=None, null=True)
+    max_guest_number = models.IntegerField(default=None, null=True)
+    # 备注
+    description = models.CharField(max_length=100, default='')
     # 是否有效
     is_enabled = models.BooleanField(default=True, db_index=True)
 
     # 创建时间
     create_time = models.DateTimeField(default=timezone.now, db_index=True)
 
-    # 所属门店
-    branch = models.ForeignKey('HotelBranch', models.CASCADE, 'desks')
-    # 员工
-    staff = models.ManyToManyField('Staff', 'desks')
+    # 所属区域
+    area = models.ForeignKey('Area', models.CASCADE, 'desks')
 
     # 管理器
     objects = models.Manager()
@@ -386,10 +402,14 @@ class Order(models.Model):
     # 餐段
     dinner_period = models.IntegerField(
         choices=((0, '午餐'), (1, '晚餐'), (2, '夜宵')), default=0, db_index=True)
-    # 就餐时间
-    dinner_time = models.DateTimeField(db_index=True)
+    # 预定用餐日期
+    dinner_date = models.DateField(db_index=True)
+    # 预定用餐时间
+    dinner_time = models.TimeField()
     # 创建时间
     create_time = models.DateTimeField(default=timezone.now, db_index=True)
+    # 客到时间
+    arrival_time = models.DateTimeField(default=None, db_index=True)
     # 完成时间
     finish_time = models.DateTimeField(default=None, db_index=True)
     # 撤销时间
