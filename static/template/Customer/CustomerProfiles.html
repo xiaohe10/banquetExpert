@@ -16,13 +16,19 @@
             </select>
             <input class="form-control form-control-sm mx-1" type="date" id="keyword" placeholder="输入姓名或手机号"/>
             <button class="btn btn-primary btn-sm mx-1" id="query" value="查询"><i class="icon-search mr-2"></i>查询</button>
-            <input class="btn btn-primary btn-sm mx-1" type="button" id="export" value="高级筛选+导出"/>
-            <input class="btn btn-primary btn-sm mx-1" type="button" id="add" value="+添加档案"/>
-            <input class="btn btn-primary btn-sm mx-1" type="button" id="import" value="批量导入"/>
+            <input class="btn btn-primary btn-sm mx-1" type="button" id="export" value="高级筛选+导出" data-toggle="modal" data-target=".profiles-export"/>
+            <input class="btn btn-primary btn-sm mx-1" type="button" id="add" value="+添加档案" data-toggle="modal" data-target=".profiles-add"/>
+            <input class="btn btn-primary btn-sm mx-1" type="button" id="import" value="批量导入" data-toggle="modal" data-target=".profiles-import"/>
             <input class="btn btn-primary btn-sm mx-1" type="button" id="member" value="会员价值设置"/>
-            <label for="we_chat"><input class="form-check form-check-input mx-1" type="checkbox" id="we_chat"/>绑定微信</label>
-            <label for="no_phone_number"><input class="form-check form-check-input mx-1" type="checkbox" id="no_phone_number"/>非手机号码</label>
-            <label for="no_marketing"><input class="form-check form-check-input mx-1" type="checkbox" id="no_marketing"/>不接受营销</label>
+            <label class="form-check-label inline" for="we_chat">
+                <input class="form-check form-check-input mx-1" type="checkbox" id="we_chat"/>绑定微信
+            </label>
+            <label class="form-check-label inline" for="no_phone_number">
+                <input class="form-check form-check-input mx-1" type="checkbox" id="no_phone_number"/>非手机号码
+            </label>
+            <label class="form-check-label inline" for="no_marketing">
+                <input class="form-check form-check-input mx-1" type="checkbox" id="no_marketing"/>不接受营销
+            </label>
         </div>
     </div>
 </div>
@@ -86,6 +92,499 @@
         </table>
     </div>
 </div>
+<!--对话框/添加档案-->
+<div class="modal profiles-add" role="dialog" aria-labelledby="profiles-add">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <a>添加档案</a>
+            </div>
+            <div class="modal-body">
+                <!--主页/客户管理/客户档案列表/添加档案-->
+                <!--内容-->
+                <div class="py-2 px-2 mt-2 bg-info">
+                    <!--表单-->
+                    <div class="p-2 mb-2 bg-faded">
+                        <form class="form-horizontal">
+                            <fieldset>
+                                <!--添加客户档案-->
+                                <div id="legend" class="col-form-legend">
+                                    <legend class="">添加客户档案</legend>
+                                </div>
+                                <!--姓名-->
+                                <div class="control-group">
+                                    <label class="control-label"><a style="color: red;">*</a>姓名：</label>
+                                    <div class="controls">
+                                        <input class="form-control-sm" type="text"/>
+                                    </div>
+                                </div>
+                                <!--性别-->
+                                <div class="control-group">
+                                    <label class="control-label"><a style="color: red;">*</a>性别：</label>
+                                    <div class="controls">
+                                        <label class="radio inline"><input class="form-control-sm" type="radio" name="sex"/>先生</label>
+                                        <label class="radio inline"><input class="form-control-sm" type="radio" name="sex"/>女士</label>
+                                    </div>
+                                </div>
+                                <!--电话-->
+                                <div class="control-group">
+                                    <label class="control-label"><a style="color: red;">*</a>电话：</label>
+                                    <div class="controls">
+                                        <!--电话列表-->
+                                        <ul class="inline">
+                                            <li><label>
+                                                <input type="text" name="phone"/>
+                                            </label></li>
+                                            <li><label>
+                                                <input type="text" name="phone"/>
+                                            </label></li>
+                                            <li><label>
+                                                <input type="text" name="phone"/>
+                                            </label></li>
+                                        </ul>
+                                        <a class="btn btn-primary btn-link">+增加电话</a>
+                                        <a class="text-warning">请准确输入11位手机号码</a>
+                                    </div>
+                                </div>
+                                <!--生日-->
+                                <div class="control-group">
+                                    <label class="control-label">生日：</label>
+                                    <div class="controls">
+                                        <input type="date" name="birthday"/>
+                                        <label class="radio inline"><input type="radio" name="calendar" value="0"/>公历</label>
+                                        <label class="radio inline"><input type="radio" name="calendar" value="1"/>农历</label>
+                                    </div>
+                                </div>
+                                <!--单位-->
+                                <div class="control-group">
+                                    <label class="control-label">单位：</label>
+                                    <div class="controls">
+                                        <input type="text" name="unit"/>
+                                    </div>
+                                </div>
+                                <!--现住址-->
+                                <div class="control-group">
+                                    <label class="control-label">现住址：</label>
+                                    <div class="controls">
+                                        <!--省-->
+                                        <select class="form-control-sm inline">
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                        </select>
+                                        <!--市-->
+                                        <select class="form-control-sm inline">
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                        </select>
+                                        <!--县-->
+                                        <select class="form-control-sm inline">
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                        </select>
+                                        <!--小区-->
+                                        <select class="form-control-sm inline">
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!--籍贯-->
+                                <div class="control-group">
+                                    <label class="control-label">籍贯：</label>
+                                    <div class="controls">
+                                        <!--省-->
+                                        <select class="form-control-sm inline">
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                        </select>
+                                        <!--市-->
+                                        <select class="form-control-sm inline">
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!--营销短信-->
+                                <div class="control-group">
+                                    <label class="control-label">营销短信：</label>
+                                    <div class="controls">
+                                        <label class="radio inline"><input type="radio" name="sms_marketing" value="0"/>开</label>
+                                        <label class="radio inline"><input type="radio" name="sms_marketing" value="1"/>关</label>
+                                    </div>
+                                </div>
+                                <!--分类方法-->
+                                <div class="control-group">
+                                    <label class="control-label">分类方法：</label>
+                                    <div class="controls">
+                                        <select class="form-control-sm inline">
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                            <option>北京</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!--病症-->
+                                <div class="control-group">
+                                    <label class="control-label">病症：</label>
+                                    <div class="controls">
+                                        <!--病症列表-->
+                                        <ul class="inline">
+                                            <li><label>
+                                                <input type="text" name="phone"/>
+                                            </label></li>
+                                            <li><label>
+                                                <input type="text" name="phone"/>
+                                            </label></li>
+                                            <li><label>
+                                                <input type="text" name="phone"/>
+                                            </label></li>
+                                        </ul>
+                                        <a class="btn btn-primary btn-link">+添加标签</a>
+                                    </div>
+                                </div>
+                                <!--喜好-->
+                                <div class="control-group">
+                                    <label class="control-label">喜好：</label>
+                                    <div class="controls">
+                                        <!--喜好列表-->
+                                        <ul class="inline">
+                                            <li><label>
+                                                <input type="text" name="phone"/>
+                                            </label></li>
+                                            <li><label>
+                                                <input type="text" name="phone"/>
+                                            </label></li>
+                                            <li><label>
+                                                <input type="text" name="phone"/>
+                                            </label></li>
+                                        </ul>
+                                        <a class="btn btn-primary btn-link">+添加标签</a>
+                                    </div>
+                                </div>
+                                <!--忌口-->
+                                <div class="control-group">
+                                    <label class="control-label">忌口：</label>
+                                    <div class="controls">
+                                        <!--忌口列表-->
+                                        <ul class="inline">
+                                            <li><label>
+                                                <input class="form-control-sm" type="text" name="phone"/>
+                                            </label></li>
+                                            <li><label>
+                                                <input type="text" name="phone"/>
+                                            </label></li>
+                                            <li><label>
+                                                <input type="text" name="phone"/>
+                                            </label></li>
+                                        </ul>
+                                        <a class="btn btn-primary btn-link">+添加标签</a>
+                                    </div>
+                                </div>
+                                <!--不良记录-->
+                                <div class="control-group">
+                                    <label class="control-label">不良记录：</label>
+                                    <div class="controls">
+                                        <textarea></textarea>
+                                    </div>
+                                </div>
+                                <!--操作栏-->
+                                <div class="control-group">
+                                    <label class="control-label"></label>
+                                    <div class="controls">
+                                        <div class="py-2">
+                                            <button class="btn btn-primary btn-sm">提交</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                This is footer<a class="close"></a>
+            </div>
+        </div>
+    </div>
+</div>
+<!--对话框/批量导入-->
+<div class="modal profiles-import" role="dialog" aria-labelledby="profiles-import">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <a>批量导入</a>
+            </div>
+            <div class="modal-body">
+                <!--主页/客户管理/客户档案列表/批量导入-->
+                <!--内容-->
+                <div class="py-2 px-2 mt-2 bg-info">
+                    <!--表单-->
+                    <div class="p-2 mb-2 bg-faded">
+                        <!--表单-->
+                        <div class="p-2 mb-2 bg-info">
+                            <form class="form-horizontal">
+                                <fieldset>
+                                    <!--请选取存储会员信息的EXCEL文档-->
+                                    <div id="legend" class="col-form-legend">
+                                        <legend class="">请选取存储会员信息的EXCEL文档</legend>
+                                    </div>
+                                    <!--选取文件-->
+                                    <div class="control-group">
+                                        <label class="control-label">选择文件：</label>
+                                        <div class="controls">
+                                            <input class="form-control-sm mx-1" type="file" name="file" placeholder="未选择任何文件"/>
+                                        </div>
+                                    </div>
+                                    <!--操作栏-->
+                                    <div class="control-group">
+                                        <label class="control-label"></label>
+                                        <div class="controls">
+                                            <input class="btn btn-primary btn-sm px-2 mx-1" type="button" name="file" value="导入"/>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                        <!--提示-->
+                        <div class="p-2 mb-2 bg-warning">
+                            <p>注意事项:</p>
+                            <p>文件请另存为：Excel 97-2003 工作薄（*.xls）格式后使用</p>
+                            <p>可导入客户信息为：姓名、 手机、 性别、单位、喜好、忌口、服务要求</p>
+                            <p>性别可为“男”“男士”“先生”“女”“女士”，不可填写其他，为空时默认为“男”</p>
+                            <p>字段长度规则:1个汉字等于两个字节，其他字母数字1个占1字节 例如:小明=4字节，小明a=5字节</p>
+                            <p>客户名规范:不得超过20个字节长度</p>
+                            <p>公司名规范:不得超过40个字节长度</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                This is footer<a class="close"></a>
+            </div>
+        </div>
+    </div>
+</div>
+<!--对话框/批量导出-->
+<div class="modal profiles-export" role="dialog" aria-labelledby="profiles-export">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <a>批量导出</a>
+            </div>
+            <div class="modal-body">
+                <!--主页/客户管理/客户档案列表/批量导出-->
+                <!--内容-->
+                <div class="py-2 px-2 mt-2 bg-info">
+                    <!--表单-->
+                    <div class="p-2 mb-2 bg-faded">
+                        <form class="form-horizontal">
+                            <fieldset>
+                                <!--批量导出客户档案-->
+                                <div id="legend" class="col-form-legend">
+                                    <legend class="">批量导出客户档案</legend>
+                                </div>
+                                <!--按时间筛选-->
+                                <div class="control-group">
+                                    <label class="control-label"><input type="checkbox" name="ByTime"/>按时间筛选：</label>
+                                    <div class="controls">
+                                        <input class="form-control-sm mx-1" type="date"/>
+                                        ~
+                                        <input class="form-control-sm mx-1" type="date"/>
+                                        有订单客户
+                                    </div>
+                                </div>
+                                <!--按订单总量-->
+                                <div class="control-group">
+                                    <label class="control-label"><input type="checkbox" name="ByOrder"/>按订单总量：</label>
+                                    <div class="controls">
+                                        <input class="form-control-sm mx-1" type="number"/>
+                                        ~
+                                        <input class="form-control-sm mx-1" type="number"/>
+                                        单
+                                    </div>
+                                </div>
+                                <!--按消费金额-->
+                                <div class="control-group">
+                                    <label class="control-label"><input type="checkbox" name="ByMoney"/>按消费金额：</label>
+                                    <div class="controls">
+                                        <ul>
+                                            <li>
+                                                <label class="radio inline">
+                                                    <input type="radio" name="consume_amount" value="0"/>按消费总额
+                                                </label>
+                                                <input class="form-control-sm mx-1" type="number"/>
+                                                ~
+                                                <input class="form-control-sm mx-1" type="number"/>
+                                                元
+                                            </li>
+                                            <li>
+                                                <label class="radio inline">
+                                                    <input type="radio" name="consume_amount" value="1"/>按人均消费
+                                                </label>
+                                                <input class="form-control-sm mx-1" type="number"/>
+                                                ~
+                                                <input class="form-control-sm mx-1" type="number"/>
+                                                元
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <!--按维护渠道 TODO: 按维护渠道-->
+                                <div class="control-group">
+                                    <label class="control-label"><input type="checkbox" name="ByChannel"/>按维护渠道：</label>
+                                    <div class="controls">
+                                        <!--已选择渠道列表-->
+
+                                        <!--渠道列表-->
+
+                                    </div>
+                                </div>
+                                <!--按会员分类-->
+                                <div class="control-group">
+                                    <label class="control-label"><input type="checkbox" name="ByMember"/>按会员分类：</label>
+                                    <div class="controls">
+                                        <ul class="list-group">
+                                            <li>
+                                                <label>
+                                                    <input type="radio" name="member" value="0"/>RMF活跃会员
+                                                </label>
+                                                <ul class="inline">
+                                                    <li>
+                                                        <label class="checkbox inline">
+                                                            <input type="checkbox" name="member_class" value="0">活跃
+                                                        </label>
+                                                    </li>
+                                                    <li>
+                                                        <label class="checkbox inline">
+                                                            <input type="checkbox" name="member_class" value="1">沉睡
+                                                        </label>
+                                                    </li>
+                                                    <li>
+                                                        <label class="checkbox inline">
+                                                            <input type="checkbox" name="member_class" value="2">流失
+                                                        </label>
+                                                    </li>
+                                                    <li>
+                                                        <label class="checkbox inline">
+                                                            <input type="checkbox" name="member_class" value="3">高价值
+                                                        </label>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <label>
+                                                    <input type="radio" name="member" value="1"/>自定义分类
+                                                </label>
+                                                <ul class="inline">
+                                                    <li>
+                                                        <label class="checkbox inline">
+                                                            <input type="checkbox" name="member_class" value="0">活跃
+                                                        </label>
+                                                    </li>
+                                                    <li>
+                                                        <label class="checkbox inline">
+                                                            <input type="checkbox" name="member_class" value="1">沉睡
+                                                        </label>
+                                                    </li>
+                                                    <li>
+                                                        <label class="checkbox inline">
+                                                            <input type="checkbox" name="member_class" value="2">流失
+                                                        </label>
+                                                    </li>
+                                                    <li>
+                                                        <label class="checkbox inline">
+                                                            <input type="checkbox" name="member_class" value="3">高价值
+                                                        </label>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <!--按餐段选择-->
+                                <div class="control-group">
+                                    <label class="control-label"><input type="checkbox" name="ByMealPeriod"/>按餐段选择：</label>
+                                    <div class="controls">
+                                        <label class="radio inline">
+                                            <input type="radio" name="meals_time" value="0"/>午餐
+                                        </label>
+                                        <label class="radio inline">
+                                            <input type="radio" name="meals_time" value="1"/>晚餐
+                                        </label>
+                                    </div>
+                                </div>
+                                <!--按性别选择-->
+                                <div class="control-group">
+                                    <label class="control-label"><input type="checkbox" name="ByGender"/>按时间筛选：</label>
+                                    <div class="controls">
+                                        <label class="radio inline">
+                                            <input type="radio" name="gender" value="0"/>先生
+                                        </label>
+                                        <label class="radio inline">
+                                            <input type="radio" name="gender" value="1"/>女士
+                                        </label>
+                                    </div>
+                                </div>
+                                <!--操作栏-->
+                                <div class="control-group">
+                                    <label class="control-label"></label>
+                                    <div class="controls">
+                                        <div class="py-2">
+                                            <button class="btn btn-primary btn-sm mx-1">导出客户档案</button>
+                                            <button class="btn btn-primary btn-sm mx-1">导出全部客户档案</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                This is footer<a class="close"></a>
+            </div>
+        </div>
+    </div>
+</div>
+<!--事件操作处理-->
 <script>
     var TAG = "#/Customer/CustomerProfiles/";
     // 事件处理

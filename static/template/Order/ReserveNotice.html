@@ -61,15 +61,15 @@
     <!--详细信息-->
     <div class="p-2 mb-2 bg-success">
         <a>订单数：17 桌位数：17 就餐人数：17</a>
-        <label>
+        <label class="checkbox inline">
             <input type="checkbox" name="phone-mask" value="电话号码以'*'代替" checked="checked"/>
             电话号码以'*'代替
         </label>
-        <label>
+        <label class="checkbox inline">
             <input type="checkbox" name="seat-marge" value="一单多桌合并成一行" checked="checked"/>
             一单多桌合并成一行
         </label>
-        <select data-link="size">
+        <select class="inline" data-link="size">
             <option><a class="icon-print">A4完整打印</a></option>
             <option><a class="icon-print">A4精简版打印</a></option>
             <option><a class="icon-print">58mm打印</a></option>
@@ -79,22 +79,22 @@
     </div>
     <!--表格-->
     <div class="p-2 mb-2 bg-faded">
-        <table class="table table-hover table-bordered table-responsive small">
+        <table class="table table-hover table-bordered small">
             <thead class="bg-info">
             <tr align="center">
                 <td>
                     <a href="#/Order/ReserveNotice/Sort/就餐时间">
-                        就餐时间 <i class="icon-chevron-down"></i>
+                        就餐时间 <i class="icon-chevron-down inline"></i>
                     </a>
                 </td>
                 <td>
                     <a href="#/Order/ReserveNotice/Sort/区域">
-                        区域 <i class="icon-chevron-down"></i>
+                        区域 <img class="icon-chevron-down inline">
                     </a>
                 </td>
                 <td>
                     <a href="#/Order/ReserveNotice/Sort/桌号">
-                        桌号<i class="icon-chevron-down"></i>
+                        桌号 <img class="icon-chevron-down inline">
                     </a>
                 </td>
                 <td>姓名</td>
@@ -102,13 +102,13 @@
                 <td>人数</td>
                 <td>
                     <a href="#/Order/ReserveNotice/Sort/接单渠道">
-                        接单渠道<i class="icon-chevron-down"></i>
+                        接单渠道<i class="icon-chevron-down inline"></i>
                     </a>
                 </td>
                 <td style="display: none">维护渠道</td>
                 <td>
                     <a href="#/Order/ReserveNotice/Sort/下单时间">
-                        下单时间<i class="icon-chevron-down"></i>
+                        下单时间<i class="icon-chevron-down inline"></i>
                     </a>
                 </td>
                 <td>分类</td>
@@ -154,7 +154,7 @@
     </div>
 </div>
 <!--对话框/预订单详情-->
-<div class="modal order-details" id="order-details" role="dialog" aria-labelledby="order-details">
+<div class="modal order-details" role="dialog" aria-labelledby="order-details">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary">

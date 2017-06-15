@@ -1,0 +1,238 @@
+<!--主页/后台用户管理/渠道管理/新增客户经理-->
+<!--内容-->
+<div class="py-2 px-2 mt-2 bg-info">
+    <!--表单-->
+    <div class="p-2 mb-2 bg-faded">
+        <form class="form-horizontal">
+            <fieldset>
+                <!--添加客户档案-->
+                <div id="legend" class="col-form-legend">
+                    <legend class="">添加客户档案</legend>
+                </div>
+                <!--姓名-->
+                <div class="control-group">
+                    <label class="control-label"><a style="color: red;">*</a>姓名：</label>
+                    <div class="controls">
+                        <input class="form-control-sm" type="text"/>
+                    </div>
+                </div>
+                <!--性别-->
+                <div class="control-group">
+                    <label class="control-label"><a style="color: red;">*</a>性别：</label>
+                    <div class="controls">
+                        <label class="radio inline"><input class="form-control-sm" type="radio" name="sex"/>先生</label>
+                        <label class="radio inline"><input class="form-control-sm" type="radio" name="sex"/>女士</label>
+                    </div>
+                </div>
+                <!--电话-->
+                <div class="control-group">
+                    <label class="control-label"><a style="color: red;">*</a>电话：</label>
+                    <div class="controls">
+                        <!--电话列表-->
+                        <ul class="inline">
+                            <li><label>
+                                <input type="text" name="phone"/>
+                            </label></li>
+                            <li><label>
+                                <input type="text" name="phone"/>
+                            </label></li>
+                            <li><label>
+                                <input type="text" name="phone"/>
+                            </label></li>
+                        </ul>
+                        <a class="btn btn-primary btn-link">+增加电话</a>
+                        <a class="text-warning">请准确输入11位手机号码</a>
+                    </div>
+                </div>
+                <!--生日-->
+                <div class="control-group">
+                    <label class="control-label">生日：</label>
+                    <div class="controls">
+                        <input type="date" name="birthday"/>
+                        <label class="radio inline"><input type="radio" name="calendar" value="0"/>公历</label>
+                        <label class="radio inline"><input type="radio" name="calendar" value="1"/>农历</label>
+                    </div>
+                </div>
+                <!--单位-->
+                <div class="control-group">
+                    <label class="control-label">单位：</label>
+                    <div class="controls">
+                        <input type="text" name="unit"/>
+                    </div>
+                </div>
+                <!--现住址-->
+                <div class="control-group">
+                    <label class="control-label">现住址：</label>
+                    <div class="controls">
+                        <!--省-->
+                        <select class="form-control-sm inline">
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                        </select>
+                        <!--市-->
+                        <select class="form-control-sm inline">
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                        </select>
+                        <!--县-->
+                        <select class="form-control-sm inline">
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                        </select>
+                        <!--小区-->
+                        <select class="form-control-sm inline">
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                        </select>
+                    </div>
+                </div>
+                <!--籍贯-->
+                <div class="control-group">
+                    <label class="control-label">籍贯：</label>
+                    <div class="controls">
+                        <!--省-->
+                        <select class="form-control-sm inline">
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                        </select>
+                        <!--市-->
+                        <select class="form-control-sm inline">
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                        </select>
+                    </div>
+                </div>
+                <!--营销短信-->
+                <div class="control-group">
+                    <label class="control-label">营销短信：</label>
+                    <div class="controls">
+                        <label class="radio inline"><input type="radio" name="sms_marketing" value="0"/>开</label>
+                        <label class="radio inline"><input type="radio" name="sms_marketing" value="1"/>关</label>
+                    </div>
+                </div>
+                <!--分类方法-->
+                <div class="control-group">
+                    <label class="control-label">分类方法：</label>
+                    <div class="controls">
+                        <select class="form-control-sm inline">
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                            <option>北京</option>
+                        </select>
+                    </div>
+                </div>
+                <!--病症-->
+                <div class="control-group">
+                    <label class="control-label">病症：</label>
+                    <div class="controls">
+                        <!--病症列表-->
+                        <ul class="inline">
+                            <li><label>
+                                <input type="text" name="phone"/>
+                            </label></li>
+                            <li><label>
+                                <input type="text" name="phone"/>
+                            </label></li>
+                            <li><label>
+                                <input type="text" name="phone"/>
+                            </label></li>
+                        </ul>
+                        <a class="btn btn-primary btn-link">+添加标签</a>
+                    </div>
+                </div>
+                <!--喜好-->
+                <div class="control-group">
+                    <label class="control-label">喜好：</label>
+                    <div class="controls">
+                        <!--喜好列表-->
+                        <ul class="inline">
+                            <li><label>
+                                <input type="text" name="phone"/>
+                            </label></li>
+                            <li><label>
+                                <input type="text" name="phone"/>
+                            </label></li>
+                            <li><label>
+                                <input type="text" name="phone"/>
+                            </label></li>
+                        </ul>
+                        <a class="btn btn-primary btn-link">+添加标签</a>
+                    </div>
+                </div>
+                <!--忌口-->
+                <div class="control-group">
+                    <label class="control-label">忌口：</label>
+                    <div class="controls">
+                        <!--忌口列表-->
+                        <ul class="inline">
+                            <li><label>
+                                <input class="form-control-sm" type="text" name="phone"/>
+                            </label></li>
+                            <li><label>
+                                <input type="text" name="phone"/>
+                            </label></li>
+                            <li><label>
+                                <input type="text" name="phone"/>
+                            </label></li>
+                        </ul>
+                        <a class="btn btn-primary btn-link">+添加标签</a>
+                    </div>
+                </div>
+                <!--不良记录-->
+                <div class="control-group">
+                    <label class="control-label">不良记录：</label>
+                    <div class="controls">
+                        <textarea></textarea>
+                    </div>
+                </div>
+                <!--操作栏-->
+                <div class="control-group">
+                    <label class="control-label"></label>
+                    <div class="controls">
+                        <div class="py-2">
+                            <button class="btn btn-primary btn-sm">提交</button>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
