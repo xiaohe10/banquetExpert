@@ -203,7 +203,7 @@ var Templates = {
     tabContent: {
         // 后台用户管理
         Channel: {
-            Channel: "Channel/Channel.html", // 获客渠道
+            Channel: "Channel/Channel.html", // 获客渠道*** AddManager AddOuterChannel AddReserve
             Privilege: "Channel/Privilege.html" // 权限管理
         },
         // 智能订餐台
@@ -228,9 +228,9 @@ var Templates = {
         },
         // 客户管理
         Customer: {
-            AnniversaryReport: "Customer/AnniversaryReport.html", //
+            AnniversaryReport: "Customer/AnniversaryReport.html", // 纪念日查询报表
             CustomerAnalysis: "Customer/CustomerAnalysis.html", // 客源情况分析
-            CustomerProfiles: "Customer/CustomerProfiles/AddCustomerProfiles.html", // 客户档案列表*** AddCustomerProfiles BatchExport
+            CustomerProfiles: "Customer/CustomerProfiles.html", // 客户档案列表*** AddCustomerProfiles BatchExport BatchImport
             CustomerRecycleBin: "Customer/CustomerRecycleBin.html", // 客户档案回收站
             MemberValue: "Customer/MemberValue.html" // 会员价值设置
         },
@@ -265,6 +265,17 @@ var Log = {
 };
 
 $(document).ready(function () {
+
+    $('li', 'ul').hover(
+        function () {
+            $(this).toggleClass('on');
+            $('ul', this).slideDown();
+        },
+        function () {
+            $(this).toggleClass('on');
+            $('ul', this).slideUp();
+        }
+    );
 
     // 查找子节点
     var find = function (obj, key, value) {
