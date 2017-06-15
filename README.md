@@ -311,7 +311,8 @@ URL：webApp/order/submit <br>
 |:------------- |:---------------| :-------------:|
 | token         | 登录口令          |         yes  |
 | staff_id         | 员工账户ID          |         yes  |
-| dinner_time | 订单日期 | yes |
+| dinner_date | 预定用餐日期 | yes |
+| dinner_time | 预定用餐时间 | yes |
 | dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') | yes |
 | name | 联系人 | yes |
 | contact | 联系电话 | yes |
@@ -344,14 +345,15 @@ URL：webApp/order/submit <br>
 {
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
 	"staff_id":1,
-	"dinner_time":"2014-02-01",
+	"dinner_date":"2014-02-01",
+	"dinner_time":"12:00"
 	"dinner_period":0,
 	"name":"李四",
 	"contact":"18813101211",
 	"guest_number":10,
 	"desk":[1,3,5],
 	"user_description":"生日宴，准备蜡烛",
-	"staff_description":"客户年级大，做好防滑",
+	"staff_description":"客户年纪大，做好防滑",
 	"water_card":"水牌内容",
 	"door_card":"门牌内容",
 	"sand_table":"沙盘内容",
@@ -408,8 +410,9 @@ URL：webApp/order/search/ <br>
 | staff_id         | 员工账户ID          |         yes  |
 | order_date    | 下单日期  |   no |
 | dinner_period | 餐段    |   no |
-| dinner_time   | 用餐时间  |   no  |
-| state | 订单状态（默认缺省表示所有未完成订单列表，没有限制，finished 表示未完成，processing 表示进行中）  | no |
+| dinner_date   | 预定用餐日期  |   no  |
+| dinner_time   | 预定用餐时间  |   no  |
+| state | 订单状态（默认缺省表示所有未完成订单列表，没有限制，finished 表示已完成，processing 表示进行中）  | no |
 | search_key | 搜索关键词（如姓名、手机等进行模糊搜索） | no |
 
 
@@ -432,9 +435,11 @@ URL：webApp/order/search/ <br>
 | order_id| 订单ID |
 | create_time | 创建日期 |
 | cancel_time | 撤销日期 |
+| arrival_time  | 客到日期 |
 | finish_time | 完成日期 | 
 | state | 状态((0, '已订'), (1, '客到'), (2, '已完成'), (3, '已撤单'))|
-| dinner_time | 订单日期 | yes |
+| dinner_date | 预定用餐日期 | yes |
+| dinner_time   | 预定用餐时间  |   yes  |
 | dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') | yes |
 | name | 联系人 | yes |
 | contact | 联系电话 | yes |
@@ -455,10 +460,12 @@ URL：webApp/order/search/ <br>
 			"order_id":"001",
 			"create_time":"2014-02-01 10:00:00",
 			"cancel_time":"2014-02-01 10:00:00",
+			"arrival_time":"2014-02-01 10:00:00",
 			"finish_time":"2014-02-01 10:00:00",
 			"state":0,
 			"order_id":"001",
-			"dinner_time":"2014-02-01",
+			"dinner_date":"2014-02-01",
+			"dinner_time":"12:00",
 			"dinner_period":0,
 			"name":"李四",
 			"contact":"18813101211",
@@ -506,9 +513,11 @@ URL：webApp/order/detail/ <br>
 | order_id| 订单ID |
 | create_time | 创建日期 |
 | cancel_time | 撤销日期 |
+| arrival_time  | 客到日期 |
 | finish_time | 完成日期 | 
 | state | 状态((0, '已订'), (1, '客到'), (2, '已完成'), (3, '已撤单'))|
-| dinner_time | 订单日期 | yes |
+| dinner_date | 预定用餐日期 | yes |
+| dinner_time   | 预定用餐时间  |   yes  |
 | dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') | yes |
 | name | 联系人 | yes |
 | contact | 联系电话 | yes |
@@ -543,10 +552,12 @@ URL：webApp/order/detail/ <br>
 		"order_id":"001",
 		"create_time":"2014-02-01 10:00:00",
 		"cancel_time":"2014-02-01 10:00:00",
+		"arrival_time":"2014-02-01 10:00:00",
 		"finish_time":"2014-02-01 10:00:00",
 		"state":0,
 		"order_id":"001",
-		"dinner_time":"2014-02-01",
+		"dinner_date":"2014-02-01",
+		"dinner_time":"12:00",
 		"dinner_period":0,
 		"name":"李四",
 		"contact":"18813101211",
@@ -591,7 +602,8 @@ URL：webApp/order/update/ <br>
 | token         | 登录口令          |         yes  |
 | staff_id         | 员工账户ID          |         yes  |
 | order_id| 订单 ID | yes|
-| dinner_time | 订单日期 | no |
+| dinner_date | 预定用餐日期 | no |
+| dinner_time   | 预定用餐时间  |   no  |
 | dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') | no |
 | name | 联系人 | no |
 | contact | 联系电话 | no |

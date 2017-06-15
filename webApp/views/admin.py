@@ -502,7 +502,6 @@ def modify_meal_period(request, token, branch_id, meal_period):
         return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
 
 
-
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
     'branch_id': forms.IntegerField(),
@@ -558,7 +557,7 @@ def add_branch_picture(request, token, branch_id):
 })
 @validate_admin_token()
 def delete_branch_picture(request, token, branch_id, pictures):
-    """删除酒店介绍图片
+    """删除酒店门店介绍图片
 
     :param token: 令牌(必传)
     :param branch_id: 酒店ID(必传)
@@ -586,6 +585,78 @@ def delete_branch_picture(request, token, branch_id, pictures):
     branch.pictures = json.dumps(pictures_tmp)
     branch.save()
     return corr_response()
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+    'branch_id': forms.IntegerField(),
+    'position': forms.CharField(min_length=1, max_length=10, required=False),
+    'order': forms.IntegerField(min_value=0, max_value=3, required=False),
+    'is_enabled': forms.BooleanField(required=False),
+})
+@validate_admin_token()
+def get_desks(request, token, branch_id, position=None, order=2,
+              is_enabled=True):
+    """获取门店的桌位列表
+
+    :param token: 令牌(必传)
+    :param branch_id: 门店ID(必传)
+    :param position: 所在楼层位置
+    :param order: 排序方式
+        0: 注册时间升序
+        1: 注册时间降序
+        2: 房间号升序（默认值）
+        3: 房间号降序
+    :param is_enabled: 是否有效(默认为True)
+    :return:
+        count: 桌位数
+        list:
+            desk_id: 桌位ID
+            position: 楼层位置
+            order: 排序
+            min_guest_num: 可容纳最小人数
+            max_guest_num: 可容纳最大人数
+            expense: 费用说明
+            type: 房间类型
+            facility: 房间设施
+            picture: 图片
+            is_beside_window: 是否靠窗
+            create_time: 创建时间
+    """
+
+    ORDERS = ('create_time', '-create_time', 'number', '-number')
+
+    try:
+        branch = HotelBranch.enabled_objects.get(id=branch_id)
+    except ObjectDoesNotExist:
+        return err_response('err_3', '门店不存在')
+
+    # 只能查看自己酒店的门店
+    if branch.hotel != request.admin.hotel:
+        return err_response('err_2', '权限错误')
+
+    if position is None:
+        c = branch.desks.filter(is_enabled=is_enabled).count()
+        ds = branch.desks.filter(is_enabled=is_enabled).order_by(ORDERS[order])
+    else:
+        c = branch.desks.filter(
+            position=position, is_enabled=is_enabled).count()
+        ds = branch.desks.filter(
+            position=position, is_enabled=is_enabled).order_by(ORDERS[order])
+
+    l = [{'desk_id': desk.id,
+          'position': desk.position,
+          'order': desk.order,
+          'min_guest_num': desk.min_guest_number,
+          'max_guest_num': desk.max_guest_number,
+          'expense': desk.expense,
+          'type': desk.type,
+          'facility': desk.facility,
+          'picture': desk.picture,
+          'is_beside_window': desk.is_beside_window,
+          'create_time': desk.create_time} for desk in ds]
+
+    return corr_response({'count': c, 'list': l})
 
 
 @validate_args({

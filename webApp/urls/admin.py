@@ -32,6 +32,8 @@ urlpatterns = [
     # 删除门店介绍图片
     url(r'^hotel_branch/picture/delete/$', delete_branch_picture,
         name='delete_hotel_branch_picture'),
+    # 获取门店桌位列表
+    url(r'^hotel_branch/desk/list$', get_desks, name='get_desk_list'),
     # 获取酒店员工列表
     url(r'^staff/list/$', get_staffs, name='staff_list'),
     # 注册新的员工
