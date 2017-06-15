@@ -124,17 +124,35 @@ class HotelBranch(models.Model):
         ordering = ['-create_time']
 
 
+class Area(models.Model):
+    """餐厅区域模型"""
+
+    # 名称
+    name = models.CharField(max_length=10, unique=True)
+    # 排序
+    order = models.IntegerField(default=0, db_index=True)
+    # 是否有效
+    is_enabled = models.BooleanField(default=True, db_index=True)
+
+    # 创建时间
+    create_time = models.DateTimeField(default=timezone.now, db_index=True)
+
+    # 所属门店
+    branch = models.ForeignKey('HotelBranch', models.CASCADE, 'areas')
+
+    class Meta:
+        ordering = ['-create_time']
+
+
 class Desk(models.Model):
     """桌位模型"""
 
     # 桌位号
     number = models.CharField(max_length=10)
-    # 位置
-    position = models.CharField(max_length=10)
     # 排序
     order = models.IntegerField(default=0, db_index=True)
     # 费用说明
-    expense = models.IntegerField(default=None, null=True)
+    expense = models.CharField(max_length=100, default='')
     # 房间类型
     type = models.CharField(max_length=10, default='', db_index=True)
     # 设施
@@ -147,16 +165,16 @@ class Desk(models.Model):
     min_guest_number = models.IntegerField(default=None, null=True)
     # 最大可容纳人数
     max_guest_number = models.IntegerField(default=None, null=True)
+    # 备注
+    description = models.CharField(max_length=100, default='')
     # 是否有效
     is_enabled = models.BooleanField(default=True, db_index=True)
 
     # 创建时间
     create_time = models.DateTimeField(default=timezone.now, db_index=True)
 
-    # 所属门店
-    branch = models.ForeignKey('HotelBranch', models.CASCADE, 'desks')
-    # 员工
-    staff = models.ManyToManyField('Staff', 'desks')
+    # 所属区域
+    area = models.ForeignKey('Area', models.CASCADE, 'desks')
 
     # 管理器
     objects = models.Manager()
@@ -399,6 +417,8 @@ class Order(models.Model):
 
     # 预定桌位, 可能多桌
     desks = models.CharField(max_length=50, default='')
+    # 接单人
+    staff = models.ForeignKey('Staff', models.CASCADE, 'orders')
     # 顾客(可能是散客)
     user = models.ForeignKey(
         'User', models.CASCADE, 'orders', default=None, null=True)

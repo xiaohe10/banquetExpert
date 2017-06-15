@@ -511,36 +511,38 @@ URL：webApp/order/detail/ <br>
 | 参数名称       | 含义             |
 |:------------- |:---------------|
 | order_id| 订单ID |
+| staff_name | 接单人 |
 | create_time | 创建日期 |
 | cancel_time | 撤销日期 |
 | arrival_time  | 客到日期 |
-| finish_time | 完成日期 | 
+| finish_time | 完成日期 |
 | state | 状态((0, '已订'), (1, '客到'), (2, '已完成'), (3, '已撤单'))|
 | dinner_date | 预定用餐日期 | yes |
 | dinner_time   | 预定用餐时间  |   yes  |
 | dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') | yes |
-| name | 联系人 | yes |
-| contact | 联系电话 | yes |
-| guest_number | 客人数量 | yes |
-| desk | 桌位 | yes |
-| user_description | 用户备注 | no |
-| staff_description | 员工备注 | no |
+| name | 联系人 |
+| guest_type | 顾客身份 |
+| contact | 联系电话 |
+| guest_number | 客人数量 |
+| desk | 桌位 |
+| user_description | 用户备注 |
+| staff_description | 员工备注 |
 |以下是私人订制的字段|
-| water_card | 水牌 | no |
-| door_card | 门牌 | no |
-| sand_table | 沙盘 | no |
-| welcom_screen | 欢迎屏 | no |
-| welcom_fruit | 迎宾水果的价格 | no |
-| welcom_card | 欢迎卡 | no |
-| pictures | 用户上传的图片（最多5张) | no |
-| background_music | 背景音乐 | no |
-| has_candle | 是否有蜡烛 | no |
-| has_flower | 是否有鲜花 | no |
-| has_balloon | 是否有气球 | no |
-| group_photo | 合照？ | no |
-| user | 顾客 | no |
-| internal_channel | 内部获客渠道 | no |
-| external_channel | 外部获客渠道 | no |
+| water_card | 水牌 |
+| door_card | 门牌 |
+| sand_table | 沙盘 |
+| welcom_screen | 欢迎屏 |
+| welcom_fruit | 迎宾水果的价格 |
+| welcom_card | 欢迎卡 |
+| pictures | 用户上传的图片（最多5张) |
+| background_music | 背景音乐 |
+| has_candle | 是否有蜡烛 |
+| has_flower | 是否有鲜花 |
+| has_balloon | 是否有气球 |
+| group_photo | 合照？ |
+| user | 顾客 |
+| internal_channel | 内部获客渠道 |
+| external_channel | 外部获客渠道 |
 
 
 返回示例：
@@ -550,6 +552,7 @@ URL：webApp/order/detail/ <br>
 	"status":"true",
 	data:{
 		"order_id":"001",
+		"staff_name":"小二",
 		"create_time":"2014-02-01 10:00:00",
 		"cancel_time":"2014-02-01 10:00:00",
 		"arrival_time":"2014-02-01 10:00:00",
@@ -560,6 +563,7 @@ URL：webApp/order/detail/ <br>
 		"dinner_time":"12:00",
 		"dinner_period":0,
 		"name":"李四",
+		"guest_type":"vip",
 		"contact":"18813101211",
 		"guest_number":10,
 		"desk":[1,3,5]

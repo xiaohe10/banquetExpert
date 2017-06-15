@@ -14,7 +14,7 @@ urlpatterns = [
     # 修改个人资料
     url(r'^profile/modify/$', modify_password, name='modify_profile'),
     # 获取员工所在酒店的门店列表
-    url(r'^hotel/', get_hotel, name='get_hotel'),
+    url(r'^hotel/$', get_hotel, name='get_hotel'),
     # 获取员工所在酒店的门店列表
-    url(r'^hotel_branches/', get_branches, name='get_branches'),
+    url(r'^hotel_branches/$', get_branches, name='get_branches'),
 ]

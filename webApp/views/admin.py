@@ -12,7 +12,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from ..utils.response import corr_response, err_response
 from ..utils.decorator import validate_args, validate_admin_token
 from ..utils.cc_sdk import create_live_room, update_live_room, replay_live_room
-from ..models import Admin, Hotel, HotelBranch, Staff, Live
+from ..models import Admin, Hotel, HotelBranch, Area, Desk, Staff, Live
 
 
 @validate_args({
@@ -590,29 +590,145 @@ def delete_branch_picture(request, token, branch_id, pictures):
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
     'branch_id': forms.IntegerField(),
-    'position': forms.CharField(min_length=1, max_length=10, required=False),
     'order': forms.IntegerField(min_value=0, max_value=3, required=False),
-    'is_enabled': forms.BooleanField(required=False),
 })
 @validate_admin_token()
-def get_desks(request, token, branch_id, position=None, order=2,
-              is_enabled=True):
-    """获取门店的桌位列表
+def get_areas(request, token, branch_id, order=1):
+    """获取门店的餐厅区域
 
     :param token: 令牌(必传)
     :param branch_id: 门店ID(必传)
-    :param position: 所在楼层位置
+    :param order: 排序方式
+        0: 注册时间升序
+        1: 注册时间降序（默认值）
+        2: 名称升序
+        3: 名称降序
+    :return:
+        count: 餐厅区域数
+        list:
+            area_id: 区域ID
+            name: 区域名
+            order: 排序
+            is_enabled: 是否有效
+            create_time: 创建时间
+    """
+    ORDERS = ('create_time', '-create_time', 'name', '-name')
+
+    try:
+        branch = HotelBranch.enabled_objects.get(id=branch_id)
+    except ObjectDoesNotExist:
+        return err_response('err_3', '门店不存在')
+
+    # 只能查看自己酒店的门店
+    if branch.hotel != request.admin.hotel:
+        return err_response('err_2', '权限错误')
+
+    c = branch.areas.count()
+    areas = branch.areas.order_by(ORDERS[order])
+
+    l = [{'area_id': area.id,
+          'name': area.name,
+          'order': area.order,
+          'is_enabled': area.is_enabled,
+          'create_time': area.create_time} for area in areas]
+
+    return corr_response({'count': c, 'list': l})
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+    'branch_id': forms.IntegerField(),
+    'name': forms.CharField(min_length=1, max_length=10),
+    'order': forms.IntegerField(min_value=0),
+})
+@validate_admin_token()
+def add_area(request, token, branch_id, name, order):
+    """增加餐厅区域
+
+    :param token: 令牌(必传)
+    :param branch_id: 门店ID(必传)
+    :param name: 名称(必传)
+    :param order: 排序(必传)
+    :return: 200
+    """
+
+    try:
+        branch = HotelBranch.enabled_objects.get(id=branch_id)
+    except ObjectDoesNotExist:
+        return err_response('err_4', '酒店不存在')
+
+    # 管理员只能查看自己酒店的门店
+    if branch.hotel != request.admin.hotel:
+        return err_response('err_2', '权限错误')
+
+    with transaction.atomic():
+        try:
+            area = Area(name=name, order=order, branch=branch)
+            area.save()
+            return corr_response()
+        except IntegrityError:
+            return err_response('err_5', '服务器添加餐厅区域失败')
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+    'area_id': forms.IntegerField(),
+    'name': forms.CharField(min_length=1, max_length=10, required=False),
+    'order': forms.IntegerField(min_value=0, required=False),
+    'is_enabled': forms.BooleanField(required=False),
+})
+@validate_admin_token()
+def modify_area(request, token, area_id, **kwargs):
+    """修改餐厅区域信息
+
+    :param token: 令牌(必传)
+    :param area_id: 门店ID(必传)
+    :param kwargs:
+        name: 名称
+        order: 排序
+        is_enabled: 是否有效
+    :return: 200
+    """
+
+    try:
+        area = Area.objects.get(id=area_id)
+    except ObjectDoesNotExist:
+        return err_response('err_4', '酒店不存在')
+
+    # 管理员只能查看自己酒店的门店
+    if area.branch.hotel != request.admin.hotel:
+        return err_response('err_2', '权限错误')
+
+    area_keys = ('name', 'order', 'is_enabled')
+
+    for k in kwargs:
+        if k in area_keys:
+            setattr(area, k, kwargs[k])
+
+    area.save()
+    return corr_response()
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+    'area_id': forms.IntegerField(),
+    'order': forms.IntegerField(min_value=0, max_value=3, required=False),
+})
+@validate_admin_token()
+def get_desks(request, token, area_id, order=2):
+    """获取门店的桌位列表
+
+    :param token: 令牌(必传)
+    :param area_id: 区域ID(必传)
     :param order: 排序方式
         0: 注册时间升序
         1: 注册时间降序
         2: 房间号升序（默认值）
         3: 房间号降序
-    :param is_enabled: 是否有效(默认为True)
     :return:
         count: 桌位数
         list:
             desk_id: 桌位ID
-            position: 楼层位置
             order: 排序
             min_guest_num: 可容纳最小人数
             max_guest_num: 可容纳最大人数
@@ -627,25 +743,18 @@ def get_desks(request, token, branch_id, position=None, order=2,
     ORDERS = ('create_time', '-create_time', 'number', '-number')
 
     try:
-        branch = HotelBranch.enabled_objects.get(id=branch_id)
+        area = Area.objects.get(id=area_id)
     except ObjectDoesNotExist:
-        return err_response('err_3', '门店不存在')
+        return err_response('err_3', '该区域不存在')
 
-    # 只能查看自己酒店的门店
-    if branch.hotel != request.admin.hotel:
+    # 只能查看自己酒店的门店区域
+    if area.branch.hotel != request.admin.hotel:
         return err_response('err_2', '权限错误')
 
-    if position is None:
-        c = branch.desks.filter(is_enabled=is_enabled).count()
-        ds = branch.desks.filter(is_enabled=is_enabled).order_by(ORDERS[order])
-    else:
-        c = branch.desks.filter(
-            position=position, is_enabled=is_enabled).count()
-        ds = branch.desks.filter(
-            position=position, is_enabled=is_enabled).order_by(ORDERS[order])
+    c = area.desks.count()
+    ds = area.desks.order_by(ORDERS[order])
 
     l = [{'desk_id': desk.id,
-          'position': desk.position,
           'order': desk.order,
           'min_guest_num': desk.min_guest_number,
           'max_guest_num': desk.max_guest_number,
@@ -657,6 +766,136 @@ def get_desks(request, token, branch_id, position=None, order=2,
           'create_time': desk.create_time} for desk in ds]
 
     return corr_response({'count': c, 'list': l})
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+    'area_id': forms.IntegerField(),
+    'number': forms.CharField(max_length=10),
+    'order': forms.IntegerField(),
+    'min_guest_num': forms.IntegerField(),
+    'max_guest_num': forms.IntegerField(),
+    'expense': forms.CharField(max_length=100, required=False),
+    'type': forms.CharField(max_length=10, required=False),
+    'facility': forms.CharField(max_length=100, required=False),
+    'is_beside_window': forms.BooleanField(required=False),
+    'description': forms.CharField(max_length=100, required=False),
+})
+@validate_admin_token()
+def add_desk(request, token, area_id, number, order, **kwargs):
+    """增加门店区域的桌位
+
+    :param token: 令牌(必传)
+    :param area_id: 区域ID(必传)
+    :param number: 桌位号(必传)
+    :param order: 排序(必传)
+    :param kwargs:
+        min_guest_num: 最小人数限制(必传)
+        max_guest_num: 最大人数限制(必传)
+        expense: 花费说明
+        type: 桌位类型
+        facility: 设施, json字符串
+        is_beside_window: 是否靠窗
+        description: 描述
+    :return 200
+    """
+
+    try:
+        area = Area.enabled_objects.get(id=area_id)
+    except ObjectDoesNotExist:
+        return err_response('err_4', '地区不存在')
+
+    # 管理员只能添加自己酒店的桌位
+    if area.branch.hotel != request.admin.hotel:
+        return err_response('err_2', '权限错误')
+
+    desk_keys = ('min_guest_num', 'max_guest_num', 'expense',
+                 'type', 'facility', 'is_beside_window', 'description')
+    with transaction.atomic():
+        try:
+            desk = Desk(number=number, order=order)
+            for k in desk_keys:
+                if k in kwargs:
+                    setattr(desk, k, kwargs[k])
+            desk.save()
+            return corr_response()
+        except IntegrityError:
+            return err_response('err_5', '服务器创建桌位失败')
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+    'desk_id': forms.IntegerField(),
+    'number': forms.CharField(max_length=10, required=False),
+    'order': forms.IntegerField(required=False),
+    'min_guest_num': forms.IntegerField(required=False),
+    'max_guest_num': forms.IntegerField(required=False),
+    'expense': forms.CharField(max_length=100, required=False),
+    'type': forms.CharField(max_length=10, required=False),
+    'facility': forms.CharField(max_length=100, required=False),
+    'is_beside_window': forms.BooleanField(required=False),
+    'description': forms.CharField(max_length=100, required=False),
+})
+@validate_admin_token()
+def modify_desk(request, token, desk_id, **kwargs):
+    """修改门店区域的桌位
+
+    :param token: 令牌(必传)
+    :param desk_id: 桌位ID(必传)
+    :param kwargs:
+        number: 桌位号
+        order: 排序
+        min_guest_num: 最小人数限制
+        max_guest_num: 最大人数限制
+        expense: 花费说明
+        type: 桌位类型
+        facility: 设施, json字符串
+        is_beside_window: 是否靠窗
+        description: 描述
+    :return 200
+    """
+
+    try:
+        desk = Desk.enabled_objects.get(id=desk_id)
+    except ObjectDoesNotExist:
+        return err_response('err_4', '桌位不存在')
+
+    # 管理员只能添加自己酒店的桌位
+    if desk.area.branch.hotel != request.admin.hotel:
+        return err_response('err_2', '权限错误')
+
+    desk_keys = ('number', 'order', 'min_guest_num', 'max_guest_num', 'expense',
+                 'type', 'facility', 'is_beside_window', 'description')
+
+    for k in desk_keys:
+        if k in kwargs:
+            setattr(desk, k, kwargs[k])
+
+    # 修改头像
+    if 'picture' in request.FILES:
+        icon = request.FILES['picture']
+
+        icon_time = timezone.now().strftime('%H%M%S%f')
+        icon_tail = str(icon).split('.')[-1]
+        dir_name = 'uploaded/picture/desk/%d/' % desk.id
+        os.makedirs(dir_name, exist_ok=True)
+        file_name = dir_name + '%s.%s' % (icon_time, icon_tail)
+        try:
+            img = Image.open(icon)
+            img.save(file_name, quality=90)
+        except OSError:
+            return err_response('err4', '图片为空或图片格式错误')
+
+        # 删除旧文件, 保存新的文件路径
+        if desk.picture:
+            try:
+                os.remove(desk.picture)
+            except OSError:
+                pass
+        desk.picture = file_name
+
+    desk.save()
+    return corr_response()
 
 
 @validate_args({
@@ -709,6 +948,7 @@ def get_staffs(request, token, hotel_id, status=1, is_enabled=True, offset=0,
     # 管理员只能查看自己酒店的员工
     if hotel != request.admin.hotel:
         return err_response('err_2', '权限错误')
+
     c = Staff.objects.filter(hotel=hotel, status=status,
                              is_enabled=is_enabled).count()
     staffs = Staff.objects.filter(
@@ -813,7 +1053,7 @@ def delete_staff(request, token, staff_id):
 })
 @validate_admin_token()
 def get_staff_profile(request, token, staff_id):
-    """
+    """查看员工信息
 
     :param token: 令牌(必传)
     :param staff_id: 员工ID(必传)
