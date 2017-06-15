@@ -17,8 +17,10 @@
         <div class="tab-content">
             <!--超级管理员-->
             <div class="tab-pane active" id="cjgly">
+                <!--操作栏-->
+                <a class="btn btn-link btn-sm" data-toggle="modal" data-target=".add-reserve">新增超级管理员</a>
+                <!--超级管理员列表-->
                 <div>
-                    <!--超级管理员列表-->
                     <ul>
                         <li>超级管理员A</li>
                         <li>超级管理员B</li>
@@ -29,6 +31,8 @@
             </div>
             <!--高层管理-->
             <div class="tab-pane" id="gcgl">
+                <!--操作栏-->
+                <a class="btn btn-link btn-sm" data-toggle="modal" data-target=".add-reserve">新增高层管理</a>
                 <!--高层管理列表-->
                 <div>
                     <ul>
@@ -42,38 +46,44 @@
             <!--预订员和迎宾-->
             <div class="tab-pane" id="ydyhyb">
                 <!--操作栏-->
-                <a class="btn btn-link btn-sm" data-toggle="modal" data-target=".add-reserve">新增预订员</a>
+                <a class="btn btn-link btn-sm" data-toggle="modal" data-target=".add-reserve">新增预订员和迎宾</a>
                 <!--预订员和迎宾列表-->
-                <ul>
-                    <li>预订员和迎宾A</li>
-                    <li>预订员和迎宾B</li>
-                    <li>预订员和迎宾C</li>
-                    <li>预订员和迎宾D</li>
-                </ul>
+                <div>
+                    <ul>
+                        <li>预订员和迎宾A</li>
+                        <li>预订员和迎宾B</li>
+                        <li>预订员和迎宾C</li>
+                        <li>预订员和迎宾D</li>
+                    </ul>
+                </div>
             </div>
             <!--客户经理-->
             <div class="tab-pane" id="khjl">
                 <!--操作栏-->
                 <a class="btn btn-link btn-sm" data-toggle="modal" data-target=".add-manager">新增客户经理</a>
                 <!--客户经理列表-->
-                <ul>
-                    <li>客户经理A</li>
-                    <li>客户经理B</li>
-                    <li>客户经理C</li>
-                    <li>客户经理D</li>
-                </ul>
+                <div>
+                    <ul>
+                        <li>客户经理A</li>
+                        <li>客户经理B</li>
+                        <li>客户经理C</li>
+                        <li>客户经理D</li>
+                    </ul>
+                </div>
             </div>
             <!--外部渠道-->
             <div class="tab-pane" id="wbqd">
                 <!--操作栏-->
                 <a class="btn btn-link btn-sm" data-toggle="modal" data-target=".add-outer-channel">新增外部渠道</a>
                 <!--外部渠道列表-->
-                <ul>
-                    <li>外部渠道A</li>
-                    <li>外部渠道B</li>
-                    <li>外部渠道C</li>
-                    <li>外部渠道D</li>
-                </ul>
+                <div>
+                    <ul>
+                        <li>外部渠道A</li>
+                        <li>外部渠道B</li>
+                        <li>外部渠道C</li>
+                        <li>外部渠道D</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -94,7 +104,7 @@
                         <form class="form-horizontal">
                             <fieldset>
                                 <!--新增预订员-->
-                                <div id="legend" class="col-form-legend">
+                                <div class="col-form-legend">
                                     <legend class="">新增预订员</legend>
                                 </div>
                                 <!--姓名 性别-->
@@ -362,9 +372,9 @@
                     <div class="p-2 mb-2 bg-faded">
                         <form class="form-horizontal">
                             <fieldset>
-                                <!--添加客户档案-->
-                                <div id="legend" class="col-form-legend">
-                                    <legend class="">添加客户档案</legend>
+                                <!--新增客户经理-->
+                                <div class="col-form-legend">
+                                    <legend class="">新增客户经理</legend>
                                 </div>
                                 <!--姓名-->
                                 <div class="control-group">
@@ -611,10 +621,6 @@
                 <!--主页/后台用户管理/渠道管理/新增外部渠道-->
                 <!--内容-->
                 <div class="py-2 px-2 mt-2 bg-info">
-                    <!--外部渠道列表-->
-                    <div class="p-2 mb-2 bg-success">
-                        外部渠道列表
-                    </div>
                     <!--表单-->
                     <div class="p-2 mb-2 bg-faded">
                         <form class="form-horizontal">
