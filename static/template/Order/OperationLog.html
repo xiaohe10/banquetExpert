@@ -45,6 +45,7 @@
 <div class="py-2 px-2 mt-2 bg-info">
     <!--表格-->
     <div class="p-2 mb-2 bg-faded">
+        <!--表格-->
         <table class="table table-hover table-bordered small">
             <thead class="bg-info">
             <tr id="center">
@@ -65,19 +66,71 @@
             </tr>
             </tbody>
         </table>
+        <!--分页导航-->
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-sm">
+                <li>
+                    <a href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li><a href="#">1</a></li>
+                <li><a href="#">2</a></li>
+                <li class="active"><a href="#">3</a></li>
+                <li><a href="#">4</a></li>
+                <li><a href="#">5</a></li>
+                <li><a href="#">6</a></li>
+                <li><a href="#">7</a></li>
+                <li><a href="#">8</a></li>
+                <li><a href="#">9</a></li>
+                <li><a href="#">10</a></li>
+                <li>
+                    <a href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
 <script>
-    $("#date-from").click(function () {
-        // TODO:
+    var TAG = Templates.Order.OperationLog;
+    var data = [];
+    for (var i = 0; i < 10; i++) {
+        data.push({date: "", operator: "", operation_type: "", content: "", details: ""});
+    }
+
+    // TODO: 根据 起始日期 过滤操作日志
+    $("#date-from").change(function () {
+        Log.i(TAG, "根据 起始日期 过滤操作日志");
+        data.filter(function (item) {
+            return (item.date >= $(this).val());
+        });
     });
-    $("#date-to").click(function () {
-        // TODO:
+    // TODO: 根据 截止日期 过滤操作日志
+    $("#date-to").change(function () {
+        Log.i(TAG, "根据 截止日期 过滤操作日志");
+        data.filter(function (item) {
+            return (item.date <= $(this).val());
+        });
     });
-    $("#staff").click(function () {
-        // TODO:
+    // TODO: 根据 操作员 过滤操作日志
+    $("#staff").change(function () {
+        Log.i(TAG, "根据 操作员 过滤操作日志");
+        data.filter(function (item) {
+            return (item.operator === $(this).val());
+        });
     });
-    $("#area").click(function () {
-        // TODO:
+    // TODO: 根据 区域 过滤操作日志
+    $("#area").change(function () {
+        Log.i(TAG, "根据 区域 过滤操作日志");
+    });
+    // TODO: 根据 餐位 过滤操作日志
+    $("#seat").change(function () {
+        Log.i(TAG, "根据 餐位 过滤操作日志");
+    });
+    // TODO: 搜索 关键字
+    $("#search").click(function () {
+        Log.i(TAG, "搜索 关键字");
     });
 </script>

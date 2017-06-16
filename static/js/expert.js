@@ -34,28 +34,28 @@ BanquetExpert = {
         {
             value: 0, name: '一楼', order: 0, status: 1,
             seat: [
-                {value: 0, name: '101', min: 1, max: 16, type: "大厅散台	", order: 1, enable: false},
+                {value: 0, name: '101', min: 1, max: 16, type: "大厅散台", order: 1, enable: false},
                 {value: 1, name: '102', min: 1, max: 16, type: "豪华包间", order: 2, enable: true},
-                {value: 2, name: '111', min: 1, max: 16, type: "大厅散台	", order: 3, enable: false},
+                {value: 2, name: '111', min: 1, max: 16, type: "大厅散台", order: 3, enable: false},
                 {value: 3, name: '105', min: 1, max: 16, type: "豪华包间", order: 4, enable: true}
             ]
         },
         {
             value: 1, name: '二楼', order: 1, status: 0,
             seat: [
-                {value: 0, name: '206', min: 5, max: 16, type: "大厅散台	", order: 5, enable: true},
+                {value: 0, name: '206', min: 5, max: 16, type: "大厅散台", order: 5, enable: true},
                 {value: 1, name: '207', min: 5, max: 16, type: "豪华包间", order: 6, enable: false},
-                {value: 2, name: '208', min: 5, max: 16, type: "大厅散台	", order: 7, enable: true},
-                {value: 3, name: '209', min: 5, max: 16, type: "大厅散台	", order: 8, enable: false}
+                {value: 2, name: '208', min: 5, max: 16, type: "大厅散台", order: 7, enable: true},
+                {value: 3, name: '209', min: 5, max: 16, type: "大厅散台", order: 8, enable: false}
             ]
         },
         {
             value: 2, name: '三楼', order: 2, status: 0,
             seat: [
                 {value: 0, name: '306', min: 8, max: 16, type: "豪华包间", order: 9, enable: true},
-                {value: 1, name: '307', min: 8, max: 16, type: "大厅散台	", order: 10, enable: false},
+                {value: 1, name: '307', min: 8, max: 16, type: "大厅散台", order: 10, enable: false},
                 {value: 2, name: '308', min: 8, max: 16, type: "豪华包间", order: 11, enable: true},
-                {value: 3, name: '309', min: 8, max: 16, type: "大厅散台	", order: 12, enable: false}
+                {value: 3, name: '309', min: 8, max: 16, type: "大厅散台", order: 12, enable: false}
             ]
         },
         {
@@ -197,55 +197,53 @@ var log = {
 };
 
 // 子页面模板
-var Templates = {
+Templates = {
     Drawer: "Drawer/Drawer.html", // 侧边栏
     Breadcrumb: "Drawer/Breadcrumb.html", // 路径导航
-    tabContent: {
-        // 后台用户管理
-        Channel: {
-            Channel: "Channel/Channel.html", // 获客渠道*** AddManager AddOuterChannel AddReserve
-            Privilege: "Channel/Privilege.html" // 权限管理
-        },
-        // 智能订餐台
-        SmartOrder: {
-            SmartOrder: "SmartOrder/SmartOrder.html" // 智能订餐台
-        },
-        // 预定管理
-        Reserve: {
-            AreaDesk: "Reserve/AreaDesk.html", // 桌位设置
-            MealsTime: "Reserve/MealsTime.html", // 餐段管理
-            MealsArea: "Reserve/MealsArea.html", // 餐位设置
-            SeatRecommend: "Reserve/SeatRecommend.html" // 自动推荐桌位
-        },
-        // 订单管理
-        Order: {
-            InsertOrder: "Order/InsertOrder.html",// 订单金额录入
-            OperationLog: "Order/OperationLog.html", // 操作日志
-            OrderHistory: "Order/OrderHistory.html",// 历史订单
-            OrderStatistics: "Order/OrderStatistics.html",// 订单统计
-            PhoneReserve: "Order/PhoneReserve.html", // 来电记录
-            ReserveNotice: "Order/ReserveNotice.html" // 预定通知单
-        },
-        // 客户管理
-        Customer: {
-            AnniversaryReport: "Customer/AnniversaryReport.html", // 纪念日查询报表
-            CustomerAnalysis: "Customer/CustomerAnalysis.html", // 客源情况分析
-            CustomerProfiles: "Customer/CustomerProfiles.html", // 客户档案列表*** AddCustomerProfiles BatchExport BatchImport
-            CustomerRecycleBin: "Customer/CustomerRecycleBin.html", // 客户档案回收站
-            MemberValue: "Customer/MemberValue.html" // 会员价值设置
-        },
-        // 账户管理
-        Account: {
-            FinanceManage: "Account/FinanceManage.html", // 财务报表
-            SMSDetails: "Account/SMSDetails.html", // 短信详单
-            Restaurant: "Account/Restaurant.html", // 餐厅基本信息
-            AccountManage: "Account/AccountManage.html"
-        },
-        // 评分审阅
-        Review: {
-            Rank: "Review/Rank.html", // 餐厅排名
-            Tutorial: "Review/Tutorial.html" // 中国服务私人订制标准视频教程
-        }
+    // 后台用户管理
+    Channel: {
+        Channel: "Channel/Channel.html", // 获客渠道*** AddManager AddOuterChannel AddReserve
+        Privilege: "Channel/Privilege.html" // 权限管理
+    },
+    // 智能订餐台
+    SmartOrder: {
+        SmartOrder: "SmartOrder/SmartOrder.html" // 智能订餐台
+    },
+    // 预定管理
+    Reserve: {
+        AreaDesk: "Reserve/AreaDesk.html", // 桌位设置
+        MealsTime: "Reserve/MealsTime.html", // 餐段管理
+        MealsArea: "Reserve/MealsArea.html", // 餐位设置
+        SeatRecommend: "Reserve/SeatRecommend.html" // 自动推荐桌位
+    },
+    // 订单管理
+    Order: {
+        InsertOrder: "Order/InsertOrder.html",// 订单金额录入
+        OperationLog: "Order/OperationLog.html", // 操作日志
+        OrderHistory: "Order/OrderHistory.html",// 历史订单
+        OrderStatistics: "Order/OrderStatistics.html",// 订单统计
+        PhoneReserve: "Order/PhoneReserve.html", // 来电记录
+        ReserveNotice: "Order/ReserveNotice.html" // 预定通知单
+    },
+    // 客户管理
+    Customer: {
+        AnniversaryReport: "Customer/AnniversaryReport.html", // 纪念日查询报表
+        CustomerAnalysis: "Customer/CustomerAnalysis.html", // 客源情况分析
+        CustomerProfiles: "Customer/CustomerProfiles.html", // 客户档案列表*** AddCustomerProfiles BatchExport BatchImport
+        CustomerRecycleBin: "Customer/CustomerRecycleBin.html", // 客户档案回收站
+        MemberValue: "Customer/MemberValue.html" // 会员价值设置
+    },
+    // 账户管理
+    Account: {
+        FinanceManage: "Account/FinanceManage.html", // 财务报表
+        SMSDetails: "Account/SMSDetails.html", // 短信详单
+        Restaurant: "Account/Restaurant.html", // 餐厅基本信息
+        AccountManage: "Account/AccountManage.html"
+    },
+    // 评分审阅
+    Review: {
+        Rank: "Review/Rank.html", // 餐厅排名
+        Tutorial: "Review/Tutorial.html" // 中国服务私人订制标准视频教程
     }
 };
 
@@ -345,109 +343,108 @@ $(document).ready(function () {
     var routes = {
         // 账户管理
         "/Account/AccountManage": function () {
-            refreshBreadcrumb(Templates.tabContent.Account.AccountManage);
-            $("main").load("./template/" + Templates.tabContent.Account.AccountManage);
+            refreshBreadcrumb(Templates.Account.AccountManage);
+            $("main").load("./template/" + Templates.Account.AccountManage);
         },
         "/Account/FinanceManage": function () {
-            refreshBreadcrumb(Templates.tabContent.Account.FinanceManage);
-            $("main").load("./template/" + Templates.tabContent.Account.FinanceManage);
+            refreshBreadcrumb(Templates.Account.FinanceManage);
+            $("main").load("./template/" + Templates.Account.FinanceManage);
         },
         "/Account/SMSDetails": function () {
-            refreshBreadcrumb(Templates.tabContent.Account.SMSDetails);
-            $("main").load("./template/" + Templates.tabContent.Account.SMSDetails);
+            refreshBreadcrumb(Templates.Account.SMSDetails);
+            $("main").load("./template/" + Templates.Account.SMSDetails);
         },
         "/Account/Restaurant": function () {
-            refreshBreadcrumb(Templates.tabContent.Account.Restaurant);
-            $("main").load("./template/" + Templates.tabContent.Account.Restaurant);
+            refreshBreadcrumb(Templates.Account.Restaurant);
+            $("main").load("./template/" + Templates.Account.Restaurant);
         },
         // 后台用户管理
         "/Channel/Channel": function () {
-            refreshBreadcrumb(Templates.tabContent.Channel.Channel);
-            $("main").load("./template/" + Templates.tabContent.Channel.Channel);
+            refreshBreadcrumb(Templates.Channel.Channel);
+            $("main").load("./template/" + Templates.Channel.Channel);
         },
         "/Channel/Privilege": function () {
-            refreshBreadcrumb(Templates.tabContent.Channel.Privilege);
-            $("main").load("./template/" + Templates.tabContent.Channel.Privilege);
+            refreshBreadcrumb(Templates.Channel.Privilege);
+            $("main").load("./template/" + Templates.Channel.Privilege);
         },
         // 客户管理
         "/Customer/AnniversaryReport": function () {
-            refreshBreadcrumb(Templates.tabContent.Customer.AnniversaryReport);
-            $("main").load("./template/" + Templates.tabContent.Customer.AnniversaryReport);
+            refreshBreadcrumb(Templates.Customer.AnniversaryReport);
+            $("main").load("./template/" + Templates.Customer.AnniversaryReport);
         },
         "/Customer/CustomerAnalysis": function () {
-            refreshBreadcrumb(Templates.tabContent.Customer.CustomerAnalysis);
-            $("main").load("./template/" + Templates.tabContent.Customer.CustomerAnalysis);
+            refreshBreadcrumb(Templates.Customer.CustomerAnalysis);
+            $("main").load("./template/" + Templates.Customer.CustomerAnalysis);
         },
         "/Customer/CustomerProfiles": function () {
-            refreshBreadcrumb(Templates.tabContent.Customer.CustomerProfiles);
-            $("main").load("./template/" + Templates.tabContent.Customer.CustomerProfiles);
+            refreshBreadcrumb(Templates.Customer.CustomerProfiles);
+            $("main").load("./template/" + Templates.Customer.CustomerProfiles);
         },
         "/Customer/CustomerRecycleBin": function () {
-            refreshBreadcrumb(Templates.tabContent.Customer.CustomerRecycleBin);
-            $("main").load("./template/" + Templates.tabContent.Customer.CustomerRecycleBin);
+            refreshBreadcrumb(Templates.Customer.CustomerRecycleBin);
+            $("main").load("./template/" + Templates.Customer.CustomerRecycleBin);
         },
         "/Customer/MemberValue": function () {
-            refreshBreadcrumb(Templates.tabContent.Customer.MemberValue);
-            $("main").load("./template/" + Templates.tabContent.Customer.MemberValue);
+            refreshBreadcrumb(Templates.Customer.MemberValue);
+            $("main").load("./template/" + Templates.Customer.MemberValue);
         },
         // 订单管理
         "/Order/InsertOrder": function () {
-            refreshBreadcrumb(Templates.tabContent.Order.InsertOrder);
-            $("main").load("./template/" + Templates.tabContent.Order.InsertOrder);
+            refreshBreadcrumb(Templates.Order.InsertOrder);
+            $("main").load("./template/" + Templates.Order.InsertOrder);
         },
         "/Order/OperationLog": function () {
-            refreshBreadcrumb(Templates.tabContent.Order.OperationLog);
-            $("main").load("./template/" + Templates.tabContent.Order.OperationLog);
+            refreshBreadcrumb(Templates.Order.OperationLog);
+            $("main").load("./template/" + Templates.Order.OperationLog);
         },
         "/Order/OrderHistory": function () {
-            refreshBreadcrumb(Templates.tabContent.Order.OrderHistory);
-            $("main").load("./template/" + Templates.tabContent.Order.OrderHistory);
+            refreshBreadcrumb(Templates.Order.OrderHistory);
+            $("main").load("./template/" + Templates.Order.OrderHistory);
         },
         "/Order/OrderStatistics": function () {
-            refreshBreadcrumb(Templates.tabContent.Order.OrderStatistics);
-            $("main").load("./template/" + Templates.tabContent.Order.OrderStatistics);
+            refreshBreadcrumb(Templates.Order.OrderStatistics);
+            $("main").load("./template/" + Templates.Order.OrderStatistics);
         },
         "/Order/PhoneReserve": function () {
-            refreshBreadcrumb(Templates.tabContent.Order.PhoneReserve);
-            $("main").load("./template/" + Templates.tabContent.Order.PhoneReserve);
+            refreshBreadcrumb(Templates.Order.PhoneReserve);
+            $("main").load("./template/" + Templates.Order.PhoneReserve);
         },
         "/Order/ReserveNotice": function () {
-            refreshBreadcrumb(Templates.tabContent.Order.ReserveNotice);
-            $("main").load("./template/" + Templates.tabContent.Order.ReserveNotice);
+            refreshBreadcrumb(Templates.Order.ReserveNotice);
+            $("main").load("./template/" + Templates.Order.ReserveNotice);
         },
         // 预定管理
         "/Reserve/AreaDesk": function () {
-            refreshBreadcrumb(Templates.tabContent.Reserve.AreaDesk);
-            $("main").load("./template/" + Templates.tabContent.Reserve.AreaDesk);
+            refreshBreadcrumb(Templates.Reserve.AreaDesk);
+            $("main").load("./template/" + Templates.Reserve.AreaDesk);
         },
         "/Reserve/MealsTime": function () {
-            refreshBreadcrumb(Templates.tabContent.Reserve.MealsTime);
-            $("main").load("./template/" + Templates.tabContent.Reserve.MealsTime);
+            refreshBreadcrumb(Templates.Reserve.MealsTime);
+            $("main").load("./template/" + Templates.Reserve.MealsTime);
         },
         "/Reserve/MealsArea": function () {
-            refreshBreadcrumb(Templates.tabContent.Reserve.MealsArea);
-            $("main").load("./template/" + Templates.tabContent.Reserve.MealsArea);
+            refreshBreadcrumb(Templates.Reserve.MealsArea);
+            $("main").load("./template/" + Templates.Reserve.MealsArea);
         },
         "/Reserve/SeatRecommend": function () {
-            refreshBreadcrumb(Templates.tabContent.Reserve.SeatRecommend);
-            $("main").load("./template/" + Templates.tabContent.Reserve.SeatRecommend);
+            refreshBreadcrumb(Templates.Reserve.SeatRecommend);
+            $("main").load("./template/" + Templates.Reserve.SeatRecommend);
         },
         // 评分审阅
         "/Review/Rank": function () {
-            refreshBreadcrumb(Templates.tabContent.Review.Rank);
-            $("main").load("./template/" + Templates.tabContent.Review.Rank);
+            refreshBreadcrumb(Templates.Review.Rank);
+            $("main").load("./template/" + Templates.Review.Rank);
         },
         "/Review/Tutorial": function () {
-            refreshBreadcrumb(Templates.tabContent.Review.Tutorial);
-            $("main").load("./template/" + Templates.tabContent.Review.Tutorial);
+            refreshBreadcrumb(Templates.Review.Tutorial);
+            $("main").load("./template/" + Templates.Review.Tutorial);
         },
         // 智能订餐台
         "/SmartOrder/SmartOrder": function () {
-            refreshBreadcrumb(Templates.tabContent.SmartOrder.SmartOrder);
-            $("main").load("./template/" + Templates.tabContent.SmartOrder.SmartOrder);
+            refreshBreadcrumb(Templates.SmartOrder.SmartOrder);
+            $("main").load("./template/" + Templates.SmartOrder.SmartOrder);
         }
     };
     var router = window.Router(routes);
     router.init();
-
 });

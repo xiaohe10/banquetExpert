@@ -14,7 +14,7 @@ $("#login").click(function () {
         },
         success: function (data, status) {
             var obj = eval(data);
-            alert(JSON.stringify(data));
+            // alert(JSON.stringify(data));
             if (obj.status === "true") {
                 window.Login.token = obj.data.token;
                 location.href = "index.html";

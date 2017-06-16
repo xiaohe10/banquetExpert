@@ -15,6 +15,7 @@
 <div class="py-2 px-2 bg-info">
     <!--表格-->
     <form class="form-group">
+        <!--表格-->
         <table class="table table-bordered table-hover small">
             <thead class="bg-info">
             <tr>
@@ -34,11 +35,9 @@
 
             </tbody>
         </table>
-    </form>
-    <!--分页导航-->
-    <div class="row m-2">
+        <!--分页导航-->
         <nav aria-label="Page navigation">
-            <ul class="pagination pagination-lg">
+            <ul class="pagination pagination-sm">
                 <li>
                     <a href="#" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
@@ -61,10 +60,10 @@
                 </li>
             </ul>
         </nav>
-    </div>
+    </form>
 </div>
 <!--操作栏模板-->
-<script id="areaTemplate" type="text/x-jsrender">
+<script id="areaTemplate" type="text/plain">
     {{for }}
         {{if #getIndex() === 0}}
             <a class="nav-link active" href="#/Reserve/AreaDesk/Area/{{:#getIndex()}}">{{:name}}</a>
@@ -72,9 +71,10 @@
             <a class="nav-link" href="#/Reserve/AreaDesk/Area/{{:#getIndex()}}">{{:name}}</a>
         {{/if}}
     {{/for}}
+
 </script>
 <!--表格模板-->
-<script id="seatTableTemplate" type="text/x-jsrender">
+<script id="seatTableTemplate" type="text/plain">
     {^{for }}
         <tr class="table-info">
             <td>{{:name}}</td>
@@ -106,6 +106,7 @@
     {{/for}}
 </script>
 <script>
+    var TAG = Templates.Reserve.AreaDesk;
     var index = 0;
     var seat = BanquetExpert.area[index].seat;
 
@@ -114,13 +115,16 @@
     $.templates("#seatTableTemplate").link("#seat-table", seat);
     $("#details").html("全部桌位，共" + seat.length + "个 注：序号数值越大，则优先推荐");
 
-    // 事件处理
+    // TODO: 添加桌位
     $("#add-desk").click(function () {
-        $.observable(seat).insert({value: 0, name: '桌号', min: 12, max: 16, type: "类型", order: 1, enable: true});
+        var obj = {value: 0, name: '桌号', min: 12, max: 16, type: "类型", order: 1, enable: true};
+        Log.i(TAG, "添加桌位：" + JSON.stringify(obj));
+        $.observable(seat).insert(obj);
         $("#details").html("全部桌位，共" + seat.length + "个 注：序号数值越大，则优先推荐");
     });
+    // TODO: 保存区域桌位信息
     $("#save").click(function () {
-        alert("保存区域桌位信息");
+        Log.i(TAG, "保存区域桌位信息：" + JSON.stringify(seat));
     });
 
     // 路由设置
@@ -129,6 +133,7 @@
             index = area_id;
             $.observable(seat).refresh(BanquetExpert.area[index]);
             $("#details").html("全部桌位，共" + seat.length + "个 注：序号数值越大，则优先推荐");
+            Log.i(TAG, "选择区域：" + area_id);
         },
         "/Reserve/AreaDesk/Desk/Modify/:desk_id": function (desk_id) {
             alert("修改桌位：" + desk_id);
