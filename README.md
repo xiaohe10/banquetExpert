@@ -310,32 +310,25 @@ URL：webApp/order/submit <br>
 | 参数名称       | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------:|
 | token         | 登录口令          |         yes  |
-| staff_id         | 员工账户ID          |         yes  |
 | dinner_date | 预定用餐日期 | yes |
 | dinner_time | 预定用餐时间 | yes |
 | dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') | yes |
 | name | 联系人 | yes |
 | contact | 联系电话 | yes |
 | guest_number | 客人数量 | yes |
-| desk | 桌位 | yes |
-| user_description | 用户备注 | no |
+| desks | 桌位 | yes |
 | staff_description | 员工备注 | no |
 |以下是私人订制的字段|
 | water_card | 水牌 | no |
 | door_card | 门牌 | no |
 | sand_table | 沙盘 | no |
-| welcom_screen | 欢迎屏 | no |
-| welcom_fruit | 迎宾水果的价格 | no |
-| welcom_card | 欢迎卡 | no |
-| pictures | 用户上传的图片（最多5张) | no |
+| welcome_screen | 欢迎屏 | no |
+| welcome_fruit | 迎宾水果的价格 | no |
+| welcome_card | 欢迎卡 | no |
 | background_music | 背景音乐 | no |
 | has_candle | 是否有蜡烛 | no |
 | has_flower | 是否有鲜花 | no |
 | has_balloon | 是否有气球 | no |
-| group_photo | 合照？ | no |
-| user | 顾客 | no |
-| internal_channel | 内部获客渠道 | no |
-| external_channel | 外部获客渠道 | no |
 
 
 请求示例:
@@ -344,15 +337,13 @@ URL：webApp/order/submit <br>
 ```
 {
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
-	"staff_id":1,
 	"dinner_date":"2014-02-01",
 	"dinner_time":"12:00"
 	"dinner_period":0,
 	"name":"李四",
 	"contact":"18813101211",
 	"guest_number":10,
-	"desk":[1,3,5],
-	"user_description":"生日宴，准备蜡烛",
+	"desks":[1,3,5],
 	"staff_description":"客户年纪大，做好防滑",
 	"water_card":"水牌内容",
 	"door_card":"门牌内容",
@@ -360,15 +351,10 @@ URL：webApp/order/submit <br>
 	"welcome_screen":"欢迎xx领导",
 	"welcome_fruit": 128,
 	"welcome_card":"欢迎你",
-	"pictures":[file1,file2...],
 	"background_music":"我爱你中国",
 	"has_candle":true,
 	"has_flower":false,
 	"has_balloon":false,
-	"group_photo":"合照名称",
-	"user":"userid_001",
-	"internal_channel":"channel_id_001",
-	"external_channel":"channel_id_001"
 }
 ```
 
@@ -407,12 +393,11 @@ URL：webApp/order/search/ <br>
 | 参数名称       | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------:|
 | token         | 登录口令          |         yes  |
-| staff_id         | 员工账户ID          |         yes  |
 | order_date    | 下单日期  |   no |
 | dinner_period | 餐段    |   no |
 | dinner_date   | 预定用餐日期  |   no  |
 | dinner_time   | 预定用餐时间  |   no  |
-| state | 订单状态（默认缺省表示所有未完成订单列表，没有限制，finished 表示已完成，processing 表示进行中）  | no |
+| state | 订单状态（0: 进行中，1: 已完成，默认为0）  | no |
 | search_key | 搜索关键词（如姓名、手机等进行模糊搜索） | no |
 
 
@@ -422,7 +407,6 @@ URL：webApp/order/search/ <br>
 ```
 {
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
-	"staff_id":1,
 	"state":"finished",
 	"search_key":"张总",
 }
@@ -437,15 +421,17 @@ URL：webApp/order/search/ <br>
 | cancel_time | 撤销日期 |
 | arrival_time  | 客到日期 |
 | finish_time | 完成日期 | 
-| state | 状态((0, '已订'), (1, '客到'), (2, '已完成'), (3, '已撤单'))|
-| dinner_date | 预定用餐日期 | yes |
-| dinner_time   | 预定用餐时间  |   yes  |
-| dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') | yes |
-| name | 联系人 | yes |
-| contact | 联系电话 | yes |
-| guest_number | 客人数量 | yes |
-| desk | 桌位 | yes |
-
+| status | 状态((0, '已订'), (1, '客到'), (2, '已完成'), (3, '已撤单'))|
+| dinner_date | 预定用餐日期 |
+| dinner_time   | 预定用餐时间  |
+| dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') |
+| name | 联系人 |
+| contact | 联系电话 |
+| guest_type | 顾客身份 |
+| guest_number | 客人数量 |
+| desks | 桌位 |
+| internal_channel | 内部获客渠道, 即接单人名字, 如果存在 |
+| external_channel | 外部获客渠道, 即外部渠道名称, 如果存在 |
 
 
 返回示例：
@@ -462,15 +448,18 @@ URL：webApp/order/search/ <br>
 			"cancel_time":"2014-02-01 10:00:00",
 			"arrival_time":"2014-02-01 10:00:00",
 			"finish_time":"2014-02-01 10:00:00",
-			"state":0,
+			"status":0,
 			"order_id":"001",
 			"dinner_date":"2014-02-01",
 			"dinner_time":"12:00",
 			"dinner_period":0,
 			"name":"李四",
+			"guest_type":"vip",
 			"contact":"18813101211",
 			"guest_number":10,
-			"desk":[1,3,5]
+			"desks":[1,3,5],
+			"internal_channel":"刘光艳",
+			"external_channel":"美团"
 		},
 		...	
 	]
@@ -491,7 +480,6 @@ URL：webApp/order/detail/ <br>
 | 参数名称       | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------|
 | token         | 登录口令          |         yes  |
-| staff_id         | 员工账户ID          |         yes  |
 | order_id | 订单ID | yes |
 
 
@@ -501,7 +489,6 @@ URL：webApp/order/detail/ <br>
 ```
 {
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
-	"staff_id":1,
 	"order_id":"order_id",
 }
 ```
@@ -515,7 +502,7 @@ URL：webApp/order/detail/ <br>
 | cancel_time | 撤销日期 |
 | arrival_time  | 客到日期 |
 | finish_time | 完成日期 |
-| state | 状态((0, '已订'), (1, '客到'), (2, '已完成'), (3, '已撤单'))|
+| status | 状态((0, '已订'), (1, '客到'), (2, '已完成'), (3, '已撤单'))|
 | dinner_date | 预定用餐日期 | yes |
 | dinner_time   | 预定用餐时间  |   yes  |
 | dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') | yes |
@@ -523,25 +510,24 @@ URL：webApp/order/detail/ <br>
 | guest_type | 顾客身份 |
 | contact | 联系电话 |
 | guest_number | 客人数量 |
-| desk | 桌位 |
+| desks | 桌位 |
 | user_description | 用户备注 |
 | staff_description | 员工备注 |
 |以下是私人订制的字段|
 | water_card | 水牌 |
 | door_card | 门牌 |
 | sand_table | 沙盘 |
-| welcom_screen | 欢迎屏 |
-| welcom_fruit | 迎宾水果的价格 |
-| welcom_card | 欢迎卡 |
+| welcome_screen | 欢迎屏 |
+| welcome_fruit | 迎宾水果的价格 |
+| welcome_card | 欢迎卡 |
 | pictures | 用户上传的图片（最多5张) |
 | background_music | 背景音乐 |
 | has_candle | 是否有蜡烛 |
 | has_flower | 是否有鲜花 |
 | has_balloon | 是否有气球 |
-| group_photo | 合照？ |
-| user | 顾客 |
-| internal_channel | 内部获客渠道 |
-| external_channel | 外部获客渠道 |
+| group_photo | 用户上传的合照 |
+| internal_channel | 内部获客渠道, 即接单人名字, 如果存在 |
+| external_channel | 外部获客渠道, 即外部渠道名称, 如果存在 |
 
 
 返回示例：
@@ -556,7 +542,7 @@ URL：webApp/order/detail/ <br>
 		"cancel_time":"2014-02-01 10:00:00",
 		"arrival_time":"2014-02-01 10:00:00",
 		"finish_time":"2014-02-01 10:00:00",
-		"state":0,
+		"status":0,
 		"order_id":"001",
 		"dinner_date":"2014-02-01",
 		"dinner_time":"12:00",
@@ -565,7 +551,7 @@ URL：webApp/order/detail/ <br>
 		"guest_type":"vip",
 		"contact":"18813101211",
 		"guest_number":10,
-		"desk":[1,3,5]
+		"desks":[1,3,5],
 		"user_description":"生日宴，准备蜡烛",
 		"staff_description":"客户年级大，做好防滑",
 		"water_card":"水牌内容",
@@ -580,9 +566,8 @@ URL：webApp/order/detail/ <br>
 		"has_flower":false,
 		"has_balloon":false,
 		"group_photo":"合照名称",
-		"user":"userid_001",
-		"internal_channel":"channel_id_001",
-		"external_channel":"channel_id_002"
+		"internal_channel":"刘光艳",
+		"external_channel":"美团"
 	}
 }
 ```
@@ -603,7 +588,6 @@ URL：webApp/order/update/ <br>
 | 参数名称       | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------:|
 | token         | 登录口令          |         yes  |
-| staff_id         | 员工账户ID          |         yes  |
 | order_id| 订单 ID | yes|
 | dinner_date | 预定用餐日期 | no |
 | dinner_time   | 预定用餐时间  |   no  |
@@ -612,24 +596,18 @@ URL：webApp/order/update/ <br>
 | contact | 联系电话 | no |
 | guest_number | 客人数量 | no |
 | desk | 桌位 | no |
-| user_description | 用户备注 | no |
 | staff_description | 员工备注 | no |
 |以下是私人订制的字段|
 | water_card | 水牌 | no |
 | door_card | 门牌 | no |
 | sand_table | 沙盘 | no |
-| welcom_screen | 欢迎屏 | no |
-| welcom_fruit | 迎宾水果的价格 | no |
-| welcom_card | 欢迎卡 | no |
-| pictures | 用户上传的图片（最多5张) | no |
+| welcome_screen | 欢迎屏 | no |
+| welcome_fruit | 迎宾水果的价格 | no |
+| welcome_card | 欢迎卡 | no |
 | background_music | 背景音乐 | no |
 | has_candle | 是否有蜡烛 | no |
 | has_flower | 是否有鲜花 | no |
 | has_balloon | 是否有气球 | no |
-| group_photo | 合照？ | no |
-| user | 顾客 | no |
-| internal_channel | 内部获客渠道 | no |
-| external_channel | 外部获客渠道 | no |
 
 请求示例:
 
@@ -637,7 +615,6 @@ URL：webApp/order/update/ <br>
 ```
 {
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
-	"staff_id":1,
 	"order_id":"001",
 	"dinner_time":"2014-02-01",
 	"dinner_period":0,
@@ -645,7 +622,6 @@ URL：webApp/order/update/ <br>
 	"contact":"18813101211",
 	"guest_number":10,
 	"desk":[1,3,5],
-	"user_description":"生日宴，准备蜡烛",
 	"staff_description":"客户年级大，做好防滑",
 	"water_card":"水牌内容",
 	"door_card":"门牌内容",
@@ -653,15 +629,10 @@ URL：webApp/order/update/ <br>
 	"welcome_screen":"欢迎xx领导",
 	"welcome_fruit": 128,
 	"welcome_card":"欢迎你",
-	"pictures":[file1,file2...],
 	"background_music":"我爱你中国",
 	"has_candle":true,
 	"has_flower":false,
 	"has_balloon":false,
-	"group_photo":"合照名称",
-	"user":"userid_001",
-	"internal_channel":"channel_id_001",
-	"external_channel":"channel_id_001"
 }
 ```
 
