@@ -16,5 +16,5 @@ urlpatterns = [
     # 获取员工所在酒店的门店列表
     url(r'^hotel/$', get_hotel, name='get_hotel'),
     # 获取员工所在酒店的门店列表
-    url(r'^hotel_branches/$', get_branches, name='get_branches'),
+    url(r'^hotel_branch/list/$', get_branches, name='get_branch_list'),
 ]

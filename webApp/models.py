@@ -319,12 +319,6 @@ class User(models.Model):
     county = models.CharField(max_length=20, default='')
     # 详细地址
     address = models.CharField(max_length=50, default='')
-    # 爱好
-    hobby = models.CharField(max_length=100, default='')
-    # 忌讳
-    taboo = models.CharField(max_length=100, default='')
-    # 个性化需求
-    Individualization = models.CharField(max_length=100, default='')
     # 备注
     description = models.CharField(max_length=100, default='')
     # 是否有效
@@ -355,11 +349,46 @@ class User(models.Model):
         self.save()
 
 
+class UserArchives(models.Model):
+    """用户档案模型"""
+
+    # 手机
+    phone = models.CharField(max_length=11, unique=True)
+    # 姓名
+    name = models.CharField(max_length=20, default='')
+    # 用户会员类别
+    type = models.CharField(max_length=10, default='')
+    # 性别
+    gender = models.IntegerField(choices=((0, '保密'), (1, '男'), (2, '女')),
+                                 default=0, db_index=True)
+    # 生日
+    birthday = models.DateField(default=None, null=True)
+    # 生日类型
+    birthday_type = models.IntegerField(
+        choices=((0, '阳历'), (1, '农历')), default=0)
+    # 详细地址
+    address = models.CharField(max_length=50, default='')
+    # 爱好
+    hobby = models.CharField(max_length=100, default='')
+    # 忌讳
+    taboo = models.CharField(max_length=100, default='')
+    # 个性化需求
+    Individualization = models.CharField(max_length=100, default='')
+    # 备注
+    description = models.CharField(max_length=100, default='')
+
+    # 创建时间
+    create_time = models.DateTimeField(default=timezone.now, db_index=True)
+
+    class Meta:
+        ordering = ['-create_time']
+
+
 class Order(models.Model):
     """订单模型"""
 
     # 订单状态
-    state = models.IntegerField(
+    status = models.IntegerField(
         choices=((0, '已订'), (1, '客到'), (2, '已完成'), (3, '已撤单')),
         default=0, db_index=True)
     # 联系人
@@ -368,6 +397,8 @@ class Order(models.Model):
     contact = models.CharField(max_length=11, default='')
     # 到店人数
     guest_number = models.IntegerField(default=0, db_index=True)
+    # 预定桌位, 可能多桌
+    desks = models.CharField(max_length=50, default='')
     # 支付金额
     pay_number = models.IntegerField(default=None, db_index=True)
     # 水牌
@@ -392,7 +423,7 @@ class Order(models.Model):
     has_flower = models.BooleanField(default=False)
     # 是否有气球
     has_balloon = models.BooleanField(default=False)
-    # 合照
+    # 用户上传的合照
     group_photo = models.CharField(max_length=100, default='')
     # 顾客备注
     user_description = models.CharField(max_length=100, default='')
@@ -415,8 +446,6 @@ class Order(models.Model):
     # 撤销时间
     cancel_time = models.DateTimeField(default=None, db_index=True)
 
-    # 预定桌位, 可能多桌
-    desks = models.CharField(max_length=50, default='')
     # 顾客(可能是散客)
     user = models.ForeignKey(
         'User', models.CASCADE, 'orders', default=None, null=True)

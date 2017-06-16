@@ -168,12 +168,15 @@ def get_desks(request, token, branch_id, date, dinner_period, area_id=None,
              'max_guest_num': desk.max_guest_number}
 
         # 判断桌位在查询日和查询餐段的状态
+        desk_id = '$' + desk.id + '$'
         if Order.objects.filter(
-                dinner_period=dinner_period, dinner_date=date, status=0). \
+                dinner_period=dinner_period, dinner_date=date, status=0,
+                desks__icontains=desk_id). \
                 exists():
             d['status'] = 1
         elif Order.objects.filter(
-                dinner_period=dinner_period, dinner_date=date, status=1). \
+                dinner_period=dinner_period, dinner_date=date, status=1,
+                desks__icontains=desk_id). \
                 exists():
             d['status'] = 2
         else:
