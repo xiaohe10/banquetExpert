@@ -199,7 +199,7 @@ class Staff(models.Model):
     # 姓名
     name = models.CharField(max_length=20)
     # 身份证号
-    id_number = models.CharField(max_length=18, default='')
+    id_number = models.CharField(max_length=18, default='', unique=True)
     # 头像
     icon = models.CharField(max_length=100, default='')
     # 性别
@@ -688,7 +688,7 @@ class ValidationCode(models.Model):
 
     @classmethod
     def generate(cls, phone_number, minutes=3):
-        """为某个手机号生成验证码"""
+        """为某个手机号生成验证码，有效时间为3分钟"""
 
         from datetime import timedelta
         from random import Random
@@ -696,7 +696,7 @@ class ValidationCode(models.Model):
         try:
             r = cls.objects.get(phone_number=phone_number)
             # 接口访问频率限制, 1分钟
-            if r.time_expired <= timezone.now() + timedelta(minutes=1):
+            if r.time_expired >= timezone.now() + timedelta(minutes=2):
                 return ''
         except cls.DoesNotExist:
             r = cls(phone_number)

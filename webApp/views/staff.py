@@ -14,7 +14,6 @@ from ..models import Staff, Hotel, ValidationCode as ValidationCodeModel
 @validate_args({
     'phone': forms.RegexField(r'[0-9]{11}'),
 })
-@validate_staff_token()
 def get_validation_code(request, phone):
     """获取短信验证码
 
@@ -34,7 +33,7 @@ def get_validation_code(request, phone):
 
 @validate_args({
     'phone': forms.RegexField(r'[0-9]{11}'),
-    'password': forms.CharField(min_length=1, max_length=128),
+    'password': forms.CharField(min_length=1, max_length=32),
     'validation_code': forms.CharField(min_length=6, max_length=6),
     'staff_number': forms.CharField(
         min_length=1, max_length=20, required=False),
@@ -63,13 +62,16 @@ def register(request, phone, password, validation_code, hotel_id, **kwargs):
     try:
         hotel = Hotel.enabled_objects.get(id=hotel_id)
     except Hotel.DoesNotExist:
-        return err_response('err_3', '酒店不存在')
+        return err_response('err_4', '酒店不存在')
 
     if Staff.objects.filter(phone=phone).exists():
         return err_response('err_2', '该手机号已经注册过')
 
+    if Staff.objects.filter(id_number=kwargs['id_number']).exists():
+        return err_response('err_3', '身份证号已经注册过')
+
     if not ValidationCodeModel.verify(phone, validation_code):
-        return err_response('err_4', '验证码错误或超时')
+        return err_response('err_6', '验证码错误或超时')
 
     staff_keys = ('staff_number', 'name', 'gender', 'position', 'id_number')
     with transaction.atomic():
