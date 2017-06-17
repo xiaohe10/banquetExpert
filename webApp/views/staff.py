@@ -5,6 +5,7 @@ from django import forms
 from django.db import IntegrityError, transaction
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.validators import RegexValidator
 
 from ..utils.decorator import validate_args, validate_staff_token
 from ..utils.response import corr_response, err_response
@@ -12,7 +13,7 @@ from ..models import Staff, Hotel, ValidationCode as ValidationCodeModel
 
 
 @validate_args({
-    'phone': forms.RegexField(r'[0-9]{11}'),
+    'phone': forms.CharField(validators=[RegexValidator(regex=r'^[0-9]{11}$')]),
 })
 def get_validation_code(request, phone):
     """获取短信验证码
@@ -32,7 +33,7 @@ def get_validation_code(request, phone):
 
 
 @validate_args({
-    'phone': forms.RegexField(r'[0-9]{11}'),
+    'phone': forms.CharField(validators=[RegexValidator(regex=r'^[0-9]{11}$')]),
     'password': forms.CharField(min_length=1, max_length=32),
     'validation_code': forms.CharField(min_length=6, max_length=6),
     'staff_number': forms.CharField(
@@ -88,7 +89,7 @@ def register(request, phone, password, validation_code, hotel_id, **kwargs):
 
 
 @validate_args({
-    'phone': forms.RegexField(r'[0-9]{11}'),
+    'phone': forms.CharField(validators=[RegexValidator(regex=r'^[0-9]{11}$')]),
     'password': forms.CharField(min_length=1, max_length=32),
 })
 def login(request, phone, password):
