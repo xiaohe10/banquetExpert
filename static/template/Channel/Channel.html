@@ -1,11 +1,144 @@
 <!--主页/后台用户管理/获客渠道-->
 <!--内容-->
 <div class="py-2 px-2 mt-2 bg-info">
+    <!--折叠效果-->
+    <div class="panel-group hidden-lg" id="accordion">
+        <!--超级管理员-->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion"
+                       href="#collapseOne">
+                        超级管理员
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <!--操作栏-->
+                    <a class="btn btn-link btn-sm" data-toggle="modal" data-target=".add-reserve">新增超级管理员</a>
+                    <!--超级管理员列表-->
+                    <div>
+                        <ul>
+                            <li>超级管理员A</li>
+                            <li>超级管理员B</li>
+                            <li>超级管理员C</li>
+                            <li>超级管理员D</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--高层管理-->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion"
+                       href="#collapseTwo">
+                        高层管理
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <!--操作栏-->
+                    <a class="btn btn-link btn-sm" data-toggle="modal" data-target=".add-reserve">新增高层管理</a>
+                    <!--高层管理列表-->
+                    <div>
+                        <ul>
+                            <li>高层管理A</li>
+                            <li>高层管理B</li>
+                            <li>高层管理C</li>
+                            <li>高层管理D</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--预订员和迎宾-->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion"
+                       href="#collapseThree">
+                        预订员和迎宾
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseThree" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <!--操作栏-->
+                    <a class="btn btn-link btn-sm" data-toggle="modal" data-target=".add-reserve">新增预订员和迎宾</a>
+                    <!--预订员和迎宾列表-->
+                    <div>
+                        <ul>
+                            <li>预订员和迎宾A</li>
+                            <li>预订员和迎宾B</li>
+                            <li>预订员和迎宾C</li>
+                            <li>预订员和迎宾D</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--客户经理-->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion"
+                       href="#collapseFour">
+                        客户经理
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseFour" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <!--操作栏-->
+                    <a class="btn btn-link btn-sm" data-toggle="modal" data-target=".add-manager">新增客户经理</a>
+                    <!--客户经理列表-->
+                    <div>
+                        <ul>
+                            <li>客户经理A</li>
+                            <li>客户经理B</li>
+                            <li>客户经理C</li>
+                            <li>客户经理D</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--外部渠道-->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion"
+                       href="#collapseFive">
+                        外部渠道
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseFive" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <!--操作栏-->
+                    <a class="btn btn-link btn-sm" data-toggle="modal" data-target=".add-outer-channel">新增外部渠道</a>
+                    <!--外部渠道列表-->
+                    <div>
+                        <ul>
+                            <li>外部渠道A</li>
+                            <li>外部渠道B</li>
+                            <li>外部渠道C</li>
+                            <li>外部渠道D</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Tab效果-->
     <div class="tabbable">
         <!--HabHost-->
         <nav class="mb-2">
-            <!--等宽Tab-->
-            <ul class="nav nav-pills nav-stacked" role="tablist">
+            <ul class="nav nav-tabs" role="tablist">
                 <li class="nav-item p-2 active"><a href="#cjgly" role="tab" data-toggle="tab">超级管理员</a></li>
                 <li class="nav-item p-2"><a href="#gcgl" role="tab" data-toggle="tab">高层管理</a></li>
                 <li class="nav-item p-2"><a href="#ydyhyb" role="tab" data-toggle="tab">预订员和迎宾</a></li>

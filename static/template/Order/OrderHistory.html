@@ -8,11 +8,11 @@
     <!--导航栏-->
     <div class="pb-2">
         <ul class="nav nav-tabs">
-            <li class="nav-item" ><a href="#/Order/OrderHistory/Filter/Valid">有效订单</a></li>
-            <li class="nav-item" ><a href="#/Order/OrderHistory/Filter/Canceled">撤单</a></li>
-            <li class="nav-item" ><a href="#/Order/OrderHistory/Filter/RedBag">红包</a></li>
-            <li class="nav-item" ><a href="#/Order/OrderHistory/Filter/Scattered">散客</a></li>
-            <li class="nav-item" ><a href="#/Order/OrderHistory/Filter/All">全部订单</a></li>
+            <li class="nav-item"><a href="#/Order/OrderHistory/Filter/Valid">有效订单</a></li>
+            <li class="nav-item"><a href="#/Order/OrderHistory/Filter/Canceled">撤单</a></li>
+            <li class="nav-item"><a href="#/Order/OrderHistory/Filter/RedBag">红包</a></li>
+            <li class="nav-item"><a href="#/Order/OrderHistory/Filter/Scattered">散客</a></li>
+            <li class="nav-item"><a href="#/Order/OrderHistory/Filter/All">全部订单</a></li>
         </ul>
     </div>
     <!--详细信息-->
@@ -23,6 +23,7 @@
     </div>
     <!--表格-->
     <div class="p-2 mb-2 bg-faded">
+        <!--表格-->
         <table class="table table-hover table-bordered small">
             <thead class="bg-info">
             <tr align="center">
@@ -57,6 +58,31 @@
             </tr>
             </tbody>
         </table>
+        <!--分页导航-->
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-sm">
+                <li>
+                    <a href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li><a href="#">1</a></li>
+                <li><a href="#">2</a></li>
+                <li class="active"><a href="#">3</a></li>
+                <li><a href="#">4</a></li>
+                <li><a href="#">5</a></li>
+                <li><a href="#">6</a></li>
+                <li><a href="#">7</a></li>
+                <li><a href="#">8</a></li>
+                <li><a href="#">9</a></li>
+                <li><a href="#">10</a></li>
+                <li>
+                    <a href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
 <!--对话框/订单详情-->
@@ -70,51 +96,47 @@
                 <div class="row bg-faded">
                     <div class="px-3 py-2">2017年6月7日 周三 晚餐</div>
                 </div>
-                <div class="row mt-2">
-                    <div class="col-sm-2">
-                        <!--Nav tabs-->
+                <div class="m-2">
+                    <!--Nav tabs-->
+                    <nav>
                         <ul class="nav nav-tabs">
                             <li class="nav-item active"><a href="#order_pane" role="tab" data-toggle="tab">订单信息</a></li>
                             <li class="nav-item"><a href="#option_pane" role="tab" data-toggle="tab">操作信息</a></li>
                         </ul>
-                    </div>
-                    <div class="col-sm-8">
-                        <!--Tab panes-->
-                        <div class="tab-content">
-                            <div role="tabpanel" class="tab-pane active" id="order_pane">
-                                <div class="text-info">
-                                    <p><strong>三楼 315</strong></p>
-                                    <p><strong>张 先生 100 0000 0000 6人 未分类客户</strong></p>
-                                    <p><strong>用餐时间：2017年6月7日 周三(晚餐) 14:57</strong></p>
-                                    <p><strong>创建时间：2017年6月7日14:59 操作：XXX</strong></p>
-                                </div>
-                                <div class="text-info bg-faded p-2">
-                                    <p>备注：给女朋友过生日，提前到店布置房间。</p>
-                                </div>
-                                <div class="row m-2">
-                                    <div class="col-sm-10 d-inline">
-                                        <div class="img-thumbnail p-2 m-1">IMG1</div>
-                                        <div class="img-thumbnail p-2 m-1">IMG2</div>
-                                        <div class="img-thumbnail p-2 m-1">IMG3</div>
-                                        <div class="img-thumbnail p-2 m-1">IMG4</div>
-                                        <div class="img-thumbnail p-2 m-1">IMG5</div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="row my-3 text-sm-center">已选0</div>
-                                        <div class="row my-3">
-                                            <input class="btn btn-secondary btn-sm px-2 mx-1" type="button" value="删除"/>
-                                            <input class="btn btn-primary btn-sm px-2 mx-1" type="button" value="下载"/>
-                                        </div>
-                                    </div>
+                    </nav>
+                    <!--Tab panes-->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="order_pane">
+                            <div class="text-info">
+                                <p><strong>三楼 315</strong></p>
+                                <p><strong>张 先生 100 0000 0000 6人 未分类客户</strong></p>
+                                <p><strong>用餐时间：2017年6月7日 周三(晚餐) 14:57</strong></p>
+                                <p><strong>创建时间：2017年6月7日14:59 操作：XXX</strong></p>
+                            </div>
+                            <div class="text-info bg-faded p-2">
+                                <p>备注：给女朋友过生日，提前到店布置房间。</p>
+                            </div>
+                            <div>
+                                <div class="img-thumbnail p-2 m-1">IMG1</div>
+                                <div class="img-thumbnail p-2 m-1">IMG2</div>
+                                <div class="img-thumbnail p-2 m-1">IMG3</div>
+                                <div class="img-thumbnail p-2 m-1">IMG4</div>
+                                <div class="img-thumbnail p-2 m-1">IMG5</div>
+                            </div>
+                            <div>
+                                <div class="my-3 text-sm-center">已选0</div>
+                                <div class="my-3">
+                                    <input class="btn btn-secondary btn-sm px-2 mx-1" type="button" value="删除"/>
+                                    <input class="btn btn-primary btn-sm px-2 mx-1" type="button" value="下载"/>
                                 </div>
                             </div>
-                            <div role="tabpanel" class="tab-pane" id="option_pane">
-                                <p><a>2017/6/1 13:24:42 预订单修改 单蕾</a></p>
-                                <p class="text-info">对张先生18614023307预订的2017-06-02晚餐段315桌位</p>
-                                <p><a>2017/6/1 13:24:42 预订单修改 单蕾</a></p>
-                                <p class="text-info">对张先生18614023307预订的2017-06-02晚餐段315桌位</p>
-                                <p><a>系统ID：0cdc987e-e654-43f9-a6ed-01af184c3251</a></p>
-                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="option_pane">
+                            <p><a>2017/6/1 13:24:42 预订单修改 单蕾</a></p>
+                            <p class="text-info">对张先生18614023307预订的2017-06-02晚餐段315桌位</p>
+                            <p><a>2017/6/1 13:24:42 预订单修改 单蕾</a></p>
+                            <p class="text-info">对张先生18614023307预订的2017-06-02晚餐段315桌位</p>
+                            <p><a>系统ID：0cdc987e-e654-43f9-a6ed-01af184c3251</a></p>
                         </div>
                     </div>
                 </div>
@@ -141,16 +163,16 @@
                         <th align="right"><span class="error">*</span>姓名</th>
                         <td><input type="text" name="CustomerName" id="CustomerName"></td>
                         <td colspan="2"><span class="error">*</span>
-                            <label><input name="CustomerGender" type="radio" value="False"> 先生 </label>
-                            <label><input name="CustomerGender" type="radio" value="True"> 女士</label>
+                            <label class="control-label inline"><input name="CustomerGender" type="radio" value="False"> 先生 </label>
+                            <label class="control-label inline"><input name="CustomerGender" type="radio" value="True"> 女士</label>
                         </td>
                     </tr>
                     <tr>
                         <th><span class="error">*</span>人数</th>
                         <td colspan="5">
                             <input id="People" name="People" type="text" size="8" onpaste="return false">
-                            <ul class="nav nav-list">
-                                <li class="first"><a href="#/Dialog/People/SetCount/4">4</a></li>
+                            <ul class="pagination pagination-sm">
+                                <li><a href="#/Dialog/People/SetCount/4">4</a></li>
                                 <li><a href="#/Dialog/People/SetCount/5">5</a></li>
                                 <li><a href="#/Dialog/People/SetCount/6">6</a></li>
                                 <li><a href="#/Dialog/People/SetCount/7">7</a></li>
@@ -158,7 +180,7 @@
                                 <li><a href="#/Dialog/People/SetCount/9">9</a></li>
                                 <li><a href="#/Dialog/People/SetCount/10">10</a></li>
                                 <li><a href="#/Dialog/People/SetCount/11">11</a></li>
-                                <li class="last"><a href="#/Dialog/People/SetCount/0">12</a></li>
+                                <li><a href="#/Dialog/People/SetCount/12">12</a></li>
                             </ul>
                         </td>
                     </tr>
@@ -187,7 +209,7 @@
                         <th><span class="obli">*</span>日期</th>
                         <td>
                             <div class="data">
-                                <select id="Orderfor" name="Orderfor" onchange="coupon_load($('#CustomerTelephone').val(),$(this).val())">
+                                <select id="Orderfor" name="Orderfor" onchange="">
                                     <option>请选择就餐日期</option>
                                     <option>2017/6/6</option>
                                     <option>2017/6/7</option>
@@ -203,36 +225,30 @@
                         <th><span class="obli">*</span>餐段</th>
                         <td colspan="3">
                             <div class="meal_time_set">
-                                <input id="data_time3" name="Mealtimes" type="text" value="请选择餐段" onchange="    (function () {
-
-    $('#RestaurantMealsTimeGuid').val($('#data_time3').attr('data-period'));
-    $('#RestaurantMealsTimeClassificationID').val($('#data_time3').attr('data-class'));
-
-})()" readonly="" style="width: 90px" data-period="">
-                                <input id="RestaurantMealsTimeGuid" name="RestaurantMealsTimeGuid" type="hidden">
-                                <input id="RestaurantMealsTimeClassificationID" name="RestaurantMealsTimeClassificationID" type="hidden">
-
-                                <a href="javascript:picker_customer($('#Orderfor'), $('#data_time3'));" class="drop"></a>
+                                <input type="text" value="请选择餐段" data-period="">
+                                <input type="hidden">
+                                <input type="hidden">
+                                <a href="" class="drop"></a>
                             </div>
                         </td>
                     </tr>
                     <tr>
                         <th><span class="obli">*</span>区域</th>
                         <td colspan="5">
-                            <select id="areaSelector_1" class="tableSelector" data-bind="tableSelector_1" name="area">
+                            <select name="area">
                                 <option data-save="1" value="0">请选择区域</option>
                                 <option>一楼</option>
                                 <option>二楼</option>
                                 <option>三楼</option>
                                 <option>五楼</option>
                                 <option>六楼</option>
-                                <option>六楼散台</option>
-                                <option>二楼散台</option>
-                                <option>外卖</option>
-                                <option>测试台</option>
                             </select>
-                            <select id="tableSelector_1" name="DeskID">
+                            <select name="DeskID">
                                 <option data-save="1" value="0">请选择餐位</option>
+                                <option data-save="1" value="0">餐位1</option>
+                                <option data-save="1" value="0">餐位2</option>
+                                <option data-save="1" value="0">餐位3</option>
+                                <option data-save="1" value="0">餐位4</option>
                             </select>
                         </td>
                     </tr>
@@ -251,7 +267,7 @@
                                 <option>外卖</option>
                                 <option>测试台</option>
                             </select>
-                            <select id="tableSelector_NOM" name="DeskID">
+                            <select name="DeskID">
                                 <option data-save="1" value="0">请选择餐位</option>
                             </select>
                             <a data-type="table_remove" href="#/Table/Remove/table_id" class="gray_2">删除</a>
@@ -306,10 +322,12 @@
         </div>
     </div>
 
+
 </script>
 <!--表格模板-->
 <script>
-    var TAG = "#/Order/OrderHistory/";
+    var TAG = Templates.Order.OrderHistory;
+
     // 子页面对象
     var option = {
         data_from: "2017/06/10",
@@ -324,17 +342,16 @@
     };
     // 绑定模板
     $.templates("#OptionTemplate").link("#option", option);
-    // 事件处理
+    // TODO: 选择开始日期
     $("#data-from").change(function () {
-        // TODO: 选择开始日期
         Log.i(TAG, "选择开始日期：" + $(this).val());
     });
+    // TODO: 选择结束日期
     $("#data-to").change(function () {
-        // TODO: 选择结束日期
         Log.i(TAG, "选择结束日期：" + $(this).val());
     });
+    // TODO: 选择区域
     $("#area").change(function () {
-        // TODO: 选择区域
         Log.i(TAG, "选择区域：" + $(this).val());
         var index = $("#area").val();
         if (index === -1) {
@@ -344,18 +361,19 @@
             $.observable(option).setProperty({select_seat: -1, seat: seat});
         }
     });
+    // TODO: 选择餐位
     $("#seat").change(function () {
-        // TODO: 选择餐位
         Log.i(TAG, "选择餐位：" + $(this).val());
     });
+    // TODO: 选择渠道
     $("#channel").change(function () {
-        // TODO: 选择渠道
         Log.i(TAG, "选择渠道：" + $(this).val());
     });
+    // TODO: 查询关键字
     $("#keyword").change(function () {
-        // TODO: 查询关键字
         Log.i(TAG, "查询关键字：" + $(this).val());
     });
+    // TODO: 查询
     $("#query").click(function () {
         // TODO: 查询订单数据
         var json = {
@@ -368,6 +386,7 @@
         };
         Log.i(TAG, "查询订单数据：" + JSON.stringify(json));
     });
+    // TODO: 导出
     $("#export").click(function () {
         // TODO: 生成报表
         Log.i(TAG, "生成报表");

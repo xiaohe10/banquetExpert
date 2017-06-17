@@ -24,6 +24,7 @@
                 <option>外部渠道</option>
                 <option>外部渠道</option>
             </select>
+            <input class="form-control form-control-sm" type="text" value="18800184976" data-link="keyword" placeholder="输入姓名或手机号"/>
             <input class="btn btn-primary btn-sm ml-2 mr-1" type="button" id="search" value="搜索"/>
             <input class="btn btn-secondary btn-sm ml-1 mr-2" type="button" id="save" value="保存"/>
         </div>
@@ -33,6 +34,7 @@
 <div class="py-2 px-2 mt-2 bg-info">
     <!--表格-->
     <div class="p-2 mb-2 bg-faded">
+        <!--表格-->
         <table class="table table-hover table-bordered small">
             <thead class="bg-info">
             <tr align="center">
@@ -65,16 +67,53 @@
             </tr>
             </tbody>
         </table>
+        <!--分页导航-->
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-sm">
+                <li>
+                    <a href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li><a href="#">1</a></li>
+                <li><a href="#">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><a href="#">4</a></li>
+                <li><a href="#">5</a></li>
+                <li><a href="#">6</a></li>
+                <li><a href="#">7</a></li>
+                <li><a href="#">8</a></li>
+                <li><a href="#">9</a></li>
+                <li><a href="#">10</a></li>
+                <li>
+                    <a href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
 <script>
+    var TAG = Templates.Order.InsertOrder;
 
     // TODO: 绑定数据与模板
 
+    // TODO: 选择日期
     $("#date").change(function () {
-        // TODO: 选择日期
+        Log.i(TAG, "选择日期：" + $(this).val());
     });
+    // TODO: 选择渠道
     $("#channel").change(function () {
-        // TODO: 选择渠道
+        Log.i(TAG, "选择渠道：" + $(this).val());
     });
+    // TODO: 搜索
+    $("#search").click(function () {
+        Log.i(TAG, "搜索");
+    });
+    // TODO: 保存
+    $("#save").click(function () {
+        Log.i(TAG, "保存");
+    });
+
 </script>

@@ -659,16 +659,15 @@ URL：webApp/order/update/ <br>
 | err_3 | 不存在该订单 |
 
 
-## 订单推送
-客户端给服务端推送，以json表示数据
 
+## 订单推送
+客户端给服务端推送，以json表示数据:
 
 | 参数名称       | 含义             |
 |:------------- |:---------------| :-------------:|
 | push_id        | 推送事件ID         |         yes  |
 | push_type | 推送事件类型（订单提醒、客户服务等，待定）| yes |
 | message        | 消息文字通知         |         yes  |
-
 
 推送示例:
 
@@ -681,28 +680,441 @@ URL：webApp/order/update/ <br>
 }
 ```
 
+# 客户管理
+
+## 获取客户档案
+
+URL：webApp/guest/profile/ <br>
+请求方式：POST
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------|
+| token         | 登录口令          |         yes  |
+| phone_number | 客户手机号（作为查找的依据） | yes |
+
+请求示例
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"phone_number":"18813101211"
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| name | 姓名 |
+| birthday | 生日 |
+| like | 喜好 |
+| dislike | 忌讳 |
+special_day | 纪念日
+personal_need | 个性化需求
+all_order_number | 历史所有有效订单数
+day60_order_number | 最近60天订单数
+all_comsuption | 所有有效消费
+day60_order_number | 最近60天消费金额
+
+
+返回示例
+
+```
+{
+	"status":"true",
+	"data":{
+		"name":"习某某",
+		"birthday":"1992-02-15",
+		"like":"吃辣",
+		"dislike":"不吃香菜",
+		"special_day":"",
+		"personal_need":"",
+		"all_order_number":22,
+		"day60_order_number":9,
+		"all_comsuption":10000,
+		"day60_comsuption:800
+	}
+}
+```
+
+错误代码
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 不存在该手机号码的用户 |
+
+
+## 客户历史订单列表
+
+URL：webApp/guest/history_orders/ <br>
+请求方式：POST
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------|
+| token         | 登录口令          |         yes  |
+| phone_number | 客户手机号（作为查找的依据） | yes |
+| page_start | 分页获取的地方（默认为0，每次都返回20个） | no
+
+请求示例
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"phone_number":"18813101211",
+	"page_start":40
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| time | 日期时间 |
+| status | 状态((0, '已订'), (1, '客到'), (2, '已完成'), (3, '已撤单'))|
+guest_number | 人数
+consumption | 消费
+desks | 桌位
+description | 备注
+
+
+返回示例
+
+```
+{
+	"status":"true",
+	"data":[
+		{
+			"time":"2014-05-12 10:00:00",
+			"state":0,
+			"guest_number":10,
+			"consumption":1000,
+			"desks":["一楼101"],
+			"description":"生日宴 水牌 门牌 沙盘 欢迎屏 背景音乐 气球 欢迎卡 花瓣 蜡烛 手语操作"
+		}
+	]
+}
+```
+
+错误代码
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 不存在该手机号码的用户 |
+
+# 评分管理
+## 提交（修改）评分
+URL：webApp/score/submit/ <br>
+请求方式：POST
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------|
+| token         | 登录口令          |         yes  |
+door_card\_picture | 门牌图片 | yes
+door_card\_score | 门牌分数 | yes
+sand_table\_picture | 沙盘图片 | yes
+sand_table\_score | 沙盘分数 | yes
+welcome_screen\_picture | 欢迎牌图片
+welcome_screen\_score | 欢迎牌分数
+atmosphere_picture | 氛围图片
+atmosphere_score | 氛围分数
+group_photo\_picture | 合照图片
+group_photo\_score | 合照分数
+cup_picture |  烤瓷杯图片
+cup_score | 烤瓷杯分数
+brochure_picture | 小册子图片
+brochure_score | 小册子分数
+calendar_picture | 台历图片
+calendar_score | 台历分数
+honor_certificate\_picture | 荣誉证书图片
+honor_certificate\_score | 荣誉证书分数
+work_in\_heart_picture | 用心工作图片
+work_in\_heart_score | 用心工作分数
+
+
+请求示例
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"welcome_screen_picture":[file],
+	"welcome_screen_score":20
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| score_id | 评分ID |
+
+
+返回示例
+
+```
+{
+	"status":"true",
+	"data":[
+		{
+			"score_id":"001"
+		}
+	]
+}
+```
+
+错误代码
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+
+
+## 评分排名（酒店）
+URL：webApp/score/ranking/hotel <br>
+请求方式：POST
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------|
+| token         | 登录口令          |         yes  |
+
+请求示例
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| ranking_number | 排名 |
+| all_score | 总分 | 
+satisfaction_score | 顾客满意度 
+transform_score | 转换度
+position | 地址
+manager | 店总
 
 
 
+返回示例
 
-##环境配置
-1. 安装 conda<br>
-下载：https://conda.io/miniconda.html<br>
-运行：bash Miniconda3-latest-MacOSX-x86_64.sh<br>
-验证：conda info
+```
+{
+	"status":"true",
+	"data":[
+		{
+			"ranking_number":3,
+			"all_score":89,
+			"satisfaction_score":9,
+			"transform_score":8,
+			"position":"北京市蓝靛路",
+			"manager":"张某某"
+		}
+	]
+}
+```
 
-2. 使用 conda 新建虚拟环境（把snakes换成自己起的名称）
-> conda create --name snakes python=3
-3. 激活虚拟环境<br>
-> source activate snakes
-4. 安装django 1.11和必要的程序<br>
-> pip install django<br>
-> pip install mysqlclient
+错误代码
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
 
 
-## mysql 数据库
-数据库 <br>
-host: 114.215.220.241<br>
-name: banquetExpert<br>
-username: root<br>
-password: beijingyan
+## 评分排名（房间）
+URL：webApp/score/ranking/room <br>
+请求方式：POST
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------|
+| token         | 登录口令          |         yes  |
+| brand | 品牌 | no 
+hotel | 门店 | no
+
+请求示例
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"brand":"俏江南",
+	"hotel":"五道口店"
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| ranking_number | 排名 |
+| all_score | 总分 | 
+satisfaction_score | 顾客满意度 
+transform_score | 转换度
+position | 地址
+manager | 店总
+
+
+
+返回示例
+
+```
+{
+	"status":"true",
+	"data":[
+		{
+			"ranking_number":3,
+			"all_score":89,
+			"satisfaction_score":9,
+			"transform_score":8,
+			"position":"北京市蓝靛路",
+			"manager":"张某某"
+		}
+	]
+}
+```
+
+错误代码
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+
+
+## 评分排名（宴会）
+URL：webApp/score/ranking/dinner <br>
+请求方式：POST
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------|
+| token         | 登录口令          |         yes  |
+| brand | 品牌 | no 
+hotel | 门店 |  no
+type | 宴会类型 | no
+
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"brand":"俏江南",
+	"hotel":"五道口店",
+	"type":"生日宴"
+}
+```
+
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| ranking_number | 排名 |
+| all_score | 总分 | 
+satisfaction_score | 顾客满意度 
+transform_score | 转换度
+position | 地址
+manager | 店总
+
+
+
+返回示例
+
+```
+{
+	"status":"true",
+	"data":[
+		{
+			"ranking_number":3,
+			"all_score":89,
+			"satisfaction_score":9,
+			"transform_score":8,
+			"position":"北京市蓝靛路",
+			"manager":"张某某"
+		}
+	]
+}
+```
+
+错误代码
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+
+
+## 评分详情
+
+URL：webApp/score/ranking/dinner <br>
+请求方式：POST
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------|
+| token         | 登录口令          |         yes  |
+| ranking_id | 排名ID | yes |
+
+
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| ranking_number | 排名 |
+| all_score | 总分 | 
+satisfaction_score | 顾客满意度 
+transform_score | 转换度
+position | 地址
+manager | 店总
+door_card\_score | 门牌分数
+check_ door\_card_score | 门牌分数复查 
+
+
+返回示例
+
+```
+{
+	"status":"true",
+	"data":[
+		{
+			"ranking_number":3,
+			"all_score":89,
+			"satisfaction_score":9,
+			"transform_score":8,
+			"position":"北京市蓝靛路",
+			"manager":"张某某",
+			"score":{
+				"door_card_score":10,
+				"check_door_card_score":10
+				
+			}
+		}
+	]
+}
+```
+
+错误代码
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 不存在该排名 |
