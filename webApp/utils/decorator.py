@@ -61,7 +61,7 @@ def validate_staff_token():
             try:
                 staff = Staff.objects.get(token=kwargs['token'])
             except ObjectDoesNotExist:
-                return err_response('err_1', '不存在该员工')
+                return err_response('err_3', '不存在该员工')
             else:
                 if staff.is_enabled is not True:
                     return err_response('err_3', '不存在该员工')

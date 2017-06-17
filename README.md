@@ -38,7 +38,7 @@ URL：webApp/staff/register <br>
 | 参数名称       | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------:|
 | phone         | 手机号          |         yes    |
-| password      | 密码            |         yes    |
+| password      | 密码（MD5加密后结果，32位）  |         yes    |
 | validation_code   | 验证码   |   yes |
 | hotel_id      | 酒店ID          |         yes    |
 | staff_number  | 员工编号        |         yes    |
@@ -52,7 +52,7 @@ URL：webApp/staff/register <br>
 ```
 {
 	"phone":"18813101211",
-	"password":"pass",
+	"password":"f344e6af76dba76214024c7b327eff78",
 	"validation_code":"123456",
 	"hotel_id":12,
 	"staff_number":"2017213464",
@@ -98,14 +98,14 @@ URL：webApp/staff/login <br>
 | 参数名称       | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------:|
 | phone         | 手机号          |         yes    |
-| password      | 密码            |         yes    |
+| password      | 密码（MD5加密后结果，32位）  |         yes    |
 
 请求示例：
 
 ```
 {
 	"phone":"18813101211",
-	"password":"pass",
+	"password":"f344e6af76dba76214024c7b327eff78",
 }
 ```
 
@@ -301,6 +301,328 @@ URL：webApp/staff/profile/modify/ <br>
 | err_2 | 权限错误 |
 
 
+## 获取员工所在酒店信息
+URL：webApp/staff/hotel <br>
+请求方式：POST <br>
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------:|
+| token         | 登录口令          |         yes  |
+
+请求示例:
+
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| hotel_id | 酒店 ID |
+| name | 酒店名称 |
+| icon | 头像 |
+| branches_count | 门店数 |
+| owner_name | 法人代表 |
+| create_time | 创建时间 |
+
+返回示例：
+
+```
+{
+	"status":"true",
+	"data":{
+		"hotel_id":1,
+		"name":"北京宴",
+		"icon":"http://oss.aliyun/banquet/avatar/1.jpg",
+		"branches_count":3,
+		"owner_name":"杨秀荣",
+		"create_time":"创建时间"
+	}
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_3 | 不存在该员工 |
+
+
+## 获取员工所在酒店的门店列表
+URL：webApp/staff/hotel_branch/list/ <br>
+请求方式：POST <br>
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------:|
+| token         | 登录口令          |         yes  |
+| offset | 起始值（默认0） | no |
+| limit | 偏移量（默认10） | no |
+| order | 排序方式（0: 注册时间升序，1: 注册时间降序，2: 名称升序，3: 名称降序，默认1） | no |
+
+请求示例:
+
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| count | 门店数   |
+| list  | 门店列表  |
+|以下为list中的数据|
+| branch_id | 门店 ID |
+| name | 名称 |
+| icon | 头像 |
+| province | 省 |
+| city | 城市 |
+| county | 区/县 |
+| address | 详细地址 |
+| hotel_name | 所属酒店名 |
+| manager_name | 店长名 |
+| create_time | 创建时间 |
+
+返回示例：
+
+```
+{
+	"status":"true",
+	"data":{
+	    "count":3,
+	    "list":[
+            "branch_id":1,
+            "name":"北京宴总店",
+            "icon":"http://oss.aliyun/banquet/avatar/1.jpg",
+            "province":"北京市",
+            "city":"北京市",
+            "county":"丰台区",
+            "address":"北京市丰台区靛厂路333号",
+            "branches_count":3,
+            "hotel_name":"北京宴",
+            "manager_name":"陈奎义",
+            "create_time":"创建时间"
+            ],
+            ...
+	    }
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_3 | 不存在该员工 |
+
+# 门店接口
+
+## 获取门店的详情
+URL：webApp/hotel_branch/profile/ <br>
+请求方式：POST <br>
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------:|
+| token         | 登录口令          |         yes  |
+| branch_id | 门店 ID | yes |
+
+请求示例:
+
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"branch_id":1,
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| name | 名称 |
+| icon | 头像 |
+| pictures | 介绍图片（json字符串，最多5张） |
+| province | 省 |
+| city | 城市 |
+| county | 区/县 |
+| address | 详细地址 |
+| meal_period | 餐段设置（json字符串） |
+| facility | 设施（json字符串） |
+| pay_card | 可以刷哪些卡（json字符串） |
+| phone | 联系电话（json字符串，最多3个） |
+| cuisine | 菜系（json字符串） |
+| hotel_name | 所属酒店名 |
+| manager_name | 店长名 |
+| create_time | 创建时间 |
+
+返回示例：
+
+```
+{
+	"status":"true",
+	"data":{
+		"name":"北京宴总店",
+		"icon":"http://oss.aliyun/banquet/avatar/1.jpg",
+		"pictures":"[picture1, picture2, ...]",
+		"province":"北京市",
+		"city":"北京市",
+		"county":"丰台区",
+		"address":"北京市丰台区靛厂路333号",
+		"meal_period":"{"Monday":{"lunch":[08:00,08:30], "dinner":[14:00,14:30], "supper":[20:00,20:30]},"Tuesday":{},...}",
+		"facility":"["停车场","吸烟区"]",
+		"pay_card":"["银联", "支付宝"]",
+		"phone":"["13011111111", "13100000000"]",
+		"cuisine":"菜系",
+		"hotel_name":"北京宴",
+		"manager_name":"陈奎义",
+		"create_time":"创建时间"
+	}
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 不存在该员工 |
+| err_4 | 门店不存在 |
+
+
+## 获取门店的区域列表
+URL：webApp/hotel_branch/area/list/ <br>
+请求方式：POST <br>
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------:|
+| token         | 登录口令          |         yes  |
+| branch_id | 门店 ID | yes |
+| order | 排序方式（0: 注册时间升序，1: 注册时间降序，2: 名称升序，3: 名称降序，默认1） | no |
+
+请求示例:
+
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"branch_id":1,
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| count | 区域数 |
+| list | 区域列表 |
+|以下为list中的数据|
+| area_id | 区域 ID |
+| name | 名称 |
+| order | 排序 |
+| create_time | 创建时间 |
+
+返回示例：
+
+```
+{
+	"status":"true",
+	"data":{
+	    "count":33,
+	    "list":[
+	        "area_id":1,
+		    "name":"一楼",
+		    "order":1,
+		    "create_time":"创建时间"
+		    ],
+		    ...
+	    }
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 不存在该员工 |
+| err_4 | 门店不存在 |
+| err_5 | 餐厅区域不存在 |
+
+
+## 获取门店某一天某餐段的桌位使用情况列表
+URL：webApp/hotel_branch/area/list/ <br>
+请求方式：POST <br>
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------:|
+| token         | 登录口令          |         yes  |
+| branch_id | 门店 ID | yes |
+| date  | 日期 | yes |
+| dinner_period | 餐段（0:午餐, 1:晚餐, 2:夜宵）  | yes   |
+| area_id   | 区域 ID | no    |
+| order | 排序方式（0: 注册时间升序，1: 注册时间降序，2: 名称升序，3: 名称降序，默认1） | no |
+
+请求示例:
+
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"branch_id":1,
+	"date":"2017-6-12",
+	"dinner_period":0,
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| count | 区域数 |
+| list | 区域列表 |
+|以下为list中的数据|
+| desk_id | 桌位 ID |
+| name | 名称 |
+| order | 排序 |
+| area_name | 所在区域名   |
+| min_guest_num | 最小容纳人数    |
+| max_guest_num | 最大容纳人数    |
+| create_time | 创建时间 |
+
+返回示例：
+
+```
+{
+	"status":"true",
+	"data":{
+	    "count":33,
+	    "list":[
+	        "desk_id":1,
+		    "area_name":"一楼",
+		    "order":1,
+		    "create_time":"创建时间"
+		    ],
+		    ...
+	    }
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 不存在该员工 |
+| err_4 | 门店不存在 |
+
+
 # 订单接口
 
 ## 提交订单
@@ -371,7 +693,7 @@ URL：webApp/order/submit <br>
 {
 	"status":"true",
 	"data":{
-		"order_id":"001"
+		"order_id":1
 	}
 }
 ```
@@ -399,6 +721,9 @@ URL：webApp/order/search/ <br>
 | dinner_time   | 预定用餐时间  |   no  |
 | state | 订单状态（0: 进行中，1: 已完成，默认为0）  | no |
 | search_key | 搜索关键词（如姓名、手机等进行模糊搜索） | no |
+| offset | 起始值（默认0） | no |
+| limit | 偏移量（默认10） | no |
+| order | 排序方式（0: 注册时间升序，1: 注册时间降序，默认1） | no |
 
 
 请求示例:
@@ -407,7 +732,7 @@ URL：webApp/order/search/ <br>
 ```
 {
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
-	"state":"finished",
+	"state":0,
 	"search_key":"张总",
 }
 ```
@@ -416,6 +741,9 @@ URL：webApp/order/search/ <br>
 
 | 参数名称       | 含义             |
 |:------------- |:---------------|
+| count | 订单数量 |
+| list | 订单列表 |
+| 以下为list中的数据 |
 | order_id| 订单ID |
 | create_time | 创建日期 |
 | cancel_time | 撤销日期 |
@@ -441,28 +769,29 @@ URL：webApp/order/search/ <br>
 ```
 {
 	"status":"true",
-	"data":[
-		{
-			"order_id":"001",
-			"create_time":"2014-02-01 10:00:00",
-			"cancel_time":"2014-02-01 10:00:00",
-			"arrival_time":"2014-02-01 10:00:00",
-			"finish_time":"2014-02-01 10:00:00",
-			"status":0,
-			"order_id":"001",
-			"dinner_date":"2014-02-01",
-			"dinner_time":"12:00",
-			"dinner_period":0,
-			"name":"李四",
-			"guest_type":"vip",
-			"contact":"18813101211",
-			"guest_number":10,
-			"desks":[1,3,5],
-			"internal_channel":"刘光艳",
-			"external_channel":"美团"
-		},
-		...	
-	]
+	"data":{
+	    "count":100,
+	    "list":[
+            "order_id":1,
+            "create_time":"2014-02-01 10:00:00",
+            "cancel_time":"2014-02-01 10:00:00",
+            "arrival_time":"2014-02-01 10:00:00",
+            "finish_time":"2014-02-01 10:00:00",
+            "status":0,
+            "order_id":"001",
+            "dinner_date":"2014-02-01",
+            "dinner_time":"12:00",
+            "dinner_period":0,
+            "name":"李四",
+            "guest_type":"vip",
+            "contact":"18813101211",
+            "guest_number":10,
+            "desks":[1,3,5],
+            "internal_channel":"刘光艳",
+            "external_channel":"美团"
+            ],
+			...
+	    }
 }
 ```
 
@@ -536,7 +865,7 @@ URL：webApp/order/detail/ <br>
 {
 	"status":"true",
 	data:{
-		"order_id":"001",
+		"order_id":1,
 		"staff_name":"小二",
 		"create_time":"2014-02-01 10:00:00",
 		"cancel_time":"2014-02-01 10:00:00",
@@ -615,7 +944,7 @@ URL：webApp/order/update/ <br>
 ```
 {
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
-	"order_id":"001",
+	"order_id":1,
 	"dinner_time":"2014-02-01",
 	"dinner_period":0,
 	"name":"李四",
@@ -709,12 +1038,12 @@ URL：webApp/guest/profile/ <br>
 | birthday | 生日 |
 | like | 喜好 |
 | dislike | 忌讳 |
-special_day | 纪念日
-personal_need | 个性化需求
-all_order_number | 历史所有有效订单数
-day60_order_number | 最近60天订单数
-all_comsuption | 所有有效消费
-day60_order_number | 最近60天消费金额
+| special_day | 纪念日 |
+| personal_need | 个性化需求 |
+| all_order_number | 历史所有有效订单数 |
+| day60_order_number | 最近60天订单数 |
+| all_consumption | 所有有效消费 |
+| day60_consumption | 最近60天消费金额 |
 
 
 返回示例
@@ -731,8 +1060,8 @@ day60_order_number | 最近60天消费金额
 		"personal_need":"",
 		"all_order_number":22,
 		"day60_order_number":9,
-		"all_comsuption":10000,
-		"day60_comsuption:800
+		"all_consumption":10000,
+		"day60_consumption:800
 	}
 }
 ```

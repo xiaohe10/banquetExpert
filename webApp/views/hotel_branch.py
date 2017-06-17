@@ -31,14 +31,13 @@ def get_profile(request, token, branch_id):
         cuisine: 菜系(json字符串)
         hotel_name: 所属酒店名
         manager_name: 店长名字
-        is_enabled: 是否有效
         create_time: 创建时间
     """
 
     try:
         branch = HotelBranch.enabled_objects.get(id=branch_id)
     except ObjectDoesNotExist:
-        return err_response('err_3', '门店不存在')
+        return err_response('err_4', '门店不存在')
 
     # 只能查看自己酒店的门店
     if branch.hotel != request.staff.hotel:
@@ -59,7 +58,6 @@ def get_profile(request, token, branch_id):
          'cuisine': branch.cuisine,
          'hotel_name': branch.hotel.hotel.name,
          'manager_name': branch.manager_name,
-         'is_enabled': branch.is_enabled,
          'create_time': branch.create_time}
     return corr_response(d)
 
@@ -81,13 +79,19 @@ def get_areas(request, token, branch_id, order=2):
         2: 名称升序
         3: 名称降序
     :return:
+        count: 区域数
+        list:
+            area_id: 区域ID
+            name: 区域名
+            order: 排序
+            create_time: 创建时间
     """
     ORDERS = ('create_time', '-create_time', 'name', '-name')
 
     try:
         branch = HotelBranch.enabled_objects.get(id=branch_id)
     except ObjectDoesNotExist:
-        return err_response('err_3', '门店不存在')
+        return err_response('err_4', '门店不存在')
 
     # 只能查看自己酒店的门店
     if branch.hotel != request.staff.hotel:
@@ -131,6 +135,8 @@ def get_desks(request, token, branch_id, date, dinner_period, area_id=None,
         count: 桌位数
         list:
             desk_id: 桌位ID
+            number: 桌位编号
+            order: 排序
             area_name: 用餐区域名称
             min_guest_num: 可容纳最小人数
             max_guest_num: 可容纳最大人数
@@ -141,7 +147,7 @@ def get_desks(request, token, branch_id, date, dinner_period, area_id=None,
     try:
         branch = HotelBranch.enabled_objects.get(id=branch_id)
     except ObjectDoesNotExist:
-        return err_response('err_3', '门店不存在')
+        return err_response('err_4', '门店不存在')
 
     # 只能查看自己酒店的门店
     if branch.hotel != request.staff.hotel:
@@ -155,7 +161,7 @@ def get_desks(request, token, branch_id, date, dinner_period, area_id=None,
         try:
             area = Area.enabled_objects.get(id=area_id)
         except ObjectDoesNotExist:
-            return err_response('err_3', '餐厅区域不存在')
+            return err_response('err_5', '餐厅区域不存在')
 
         c = area.desks.filter(is_enabled=True).count()
         ds = area.desks.filter(is_enabled=True).order_by(ORDERS[order])
@@ -163,7 +169,8 @@ def get_desks(request, token, branch_id, date, dinner_period, area_id=None,
     l = []
     for desk in ds:
         d = {'desk_id': desk.id,
-             'position': desk.position,
+             'number': desk.number,
+             'order': desk.order,
              'min_guest_num': desk.min_guest_number,
              'max_guest_num': desk.max_guest_number}
 

@@ -243,7 +243,7 @@ def modify_profile(request, token, **kwargs):
 })
 @validate_staff_token()
 def get_hotel(request, token):
-    """获取员工所在酒店
+    """获取员工所在酒店信息
 
     :param token: 令牌(必传)
     :return:
@@ -255,12 +255,7 @@ def get_hotel(request, token):
         create_time: 创建时间
     """
 
-    try:
-        hotel = request.staff.hotel
-    except ObjectDoesNotExist:
-        return err_response('err_4', '酒店不存在')
-    if hotel.is_enabled is False:
-        return err_response('err_4', '酒店不存在')
+    hotel = request.staff.hotel
 
     d = {'hotel_id': hotel.id,
          'name': hotel.name,
@@ -287,8 +282,8 @@ def get_branches(request, token, offset=0, limit=10, order=1):
     :param order: 排序方式
         0: 注册时间升序
         1: 注册时间降序（默认值）
-        2: 昵称升序
-        3: 昵称降序
+        2: 名称升序
+        3: 名称降序
     :return:
         count: 门店总数
         list: 门店列表
@@ -305,8 +300,8 @@ def get_branches(request, token, offset=0, limit=10, order=1):
     """
     ORDERS = ('create_time', '-create_time', 'name', '-name')
 
-    c = request.staff.hotel.branches.count()
-    branches = request.staff.hotel.branches.order_by(
+    c = request.staff.hotel.branches.filter(is_enabled=True).count()
+    branches = request.staff.hotel.branches.filter(is_enabled=True).order_by(
         ORDERS[order])[offset:offset + limit]
 
     l = [{'branch_id': b.id,
