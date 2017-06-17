@@ -1234,6 +1234,8 @@ satisfaction_score | 顾客满意度
 transform_score | 转换度
 position | 地址
 manager | 店总
+branch_id | 门店 ID
+branch_name  | 店名
 
 
 
@@ -1249,7 +1251,9 @@ manager | 店总
 			"satisfaction_score":9,
 			"transform_score":8,
 			"position":"北京市蓝靛路",
-			"manager":"张某某"
+			"manager":"张某某",
+			"branch_id":1,
+			"branch_name":"北京宴总店"
 		}
 	]
 }
@@ -1295,6 +1299,8 @@ satisfaction_score | 顾客满意度
 transform_score | 转换度
 position | 地址
 manager | 店总
+branch_id | 门店 ID
+branch_name  | 店名
 
 
 
@@ -1310,7 +1316,9 @@ manager | 店总
 			"satisfaction_score":9,
 			"transform_score":8,
 			"position":"北京市蓝靛路",
-			"manager":"张某某"
+			"manager":"张某某",
+			"branch_id":1,
+			"branch_name":"北京宴总店"
 		}
 	]
 }
@@ -1358,6 +1366,8 @@ satisfaction_score | 顾客满意度
 transform_score | 转换度
 position | 地址
 manager | 店总
+branch_id | 门店 ID
+branch_name  | 店名
 
 
 
@@ -1373,7 +1383,9 @@ manager | 店总
 			"satisfaction_score":9,
 			"transform_score":8,
 			"position":"北京市蓝靛路",
-			"manager":"张某某"
+			"manager":"张某某",
+			"branch_id":1,
+			"branch_name":"北京宴总店"
 		}
 	]
 }
@@ -1411,6 +1423,8 @@ satisfaction_score | 顾客满意度
 transform_score | 转换度
 position | 地址
 manager | 店总
+branch_id | 门店 ID
+branch_name  | 店名
 door_card\_score | 门牌分数
 check_ door\_card_score | 门牌分数复查 
 
@@ -1428,6 +1442,8 @@ check_ door\_card_score | 门牌分数复查
 			"transform_score":8,
 			"position":"北京市蓝靛路",
 			"manager":"张某某",
+			"branch_id":1,
+			"branch_name":"北京宴总店",
 			"score":{
 				"door_card_score":10,
 				"check_door_card_score":10
