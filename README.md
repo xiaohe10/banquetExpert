@@ -1016,8 +1016,6 @@ comsuption | 总消费
 person_comsuption | 人均消费
 desk_comsuption | 桌均消费
 
-返回示例
-
 返回示例：
 
 ```
@@ -1062,8 +1060,6 @@ person_comsuption | 人均消费
 desk_comsuption | 桌均消费
 
 返回示例
-
-返回示例：
 
 ```
 {
@@ -1206,7 +1202,6 @@ URL：webApp/guest/list/ <br>
 | err_3 | 不存在该条件的用户
 
 
-
 ## 获取客户档案
 
 URL：webApp/guest/profile/ <br>
@@ -1327,7 +1322,6 @@ description | 备注
 
 错误代码
 
-错误代码：
 
 | 错误代码      | 含义             |
 |:------------- |:---------------|
@@ -1380,8 +1374,6 @@ URL：webApp/guest/profile/add <br>
 ```
 
 错误代码
-
-错误代码：
 
 | 错误代码      | 含义             |
 |:------------- |:---------------|
@@ -1437,8 +1429,6 @@ URL：webApp/guest/profile/modify <br>
 
 错误代码
 
-错误代码：
-
 | 错误代码      | 含义             |
 |:------------- |:---------------|
 | err_1 | 参数不正确（缺少参数或者不符合格式） |
@@ -1463,7 +1453,7 @@ URL：webApp/score/matrix/ <br>
 }
 ```
 
-返回参数
+返回参数：
 
 | 参数名称       | 含义             |
 |:------------- |:---------------|
@@ -1507,9 +1497,6 @@ URL：webApp/score/submit/ <br>
 | [item_key]\_score | 项目打分 | no |
 
 
-
-
-
 请求示例
 
 ```
@@ -1542,8 +1529,6 @@ URL：webApp/score/submit/ <br>
 	]
 }
 ```
-
-错误代码
 
 错误代码：
 
@@ -1717,8 +1702,6 @@ satisfaction_score | 顾客满意度
 transform_score | 转换度
 position | 地址
 manager | 店总
-
-
 
 返回示例
 
