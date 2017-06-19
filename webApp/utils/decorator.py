@@ -1,3 +1,5 @@
+import json
+
 from functools import wraps
 from django.http import QueryDict
 from django.core.exceptions import ObjectDoesNotExist
@@ -103,7 +105,7 @@ def validate_args(dic):
             if request.method == "GET":
                 data = request.GET
             elif request.method == "POST":
-                data = request.POST
+                data = json.loads(request.body)
             else:
                 data = QueryDict(request.body)
             for k, v in dic.items():
