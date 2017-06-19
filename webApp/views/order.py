@@ -1,7 +1,7 @@
 import json
 
 from django import forms
-from django.db.models import Q
+from django.db.models import Q, timezone
 from django.db import IntegrityError, transaction
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -68,13 +68,16 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
 
     if 'search_key' in kwargs:
         rs = rs.filter(Q(name__icontains=kwargs['search_key']) |
-                       Q(contact_icontains=kwargs['search_key']))
+                       Q(contact__icontains=kwargs['search_key']))
 
     if 'dinner_date' in kwargs:
-        rs = rs.filter(dinner_date=kwargs['dinner_date'])
+        rs = rs.filter(Q(dinner_date=kwargs['dinner_date']))
 
     if 'dinner_time' in kwargs:
-        rs = rs.filter(dinner_time=kwargs['dinner_time'])
+        rs = rs.filter(Q(dinner_time=kwargs['dinner_time']))
+
+    if 'order_date' in kwargs:
+        rs = rs.filter(Q(create_time__startswith=kwargs['order_date']))
 
     c = rs.count()
     rs = rs.order_by(ORDERS[order])[offset:offset + limit]
@@ -98,6 +101,8 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
           r.internal_channel else '',
           'external_channel': r.external_channel.name if
           r.internal_channel else ''} for r in rs]
+
+    return corr_response({'count': c, 'list': l})
 
 
 @validate_args({
@@ -305,6 +310,7 @@ def modify_order(request, token, order_id, **kwargs):
     :param token: 令牌(必传)
     :param order_id: 订单ID(必传)
     :param kwargs:
+        status: 订单状态, 0: 已订, 1: 客到, 2: 已完成, 3: 已撤单
         dinner_date: 预定就餐日期
         dinner_time: 预定就餐时间
         dinner_period: 餐段, 0: 午餐, 1: 晚餐, 2: 夜宵
@@ -330,10 +336,26 @@ def modify_order(request, token, order_id, **kwargs):
     except ObjectDoesNotExist:
         return err_response('err_3', '订单不存在')
 
-    order_keys = ('name', 'contact', 'guest_number', 'staff_description',
+    order_keys = ('status', 'dinner_date', 'dinner_time', 'dinner_period',
+                  'name', 'contact', 'guest_number', 'staff_description',
                   'water_card', 'door_card', 'sand_table', 'welcome_screen',
                   'welcome_fruit', 'welcome_card', 'background_music',
                   'has_candle', 'has_flower', 'has_balloon')
+
+    # 订单状态切换验证
+    if 'status' in kwargs:
+        status = kwargs['status']
+        # 客到
+        if status == 1 and order.status == 0:
+            order.arrival_time = timezone.now()
+        # 翻台
+        elif status == 2 and order.status == 1:
+            order.finish_time = timezone.now()
+        # 撤单
+        elif status == 3 and order.status != 2:
+            order.cancel_time = timezone.now()
+        else:
+            return err_response('err_5', '订单状态切换非法')
 
     for k in order_keys:
         if k in kwargs:

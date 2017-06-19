@@ -5,6 +5,7 @@ from django import forms
 from django.db import IntegrityError, transaction
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.validators import RegexValidator
 
 from ..utils.decorator import validate_args, validate_staff_token
 from ..utils.response import corr_response, err_response
@@ -12,9 +13,8 @@ from ..models import Staff, Hotel, ValidationCode as ValidationCodeModel
 
 
 @validate_args({
-    'phone': forms.RegexField(r'[0-9]{11}'),
+    'phone': forms.CharField(validators=[RegexValidator(regex=r'^[0-9]{11}$')]),
 })
-@validate_staff_token()
 def get_validation_code(request, phone):
     """获取短信验证码
 
@@ -33,8 +33,8 @@ def get_validation_code(request, phone):
 
 
 @validate_args({
-    'phone': forms.RegexField(r'[0-9]{11}'),
-    'password': forms.CharField(min_length=1, max_length=128),
+    'phone': forms.CharField(validators=[RegexValidator(regex=r'^[0-9]{11}$')]),
+    'password': forms.CharField(min_length=1, max_length=32),
     'validation_code': forms.CharField(min_length=6, max_length=6),
     'staff_number': forms.CharField(
         min_length=1, max_length=20, required=False),
@@ -63,13 +63,16 @@ def register(request, phone, password, validation_code, hotel_id, **kwargs):
     try:
         hotel = Hotel.enabled_objects.get(id=hotel_id)
     except Hotel.DoesNotExist:
-        return err_response('err_3', '酒店不存在')
+        return err_response('err_4', '酒店不存在')
 
     if Staff.objects.filter(phone=phone).exists():
         return err_response('err_2', '该手机号已经注册过')
 
+    if Staff.objects.filter(id_number=kwargs['id_number']).exists():
+        return err_response('err_3', '身份证号已经注册过')
+
     if not ValidationCodeModel.verify(phone, validation_code):
-        return err_response('err_4', '验证码错误或超时')
+        return err_response('err_6', '验证码错误或超时')
 
     staff_keys = ('staff_number', 'name', 'gender', 'position', 'id_number')
     with transaction.atomic():
@@ -86,7 +89,7 @@ def register(request, phone, password, validation_code, hotel_id, **kwargs):
 
 
 @validate_args({
-    'phone': forms.RegexField(r'[0-9]{11}'),
+    'phone': forms.CharField(validators=[RegexValidator(regex=r'^[0-9]{11}$')]),
     'password': forms.CharField(min_length=1, max_length=32),
 })
 def login(request, phone, password):
@@ -243,7 +246,7 @@ def modify_profile(request, token, **kwargs):
 })
 @validate_staff_token()
 def get_hotel(request, token):
-    """获取员工所在酒店
+    """获取员工所在酒店信息
 
     :param token: 令牌(必传)
     :return:
@@ -255,12 +258,7 @@ def get_hotel(request, token):
         create_time: 创建时间
     """
 
-    try:
-        hotel = request.staff.hotel
-    except ObjectDoesNotExist:
-        return err_response('err_4', '酒店不存在')
-    if hotel.is_enabled is False:
-        return err_response('err_4', '酒店不存在')
+    hotel = request.staff.hotel
 
     d = {'hotel_id': hotel.id,
          'name': hotel.name,
@@ -287,8 +285,8 @@ def get_branches(request, token, offset=0, limit=10, order=1):
     :param order: 排序方式
         0: 注册时间升序
         1: 注册时间降序（默认值）
-        2: 昵称升序
-        3: 昵称降序
+        2: 名称升序
+        3: 名称降序
     :return:
         count: 门店总数
         list: 门店列表
@@ -305,8 +303,8 @@ def get_branches(request, token, offset=0, limit=10, order=1):
     """
     ORDERS = ('create_time', '-create_time', 'name', '-name')
 
-    c = request.staff.hotel.branches.count()
-    branches = request.staff.hotel.branches.order_by(
+    c = request.staff.hotel.branches.filter(is_enabled=True).count()
+    branches = request.staff.hotel.branches.filter(is_enabled=True).order_by(
         ORDERS[order])[offset:offset + limit]
 
     l = [{'branch_id': b.id,

@@ -32,6 +32,8 @@ def get_admins(request, token, is_enabled=True, offset=0, limit=10, order=1):
         list: 管理者列表
             admin_id: ID
             username: 用户名
+            type: 类别, 0: 管理员, 1: 超级管理员
+            hotel_name: 所属酒店名, 超级管理员不属于任何酒店
             authority: 权限
             is_enabled: 是否有效
             create_time: 创建时间
@@ -43,6 +45,8 @@ def get_admins(request, token, is_enabled=True, offset=0, limit=10, order=1):
         ORDERS[order])[offset:offset + limit]
     l = [{'admin_id': a.id,
           'username': a.username,
+          'type': a.type,
+          'hotel_name': a.hotel.name if a.hotel else '',
           'authority': a.authority,
           'is_enabled': a.is_enabled,
           'create_time': a.create_time} for a in admins]
