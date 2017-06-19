@@ -1,4 +1,9 @@
+import os
+
+from PIL import Image
+
 from django import forms
+from django.utils import timezone
 from django.db import IntegrityError, transaction
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -61,19 +66,19 @@ def get_admins(request, token, is_enabled=True, offset=0, limit=10, order=1):
     'hotel_id': forms.IntegerField(required=False),
 })
 @validate_super_admin_token()
-def register(request, token, username, password, type=0, hotel_id=None):
+def register(request, token, username, password, type=1, hotel_id=None):
     """注册新的管理员
 
     :param token: 令牌(必传)
     :param username: 用户名(必传)
     :param password: 密码(必传)
     :param type: 管理员类型, 0: 管理员, 1: 超级管理员
-    :param hotel_id: 管理员所属酒店,
+    :param hotel_id: 管理员所属酒店
     :return 200/400/403/404
     """
 
     if Admin.enabled_objects.filter(username=username).exists():
-        return err_response('err_2', '该用户名已注册')
+        return err_response('err_4', '该用户名已注册')
 
     if hotel_id is not None:
         if type == 0:
@@ -90,9 +95,9 @@ def register(request, token, username, password, type=0, hotel_id=None):
                         admin.save()
                         return corr_response({'admin_id': admin.id})
                     except IntegrityError:
-                        return err_response('error_4', '服务器创建管理员失败')
+                        return err_response('error_5', '服务器创建管理员失败')
         else:
-            return err_response('err_5', '权限错误')
+            return err_response('err_2', '权限错误')
     else:
         if type == 1:
             with transaction.atomic():
@@ -103,7 +108,7 @@ def register(request, token, username, password, type=0, hotel_id=None):
                     admin.save()
                     return corr_response({'admin_id': admin.id})
                 except IntegrityError:
-                    return err_response('error_4', '服务器创建管理员失败')
+                    return err_response('error_5', '服务器创建管理员失败')
         else:
             return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
 
@@ -112,9 +117,10 @@ def register(request, token, username, password, type=0, hotel_id=None):
     'admin_id': forms.IntegerField(required=False),
 })
 @validate_super_admin_token()
-def delete_admin(request, admin_id):
+def delete_admin(request, token, admin_id):
     """删除管理员
 
+    :param token: 令牌
     :param admin_id: 管理员ID(必传)
     :return: 200/404
     """
@@ -122,7 +128,11 @@ def delete_admin(request, admin_id):
     try:
         admin = Admin.objects.get(id=admin_id)
     except Admin.DoesNotExist:
-        return err_response('err_2', '管理员不存在')
+        return err_response('err_3', '管理员不存在')
+
+    if admin == request.admin:
+        return err_response('err_4', '操作错误')
+
     admin.is_enabled = False
     return corr_response()
 
@@ -131,9 +141,10 @@ def delete_admin(request, admin_id):
     'username': forms.CharField(min_length=1, max_length=20),
     'password': forms.CharField(min_length=1, max_length=128),
 })
-def login(request, username, password):
+def login(request, token, username, password):
     """更新并返回超级管理者令牌
 
+    :param token: 令牌
     :param username: 用户名(必传)
     :param password: 密码(必传)
     :return token: 管理员token
@@ -173,8 +184,8 @@ def get_hotels(request, token, is_enabled=True, offset=0, limit=10, order=1):
     :param order: 排序方式
         0: 注册时间升序
         1: 注册时间降序（默认值）
-        2: 昵称升序
-        3: 昵称降序
+        2: 名称升序
+        3: 名称降序
     :return:
         count: 酒店总数
         list: 酒店列表
@@ -219,8 +230,8 @@ def register_hotel(request, token, name, owner_name):
     if Hotel.enabled_objects.filter(name=name).exists():
         return err_response('err_4', '酒店名已注册')
     try:
-        Hotel.objects.create(name=name, owner_name=owner_name)
-        return corr_response()
+        hotel = Hotel.objects.create(name=name, owner_name=owner_name)
+        return corr_response({'hotel_id': hotel.id})
     except IntegrityError:
         return err_response('err_5', '服务器创建酒店失败')
 
@@ -259,15 +270,13 @@ def get_hotel_profile(request, token, hotel_id):
     :param token: 令牌(必传)
     :param hotel_id: 酒店ID(必传)
     :return:
-        count: 酒店总数
-        list: 酒店列表
-            hotel_id: ID
-            name: 名称
-            icon: 头像
-            branches_count: 门店数
-            owner_name: 法人代表
-            is_enabled: 是否有效
-            create_time: 创建时间
+        hotel_id: ID
+        name: 名称
+        icon: 头像
+        branches_count: 门店数
+        owner_name: 法人代表
+        is_enabled: 是否有效
+        create_time: 创建时间
     """
 
     try:
@@ -301,6 +310,7 @@ def modify_hotel_profile(request, token, hotel_id, **kwargs):
     :param kwargs:
         name: 名称
         owner_name: 法人代表
+        icon: 头像[file]
     :return: 200/400/403/404
     """
 
@@ -312,12 +322,35 @@ def modify_hotel_profile(request, token, hotel_id, **kwargs):
     name = kwargs.pop('name') if 'name' in kwargs else None
     if name:
         if Hotel.enabled_objects.filter(name=name).exists():
-            return err_response('err_4', '酒店名已注册')
+            return err_response('err_5', '酒店名已注册')
         hotel.name = name
+
+    if 'icon' in request.FILES:
+        icon = request.FILES['icon']
+
+        icon_time = timezone.now().strftime('%H%M%S%f')
+        icon_tail = str(icon).split('.')[-1]
+        dir_name = 'uploaded/icon/hotel/%d/' % hotel.id
+        os.makedirs(dir_name, exist_ok=True)
+        file_name = dir_name + '%s.%s' % (icon_time, icon_tail)
+        try:
+            img = Image.open(icon)
+            img.save(file_name, quality=90)
+        except OSError:
+            return err_response('err6', '图片为空或图片格式错误')
+
+        # 删除旧文件, 保存新的文件路径
+        if hotel.icon:
+            try:
+                os.remove(hotel.icon)
+            except OSError:
+                pass
+        hotel.icon = file_name
 
     hotel_keys = ('owner_name', 'is_enabled')
     for k in hotel_keys:
         if k in kwargs:
             setattr(hotel, k, kwargs[k])
+
     hotel.save()
     return corr_response()

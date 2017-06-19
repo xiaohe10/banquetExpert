@@ -687,8 +687,8 @@ class ValidationCode(models.Model):
             return True if code == r.code and now <= r.time_expired else False
 
     @classmethod
-    def generate(cls, phone_number, minutes=3):
-        """为某个手机号生成验证码，有效时间为3分钟"""
+    def generate(cls, phone_number, minutes=10):
+        """为某个手机号生成验证码，有效时间为10分钟"""
 
         from datetime import timedelta
         from random import Random
@@ -696,7 +696,7 @@ class ValidationCode(models.Model):
         try:
             r = cls.objects.get(phone_number=phone_number)
             # 接口访问频率限制, 1分钟
-            if r.time_expired >= timezone.now() + timedelta(minutes=2):
+            if r.time_expired >= timezone.now() + timedelta(minutes=9):
                 return ''
         except cls.DoesNotExist:
             r = cls(phone_number)

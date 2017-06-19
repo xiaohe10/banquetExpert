@@ -29,7 +29,7 @@ def get_validation_code(request, phone):
         # send_message(phone_number, code)
         return corr_response()
     else:
-        return err_response('err_3', '接口访问频率限制')
+        return err_response('err_2', '接口访问频率限制')
 
 
 @validate_args({
