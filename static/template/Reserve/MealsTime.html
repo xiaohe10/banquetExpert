@@ -3,183 +3,52 @@
 <div class="py-1 bg-info">
     <div class="p-2 bg-success">
         <a>>餐段设置</a>
-        <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" id="save" value="保存"/>
+        <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" ng-click="save()" value="保存"/>
     </div>
 </div>
 <!--内容-->
 <div class="py-2 px-2 bg-info">
     <!--表格-->
-    <form class="form-group">
-        <table class="table table-bordered table-hover">
-            <thead class="bg-info">
-            <tr>
-                <td>餐段</td>
-                <td>午餐</td>
-                <td>晚餐</td>
-                <td>夜宵</td>
-            </tr>
-            </thead>
-            <tbody class="align-content-center" id="MealsTime">
-            <tr class="table-info">
-                <td>星期一</td>
-                <td>
-                    <select name="lunch_from">
-                        <option>午餐</option>
-                        <option selected>午餐</option>
-                    </select>
-                    ~
-                    <select name="lunch_to">
-                        <option>午餐</option>
-                        <option selected>午餐</option>
-                    </select>
-                </td>
-                <td>
-                    <select name="dinner_from">
-                        <option>晚餐</option>
-                        <option selected>晚餐</option>
-                    </select>
-                    ~
-                    <select name="dinner_to">
-                        <option>晚餐</option>
-                        <option selected>晚餐</option>
-                    </select>
-                </td>
-                <td>
-                    <select name="from">
-                        <option>夜宵</option>
-                        <option selected>夜宵</option>
-                    </select>
-                    ~
-                    <select name="to">
-                        <option>夜宵</option>
-                        <option selected>夜宵</option>
-                    </select>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </form>
+    <table class="table table-bordered table-hover">
+        <thead class="bg-info">
+        <tr>
+            <td>餐段</td>
+            <td>午餐</td>
+            <td>晚餐</td>
+            <td>夜宵</td>
+        </tr>
+        </thead>
+        <tbody class="align-content-center" id="MealsTime">
+        <tr class="table-info" ng-repeat="x in MealsTime.Table">
+            <td>{{x.dayofweek}}</td>
+            <td>
+                <select ng-model="x.lunch.from">
+                    <option ng-repeat="lunch in MealsTime.Lunch" value="{{lunch}}">午餐{{lunch}}</option>
+                </select>
+                ~
+                <select ng-model="x.lunch.to">
+                    <option ng-repeat="lunch in MealsTime.Lunch" value="{{lunch}}">午餐{{lunch}}</option>
+                </select>
+            </td>
+            <td>
+                <select ng-model="x.dinner.from">
+                    <option ng-repeat="dinner in MealsTime.Dinner" value="{{dinner}}">晚餐{{dinner}}</option>
+                </select>
+                ~
+                <select ng-model="x.dinner.to">
+                    <option ng-repeat="dinner in MealsTime.Dinner" value="{{dinner}}">晚餐{{dinner}}</option>
+                </select>
+            </td>
+            <td>
+                <select ng-model="x.supper.from">
+                    <option ng-repeat="supper in MealsTime.Supper" value="{{supper}}">夜宵{{supper}}</option>
+                </select>
+                ~
+                <select ng-model="x.supper.to">
+                    <option ng-repeat="supper in MealsTime.Supper" value="{{supper}}">夜宵{{supper}}</option>
+                </select>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
-<!--操作栏模板-->
-<script id="MealsTimeTemplate" type="text/plain">
-    {{for Table ~lunch=Lunch ~dinner=Dinner ~supper=Supper}}
-    <tr class="table-info">
-        <td>{{:dayofweek}}</td>
-        <td>
-            <select name="lunch_from">
-                {{for ~lunch}}
-                {{if ~lunch[#index] === ~lunch_from}}
-                <option>午餐{{:element}}</option>
-                {{else}}
-                <option selected>午餐{{:element}}</option>
-                {{/if}}
-                {{/for }}
-            </select>
-            ~
-            <select name="lunch_to">
-                {{for ~lunch}}
-                {{if element == lunch_to}}
-                <option>午餐{{:lunch[#index]}}</option>
-                {{else}}
-                <option selected>午餐{{:lunch[#index]}}</option>
-                {{/if}}
-                {{/for }}
-            </select>
-        </td>
-        <td>
-            <select name="dinner_from">
-                {{for ~dinner}}
-                {{if element == dinner_from}}
-                <option>晚餐{{:dinner[#index]}}</option>
-                {{else}}
-                <option selected>晚餐{{:dinner[#index]}}</option>
-                {{/if}}
-                {{/for }}
-            </select>
-            ~
-            <select name="dinner_to">
-                {{for ~dinner}}
-                {{if element == dinner_to}}
-                <option>晚餐{{:dinner[#index]}}</option>
-                {{else}}
-                <option selected>晚餐{{:~dinner_to[#index]}}</option>
-                {{/if}}
-                {{/for }}
-            </select>
-        </td>
-        <td>
-            <select name="from">
-                {{for ~supper}}
-                {{if element == from}}
-                <option>夜宵{{:~supper[#index]}}</option>
-                {{else}}
-                <option selected>夜宵{{:~supper[#index]}}</option>
-                {{/if}}
-                {{/for }}
-            </select>
-            ~
-            <select name="to">
-                {{for ~supper}}
-                {{if element == to}}
-                <option>夜宵{{:~supper[#index]}}</option>
-                {{else}}
-                <option selected>夜宵{{:~supper[#index]}}</option>
-                {{/if}}
-                {{/for }}
-            </select>
-        </td>
-    </tr>
-    {{/for }}
-</script>
-<script>
-    var TAG = Templates.Reserve.MealsTime;
-    var MealsTime = {
-        Lunch: BanquetExpert.meals.lunch,
-        Dinner: BanquetExpert.meals.dinner,
-        Supper: BanquetExpert.meals.supper,
-        Table: {
-            "Monday": {
-                lunch: {from: "08:30", to: "11:30"},
-                dinner: {from: "15:00", to: "23:45"},
-                supper: {from: "22:00", to: "04:00"}
-            },
-            "Tuesday": {
-                lunch: {from: "08:30", to: "11:30"},
-                dinner: {from: "15:00", to: "23:45"},
-                supper: {from: "22:00", to: "04:00"}
-            },
-            "Wednesday": {
-                lunch: {from: "08:30", to: "11:30"},
-                dinner: {from: "15:00", to: "23:45"},
-                supper: {from: "22:00", to: "04:00"}
-            },
-            "Thursday": {
-                lunch: {from: "08:30", to: "11:30"},
-                dinner: {from: "15:00", to: "23:45"},
-                supper: {from: "22:00", to: "04:00"}
-            },
-            "Friday": {
-                lunch: {from: "08:30", to: "11:30"},
-                dinner: {from: "15:00", to: "23:45"},
-                supper: {from: "22:00", to: "04:00"}
-            },
-            "Saturday": {
-                lunch: {from: "08:30", to: "11:30"},
-                dinner: {from: "15:00", to: "23:45"},
-                supper: {from: "22:00", to: "04:00"}
-            },
-            "Sunday": {
-                lunch: {from: "08:30", to: "11:30"},
-                dinner: {from: "15:00", to: "23:45"},
-                supper: {from: "22:00", to: "04:00"}
-            }
-        }
-    };
-
-    // TODO: 保存餐段设置
-    $("#save").click(function () {
-        Log.i(TAG, "保存餐段设置：" + JSON.stringify(MealsTime.Table));
-    });
-
-    $.templates("#MealsTimeTemplate").link("#MealsTime", MealsTime);
-</script>

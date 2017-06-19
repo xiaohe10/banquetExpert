@@ -4,10 +4,10 @@
     <div class="p-2 bg-success">
         <div class="form-inline p-1">
             <a>就餐日期：</a>
-            <input class="form-control form-control-sm" type="date" data-link="date_from"/>
+            <input class="form-control form-control-sm" type="date" ng-model="option.date_from" value="{{option.date_from}}"/>
             ~
-            <input class="form-control form-control-sm" type="date" data-link="date_to"/>
-            <select class="form-control form-control-sm" data-link="select_area">
+            <input class="form-control form-control-sm" type="date" ng-model="option.date_to" value="{{option.date_to}}"/>
+            <select class="form-control form-control-sm" ng-model="option.select_area">
                 <option value="0">全部就餐区域</option>
                 <option value="就餐区域">就餐区域A</option>
                 <option value="就餐区域">就餐区域B</option>
@@ -15,34 +15,23 @@
                 <option value="就餐区域">就餐区域D</option>
                 <option value="就餐区域">就餐区域E</option>
             </select>
-            <select class="form-control form-control-sm" data-link="select_channel">
-                <option value="0">全部接单渠道</option>
+            <select class="form-control form-control-sm" ng-model="option.select_channel">
+                <option value="-1">全部接单渠道</option>
                 <optgroup label="内部渠道">内部渠道</optgroup>
-                <option value="0">内部渠道0</option>
-                <option value="1">内部渠道1</option>
-                <option value="2">内部渠道2</option>
-                <option value="3">内部渠道3</option>
+                <option ng-repeat="x in channel.inner" value="{{x.value}}">{{x.name}}</option>
                 <optgroup label="内部渠道">内部渠道</optgroup>
-                <option value="4">外部渠道1</option>
-                <option value="5">外部渠道2</option>
-                <option value="6">外部渠道3</option>
-                <option value="7">外部渠道4</option>
+                <option ng-repeat="x in channel.outer" value="{{x.value}}">{{x.name}}</option>
             </select>
-            <input class="form-control form-control-sm" type="text" data-link="keyword" placeholder="输入姓名或手机号"/>
-            <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" id="query" value="查询"/>
+            <input class="form-control form-control-sm" type="text" ng-model="option.keyword" placeholder="输入姓名或手机号"/>
+            <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" ng-click="query()" value="查询"/>
         </div>
         <!--报表下载-->
         <div class="form-inline p-1">
-            <select name="daily-report" id="daily-report">
+            <select ng-model="option.daily_report" value="{{option.daily_report}}">
                 <optgroup label="销售渠道业绩日报表下载">销售渠道业绩日报表下载</optgroup>
-                <option value="0"><a class="icon-arrow-left">2017-6-3报表</a></option>
-                <option value="1"><a class="icon-arrow-left">2017-6-4报表</a></option>
-                <option value="2"><a class="icon-arrow-left">2017-6-5报表</a></option>
-                <option value="3"><a class="icon-arrow-left">2017-6-6报表</a></option>
-                <option value="4"><a class="icon-arrow-left">2017-6-7报表</a></option>
-                <option value="5"><a class="icon-arrow-left">2017-6-8报表</a></option>
+                <option ng-repeat="x in daily_report" value="{{x.value}}">{{x.title}}</option>
             </select>
-            <input class="btn btn-sm btn-secondary ml-1 mr-2" type="button" id="export" value="生成报表"/>
+            <input class="btn btn-sm btn-secondary ml-1 mr-2" type="button" ng-click="export()" value="生成报表"/>
         </div>
     </div>
 </div>
@@ -51,31 +40,28 @@
     <!--导航栏-->
     <div class="pb-2">
         <ul class="nav nav-tabs">
-            <li class="nav-item"><a href="#/Order/ReserveNotice/Today/All">今日报表</a></li>
-            <li class="nav-item"><a href="#/Order/ReserveNotice/Today/Lunch">午餐</a></li>
-            <li class="nav-item"><a href="#/Order/ReserveNotice/Today/Dinner">晚餐</a></li>
-            <li class="nav-item"><a href="#/Order/ReserveNotice/Today/Canceled">已撤销订单</a></li>
-            <li class="nav-item"><a href="#/Order/ReserveNotice/Today/Scattered">散客订单</a></li>
+            <li class="nav-item"><a ng-click="today(0)">今日报表</a></li>
+            <li class="nav-item"><a ng-click="today(1)">午餐</a></li>
+            <li class="nav-item"><a ng-click="today(2)">晚餐</a></li>
+            <li class="nav-item"><a ng-click="today(3)">已撤销订单</a></li>
+            <li class="nav-item"><a ng-click="today(4)">散客订单</a></li>
         </ul>
     </div>
     <!--详细信息-->
     <div class="p-2 mb-2 bg-success">
         <a>订单数：17 桌位数：17 就餐人数：17</a>
         <label class="checkbox inline">
-            <input type="checkbox" name="phone-mask" value="电话号码以'*'代替" checked="checked"/>
+            <input type="checkbox" ng-model="option.phone_mask" value="电话号码以'*'代替"/>
             电话号码以'*'代替
         </label>
         <label class="checkbox inline">
-            <input type="checkbox" name="seat-marge" value="一单多桌合并成一行" checked="checked"/>
+            <input type="checkbox" ng-model="option.seat_marge" value="一单多桌合并成一行"/>
             一单多桌合并成一行
         </label>
-        <select class="inline" data-link="size">
-            <option><a class="icon-print">A4完整打印</a></option>
-            <option><a class="icon-print">A4精简版打印</a></option>
-            <option><a class="icon-print">58mm打印</a></option>
-            <option><a class="icon-print">80mm打印</a></option>
+        <select class="inline" ng-model="option.print_size">
+            <option ng-repeat="(k,v) in print_size" value="{{v}}">{{v}}</option>
         </select>
-        <input class="btn btn-primary btn-sm" type="button" id="print" value="打印"/>
+        <input class="btn btn-primary btn-sm" type="button" ng-click="print()" value="打印"/>
     </div>
     <!--表格-->
     <div class="p-2 mb-2 bg-faded">
@@ -84,17 +70,17 @@
             <thead class="bg-info">
             <tr align="center">
                 <td>
-                    <a href="#/Order/ReserveNotice/Sort/0">
+                    <a ng-click="sort(0)">
                         就餐时间 <i class="icon-chevron-down inline"></i>
                     </a>
                 </td>
                 <td>
-                    <a href="#/Order/ReserveNotice/Sort/1">
+                    <a ng-click="sort(1)">
                         区域 <i class="icon-chevron-down inline"></i>
                     </a>
                 </td>
                 <td>
-                    <a href="#/Order/ReserveNotice/Sort/2">
+                    <a ng-click="sort(2)">
                         桌号 <i class="icon-chevron-down inline"></i>
                     </a>
                 </td>
@@ -102,13 +88,13 @@
                 <td>手机</td>
                 <td>人数</td>
                 <td>
-                    <a href="#/Order/ReserveNotice/Sort/6">
+                    <a ng-click="sort(6)">
                         接单渠道<i class="icon-chevron-down inline"></i>
                     </a>
                 </td>
                 <td style="display: none">维护渠道</td>
                 <td>
-                    <a href="#/Order/ReserveNotice/Sort/7">
+                    <a ng-click="sort(7)">
                         下单时间<i class="icon-chevron-down inline"></i>
                     </a>
                 </td>
@@ -120,35 +106,35 @@
             </tr>
             </thead>
             <tbody>
-            <tr align="center">
+            <tr align="center" ng-repeat="x in table">
                 <!--就餐时间-->
-                <td>06月08日晚餐18:00</td>
+                <td>{{x.meal_time}}</td>
                 <!--区域-->
-                <td>二楼</td>
+                <td>{{x.area}}</td>
                 <!--桌号-->
-                <td>(CEIEC)215 <span style="color: lightgreen">[备注]</span></td>
+                <td>{{x.seat}}<span style="color: lightgreen">[备注]</span></td>
                 <!--客户姓名性别-->
-                <td>高 女士</td>
+                <td>{{x.name}} {{x.gender}}</td>
                 <!--电话-->
-                <td>18510515888</td>
+                <td>{{x.phone}}</td>
                 <!--人数-->
-                <td>18</td>
+                <td>{{x.count}}</td>
                 <!--接单渠道-->
-                <td>刘光艳</td>
+                <td>{{x.order_channel}}</td>
                 <!--维护渠道-->
-                <td style="display: none">刘光艳</td>
+                <td style="display: none">{{x.channel}}</td>
                 <!--下单时间-->
-                <td>2017/6/8 10:57:33</td>
+                <td>{{x.order_time}}</td>
                 <!--分类-->
-                <td>流失</td>
+                <td>{{x.type}}</td>
                 <!--单位-->
-                <td style="display: none">单位</td>
+                <td style="display: none">{{x.unit}}</td>
                 <!--订单状态及备注-->
-                <td>已订</td>
+                <td>{{x.status}}</td>
                 <!--操作员显创建订单人-->
-                <td>刘光艳</td>
+                <td>{{x.operator}}</td>
                 <!--订单详情-->
-                <td><a href="#" data-toggle="modal" data-target=".order-details">订单详情</a></td>
+                <td><a href="open({{x.id}})" data-toggle="modal" data-target=".order-details">订单详情</a></td>
             </tr>
             </tbody>
         </table>
@@ -248,59 +234,3 @@
         </div>
     </div>
 </div>
-<!--操作栏模板-->
-<script id="OptionTemplate" type="text/plain">
-
-</script>
-<script>
-    var TAG = Templates.Order.ReserveNotice;
-    var option = {
-        data_from: "2017/06/10",
-        data_to: "2017/06/09",
-        select_area: 0,
-        select_channel: 0,
-        keyword: "18800184976",
-        area: BanquetExpert.area,
-        channel: BanquetExpert.channel
-    };
-
-    // $.templates("#OptionTemplate").link("#option", option);
-
-    // TODO: 查询区域 根据选择区域过滤列表数据
-    $("#area").change(function () {
-        Log.i(TAG, "查询区域：" + option.select_area);
-    });
-    // TODO: 查询 根据keyword和其他参数查询列表
-    $("#query").click(function () {
-        Log.i(TAG, "查询关键字：" + option.keyword);
-    });
-    // TODO: 生成报表
-    $("#export").click(function () {
-        Log.i(TAG, "生成报表");
-    });
-    // TODO: 打印
-    $("#print").click(function () {
-        Log.i(TAG, "打印报表");
-    });
-    var routes = {
-        "/Order/ReserveNotice/Sort/:index": function (index) {
-            /**
-             * TODO: 按tag对列表排序
-             */
-            var tags = [
-                "就餐时间", "区域", "桌号", "姓名", "手机", "人数",
-                "接单渠道", "下单时间", "分类", "订单状态", "操作员",
-                "订单详情"
-            ];
-            Log.i(TAG, "根据 '" + tags[index] + "' 对列表排序");
-        },
-        "/Order/ReserveNotice/Today/:tag": function (tag) {
-            /**
-             * TODO: 根据tag过滤列表数据
-             */
-            Log.i(TAG, "根据" + tag + "过滤列表数据");
-        }
-    };
-    var router = window.Router(routes);
-    router.init();
-</script>

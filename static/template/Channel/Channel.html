@@ -222,7 +222,7 @@
     </div>
 </div>
 <!--对话框/新增预订员-->
-<div class="modal add-reserve" role="dialog" aria-labelledby="add-reserve">
+<div class="modal add-reserve" ng-app="AddReserveApp" ng-controller="AddReserveCtrl" role="dialog" aria-labelledby="add-reserve">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary">
@@ -244,37 +244,43 @@
                                 <div class="control-group">
                                     <label class="control-label"><a style="color: red;">*</a>姓名：</label>
                                     <div class="controls">
-                                        <input class="form-control-sm inline" type="text"/>
-                                        <label class="form-control-label radio inline"><input type="radio" name="sex"/>先生</label>
-                                        <label class="form-control-label radio inline"><input type="radio" name="sex"/>女士</label>
+                                        <input class="form-control-sm inline" type="text" ng-model="form.name"/>
+                                        <label class="form-control-label radio inline">
+                                            <input type="radio" ng-model="form.gender" value="male"/>先生
+                                        </label>
+                                        <label class="form-control-label radio inline">
+                                            <input type="radio" ng-model="form.gender" value="female"/>女士
+                                        </label>
                                     </div>
                                 </div>
                                 <!--电话-->
                                 <div class="control-group">
                                     <label class="control-label"><a style="color: red;">*</a>电话：</label>
                                     <div class="controls">
-                                        <label class="form-control-label text-warning inline"><input type="text" name="phone"/>请准确输入11位手机号码</label>
+                                        <label class="form-control-label text-warning inline">
+                                            <input type="text" ng-model="form.phone" value="18800184976"/>请准确输入11位手机号码
+                                        </label>
                                     </div>
                                 </div>
                                 <!--职位-->
                                 <div class="control-group">
                                     <label class="control-label">职位：</label>
                                     <div class="controls">
-                                        <input type="text" name="job"/>
+                                        <input type="text" ng-model="form.job"/>
                                     </div>
                                 </div>
                                 <!--用户名-->
                                 <div class="control-group">
                                     <label class="control-label">用户名：</label>
                                     <div class="controls">
-                                        <input type="text" name="username"/>
+                                        <input type="text" ng-model="form.username"/>
                                     </div>
                                 </div>
                                 <!--密码-->
                                 <div class="control-group">
                                     <label class="control-label">密码：</label>
                                     <div class="controls">
-                                        <input type="text" name="password"/>
+                                        <input type="text" name="form.password"/>
                                     </div>
                                 </div>
                                 <!--TODO: 职能权限-->
@@ -307,7 +313,8 @@
                                     <label class="control-label">销售职能：</label>
                                     <div class="controls">
                                         <label class="form-control-label checkbox inline">
-                                            <input type="checkbox" name="sale"/>开通销售职能（可通过手机预订占座，统计本人订单业绩，并协助分析客户价值）
+                                            <input type="checkbox" ng-model="form.enable_marketing_functions"/>
+                                            开通销售职能（可通过手机预订占座，统计本人订单业绩，并协助分析客户价值）
                                         </label>
                                     </div>
                                 </div>
@@ -316,7 +323,7 @@
                                     <label class="control-label">订单短信：</label>
                                     <div class="controls">
                                         <label class="form-control-label checkbox inline">
-                                            <input type="checkbox" name="order_sms"/>接收客户预定通知
+                                            <input type="checkbox" ng-model="form.order_sms"/>接收客户预定通知
                                         </label>
                                     </div>
                                 </div>
@@ -326,32 +333,32 @@
                                     <div class="controls">
                                         <!--接单提成-->
                                         <label class="form-control-label">
-                                            <input class="checkbox inline" type="checkbox" name="unit"/>接单提成
+                                            <input class="checkbox inline" type="checkbox" ng-model="form.enable_bonus"/>接单提成
                                         </label>
                                         <div class="p-2 bg-info">
                                             <h5>提成结算方式</h5>
                                             <div>
                                                 <label class="form-control-label radio inline">
-                                                    <input type="radio" name="unit"/>按消费额百分比
+                                                    <input type="radio" ng-model="form.bonus.method" value="0"/>按消费额百分比
                                                 </label>
                                                 <label class="form-control-label inline">
-                                                    消费金额 * <input type="number">元/桌
+                                                    消费金额 * <input type="number" ng-model="form.bonus.value">元/桌
                                                 </label>
                                             </div>
                                             <div>
                                                 <label class="form-control-label">
-                                                    <input class="radio inline" type="radio" name="unit"/>按订单数量
+                                                    <input class="radio inline" type="radio" ng-model="form.bonus.method" value="1"/>按订单数量
                                                 </label>
                                                 <label class="form-control-label">
-                                                    <input type="number">元/桌
+                                                    <input type="number" ng-model="form.bonus.value">元/桌
                                                 </label>
                                             </div>
                                             <div>
                                                 <label class="form-control-label">
-                                                    <input class="radio inline" type="radio" name="unit"/>按消费人数
+                                                    <input type="radio" name="unit" ng-model="form.bonus.method" value="2"/>按消费人数
                                                 </label>
                                                 <label class="form-control-label">
-                                                    <input type="number">元/人
+                                                    <input type="number" ng-model="form.bonus.value">元/人
                                                 </label>
                                             </div>
                                         </div>
@@ -520,8 +527,8 @@
                                 <div class="control-group">
                                     <label class="control-label"><a style="color: red;">*</a>性别：</label>
                                     <div class="controls">
-                                        <label class="radio inline"><input class="form-control-sm" type="radio" name="sex"/>先生</label>
-                                        <label class="radio inline"><input class="form-control-sm" type="radio" name="sex"/>女士</label>
+                                        <label><input class="form-control-sm" type="radio" name="sex"/>先生</label>
+                                        <label><input class="form-control-sm" type="radio" name="sex"/>女士</label>
                                     </div>
                                 </div>
                                 <!--电话-->
@@ -549,8 +556,8 @@
                                     <label class="control-label">生日：</label>
                                     <div class="controls">
                                         <input type="date" name="birthday"/>
-                                        <label class="radio inline"><input type="radio" name="calendar" value="0"/>公历</label>
-                                        <label class="radio inline"><input type="radio" name="calendar" value="1"/>农历</label>
+                                        <label><input type="radio" name="calendar" value="0"/>公历</label>
+                                        <label><input type="radio" name="calendar" value="1"/>农历</label>
                                     </div>
                                 </div>
                                 <!--单位-->
@@ -640,8 +647,8 @@
                                 <div class="control-group">
                                     <label class="control-label">营销短信：</label>
                                     <div class="controls">
-                                        <label class="radio inline"><input type="radio" name="sms_marketing" value="0"/>开</label>
-                                        <label class="radio inline"><input type="radio" name="sms_marketing" value="1"/>关</label>
+                                        <label><input type="radio" name="sms_marketing" value="0"/>开</label>
+                                        <label><input type="radio" name="sms_marketing" value="1"/>关</label>
                                     </div>
                                 </div>
                                 <!--分类方法-->
@@ -818,7 +825,7 @@
                                             </li>
                                             <li class="list-group-item">
                                                 <label class="form-control-label">
-                                                    <input class="radio inline" type="radio" name="unit"/>按订单数量
+                                                    <input type="radio" name="unit"/>按订单数量
                                                 </label>
                                                 <label class="form-control-label">
                                                     <input type="number">元/桌
@@ -826,7 +833,7 @@
                                             </li>
                                             <li class="list-group-item">
                                                 <label class="form-control-label">
-                                                    <input class="radio inline" type="radio" name="unit"/>按消费人数
+                                                    <input type="radio" name="unit"/>按消费人数
                                                 </label>
                                                 <label class="form-control-label">
                                                     <input type="number">元/人
@@ -856,3 +863,9 @@
         </div>
     </div>
 </div>
+<script>
+    var ChannelAddReserveApp = angular.module("AddReserveApp", []);
+    ChannelAddReserveApp.controller('AddReserveCtrl', function () {
+
+    });
+</script>

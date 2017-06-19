@@ -1,8 +1,13 @@
 <!--主页/预订管理/自动推荐桌位-->
 <!--操作栏-->
 <div class="py-1 bg-info">
-    <div class="p-2 bg-success" id="option">
-
+    <div class="p-2 bg-success">
+        <label for="count">>选择就餐人数 </label>
+        <select id="count" ng-init="selectCount=0" ng-change="change(selectCount)" ng-model="selectCount">
+            <option ng-repeat="x in NumberList" value="{{x.value}}">{{x.value}}</option>
+        </select>
+        <a> 符合 {{selectCount}} 人桌位共{{resultCount}}个 注：序号数值越大，则优先推荐</a>
+        <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" id="save" ng-click="save()" value="保存"/>
     </div>
 </div>
 <!--表格-->
@@ -23,8 +28,25 @@
                 <td>预定推荐</td>
             </tr>
             </thead>
-            <tbody class="align-content-center" id="seat-table">
-
+            <tbody class="align-content-center">
+            <tr class="table-info" ng-repeat="x in seats">
+                <td> {{x.name}}(图)</td>
+                <td> {{x.min}} 人 至 {{x.max}} 人</td>
+                <td>
+                    <input class="text-center" type="text" ng-model="x.value" value="{{x.value}}"/>
+                </td>
+                <td>
+                    <input class="text-center" type="text" ng-model="x.order" value="{{x.order}}"/>
+                </td>
+                <td>{{x.area}}</td>
+                <td>{{x.type}}</td>
+                <td>{{x.type}}</td>
+                <td>
+                    <span class="form-check-label">
+                        <input type="checkbox" ng-model="x.enable" value="{{x.enable}}"/>开启
+                    </span>
+                </td>
+            </tr>
             </tbody>
         </table>
         <!--分页导航-->
@@ -35,16 +57,7 @@
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-                <li><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li class="active"><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">5</a></li>
-                <li><a href="#">6</a></li>
-                <li><a href="#">7</a></li>
-                <li><a href="#">8</a></li>
-                <li><a href="#">9</a></li>
-                <li><a href="#">10</a></li>
+                <li ng-repeat="(k,v) in pages"><a href="#{{v}}">{{v}}</a></li>
                 <li>
                     <a href="#" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
@@ -54,84 +67,6 @@
         </nav>
     </form>
 </div>
-<!--操作栏模板-->
-<script id="OptionTemplate" type="text/x-jsrender">
-    <label for="count">>选择就餐人数 </label>
-    <select class="form-control-sm" data-link="{:min}" id="count">
-        {^{range start=1 end=28}}
-            <option>{{:#data}}</option>
-        {{/range}}
-    </select>
-    <a> 符合{^{:min}}人桌位共{^{:count}}个 注：序号数值越大，则优先推荐</a>
-    <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" id="save" value="保存"/>
-</script>
-<script id="SeatTableTemplate" type="text/x-jsrender">
-    {^{for seats}}
-        <tr class="table-info">
-            <td>{{:name}} (图)</td>
-            <td>{{:min}} 人 至 {{:max}} 人</td>
-            <td>
-                <input class="form-control form-control-sm text-center" type="number" data-link="value" />
-            </td>
-            <td>
-                <input class="form-control form-control-sm text-center" type="number" data-link="order" />
-            </td>
-            <td>{{:area}}</td>
-            <td>类型</td>
-            <td>设施</td>
-            <td>
-                <span class="form-check-label">
-                    <input type="checkbox" data-link="enable" name="enable"/>开启
-                </span>
-            </td>
-        </tr>
-    {{/for }}
-</script>
 <script>
-
-    var TAG = Templates.Reserve.SeatRecommend;
-
-    var seats = [];
-    var data = {
-        range: {min: 10, count: 0},
-        seats: []
-    };
-
-    // 初始化桌位列表
-    $.each(BanquetExpert.area, function (index, area) {
-        $.each(area.seat, function (index, seat) {
-            seat.area = area.name;
-            seats.push(seat);
-        });
-    });
-
-    // 绑定模板
-    $.templates("#OptionTemplate").link("#option", data.range);
-    $.templates("#SeatTableTemplate").link("#seat-table", data);
-
-    // 刷新列表和提示
-    var refresh = function () {
-        var min = $("#count").val();
-        // 过滤数据
-        $.observable(data.seats).refresh(seats.sort(function (a, b) {
-            return a.order > b.order;
-        }).filter(function (seat) {
-            return seat.min <= min && seat.max >= min;
-        }));
-        // 更新提示
-        $.observable(data.range).setProperty({min: min, count: data.seats.length});
-    };
-
-    // 事件处理
-    $("#count").change(refresh);
-    // TODO: 保存桌位列表
-    $("#save").click(function () {
-        Log.i(TAG, "保存：" + JSON.stringify(seats));
-    });
-
-    // 初始化就餐人数选项
-    $.observable(data.range).setProperty({min: 5});
-    // 刷新列表和提示
-    refresh();
 
 </script>

@@ -2,13 +2,15 @@
 <!--操作栏-->
 <div class="py-1 bg-info">
     <!--桌位导航栏-->
-    <nav class="nav bg-info" id="area">
-
+    <nav class="nav nav-tabs bg-info">
+        <!--<a ng-if="index=0" class="nav-link active" href="#/Reserve/AreaDesk/Area/{{x.value}}">{{x.name}}</a>-->
+        <li ng-repeat="x in area"><a class="nav-link" ng-click="nav($index)">{{x.name}}</a></li>
     </nav>
+    <!--操作栏-->
     <div class="p-2 bg-success">
-        <a id="details">全部桌位，共7个 注：序号数值越大，则优先推荐</a>
-        <input class="btn btn-sm btn-secondary ml-2 mr-1" type="button" id="add-desk" value="新增桌位"/>
-        <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" id="save" value="保存"/>
+        <a id="details">全部桌位，共{{SeatCount}}个 注：序号数值越大，则优先推荐</a>
+        <input class="btn btn-sm btn-secondary ml-2 mr-1" type="button" ng-click="add_seat()" value="新增桌位"/>
+        <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" ng-click="save()" value="保存"/>
     </div>
 </div>
 <!--内容-->
@@ -32,7 +34,33 @@
             </tr>
             </thead>
             <tbody class="align-content-center" id="seat-table">
-
+            <tr class="table-info" ng-repeat="x in seat">
+                <td><input type="text" name="order" ng-model="x.name" value="{{x.name}}"/></td>
+                <td>{{x.min}} 人 至 {{x.max}} 人</td>
+                <td>1000元</td>
+                <td><input type="text" name="order" ng-model="x.order" value="{{x.order}}"/></td>
+                <td>
+                    <label>
+                        <input type="checkbox" name="window" data-link="window">靠窗
+                    </label>
+                </td>
+                <td>{{x.type}}</td>
+                <td>无</td>
+                <td>
+                    <a ng-click="edit(x.value)">修改</a>
+                    <label><input type="checkbox" ng-model="x.enable" value="{{x.enable}}"/>停用/开启</label>
+                </td>
+                <td>
+                    <label>
+                        <input type="checkbox" ng-model="x.app" value="{{x.app}}"/>开启
+                    </label>
+                </td>
+                <td>
+                    <label>
+                        <input type="checkbox" ng-model="x.web" value="{{x.web}}"/>开启
+                    </label>
+                </td>
+            </tr>
             </tbody>
         </table>
         <!--分页导航-->
@@ -43,16 +71,7 @@
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-                <li><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li class="active"><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">5</a></li>
-                <li><a href="#">6</a></li>
-                <li><a href="#">7</a></li>
-                <li><a href="#">8</a></li>
-                <li><a href="#">9</a></li>
-                <li><a href="#">10</a></li>
+                <li ng-repeat="(k, v) in pages"><a href="#{{v}}">{{v}}</a></li>
                 <li>
                     <a href="#" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
@@ -62,90 +81,3 @@
         </nav>
     </form>
 </div>
-<!--操作栏模板-->
-<script id="areaTemplate" type="text/plain">
-    {{for }}
-        {{if #getIndex() === 0}}
-            <a class="nav-link active" href="#/Reserve/AreaDesk/Area/{{:#getIndex()}}">{{:name}}</a>
-        {{else}}
-            <a class="nav-link" href="#/Reserve/AreaDesk/Area/{{:#getIndex()}}">{{:name}}</a>
-        {{/if}}
-    {{/for}}
-
-</script>
-<!--表格模板-->
-<script id="seatTableTemplate" type="text/plain">
-    {^{for }}
-        <tr class="table-info">
-            <td>{{:name}}</td>
-            <td>{{:min}} 人 至 {{:max}} 人</td>
-            <td>1000元</td>
-            <td><input type="text" name="order" data-link="order" /></td>
-            <td>
-                <label for="window">
-                    <input type="checkbox" name="window" data-link="window">靠窗
-                </label>
-            </td>
-            <td>{{:type}}</td>
-            <td>无</td>
-            <td>
-                <a href="#/Reserve/AreaDesk/Desk/Modify/{{:value}}">修改</a>
-                <a href="#/Reserve/AreaDesk/Desk/Enable/{{:value}}">停用/开启</a>
-            </td>
-            <td>
-                <label>
-                    <input type="checkbox" data-link="app" name="app"/>开启
-                </label>
-            </td>
-            <td>
-                <label>
-                    <input type="checkbox" data-link="enable" name="web"/>开启
-                </label>
-            </td>
-        </tr>
-    {{/for}}
-</script>
-<script>
-    var TAG = Templates.Reserve.AreaDesk;
-    var index = 0;
-    var seat = BanquetExpert.area[index].seat;
-
-    // 绑定模板
-    $.templates("#areaTemplate").link("#area", BanquetExpert.area);
-    $.templates("#seatTableTemplate").link("#seat-table", seat);
-    $("#details").html("全部桌位，共" + seat.length + "个 注：序号数值越大，则优先推荐");
-
-    // TODO: 添加桌位
-    $("#add-desk").click(function () {
-        var obj = {value: 0, name: '桌号', min: 12, max: 16, type: "类型", order: 1, enable: true};
-        Log.i(TAG, "添加桌位：" + JSON.stringify(obj));
-        $.observable(seat).insert(obj);
-        $("#details").html("全部桌位，共" + seat.length + "个 注：序号数值越大，则优先推荐");
-    });
-    // TODO: 保存区域桌位信息
-    $("#save").click(function () {
-        Log.i(TAG, "保存区域桌位信息：" + JSON.stringify(seat));
-    });
-
-    // 路由设置
-    var routes = {
-        "/Reserve/AreaDesk/Area/:area_id": function (area_id) {
-            index = area_id;
-            $.observable(seat).refresh(BanquetExpert.area[index]);
-            $("#details").html("全部桌位，共" + seat.length + "个 注：序号数值越大，则优先推荐");
-            Log.i(TAG, "选择区域：" + area_id);
-        },
-        "/Reserve/AreaDesk/Desk/Modify/:desk_id": function (desk_id) {
-            alert("修改桌位：" + desk_id);
-        },
-        "/Reserve/AreaDesk/Desk/Enable/:desk_id": function (desk_id) {
-            alert("开启桌位：" + desk_id);
-            var enable = seat[desk_id].enable;
-            enable = ~enable;
-            $.observable(seat[desk_id]).setProperty({enable: enable});
-        }
-    };
-
-    var router = window.Router(routes);
-    router.init();
-</script>
