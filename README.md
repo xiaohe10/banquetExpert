@@ -322,11 +322,13 @@ URL：webApp/staff/hotel <br>
 | 参数名称       | 含义             |
 |:------------- |:---------------|
 | hotel_id | 酒店 ID |
+| branch_id | 分店 ID |
 | name | 酒店名称 |
 | icon | 头像 |
 | branches_count | 门店数 |
 | owner_name | 法人代表 |
 | create_time | 创建时间 |
+
 
 返回示例：
 
@@ -335,6 +337,7 @@ URL：webApp/staff/hotel <br>
 	"status":"true",
 	"data":{
 		"hotel_id":1,
+		"branch_id":2,
 		"name":"北京宴",
 		"icon":"http://oss.aliyun/banquet/avatar/1.jpg",
 		"branches_count":3,
@@ -355,6 +358,7 @@ URL：webApp/staff/hotel <br>
 ## 获取员工所在酒店的门店列表
 URL：webApp/staff/hotel_branch/list/ <br>
 请求方式：POST <br>
+
 | 参数名称       | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------:|
 | token         | 登录口令          |         yes  |
@@ -426,6 +430,7 @@ URL：webApp/staff/hotel_branch/list/ <br>
 ## 获取门店的详情
 URL：webApp/hotel_branch/profile/ <br>
 请求方式：POST <br>
+
 | 参数名称       | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------:|
 | token         | 登录口令          |         yes  |
@@ -499,6 +504,7 @@ URL：webApp/hotel_branch/profile/ <br>
 ## 获取门店的区域列表
 URL：webApp/hotel_branch/area/list/ <br>
 请求方式：POST <br>
+
 | 参数名称       | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------:|
 | token         | 登录口令          |         yes  |
@@ -545,7 +551,7 @@ URL：webApp/hotel_branch/area/list/ <br>
 }
 ```
 
-错误代码：
+错误代码：<br>
 
 | 错误代码      | 含义             |
 |:------------- |:---------------|
@@ -559,7 +565,8 @@ URL：webApp/hotel_branch/area/list/ <br>
 ## 获取门店某一天某餐段的桌位使用情况列表
 URL：webApp/hotel_branch/area/list/ <br>
 请求方式：POST <br>
-| 参数名称       | 含义             | 是否必选       |
+
+| 请求参数      | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------:|
 | token         | 登录口令          |         yes  |
 | branch_id | 门店 ID | yes |
@@ -569,7 +576,6 @@ URL：webApp/hotel_branch/area/list/ <br>
 | order | 排序方式（0: 注册时间升序，1: 注册时间降序，2: 名称升序，3: 名称降序，默认1） | no |
 
 请求示例:
-
 
 ```
 {
@@ -839,7 +845,7 @@ URL：webApp/order/detail/ <br>
 | guest_type | 顾客身份 |
 | contact | 联系电话 |
 | guest_number | 客人数量 |
-| desks | 桌位 |
+| desks | 桌位ID和名称 |
 | user_description | 用户备注 |
 | staff_description | 员工备注 |
 |以下是私人订制的字段|
@@ -880,7 +886,7 @@ URL：webApp/order/detail/ <br>
 		"guest_type":"vip",
 		"contact":"18813101211",
 		"guest_number":10,
-		"desks":[1,3,5],
+		"desks":[{"id":1,"name":"309"},{"id":2,"name":"312"},{"id":3,"name":"311"}],
 		"user_description":"生日宴，准备蜡烛",
 		"staff_description":"客户年级大，做好防滑",
 		"water_card":"水牌内容",
@@ -924,7 +930,7 @@ URL：webApp/order/update/ <br>
 | name | 联系人 | no |
 | contact | 联系电话 | no |
 | guest_number | 客人数量 | no |
-| desk | 桌位 | no |
+| desks | 桌位 | no |
 | staff_description | 员工备注 | no |
 |以下是私人订制的字段|
 | water_card | 水牌 | no |
@@ -989,27 +995,217 @@ URL：webApp/order/update/ <br>
 
 
 
-## 订单推送
-客户端给服务端推送，以json表示数据:
+## 月订单列表（员工服务的订单，不是填写的预订单）
+
+URL：webApp/order/monthlist/ <br>
+请求方式：POST <br>
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------:|
+| token         | 登录口令          |         yes  |
+
+返回参数：
 
 | 参数名称       | 含义             |
-|:------------- |:---------------| :-------------:|
-| push_id        | 推送事件ID         |         yes  |
-| push_type | 推送事件类型（订单提醒、客户服务等，待定）| yes |
-| message        | 消息文字通知         |         yes  |
+|:------------- |:---------------|
+| month | 月份
+order_number | 单数
+desk_number | 桌子个数
+guest_number | 人数
+comsuption | 总消费
+person_comsuption | 人均消费
+desk_comsuption | 桌均消费
 
-推送示例:
+返回示例
+
+返回示例：
+
+```
+{
+	"status":"true",
+	data:[
+		{
+			"month":"2017-05",
+			"order_number":10,
+			"guest_number":100,
+			"desk_number":100,
+			"comsuption":100000,
+			"person_comsuption":1000,
+			"desk_comsuption":99
+		}
+	]
+}
+```
+
+
+## 日订单列表
+
+URL：webApp/order/daylist/ <br>
+请求方式：POST <br>
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------:|
+| token         | 登录口令          |         yes  |
+| month         | 月份          |         yes |
+
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| date | 日期
+order_number | 单数
+desk_number | 桌子个数
+guest_number | 人数
+comsuption | 总消费
+person_comsuption | 人均消费
+desk_comsuption | 桌均消费
+
+返回示例
+
+返回示例：
+
+```
+{
+	"status":"true",
+	data:[
+		{
+			"date":"2015-10-25",
+			"order_number":10,
+			"guest_number":100,
+			"desk_number":100,
+			"comsuption":100000,
+			"person_comsuption":1000,
+			"desk_comsuption":99
+		},
+		{
+			"date":"2015-10-25",
+			"order_number":10,
+			"guest_number":100,
+			"desk_number":100,
+			"comsuption":100000,
+			"person_comsuption":1000,
+			"desk_comsuption":99
+		},
+		...
+	]
+}
+```
+# 客户管理
+## 获取客户概况
+URL：webApp/guest/profile/general <br>
+请求方式：POST
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------|
+| token         | 登录口令          |         yes  |
+
+请求示例
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"phone_number":"18813101211"
+}
+```
+
+返回参数
+
+
+| 参数名称       | 含义    | 
+|:------------- |:---------------| 
+| all_guest\_number | 所有客户
+active_guest\_number | 活跃客户数量
+sleep_guest\_number | 沉睡客户数量
+lost_guest\_number | 流失客户数量
+blank_guest\_number | 无订单客户数量
+guest_from\_manager | 客户来源：客户经理
+guest_from\_order | 客户来源：预订台
+guest_from\_outer | 客户来源：外部渠道
+
+返回示例
 
 
 ```
 {
-	"push_id":"129ASDFIOJIO3RN23U12934INASDF",
-	"push_type":"order notify",
-	"message":"xx订单即将开始，请准备"
+	"status":"true",
+	"data":{
+		"all_guest_number":1000,
+		"active_guest_number": 1000,
+		"sleep_guest_number": 1000,
+		"lost_guest_number": 1000,
+		"blank_guest_number": 1000,
+		"guest_from_manager": 1000,
+		"guest_from_order": 1000,
+		"guest_from_outer": 1000,
+	}
 }
 ```
 
-# 客户管理
+## 获取客户列表（搜索）
+
+URL：webApp/guest/list/ <br>
+请求方式：POST
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------|
+| token         | 登录口令          |         yes  |
+| search_key | 客户手机号或者姓名 | no |
+| guest_type | 客户类型 | no |
+| guest_from | 获客渠道| no |
+
+请求示例
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"search_key":"18813101211",
+	"guest_type":"vip",
+	"guest_from":"客户经理"
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| name | 姓名 |
+| birthday | 生日 |
+| like | 喜好 |
+| dislike | 忌讳 |
+| special_day | 纪念日 |
+| personal_need | 个性化需求 |
+| state | 客户状态：活跃（active），沉睡（sleep），流失（lost）等 |
+
+
+返回示例
+
+```
+{
+	"status":"true",
+	"data":[
+		{
+			"name":"习某某",
+			"birthday":"1992-02-15",
+			"like":"吃辣",
+			"dislike":"不吃香菜",
+			"special_day":"",
+			"personal_need":"",
+			"state":"avtive"
+		}
+	]
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 不存在该条件的用户
+
+
 
 ## 获取客户档案
 
@@ -1019,7 +1215,6 @@ URL：webApp/guest/profile/ <br>
 | 参数名称       | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------|
 | token         | 登录口令          |         yes  |
-| phone_number | 客户手机号（作为查找的依据） | yes |
 
 请求示例
 
@@ -1086,7 +1281,8 @@ URL：webApp/guest/history_orders/ <br>
 |:------------- |:---------------| :-------------|
 | token         | 登录口令          |         yes  |
 | phone_number | 客户手机号（作为查找的依据） | yes |
-| page_start | 分页获取的地方（默认为0，每次都返回20个） | no
+| offset | 分页获取的地方（默认为0) | no
+| limit | 获取的个数 (默认为20）| no
 
 请求示例
 
@@ -1094,7 +1290,8 @@ URL：webApp/guest/history_orders/ <br>
 {
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
 	"phone_number":"18813101211",
-	"page_start":40
+	"offset":40,
+	"limit":20
 }
 ```
 
@@ -1138,7 +1335,167 @@ description | 备注
 | err_2 | 权限错误 |
 | err_3 | 不存在该手机号码的用户 |
 
+## 添加客户档案（现场添加客户）
+URL：webApp/guest/profile/add <br>
+请求方式：POST
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------|
+| token         | 登录口令          |         yes  |
+| phone_number | 客户手机号（作为查找的依据） | yes |
+| name | 姓名 | yes
+| birthday | 生日 | yes
+| like | 喜好 | yes
+| dislike | 忌讳 | yes
+| special_day | 纪念日 | yes 
+| personal_need | 个性化需求 | yes
+
+请求示例
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"phone_number":"18813101211"
+	"name":"习某某",
+	"birthday":"1992-02-15",
+	"like":"吃辣",
+	"dislike":"不吃香菜",
+	"special_day":"10-25",
+	"personal_need":"生日宴"
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+
+
+返回示例
+
+```
+{
+	"status":"true"
+}
+```
+
+错误代码
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 该用户已经注册过 |
+
+
+## 修改客户档案
+
+URL：webApp/guest/profile/modify <br>
+请求方式：POST
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------|
+| token         | 登录口令          |         yes  |
+| phone_number | 客户手机号（作为查找的依据） | yes |
+| name | 姓名 | no
+| birthday | 生日 | no
+| like | 喜好 | no
+| dislike | 忌讳 | no
+| special_day | 纪念日 | no 
+| personal_need | 个性化需求 | no
+
+请求示例
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"phone_number":"18813101211"
+	"name":"习某某",
+	"birthday":"1992-02-15",
+	"like":"吃辣",
+	"dislike":"不吃香菜",
+	"special_day":"10-25",
+	"personal_need":"生日宴"
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+
+
+返回示例
+
+```
+{
+	"status":"true"
+}
+```
+
+错误代码
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 不存在该手机号码的用户 |
+
+
 # 评分管理
+## 获取评分项目
+URL：webApp/score/matrix/ <br>
+请求方式：POST
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------|
+| token         | 登录口令(根据口令判断此员工所属酒店的评分标准）|         yes  |
+
+请求示例：
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF"
+}
+```
+
+返回参数
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| hotel_name | 酒店名称 |
+| branch_name | 店名|
+item_key | 项目关键词 （即英文字段名称）
+item_name | 项目名称
+item_need_picture | 是否需要上传图片(0代表不上传，1代表上传)
+
+返回示例
+
+```
+{
+	"status":"true",
+	"data":[
+		{
+			"item_key":"door_card",
+			"item_name":"门牌",
+			"item_need_picture":1
+		},
+		{
+			"item_key":"sand_table",
+			"item_name":"沙盘",
+			"item_need_picture":1
+		},
+		....
+	]
+}
+```
+
+
+
 ## 提交（修改）评分
 URL：webApp/score/submit/ <br>
 请求方式：POST
@@ -1146,26 +1503,11 @@ URL：webApp/score/submit/ <br>
 | 参数名称       | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------|
 | token         | 登录口令          |         yes  |
-door_card\_picture | 门牌图片 | yes
-door_card\_score | 门牌分数 | yes
-sand_table\_picture | 沙盘图片 | yes
-sand_table\_score | 沙盘分数 | yes
-welcome_screen\_picture | 欢迎牌图片
-welcome_screen\_score | 欢迎牌分数
-atmosphere_picture | 氛围图片
-atmosphere_score | 氛围分数
-group_photo\_picture | 合照图片
-group_photo\_score | 合照分数
-cup_picture |  烤瓷杯图片
-cup_score | 烤瓷杯分数
-brochure_picture | 小册子图片
-brochure_score | 小册子分数
-calendar_picture | 台历图片
-calendar_score | 台历分数
-honor_certificate\_picture | 荣誉证书图片
-honor_certificate\_score | 荣誉证书分数
-work_in\_heart_picture | 用心工作图片
-work_in\_heart_score | 用心工作分数
+| [item_key]\_picture | 项目图片 | no |
+| [item_key]\_score | 项目打分 | no |
+
+
+
 
 
 请求示例
@@ -1173,8 +1515,11 @@ work_in\_heart_score | 用心工作分数
 ```
 {
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
-	"welcome_screen_picture":[file],
-	"welcome_screen_score":20
+	"door_card_picture":[FILE],
+	"door_card_score":10,
+	"sand_table_picture":[FILE],
+	"sand_table_score":9,
+	...
 }
 ```
 
@@ -1229,13 +1574,15 @@ URL：webApp/score/ranking/hotel <br>
 | 参数名称       | 含义             |
 |:------------- |:---------------|
 | ranking_number | 排名 |
+hotel_name | 品牌名称
+branch_name | 店名
+branch_id | 门店ID
 | all_score | 总分 | 
 satisfaction_score | 顾客满意度 
 transform_score | 转换度
 position | 地址
 manager | 店总
-branch_id | 门店 ID
-branch_name  | 店名
+
 
 
 
@@ -1247,19 +1594,18 @@ branch_name  | 店名
 	"data":[
 		{
 			"ranking_number":3,
+			"hotel_name":"北京宴",
+			"branch_name":"总店",
+			"branch_id":"001",
 			"all_score":89,
 			"satisfaction_score":9,
 			"transform_score":8,
 			"position":"北京市蓝靛路",
-			"manager":"张某某",
-			"branch_id":1,
-			"branch_name":"北京宴总店"
+			"manager":"张某某"
 		}
 	]
 }
 ```
-
-错误代码
 
 错误代码：
 
@@ -1276,16 +1622,16 @@ URL：webApp/score/ranking/room <br>
 | 参数名称       | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------|
 | token         | 登录口令          |         yes  |
-| brand | 品牌 | no 
-hotel | 门店 | no
+| hotel_name | 品牌 | no 
+branch_name | 门店 | no
 
 请求示例
 
 ```
 {
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
-	"brand":"俏江南",
-	"hotel":"五道口店"
+	"hotel_name":"俏江南",
+	"branch_name":"五道口店"
 }
 ```
 
@@ -1294,13 +1640,14 @@ hotel | 门店 | no
 | 参数名称       | 含义             |
 |:------------- |:---------------|
 | ranking_number | 排名 |
+hotel_name | 品牌名称
+branch_name | 店名
+branch_id | 门店ID
 | all_score | 总分 | 
 satisfaction_score | 顾客满意度 
 transform_score | 转换度
 position | 地址
 manager | 店总
-branch_id | 门店 ID
-branch_name  | 店名
 
 
 
@@ -1312,13 +1659,14 @@ branch_name  | 店名
 	"data":[
 		{
 			"ranking_number":3,
+			"hotel_name":"北京宴",
+			"branch_name":"总店",
+			"branch_id":"001",
 			"all_score":89,
 			"satisfaction_score":9,
 			"transform_score":8,
 			"position":"北京市蓝靛路",
-			"manager":"张某某",
-			"branch_id":1,
-			"branch_name":"北京宴总店"
+			"manager":"张某某"
 		}
 	]
 }
@@ -1341,16 +1689,16 @@ URL：webApp/score/ranking/dinner <br>
 | 参数名称       | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------|
 | token         | 登录口令          |         yes  |
-| brand | 品牌 | no 
-hotel | 门店 |  no
+| hotel_name | 品牌 | no 
+branch_name | 门店 |  no
 type | 宴会类型 | no
 
 
 ```
 {
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
-	"brand":"俏江南",
-	"hotel":"五道口店",
+	"hotel_name":"俏江南",
+	"branch_name":"五道口店",
 	"type":"生日宴"
 }
 ```
@@ -1361,13 +1709,14 @@ type | 宴会类型 | no
 | 参数名称       | 含义             |
 |:------------- |:---------------|
 | ranking_number | 排名 |
+hotel_name | 品牌名称
+branch_name | 店名
+branch_id | 门店ID
 | all_score | 总分 | 
 satisfaction_score | 顾客满意度 
 transform_score | 转换度
 position | 地址
 manager | 店总
-branch_id | 门店 ID
-branch_name  | 店名
 
 
 
@@ -1379,18 +1728,18 @@ branch_name  | 店名
 	"data":[
 		{
 			"ranking_number":3,
+			"hotel_name":"北京宴",
+			"branch_name":"总店",
+			"branch_id":"001",
 			"all_score":89,
 			"satisfaction_score":9,
 			"transform_score":8,
 			"position":"北京市蓝靛路",
-			"manager":"张某某",
-			"branch_id":1,
-			"branch_name":"北京宴总店"
+			"manager":"张某某"
 		}
 	]
 }
 ```
-
 错误代码
 
 错误代码：
@@ -1415,18 +1764,20 @@ URL：webApp/score/ranking/dinner <br>
 
 返回参数：
 
-| 参数名称       | 含义             |
-|:------------- |:---------------|
+| 参数名称       | 二级参数   |    含义   |
+|:------------- |:---------------|:---|
 | ranking_number | 排名 |
-| all_score | 总分 | 
-satisfaction_score | 顾客满意度 
-transform_score | 转换度
-position | 地址
-manager | 店总
-branch_id | 门店 ID
-branch_name  | 店名
-door_card\_score | 门牌分数
-check_ door\_card_score | 门牌分数复查 
+| all_score | | 总分 | 
+hotel_name | | 品牌名称
+branch_id | | 门店ID
+branch_name| | 店名
+position || 地址
+manageer || 店总
+items |  所有的评分项
+||item_key | 评分关键词
+||item_name | 评分名称
+||item_score | 评分
+||item_check\_score | 复查分数
 
 
 返回示例
@@ -1438,23 +1789,30 @@ check_ door\_card_score | 门牌分数复查
 		{
 			"ranking_number":3,
 			"all_score":89,
-			"satisfaction_score":9,
-			"transform_score":8,
+			"hotel_name":"俏江南",
+			"branch_id":"001",
+			"branch_name":"三里屯店",
 			"position":"北京市蓝靛路",
 			"manager":"张某某",
-			"branch_id":1,
-			"branch_name":"北京宴总店",
-			"score":{
-				"door_card_score":10,
-				"check_door_card_score":10
+			"items":[
+				{
+					"item_key":"door_card",
+					"item_name":"门牌",
+					"item_score":100,
+					"item_check_score":9
+				},
+				{
+					"item_key":"door_card",
+					"item_name":"门牌",
+					"item_score":100,
+					"item_check_score":9
+				}
 				
-			}
+			]
 		}
 	]
 }
 ```
-
-错误代码
 
 错误代码：
 
@@ -1463,3 +1821,26 @@ check_ door\_card_score | 门牌分数复查
 | err_1 | 参数不正确（缺少参数或者不符合格式） |
 | err_2 | 权限错误 |
 | err_3 | 不存在该排名 |
+
+
+#消息推送
+客户端给服务端推送，以json表示数据:
+
+| 参数名称       | 含义             |
+|:------------- |:---------------| :-------------:|
+| push_id        | 推送事件ID         |         yes  |
+| push_type | 推送事件类型（订单提醒、客户服务等，待定）| yes |
+| push_data | 事件处理需要的信息（如订单ID等） | yes |
+| message        | 消息文字通知         |         yes  |
+
+推送示例:
+
+
+```
+{
+	"push_id":"129ASDFIOJIO3RN23U12934INASDF",
+	"push_type":"order notify",
+	"push_data":"19u390joasdifoasf",
+	"message":"xx订单即将开始，请准备"
+}
+```
