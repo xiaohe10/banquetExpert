@@ -18,15 +18,16 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>姓名</td>
-                <td>性别</td>
-                <td>手机</td>
-                <td>单位</td>
-                <td>撤单率</td>
-                <td>最后就餐时间</td>
-                <td>分类</td>
-                <td>维护渠道</td>
+
+            <tr ng-repeat="x in table">
+                <td>{{x.name}}</td>
+                <td>{{x.gender}}</td>
+                <td>{{x.phone}}</td>
+                <td>{{x.unit}}</td>
+                <td>{{x.cancel_rate}}</td>
+                <td>{{x.last_meal_time}}</td>
+                <td>{{x.type}}</td>
+                <td>{{x.channel}}</td>
             </tr>
             </tbody>
         </table>

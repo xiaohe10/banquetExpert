@@ -3,9 +3,9 @@
 <div class="py-1 bg-info">
     <div class="p-2 bg-success">
         <a>>全部桌位，共7个</a>
-        <input class="btn btn-sm btn-secondary ml-1 mr-2" type="button" id="sync-area" value="同步区域列表"/>
-        <input class="btn btn-sm btn-secondary ml-1 mr-2" type="button" id="add-area" value="新增区域"/>
-        <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" id="save" value="保存"/>
+        <input class="btn btn-sm btn-secondary ml-1 mr-2" type="button" id="sync-area" ng-click="sync_area()" value="同步区域列表"/>
+        <input class="btn btn-sm btn-secondary ml-1 mr-2" type="button" id="add-area" ng-click="add_area()" value="新增区域"/>
+        <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" id="save" ng-click="save()" value="保存"/>
     </div>
 </div>
 <!--表格-->
@@ -21,55 +21,16 @@
             </tr>
             </thead>
             <tbody class="align-content-center" id="area-info-table">
-
+            <tr class="table-info" ng-repeat="x in area">
+                <td>应用</td>
+                <td><input type="text" ng-model="x.name" value="{{x.name}}"/></td>
+                <td><input type="text" ng-model="x.order" value="{{x.order}}"/></td>
+                <td>
+                    <a href="#/Reserve/MealsArea/SetSeat/{{x.value}}">桌位设置</a>
+                    <label> <input type="checkbox" ng-model="x.status" value="{{x.status}}"/>启用</label>
+                </td>
+            </tr>
             </tbody>
         </table>
     </form>
 </div>
-<!--操作栏模板-->
-<script id="area_row" type="text/plain">
-{^{for }}
-    <tr class="table-info">
-        <td>应用</td>
-        <td><input type="text" data-link="name" name="name"/></td>
-        <td><input type="text" data-link="order" name="order"/></td>
-        <td>
-            <a href="#/Reserve/MealsArea/SetSeat/{{:value}}">桌位设置</a>
-            <label for="status">
-                <input type="checkbox" id="status" data-link="status" />启用
-            </label>
-        </td>
-    </tr>
-{{/for }}
-</script>
-<script>
-    var TAG = Templates.Reserve.MealsArea;
-    // 绑定模板
-    $.templates("#area_row").link("#area-info-table", BanquetExpert.area);
-
-    // TODO: 同步区域列表
-    $("#sync-area").click(function () {
-        Log.i(TAG, "同步区域列表");
-    });
-    // TODO: 添加区域
-    $("#add-area").click(function () {
-        var obj = {value: 0, name: '区域名', order: 0, status: 1, seat: []};
-        Log.i(TAG, "添加区域：" + JSON.stringify(obj));
-        $.observable(BanquetExpert.area).insert(obj);
-    });
-    // TODO: 保存区域列表
-    $("#save").click(function () {
-        Log.i(TAG, "保存区域列表");
-        $.observable(BanquetExpert.area).remove();
-    });
-
-    // 路由设置
-    routes = {
-        "/Reserve/MealsArea/SetSeat/:seat_id": function (seat_id) {
-            Log.i(TAG, "设置桌位：" + seat_id);
-        }
-    };
-
-    var router = window.Router(routes);
-    router.init();
-</script>

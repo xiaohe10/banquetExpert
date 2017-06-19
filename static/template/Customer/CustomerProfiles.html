@@ -2,45 +2,31 @@
 <!--操作栏-->
 <div class="py-1 bg-info">
     <div class="p-2 bg-success">
-        <div class="form-inline p-1">
-            <span class="input-group-addon">选择渠道
-                <div class="input-group">
-                    <select class="form-control" id="channel">
-                        <option>全部接单渠道</option>
-                        <optgroup label="内部渠道"></optgroup>
-                        <option>内部渠道</option>
-                        <option>内部渠道</option>
-                        <option>内部渠道</option>
-                        <optgroup label="外部渠道"></optgroup>
-                        <option>外部渠道</option>
-                        <option>外部渠道</option>
-                        <option>外部渠道</option>
-                    </select>
-                </div>
-            </span>
-            <span class="input-group-addon">
-                <div class="input-group">
-                    <input class="mx-1" type="text" id="keyword" placeholder="输入姓名或手机号"/>
-                    <input class="btn btn-sm mx-2" type="button" id="query" value="查询">
-                    <input class="btn btn-sm mx-2" type="button" id="export" value="高级筛选+导出" data-toggle="modal" data-target=".profiles-export"/>
-                    <input class="btn btn-sm mx-2" type="button" id="add" value="+添加档案" data-toggle="modal" data-target=".profiles-add"/>
-                    <input class="btn btn-sm mx-2" type="button" id="import" value="批量导入" data-toggle="modal" data-target=".profiles-import"/>
-                    <input class="btn btn-sm mx-2" type="button" id="member" value="会员价值设置"/>
-                </div>
-            </span>
-            <span class="input-group-addon">可选项
-                <div class="input-group">
-                    <label class="form-check-label mx-1 inline" for="we_chat">
-                        <input class="form-check form-check-input mx-1" type="checkbox" id="we_chat"/>绑定微信
-                    </label>
-                    <label class="form-check-label mx-1 inline" for="no_phone_number">
-                        <input class="form-check form-check-input mx-1" type="checkbox" id="no_phone_number"/>非手机号码
-                    </label>
-                    <label class="form-check-label mx-1 inline" for="no_marketing">
-                        <input class="form-check form-check-input mx-1" type="checkbox" id="no_marketing"/>不接受营销
-                    </label>
-                </div>
-            </span>
+        <div class="form-inline p-1">选择渠道
+            <div class="input-group">
+                <select class="form-control" ng-model="option.select_channel">
+                    <option value="-1">全部接单渠道</option>
+                    <optgroup label="内部渠道"></optgroup>
+                    <option ng-repeat="x in channel.inner" value="{{x.value}}">{{x.name}}</option>
+                    <optgroup label="外部渠道"></optgroup>
+                    <option ng-repeat="x in channel.outer" value="{{x.value}}">{{x.name}}</option>
+                </select>
+            </div>
+            <input class="mx-1" type="text" ng-model="option.keyword" placeholder="输入姓名或手机号"/>
+            <input class="btn btn-sm mx-2" type="button" ng-click="query()" value="查询">
+            <input class="btn btn-sm mx-2" type="button" value="高级筛选+导出" data-toggle="modal" data-target=".profiles-export"/>
+            <input class="btn btn-sm mx-2" type="button" value="+添加档案" data-toggle="modal" data-target=".profiles-add"/>
+            <input class="btn btn-sm mx-2" type="button" value="批量导入" data-toggle="modal" data-target=".profiles-import"/>
+            <input class="btn btn-sm mx-2" type="button" ng-click="member()" value="会员价值设置"/>
+            <label class="form-check-label mx-1 inline" for="we_chat">
+                <input class="form-check mx-1" type="checkbox" ng-model="option.we_chat" id="we_chat"/>绑定微信
+            </label>
+            <label class="form-check-label mx-1 inline" for="no_phone_number">
+                <input class="form-check mx-1" type="checkbox" ng-model="option.no_phone_number" id="no_phone_number"/>非手机号码
+            </label>
+            <label class="form-check-label mx-1 inline" for="no_marketing">
+                <input class="form-check mx-1" type="checkbox" ng-model="option.no_marketing" id="no_marketing"/>不接受营销
+            </label>
         </div>
     </div>
 </div>
@@ -52,7 +38,7 @@
         <table class="table table-bordered table-hover table-responsive small">
             <thead class="bg-info">
             <tr>
-                <th><label><input type="checkbox" id="select-all" value="">全选</label></th>
+                <th><label><input type="checkbox" ng-click="select_all()" ng-model="option.selected">全选</label></th>
                 <th>姓名</th>
                 <th>性别</th>
                 <th>手机</th>
@@ -69,37 +55,21 @@
             </tr>
             </thead>
             <tbody>
-            <tr class="table-info">
-                <td><input name="ck" type="checkbox" value=""></td>
-                <td>南</td>
-                <td>先生</td>
-                <td>15811111881</td>
-                <td></td>
-                <td>53.51%</td>
-                <td></td>
-                <td>867</td>
-                <td>2387457.00</td>
-                <td>2017年04月08日</td>
-                <td style="cursor: pointer"> 常旅客;(沉睡)</td>
-                <td>王唯唯</td>
-                <td><a href="#/Customer/CustomerProfiles/Customer/Edit/0">编辑</a></td>
-                <td><label><input type="checkbox" data-link="SetCustomerMarketing"/>开</label></td>
-            </tr>
-            <tr class="table-info">
-                <td><input name="ck" type="checkbox" value=""></td>
-                <td>南</td>
-                <td>先生</td>
-                <td>15811111881</td>
-                <td></td>
-                <td>53.51%</td>
-                <td></td>
-                <td>867</td>
-                <td>2387457.00</td>
-                <td>2017年04月08日</td>
-                <td style="cursor: pointer"> 常旅客;(沉睡)</td>
-                <td>王唯唯</td>
-                <td><a href="#/Customer/CustomerProfiles/Customer/Edit/1">编辑</a></td>
-                <td><label><input type="checkbox" data-link="SetCustomerMarketing"/>开</label></td>
+            <tr class="table-info" ng-repeat="x in table">
+                <td><input type="checkbox" ng-model="x.selected" value="{{x.selected}}"></td>
+                <td>{{x.name}}</td>
+                <td>{{x.gender}}</td>
+                <td>{{x.phone}}</td>
+                <td>{{x.unit}}</td>
+                <td>{{x.cancel_rate}}</td>
+                <td>{{x.credit}}</td>
+                <td>{{x.order_count}}</td>
+                <td>{{x.consumption}}</td>
+                <td>{{x.last_meal_date}}</td>
+                <td style="cursor: pointer">{{x.type}};({{x.rfm_type}})</td>
+                <td>{{x.channel}}</td>
+                <td><a ng-click="edit($index)">编辑</a></td>
+                <td><label><input type="checkbox" ng-model="marketing_sms"/>开</label></td>
             </tr>
             </tbody>
         </table>
@@ -157,7 +127,7 @@
                             <fieldset>
                                 <!--添加客户档案-->
                                 <div class="col-form-legend">
-                                    <legend >添加客户档案</legend>
+                                    <legend>添加客户档案</legend>
                                 </div>
                                 <!--姓名-->
                                 <div class="control-group">
@@ -333,7 +303,7 @@
                                 <fieldset>
                                     <!--请选取存储会员信息的EXCEL文档-->
                                     <div class="col-form-legend">
-                                        <legend >请选取存储会员信息的EXCEL文档</legend>
+                                        <legend>请选取存储会员信息的EXCEL文档</legend>
                                     </div>
                                     <!--选取文件-->
                                     <div class="control-group">
@@ -388,7 +358,7 @@
                             <fieldset>
                                 <!--批量导出客户档案-->
                                 <div class="col-form-legend">
-                                    <legend >批量导出客户档案</legend>
+                                    <legend>批量导出客户档案</legend>
                                 </div>
                                 <!--按时间筛选-->
                                 <div class="control-group">
@@ -555,21 +525,21 @@
 </div>
 <!--事件操作处理-->
 <script>
-    var TAG = Templates.Customer.CustomerProfiles;
-    // 全选
-    $("#select-all").change(function () {
-        Log.i(TAG, "全选：" + $(this).val());
-    });
-    $(".profiles-add").on('on', {}, function () {
-        var dialog = $(".profiles-add");
-    });
-    // 路由设置
-    var routes = {
-        "/Customer/CustomerProfiles/Customer/Edit/:customerId": function (customerId) {
-            Log.i(TAG, "编辑客户：" + customerId);
-        }
-    };
-
-    var router = window.Router(routes);
-    router.init();
+    //    var TAG = Templates.Customer.CustomerProfiles;
+    //    // 全选
+    //    $("#select-all").change(function () {
+    //        Log.i(TAG, "全选：" + $(this).val());
+    //    });
+    //    $(".profiles-add").on('on', {}, function () {
+    //        var dialog = $(".profiles-add");
+    //    });
+    //    // 路由设置
+    //    var routes = {
+    //        "/Customer/CustomerProfiles/Customer/Edit/:customerId": function (customerId) {
+    //            Log.i(TAG, "编辑客户：" + customerId);
+    //        }
+    //    };
+    //
+    //    var router = window.Router(routes);
+    //    router.init();
 </script>

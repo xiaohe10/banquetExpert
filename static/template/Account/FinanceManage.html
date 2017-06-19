@@ -4,31 +4,14 @@
     <div class="p-2 bg-success">
         <div class="form-inline p-1">
             <label for="year">>年 </label>
-            <select class="form-control form-control-sm mx-1" id="year">
-                <option selected="selected">2011</option>
-                <option>2012</option>
-                <option>2013</option>
-                <option>2014</option>
-                <option>2015</option>
-                <option>2016</option>
-                <option>2017</option>
+            <select class="form-control form-control-sm mx-1" id="year" ng-model="option.selected_year">
+                <option ng-repeat="(k, v) in year" value="{{$index}}">{{v}}</option>
             </select>
             <label for="month">>月 </label>
-            <select class="form-control form-control-sm mx-1" id="month">
-                <option selected="selected">1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-                <option>6</option>
-                <option>7</option>
-                <option>8</option>
-                <option>9</option>
-                <option>10</option>
-                <option>11</option>
-                <option>12</option>
+            <select class="form-control form-control-sm mx-1" id="month" ng-model="option.selected_month">
+                <option ng-repeat="(k, v) in month" value="{{$index}}">{{v}}</option>
             </select>
-            <input class="btn btn-sm btn-primary mx-1" type="button" value="查询"/>
+            <input class="btn btn-sm btn-primary mx-1" type="button" ng-click="query()" value="查询"/>
         </div>
     </div>
 </div>
@@ -36,7 +19,7 @@
 <div class="py-2 px-2 mt-2 bg-info">
     <!--详细信息-->
     <div class="p-2 mb-2 bg-success">
-        <a>账户余额： ￥636.96 本月充值： 500.0000 短信费用： ￥476.24 系统服务费： 0.0000</a>
+        <a>账户余额： ￥{{detail.rest}} 本月充值：{{detail.recharge}} 短信费用： ￥{{detail.sms_cost}} 系统服务费：{{detail.service_cost}}</a>
     </div>
     <!--表格-->
     <form class="form-group small">
@@ -57,14 +40,15 @@
             </tr>
             </thead>
             <tbody class="align-content-center">
-            <tr class="table-info">
-                <td>2017年5月24日</td>
-                <td>￥0.00</td>
-                <td>￥8.00</td>
-                <td>￥0.00</td>
-                <td>￥0.00</td>
-                <td>￥8.00</td>
-                <td>￥636.96</td>
+
+            <tr class="table-info" ng-repeat="x in table">
+                <td>{{x.date}}</td>
+                <td>{{x.recharge|currency}}</td>
+                <td>{{x.sms_cost|currency}}</td>
+                <td>{{x.order_cost|currency}}</td>
+                <td>{{x.service_cost|currency}}</td>
+                <td>{{x.sum|currency}}</td>
+                <td>{{x.rest|currency}}</td>
             </tr>
             </tbody>
         </table>

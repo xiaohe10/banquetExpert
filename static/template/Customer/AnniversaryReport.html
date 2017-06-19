@@ -3,21 +3,14 @@
 <div class="py-1 bg-info">
     <div class="p-2 bg-success">
         <div class="form-inline p-1">
-            <input class="form-control form-control-sm mx-1" type="date" id="date-from"/>
+            <input class="form-control form-control-sm mx-1" type="date" ng-model="option.date_from"/>
             ~
-            <input class="form-control form-control-sm mx-1" type="date" id="date-to"/>
-            <select class="form-control form-control-sm mx-1" id="classify">
-                <option value="-1" selected>请选择分类</option>
-                <option value="7">生日</option>
-                <option value="5">满月</option>
-                <option value="1">百天</option>
-                <option value="3">过寿</option>
-                <option value="6">求婚日</option>
-                <option value="2">订婚日</option>
-                <option value="4">结婚日</option>
-                <option value="8">周年庆</option>
+            <input class="form-control form-control-sm mx-1" type="date" ng-model="option.date_to"/>
+            <select class="form-control form-control-sm mx-1" ng-model="option.selection">
+                <optgroup>纪念日分类</optgroup>
+                <option ng-repeat="(k, v) in classify" value="{{$index}}">{{v}}</option>
             </select>
-            <button class="btn btn-primary btn-sm mx-1" id="query" value="查询"><a class="icon-search"></a>查询</button>
+            <button class="btn btn-primary btn-sm mx-1" ng-click="query()" value="查询"><a class="icon-search"></a>查询</button>
         </div>
     </div>
 </div>
@@ -41,15 +34,15 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>纪念日</td>
-                <td>关系</td>
-                <td>本年对应日期</td>
-                <td>距离天数</td>
-                <td>客户信息</td>
-                <td>联系电话</td>
-                <td>客户类别</td>
-                <td>维护人</td>
+            <tr ng-repeat="x in table">
+                <td>{{x.anniversary}}</td>
+                <td>{{x.relation}}</td>
+                <td>{{x.date}}</td>
+                <td>{{x.days}}</td>
+                <td>{{x.customer_summary}}</td>
+                <td>{{x.customer_phone}}</td>
+                <td>{{x.customer_type}}</td>
+                <td>{{x.channel}}</td>
                 <td>操作</td>
             </tr>
             </tbody>
