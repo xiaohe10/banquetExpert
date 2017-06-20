@@ -248,7 +248,7 @@ def submit_order(request, token, dinner_date, dinner_time, dinner_period,
         desk_list = json.loads(desks)
         for i in range(len(desk_list)):
             # 桌位号加首尾限定符
-            desk_id = '$' + desk_list[i] + '$'
+            desk_id = '$' + str(desk_list[i]) + '$'
             if Desk.enabled_objects.filter(id=desk_id).exists():
                 return err_response('err_3', '桌位不存在')
             if Order.objects.filter(dinner_date=dinner_date,
@@ -370,7 +370,7 @@ def modify_order(request, token, order_id, **kwargs):
             desk_list = json.loads(desks)
             for i in range(len(desk_list)):
                 # 桌位号加首尾限定符
-                desk_id = '$' + desk_list[i] + '$'
+                desk_id = '$' + str(desk_list[i]) + '$'
                 if Desk.enabled_objects.filter(id=desk_id).exists():
                     return err_response('err_3', '桌位不存在')
                 if Order.objects.exclude(id=order_id).filter(

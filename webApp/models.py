@@ -166,9 +166,9 @@ class Desk(models.Model):
     # 是否靠窗
     is_beside_window = models.BooleanField(default=False)
     # 最小可容纳人数
-    min_guest_number = models.IntegerField(default=None, null=True)
+    min_guest_num = models.IntegerField(default=None, null=True)
     # 最大可容纳人数
-    max_guest_number = models.IntegerField(default=None, null=True)
+    max_guest_num = models.IntegerField(default=None, null=True)
     # 备注
     description = models.CharField(max_length=100, default='')
     # 是否有效

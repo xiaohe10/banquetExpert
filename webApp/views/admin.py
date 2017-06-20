@@ -200,14 +200,14 @@ def get_branches(request, token, hotel_id, is_enabled=True, offset=0, limit=10,
     l = [{'branch_id': b.id,
           'name': b.name,
           'icon': b.icon,
-          'pictures': json.loads(b.pictures),
+          'pictures': json.loads(b.pictures) if b.pictures else '',
           'province': b.province,
           'city': b.city,
           'county': b.county,
           'address': b.address,
-          'facility': json.loads(b.facility),
-          'pay_card': json.loads(b.pay_card),
-          'phone': json.loads(b.phone),
+          'facility': json.loads(b.facility) if b.facility else '',
+          'pay_card': json.loads(b.pay_card) if b.pay_card else '',
+          'phone': json.loads(b.phone) if b.phone else '',
           'hotel_name': b.hotel.hotel.name,
           'manager_name': b.manager.name,
           'create_time': b.create_time} for b in branches]
@@ -341,16 +341,17 @@ def get_branch_profile(request, token, branch_id, **kwargs):
     d = {'branch_id': branch.id,
          'name': branch.name,
          'icon': branch.icon,
-         'pictures': json.loads(branch.pictures),
+         'pictures': json.loads(branch.pictures) if branch.pictures else '',
          'province': branch.province,
          'city': branch.city,
          'county': branch.county,
          'address': branch.address,
-         'meal_period': json.loads(branch.meal_period),
-         'facility': json.loads(branch.facility),
-         'pay_card': json.loads(branch.pay_card),
-         'phone': json.loads(branch.phone),
-         'cuisine': json.loads(branch.cuisine),
+         'meal_period': json.loads(branch.meal_period)
+         if branch.meal_period else '',
+         'facility': json.loads(branch.facility) if branch.facility else '',
+         'pay_card': json.loads(branch.pay_card) if branch.pay_card else '',
+         'phone': json.loads(branch.phone) if branch.phone else '',
+         'cuisine': json.loads(branch.cuisine) if branch.cuisine else '',
          'hotel_name': branch.hotel.name,
          'manager_name': branch.manager.name,
          'is_enabled': branch.is_enabled,
@@ -794,11 +795,11 @@ def get_desks(request, token, area_id, offset=0, limit=10, order=2):
     l = [{'desk_id': desk.id,
           'number': desk.number,
           'order': desk.order,
-          'min_guest_num': desk.min_guest_number,
-          'max_guest_num': desk.max_guest_number,
+          'min_guest_num': desk.min_guest_num,
+          'max_guest_num': desk.max_guest_num,
           'expense': desk.expense,
           'type': desk.type,
-          'facility': json.loads(desk.facility),
+          'facility': json.loads(desk.facility) if desk.facility else '',
           'picture': desk.picture,
           'is_beside_window': desk.is_beside_window,
           'description': desk.description,
@@ -851,7 +852,7 @@ def add_desk(request, token, area_id, number, order, **kwargs):
                  'type', 'facility', 'is_beside_window', 'description')
     with transaction.atomic():
         try:
-            desk = Desk(number=number, order=order)
+            desk = Desk(number=number, order=order, area=area)
             for k in desk_keys:
                 if k in kwargs:
                     setattr(desk, k, kwargs[k])

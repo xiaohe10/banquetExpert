@@ -1650,10 +1650,11 @@ URL：webApp/score/matrix/ <br>
 | 参数名称       | 含义             |
 |:------------- |:---------------|
 | hotel_name | 酒店名称 |
-| branch_name | 店名|
-item_key | 项目关键词 （即英文字段名称）
-item_name | 项目名称
-item_need_picture | 是否需要上传图片(0代表不上传，1代表上传)
+| branch_name | 店名  |
+| item_type | 项目类型  |
+| item_key | 项目关键词 （即英文字段名称）    |
+| item_name | 项目名称  |
+| item_need_picture | 是否需要上传图片(0代表不上传，1代表上传)    |
 
 返回示例
 
@@ -1661,17 +1662,39 @@ item_need_picture | 是否需要上传图片(0代表不上传，1代表上传)
 {
 	"status":"true",
 	"data":[
-		{
-			"item_key":"door_card",
-			"item_name":"门牌",
-			"item_need_picture":1
-		},
-		{
-			"item_key":"sand_table",
-			"item_name":"沙盘",
-			"item_need_picture":1
-		},
-		....
+	{
+        "item_type":"私人订制",
+        "list":[
+        {
+            "item_key":"door_card",
+            "item_name":"门牌",
+            "item_need_picture":1,
+        },
+        {
+            "item_key":"sand_table",
+            "item_name":"沙盘",
+            "item_need_picture":1
+        },
+        ....
+        ]
+    }
+    {
+        "item_type":"顾客满意度",
+        "list":[
+        {
+            "item_key":"praise_letter",
+            "item_name":"表扬信",
+            "item_need_picture":1,
+        },
+        {
+            "item_key":"friend_circle",
+            "item_name":"朋友圈",
+            "item_need_picture":1
+        },
+        ....
+        ]
+    }
+    ...
 	]
 }
 ```
