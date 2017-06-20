@@ -626,16 +626,16 @@ URL：webApp/hotel_branch/profile/ <br>
 |:------------- |:---------------|
 | name | 名称 |
 | icon | 头像 |
-| pictures | 介绍图片（json字符串，最多5张） |
+| pictures | 介绍图片（最多5张，数组） |
 | province | 省 |
 | city | 城市 |
 | county | 区/县 |
 | address | 详细地址 |
-| meal_period | 餐段设置（json字符串） |
-| facility | 设施（json字符串） |
-| pay_card | 可以刷哪些卡（json字符串） |
-| phone | 联系电话（json字符串，最多3个） |
-| cuisine | 菜系（json字符串） |
+| meal_period | 餐段设置（键值对） |
+| facility | 设施（数组） |
+| pay_card | 可以刷哪些卡（数组） |
+| phone | 联系电话（最多3个，数组） |
+| cuisine | 菜系（键值对） |
 | hotel_name | 所属酒店名 |
 | manager_name | 店长名 |
 | create_time | 创建时间 |
@@ -653,11 +653,26 @@ URL：webApp/hotel_branch/profile/ <br>
 		"city":"北京市",
 		"county":"丰台区",
 		"address":"北京市丰台区靛厂路333号",
-		"meal_period":"{"Monday":{"lunch":[08:00,08:30], "dinner":[14:00,14:30], "supper":[20:00,20:30]},"Tuesday":{},...}",
-		"facility":"["停车场","吸烟区"]",
-		"pay_card":"["银联", "支付宝"]",
-		"phone":"["13011111111", "13100000000"]",
-		"cuisine":"菜系",
+		"meal_period":{
+            "Monday":{
+                "lunch":{"from": "8:30","to": "12:00"},
+                "dinner":{"from":"12:00","to":"18:00"},
+                "supper":{"from":"18:00","to":"24:00"}
+            },
+            "TuesDay":{
+                "lunch":{"from": "8:30","to": "12:00"},
+                "dinner":{"from":"12:00","to":"18:00"},
+                "supper":{"from":"18:00","to":"24:00"}
+            },
+            ...
+        },
+		"facility":["停车场","吸烟区"],
+		"pay_card":["银联", "支付宝"],
+		"phone":["13011111111", "13100000000"],
+		"cuisine":{
+		    "北京菜":["烤鸭","京酱肉丝"],
+		    "浙江菜":["鸡"]
+		},
 		"hotel_name":"北京宴",
 		"manager_name":"陈奎义",
 		"create_time":"创建时间"
@@ -2708,14 +2723,14 @@ URL：webApp/admin/hotel_branch/list/ <br>
 | branch_id  | 门店 ID    |
 | name  | 名称   |
 | icon  | 头像  |
-| pictures  | 介绍图片（最多5张，json） |
+| pictures  | 介绍图片（最多5张，数组） |
 | province  | 省 |
 | city  | 市 |
 | county    | 区/县   |
 | address   | 详细地址  |
-| facility  | 设施（json）    |
-| pay_card  | 可以哪些支付（json） |
-| phone | 电话（最多3个，json）   |
+| facility  | 设施（数组）    |
+| pay_card  | 可以哪些支付（数组） |
+| phone | 电话（最多3个，数组）   |
 | hotel_name    | 所属酒店名   |
 | manager_name    | 店长名  |
 | create_time   | 创建时间  |
@@ -2731,15 +2746,15 @@ URL：webApp/admin/hotel_branch/list/ <br>
 		    "branch_id":1,
 		    "name":"北京宴总店",
 		    "icon":"头像地址",
-		    "pictures":"[picture1,picture2]",
+		    "pictures":["picture1","picture2"],
 		    "province":"北京市",
 		    "city":"北京市",
 		    "county":"丰台区",
 		    "address":"靛厂路333号",
-		    "facility":"["停车场","吸烟区"]",
-		    "pay_card":"["支付宝","微信"]",
-		    "phone":"["13051391335", "13188888888"]",
-		    "cuisine":"",
+		    "facility":["停车场","吸烟区"],
+		    "pay_card":["支付宝","微信"],
+		    "phone":["13051391335", "13188888888"],
+		    "cuisine":{},
 		    "hotel_name":"北京宴",
 		    "manager_name":"陈总",
 		    "create_time":"创建时间"
@@ -2775,10 +2790,10 @@ URL：webApp/admin/hotel_branch/register/ <br>
 | city  | 市 | yes   |
 | county    | 区/县   | yes   |
 | address | 详细地址    | yes    |
-| phone | 电话（json）  | no   |
-| facility | 设施（json）   | no    |
-| pay_card  | 可以哪些支付（json）    | no    |
-| cuisine   | 菜系（json）  | no    |
+| phone | 电话（最多3个，数组）  | no   |
+| facility | 设施（数组）   | no    |
+| pay_card  | 可以哪些支付（数组）    | no    |
+| cuisine   | 菜系（键值对）  | no    |
 
 请求示例：
 
@@ -2792,10 +2807,10 @@ URL：webApp/admin/hotel_branch/register/ <br>
     "city":"北京市",
     "county":"丰台区",
     "address":"靛厂路333号",
-    "phone":"["13051391335","13000000000"]",
-    "facility":"["停车场","吸烟区"]",
-    "pay_card":"["支付宝","微信"]",
-    "cuisine":""
+    "phone":["13051391335","13000000000"],
+    "facility":["停车场","吸烟区"],
+    "pay_card":["支付宝","微信"],
+    "cuisine":{}
 }
 ```
 
@@ -2895,14 +2910,16 @@ URL：webApp/admin/hotel_branch/profile/get/ <br>
 |:------------- |:---------------|
 | name  | 名称   |
 | icon  | 头像  |
-| pictures  | 介绍图片（最多5张，json） |
+| pictures  | 介绍图片 |
 | province  | 省 |
 | city  | 市 |
 | county    | 区/县   |
 | address   | 详细地址  |
-| facility  | 设施（json）    |
-| pay_card  | 可以哪些支付（json） |
-| phone | 电话（最多3个，json）   |
+| facility  | 设施    |
+| meal_period   | 餐段    |
+| pay_card  | 可以哪些支付 |
+| phone | 电话   |
+| cuisine   | 菜系    |
 | hotel_name    | 所属酒店名   |
 | manager_name    | 店长名  |
 | create_time   | 创建时间  |
@@ -2915,15 +2932,28 @@ URL：webApp/admin/hotel_branch/profile/get/ <br>
 	"data":{
         "name":"北京宴总店",
         "icon":"头像地址",
-        "pictures":"[picture1,picture2]",
+        "pictures":["picture1","picture2"],
         "province":"北京市",
         "city":"北京市",
         "county":"丰台区",
         "address":"靛厂路333号",
-        "facility":"["停车场","吸烟区"]",
-        "pay_card":"["支付宝","微信"]",
-        "phone":"["13051391335", "13188888888"]",
-        "cuisine":"",
+        "meal_period":{
+            "Monday":{
+                "lunch":{"from": "8:30","to": "12:00"},
+                "dinner":{"from":"12:00","to":"18:00"},
+                "supper":{"from":"18:00","to":"24:00"}
+            },
+            "TuesDay":{
+                "lunch":{"from": "8:30","to": "12:00"},
+                "dinner":{"from":"12:00","to":"18:00"},
+                "supper":{"from":"18:00","to":"24:00"}
+            },
+            ...
+        },
+        "facility":["停车场","吸烟区"],
+        "pay_card":["支付宝","微信"],
+        "phone":["13051391335", "13188888888"],
+        "cuisine":{},
         "hotel_name":"北京宴",
         "manager_name":"陈总",
         "create_time":"创建时间"
@@ -2957,10 +2987,10 @@ URL：webApp/admin/hotel_branch/profile/modify/ <br>
 | city  | 市 | yes   |
 | county    | 区/县   | yes   |
 | address | 详细地址    | yes    |
-| phone | 电话（json）  | no   |
-| facility | 设施（json）   | no    |
-| pay_card  | 可以哪些支付（json）    | no    |
-| cuisine   | 菜系（json）  | no    |
+| phone | 电话（最多5个，数组）  | no   |
+| facility | 设施（数组）   | no    |
+| pay_card  | 可以哪些支付（数组）    | no    |
+| cuisine   | 菜系（键值对）  | no    |
 
 请求示例：
 
@@ -2974,10 +3004,10 @@ URL：webApp/admin/hotel_branch/profile/modify/ <br>
     "city":"北京市",
     "county":"丰台区",
     "address":"靛厂路333号",
-    "phone":"["13051391335","13000000000"]",
-    "facility":"["停车场","吸烟区"]",
-    "pay_card":"["支付宝","微信"]",
-    "cuisine":""
+    "phone":["13051391335","13000000000"],
+    "facility":["停车场","吸烟区"],
+    "pay_card":["支付宝","微信"],
+    "cuisine":{}
 }
 ```
 
@@ -3019,7 +3049,7 @@ URL：webApp/admin/hotel_branch/meal_period/modify/ <br>
 |:------------- |:---------------| :-------------:|
 | token         | 令牌          |         yes    |
 | branch_id  | 门店 ID | yes   |
-| meal_period  | 餐段（json） | yes   |
+| meal_period  | 餐段（键值对） | yes   |
 
 请求示例：
 
@@ -3027,7 +3057,19 @@ URL：webApp/admin/hotel_branch/meal_period/modify/ <br>
 {
     "token":"129ASDFIOJIO3RN23U12934INASDF",
     "branch_id":1,
-    "meal_period":"{"Monday": {"from": "8:30","to": "12:00",},"TuesDay": {"from": "8:30","to": "12:00",},...}"
+    "meal_period":{
+            "Monday":{
+                "lunch":{"from": "8:30","to": "12:00"},
+                "dinner":{"from":"12:00","to":"18:00"},
+                "supper":{"from":"18:00","to":"24:00"}
+            },
+            "TuesDay":{
+                "lunch":{"from": "8:30","to": "12:00"},
+                "dinner":{"from":"12:00","to":"18:00"},
+                "supper":{"from":"18:00","to":"24:00"}
+            },
+            ...
+        },
 }
 ```
 
@@ -3063,7 +3105,7 @@ URL：webApp/admin/hotel_branch/picture/add/ <br>
 |:------------- |:---------------| :-------------:|
 | token         | 令牌          |         yes    |
 | branch_id  | 门店 ID | yes   |
-| picture   | 图片[file]格式    | yes   |
+| picture   | 图片，[file]格式    | yes   |
 
 请求示例：
 
@@ -3071,7 +3113,7 @@ URL：webApp/admin/hotel_branch/picture/add/ <br>
 {
     "token":"129ASDFIOJIO3RN23U12934INASDF",
     "branch_id":1,
-    "meal_period":"{"Monday": {"from": "8:30","to": "12:00",},"TuesDay": {"from": "8:30","to": "12:00",},...}"
+    "picture":"[file]文件",
 }
 ```
 
@@ -3109,7 +3151,7 @@ URL：webApp/admin/hotel_branch/picture/delete/ <br>
 |:------------- |:---------------| :-------------:|
 | token         | 令牌          |         yes    |
 | branch_id  | 门店 ID | yes   |
-| pictures   | 需要删除的图片地址（可以多张，json）    | yes   |
+| pictures   | 需要删除的图片地址（可以多张，数组）    | yes   |
 
 请求示例：
 
@@ -3117,7 +3159,7 @@ URL：webApp/admin/hotel_branch/picture/delete/ <br>
 {
     "token":"129ASDFIOJIO3RN23U12934INASDF",
     "branch_id":1,
-    "picture":"["picture1","picture2"]",
+    "picture":["picture1","picture2"],
 }
 ```
 
@@ -3340,7 +3382,7 @@ URL：webApp/admin/hotel_branch/desk/list/ <br>
 | max_guest_num | 最大容纳人数    |
 | expense  | 费用说明  |
 | type  | 类型    |
-| facility  | 设施（json）    |
+| facility  | 设施（数组）    |
 | picture   | 照片    |
 | is_beside_window    | 是否靠窗  |
 | description   | 备注    |
@@ -3361,7 +3403,7 @@ URL：webApp/admin/hotel_branch/desk/list/ <br>
 		    "max_guest_num":15,
 		    "expense":"收取15%服务费",
 		    "type":"豪华包间",
-		    "facility":"["电脑","吸烟区"]",
+		    "facility":["电脑","吸烟区"],
 		    "picture":"图片地址",
 		    "is_beside_window":"True",
 		    "description":"",
@@ -3398,7 +3440,7 @@ URL：webApp/admin/hotel_branch/desk/add/ <br>
 | max_guest_num | 最大容纳人数    | yes   |
 | expense  | 费用说明  | no |
 | type  | 类型    |   no  |
-| facility  | 设施（json）    | no    |
+| facility  | 设施（数组）    | no    |
 | picture   | 房间介绍照片，[file]文件    | no    |
 | is_beside_window    | 是否靠窗  | no  |
 | description | 备注  | no    |
@@ -3415,7 +3457,7 @@ URL：webApp/admin/hotel_branch/desk/add/ <br>
     "max_guest_num":15,
     "expense":"收取15%服务费",
     "type":"豪华包间",
-    "facility":"["电脑","吸烟区"]",
+    "facility":["电脑","吸烟区"],
     "picture":"图片地址",
     "is_beside_window":"True",
     "description":"",
@@ -3463,7 +3505,7 @@ URL：webApp/admin/hotel_branch/area/delete/ <br>
 | max_guest_num | 最大容纳人数    | no   |
 | expense  | 费用说明  | no |
 | type  | 类型    |   no  |
-| facility  | 设施（json）    | no    |
+| facility  | 设施（数组）    | no    |
 | picture   | 房间介绍照片，[file]文件    | no    |
 | is_beside_window    | 是否靠窗  | no  |
 | description | 备注  | no    |

@@ -96,7 +96,7 @@ class HotelBranch(models.Model):
     # 详细地址
     address = models.CharField(max_length=50, default='')
     # 餐段
-    meal_period = models.CharField(max_length=500, default='')
+    meal_period = models.CharField(max_length=5000, default='')
     # 设施
     facility = models.CharField(max_length=100, default='')
     # 可以刷哪些卡
@@ -139,6 +139,10 @@ class Area(models.Model):
 
     # 所属门店
     branch = models.ForeignKey('HotelBranch', models.CASCADE, 'areas')
+
+    # 管理器
+    objects = models.Manager()
+    enabled_objects = EnabledManager()
 
     class Meta:
         ordering = ['-create_time']

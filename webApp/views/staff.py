@@ -314,7 +314,7 @@ def get_branches(request, token, offset=0, limit=10, order=1):
           'city': b.city,
           'county': b.county,
           'address': b.address,
-          'hotel_name': b.hotel.hotel.name,
+          'hotel_name': b.hotel.name,
           'manager_name': b.manager.name,
           'create_time': b.create_time} for b in branches]
     return corr_response({'count': c, 'list': l})
