@@ -171,6 +171,7 @@ def get_desks(request, token, branch_id, date, dinner_period, area_id=None,
         d = {'desk_id': desk.id,
              'number': desk.number,
              'order': desk.order,
+             'area_name': desk.area.name,
              'min_guest_num': desk.min_guest_number,
              'max_guest_num': desk.max_guest_number}
 

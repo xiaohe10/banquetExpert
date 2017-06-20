@@ -464,6 +464,141 @@ URL：webApp/staff/hotel_branch/list/ <br>
 | err_1 | 参数不正确（缺少参数或者不符合格式） |
 | err_3 | 不存在该员工 |
 
+
+# 酒店接口
+
+## 获取所有酒店列表
+
+URL：webApp/hotel/list/ <br>
+请求方式：POST <br>
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------:|
+| offset | 起始值（默认0） | no |
+| limit | 偏移量（默认10） | no |
+| order | 排序方式（0: 注册时间升序，1: 注册时间降序，2: 名称升序，3: 名称降序，默认1） | no |
+
+请求示例:
+
+
+```
+{
+
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| count | 酒店总数  |
+| list  |   酒店列表    |
+| 以下为list中的数据   |
+| hotel_id | 酒店 ID |
+| name | 酒店名称 |
+| icon | 头像 |
+| branches_count | 门店数 |
+| owner_name | 法人代表 |
+| create_time | 创建时间 |
+
+
+返回示例：
+
+```
+{
+	"status":"true",
+	"data":{
+	    "count":100,
+	    "list":{[
+            "hotel_id":1,
+            "name":"北京宴",
+            "icon":"http://oss.aliyun/banquet/avatar/1.jpg",
+            "branches_count":3,
+            "owner_name":"杨秀荣",
+            "create_time":"创建时间"
+            ],
+            ...
+		}
+	}
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+
+
+## 获取酒店的门店列表
+URL：webApp/hotel/hotel_branch/list/ <br>
+请求方式：POST <br>
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------:|
+| offset | 起始值（默认0） | no |
+| limit | 偏移量（默认10） | no |
+| order | 排序方式（0: 注册时间升序，1: 注册时间降序，2: 名称升序，3: 名称降序，默认1） | no |
+
+请求示例:
+
+
+```
+{
+
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| count | 门店数   |
+| list  | 门店列表  |
+|以下为list中的数据|
+| branch_id | 门店 ID |
+| name | 名称 |
+| icon | 头像 |
+| province | 省 |
+| city | 城市 |
+| county | 区/县 |
+| address | 详细地址 |
+| hotel_name | 所属酒店名 |
+| manager_name | 店长名 |
+| create_time | 创建时间 |
+
+返回示例：
+
+```
+{
+	"status":"true",
+	"data":{
+	    "count":3,
+	    "list":[
+            "branch_id":1,
+            "name":"北京宴总店",
+            "icon":"http://oss.aliyun/banquet/avatar/1.jpg",
+            "province":"北京市",
+            "city":"北京市",
+            "county":"丰台区",
+            "address":"北京市丰台区靛厂路333号",
+            "branches_count":3,
+            "hotel_name":"北京宴",
+            "manager_name":"陈奎义",
+            "create_time":"创建时间"
+            ],
+            ...
+	    }
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+
+
 # 门店接口
 
 ## 获取门店的详情
@@ -564,7 +699,7 @@ URL：webApp/hotel_branch/area/list/ <br>
 
 | 参数名称       | 含义             |
 |:------------- |:---------------|
-| count | 区域数 |
+| count | 区域总数 |
 | list | 区域列表 |
 |以下为list中的数据|
 | area_id | 区域 ID |
@@ -629,11 +764,12 @@ URL：webApp/hotel_branch/area/list/ <br>
 
 | 参数名称       | 含义             |
 |:------------- |:---------------|
-| count | 区域数 |
-| list | 区域列表 |
+| count | 桌位总数 |
+| list | 桌位列表 |
 |以下为list中的数据|
 | desk_id | 桌位 ID |
 | number | 桌位编号 |
+| status    | 桌位状态0: 空闲, 1: 预定中, 2: 用餐中  |
 | order | 排序 |
 | area_name | 所在区域名   |
 | min_guest_num | 最小容纳人数    |
@@ -649,6 +785,8 @@ URL：webApp/hotel_branch/area/list/ <br>
 	    "count":33,
 	    "list":[
 	        "desk_id":1,
+	        "number":"202",
+	        "status":0,
 		    "area_name":"一楼",
 		    "order":1,
 		    "create_time":"创建时间"
@@ -683,7 +821,7 @@ URL：webApp/order/submit <br>
 | name | 联系人 | yes |
 | contact | 联系电话 | yes |
 | guest_number | 客人数量 | yes |
-| desks | 桌位 | yes |
+| desks | 桌位ID的数组 | yes |
 | staff_description | 员工备注 | no |
 |以下是私人订制的字段|
 | water_card | 水牌 | no |
@@ -802,7 +940,7 @@ URL：webApp/order/search/ <br>
 | contact | 联系电话 |
 | guest_type | 顾客身份 |
 | guest_number | 客人数量 |
-| desks | 桌位 |
+| desks | 桌位ID数组 |
 | internal_channel | 内部获客渠道, 即接单人名字, 如果存在 |
 | external_channel | 外部获客渠道, 即外部渠道名称, 如果存在 |
 
@@ -884,7 +1022,7 @@ URL：webApp/order/detail/ <br>
 | guest_type | 顾客身份 |
 | contact | 联系电话 |
 | guest_number | 客人数量 |
-| desks | 桌位ID和名称 |
+| desks | 桌位ID和编号 |
 | user_description | 用户备注 |
 | staff_description | 员工备注 |
 |以下是私人订制的字段|
@@ -925,7 +1063,7 @@ URL：webApp/order/detail/ <br>
 		"guest_type":"vip",
 		"contact":"18813101211",
 		"guest_number":10,
-		"desks":[{"id":1,"name":"309"},{"id":2,"name":"312"},{"id":3,"name":"311"}],
+		"desks":[{"id":1,"number":"309"},{"id":2,"number":"312"},{"id":3,"number":"311"}],
 		"user_description":"生日宴，准备蜡烛",
 		"staff_description":"客户年级大，做好防滑",
 		"water_card":"水牌内容",
@@ -969,7 +1107,7 @@ URL：webApp/order/update/ <br>
 | name | 联系人 | no |
 | contact | 联系电话 | no |
 | guest_number | 客人数量 | no |
-| desks | 桌位 | no |
+| desks | 桌位ID数组 | no |
 | staff_description | 员工备注 | no |
 |以下是私人订制的字段|
 | water_card | 水牌 | no |
@@ -1051,9 +1189,9 @@ URL：webApp/order/monthlist/ <br>
 order_number | 单数
 desk_number | 桌子个数
 guest_number | 人数
-comsuption | 总消费
-person_comsuption | 人均消费
-desk_comsuption | 桌均消费
+consumption | 总消费
+person_consumption | 人均消费
+desk_consumption | 桌均消费
 
 返回示例：
 
@@ -1066,9 +1204,9 @@ desk_comsuption | 桌均消费
 			"order_number":10,
 			"guest_number":100,
 			"desk_number":100,
-			"comsuption":100000,
-			"person_comsuption":1000,
-			"desk_comsuption":99
+			"consumption":100000,
+			"person_consumption":1000,
+			"desk_consumption":99
 		}
 	]
 }
@@ -1094,9 +1232,9 @@ URL：webApp/order/daylist/ <br>
 order_number | 单数
 desk_number | 桌子个数
 guest_number | 人数
-comsuption | 总消费
-person_comsuption | 人均消费
-desk_comsuption | 桌均消费
+consumption | 总消费
+person_consumption | 人均消费
+desk_consumption | 桌均消费
 
 返回示例
 
@@ -1109,18 +1247,18 @@ desk_comsuption | 桌均消费
 			"order_number":10,
 			"guest_number":100,
 			"desk_number":100,
-			"comsuption":100000,
-			"person_comsuption":1000,
-			"desk_comsuption":99
+			"consumption":100000,
+			"person_consumption":1000,
+			"desk_consumption":99
 		},
 		{
 			"date":"2015-10-25",
 			"order_number":10,
 			"guest_number":100,
 			"desk_number":100,
-			"comsuption":100000,
-			"person_comsuption":1000,
-			"desk_comsuption":99
+			"consumption":100000,
+			"person_consumption":1000,
+			"desk_consumption":99
 		},
 		...
 	]
