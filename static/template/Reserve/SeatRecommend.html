@@ -3,10 +3,10 @@
 <div class="py-1 bg-info">
     <div class="p-2 bg-success">
         <label for="count">>选择就餐人数 </label>
-        <select id="count" ng-init="selectCount=0" ng-change="change(selectCount)" ng-model="selectCount">
-            <option ng-repeat="x in NumberList" value="{{x.value}}">{{x.value}}</option>
+        <select id="count" ng-init="selected_count=1" ng-change="change(selected_count)" ng-model="selected_count">
+            <option ng-repeat="x in numbers" value="{{x.value}}">{{x.value}}</option>
         </select>
-        <a> 符合 {{selectCount}} 人桌位共{{resultCount}}个 注：序号数值越大，则优先推荐</a>
+        <a> 符合 {{selected_count}} 人桌位共{{seats.length}}个 注：序号数值越大，则优先推荐</a>
         <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" id="save" ng-click="save()" value="保存"/>
     </div>
 </div>

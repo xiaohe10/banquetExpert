@@ -1,254 +1,276 @@
 <!--主页/后台用户管理/渠道管理/新增预订员-->
-<!--内容-->
-<div class="py-2 px-2 mt-2 bg-info">
-    <!--表单-->
-    <div class="p-2 mb-2 bg-faded">
-        <form class="form-horizontal">
-            <fieldset>
-                <!--新增预订员-->
-                <div id="legend" class="col-form-legend">
-                    <legend class="">新增预订员</legend>
-                </div>
-                <!--姓名 性别-->
-                <div class="control-group">
-                    <label class="control-label"><a style="color: red;">*</a>姓名：</label>
-                    <div class="controls">
-                        <input class="form-control-sm inline" type="text"/>
-                        <label class="form-control-label radio inline"><input type="radio" name="sex"/>先生</label>
-                        <label class="form-control-label radio inline"><input type="radio" name="sex"/>女士</label>
-                    </div>
-                </div>
-                <!--电话-->
-                <div class="control-group">
-                    <label class="control-label"><a style="color: red;">*</a>电话：</label>
-                    <div class="controls">
-                        <label class="form-control-label text-warning inline"><input type="text" name="phone"/>请准确输入11位手机号码</label>
-                    </div>
-                </div>
-                <!--职位-->
-                <div class="control-group">
-                    <label class="control-label">职位：</label>
-                    <div class="controls">
-                        <input type="text" name="job"/>
-                    </div>
-                </div>
-                <!--用户名-->
-                <div class="control-group">
-                    <label class="control-label">用户名：</label>
-                    <div class="controls">
-                        <input type="text" name="username"/>
-                    </div>
-                </div>
-                <!--密码-->
-                <div class="control-group">
-                    <label class="control-label">密码：</label>
-                    <div class="controls">
-                        <input type="text" name="password"/>
-                    </div>
-                </div>
-                <!--TODO: 职能权限-->
-                <div class="control-group">
-                    <label class="control-label">职能权限：</label>
-                    <div class="controls">
-                        <!--职能权限表-->
-                        <table class="table table-hover table-bordered table-responsive">
-                            <thead>
-                            <tr>
-                                <td>管理职能</td>
-                                <td>营销职能</td>
-                                <td>预定职能</td>
-                                <td>销售职能</td>
-                            </tr>
-                            </thead>
-                            <tbody class="table-info">
-                            <tr>
-                                <td>管理职能</td>
-                                <td>营销职能</td>
-                                <td>预定职能</td>
-                                <td>销售职能</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <!--销售职能-->
-                <div class="control-group">
-                    <label class="control-label">销售职能：</label>
-                    <div class="controls">
-                        <label class="form-control-label checkbox inline">
-                            <input type="checkbox" name="sale"/>开通销售职能（可通过手机预订占座，统计本人订单业绩，并协助分析客户价值）
-                        </label>
-                    </div>
-                </div>
-                <!--订单短信-->
-                <div class="control-group">
-                    <label class="control-label">订单短信：</label>
-                    <div class="controls">
-                        <label class="form-control-label checkbox inline">
-                            <input type="checkbox" name="order_sms"/>接收客户预定通知
-                        </label>
-                    </div>
-                </div>
-                <!--TODO: 提成结算-->
-                <div class="control-group">
-                    <label class="control-label">提成结算：</label>
-                    <div class="controls">
-                        <!--接单提成-->
-                        <label class="form-control-label">
-                            <input class="checkbox inline" type="checkbox" name="unit"/>接单提成
-                        </label>
-                        <div class="p-2 bg-info">
-                            <h5>提成结算方式</h5>
-                            <div>
-                                <label class="form-control-label radio inline">
-                                    <input type="radio" name="unit"/>按消费额百分比
-                                </label>
-                                <label class="form-control-label inline">
-                                    消费金额 * <input type="number">元/桌
-                                </label>
-                            </div>
-                            <div>
-                                <label class="form-control-label">
-                                    <input class="radio inline" type="radio" name="unit"/>按订单数量
-                                </label>
-                                <label class="form-control-label">
-                                    <input type="number">元/桌
-                                </label>
-                            </div>
-                            <div>
-                                <label class="form-control-label">
-                                    <input class="radio inline" type="radio" name="unit"/>按消费人数
-                                </label>
-                                <label class="form-control-label">
-                                    <input type="number">元/人
-                                </label>
-                            </div>
-                        </div>
-                        <!--开新客提成-->
-                        <label class="form-control-label">
-                            <input class="checkbox inline" type="checkbox" name="unit"/>开新客提成
-                            <a class="warning">客户第一次在系统内生成订单消费成功，则接单人新开客数量加1。</a>
-                        </label>
-                        <div class="p-2 bg-info">
-                            <h5>提成结算方式</h5>
-                            <div>
-                                <label class="form-control-label inline">
-                                    消费金额 * <input type="number">元/桌
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--TODO: 管辖桌位-->
-                <div class="control-group">
-                    <label class="control-label">管辖桌位：</label>
-                    <div class="controls">
-                        <!--管理全部桌位-->
-                        <label class="form-control-label">
-                            <input class="checkbox inline" type="checkbox" name="unit"/>管理全部桌位
-                        </label>
-                        <!--区域导航栏-->
-                        <div>
-                            区域导航栏
-                        </div>
-                        <!--桌位选择列表-->
-                        <div>
-                            桌位选择列表
-                        </div>
-                    </div>
-                </div>
-                <!--TODO: 管辖区域-->
-                <div class="control-group">
-                    <label class="control-label">管辖区域：</label>
-                    <div class="controls">
-                        <ul class="inline">
-                            <li><label class="form-control-label"><input type="checkbox" name="area" value="1"/>一楼</label></li>
-                            <li><label class="form-control-label"><input type="checkbox" name="area" value="2"/>二楼</label></li>
-                            <li><label class="form-control-label"><input type="checkbox" name="area" value="3"/>三楼</label></li>
-                            <li><label class="form-control-label"><input type="checkbox" name="area" value="4"/>四楼</label></li>
-                            <li><label class="form-control-label"><input type="checkbox" name="area" value="5"/>五楼</label></li>
-                            <li><label class="form-control-label"><input type="checkbox" name="area" value="6"/>六楼</label></li>
-                            <li><label class="form-control-label"><input type="checkbox" name="area" value="7"/>七楼</label></li>
-                        </ul>
-                    </div>
-                </div>
-                <!--TODO: 沟通渠道-->
-                <div class="control-group">
-                    <label class="control-label">沟通渠道：</label>
-                    <div class="controls">
-                        <ul class="inline">
-                            <li>
-                                <label class="form-control-label">
-                                    <input type="radio" name="communicate_channel" value="7"/>电话盒子
-                                </label>
-                                <ul class="inline">
-                                    <li>
-                                        <label class="form-control-label">
-                                            <input type="checkbox" name="area" value="7"/> (来电盒子)线路1
+<div class="modal" ng-app="AddReserveApp" ng-controller="AddReserveCtrl" role="dialog" aria-labelledby="add-reserve">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <a>新增预订员</a>
+            </div>
+            <div class="modal-body">
+                <!--主页/后台用户管理/渠道管理/新增预订员-->
+                <!--内容-->
+                <div class="py-2 px-2 mt-2 bg-info">
+                    <!--表单-->
+                    <div class="p-2 mb-2 bg-faded">
+                        <form class="form-horizontal">
+                            <fieldset>
+                                <!--新增预订员-->
+                                <div class="col-form-legend">
+                                    <legend class="">新增预订员</legend>
+                                </div>
+                                <!--姓名 性别-->
+                                <div class="control-group">
+                                    <label class="control-label"><a style="color: red;">*</a>姓名：</label>
+                                    <div class="controls">
+                                        <input class="form-control-sm inline" type="text" ng-model="form.name"/>
+                                        <label class="form-control-label radio inline">
+                                            <input type="radio" ng-model="form.gender" value="male"/>先生
                                         </label>
-                                    </li>
-                                    <li>
-                                        <label class="form-control-label">
-                                            <input type="checkbox" name="area" value="7"/> (来电盒子)线路1
+                                        <label class="form-control-label radio inline">
+                                            <input type="radio" ng-model="form.gender" value="female"/>女士
                                         </label>
-                                    </li>
-                                    <li>
-                                        <label class="form-control-label">
-                                            <input type="checkbox" name="area" value="7"/> (来电盒子)线路1
+                                    </div>
+                                </div>
+                                <!--电话-->
+                                <div class="control-group">
+                                    <label class="control-label"><a style="color: red;">*</a>电话：</label>
+                                    <div class="controls">
+                                        <label class="form-control-label text-warning inline">
+                                            <input type="text" ng-model="form.phone" value="18800184976"/>请准确输入11位手机号码
                                         </label>
-                                    </li>
-                                    <li>
-                                        <label class="form-control-label">
-                                            <input type="checkbox" name="area" value="7"/> (来电盒子)线路1
+                                    </div>
+                                </div>
+                                <!--职位-->
+                                <div class="control-group">
+                                    <label class="control-label">职位：</label>
+                                    <div class="controls">
+                                        <input type="text" ng-model="form.job"/>
+                                    </div>
+                                </div>
+                                <!--用户名-->
+                                <div class="control-group">
+                                    <label class="control-label">用户名：</label>
+                                    <div class="controls">
+                                        <input type="text" ng-model="form.username"/>
+                                    </div>
+                                </div>
+                                <!--密码-->
+                                <div class="control-group">
+                                    <label class="control-label">密码：</label>
+                                    <div class="controls">
+                                        <input type="text" name="form.password"/>
+                                    </div>
+                                </div>
+                                <!--TODO: 职能权限-->
+                                <div class="control-group">
+                                    <label class="control-label">职能权限：</label>
+                                    <div class="controls">
+                                        <!--职能权限表-->
+                                        <table class="table table-hover table-bordered table-responsive">
+                                            <thead>
+                                            <tr>
+                                                <td>管理职能</td>
+                                                <td>营销职能</td>
+                                                <td>预定职能</td>
+                                                <td>销售职能</td>
+                                            </tr>
+                                            </thead>
+                                            <tbody class="table-info">
+                                            <tr>
+                                                <td>管理职能</td>
+                                                <td>营销职能</td>
+                                                <td>预定职能</td>
+                                                <td>销售职能</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <!--销售职能-->
+                                <div class="control-group">
+                                    <label class="control-label">销售职能：</label>
+                                    <div class="controls">
+                                        <label class="form-control-label checkbox inline">
+                                            <input type="checkbox" ng-model="form.enable_marketing_functions"/>
+                                            开通销售职能（可通过手机预订占座，统计本人订单业绩，并协助分析客户价值）
                                         </label>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <label class="form-control-label">
-                                    <input type="radio" name="communicate_channel" value="7"/>智能电话
-                                </label>
-                                <ul class="inline">
-                                    <li>
-                                        <label class="form-control-label">
-                                            <input type="checkbox" name="area" value="7"/> (智能电话)线路1
+                                    </div>
+                                </div>
+                                <!--订单短信-->
+                                <div class="control-group">
+                                    <label class="control-label">订单短信：</label>
+                                    <div class="controls">
+                                        <label class="form-control-label checkbox inline">
+                                            <input type="checkbox" ng-model="form.order_sms"/>接收客户预定通知
                                         </label>
-                                    </li>
-                                    <li>
+                                    </div>
+                                </div>
+                                <!--TODO: 提成结算-->
+                                <div class="control-group">
+                                    <label class="control-label">提成结算：</label>
+                                    <div class="controls">
+                                        <!--接单提成-->
                                         <label class="form-control-label">
-                                            <input type="checkbox" name="area" value="7"/> (智能电话)线路1
+                                            <input class="checkbox inline" type="checkbox" ng-model="form.enable_bonus"/>接单提成
                                         </label>
-                                    </li>
-                                    <li>
+                                        <div class="p-2 bg-info">
+                                            <h5>提成结算方式</h5>
+                                            <div>
+                                                <label class="form-control-label radio inline">
+                                                    <input type="radio" ng-model="form.bonus.method" value="0"/>按消费额百分比
+                                                </label>
+                                                <label class="form-control-label inline">
+                                                    消费金额 * <input type="number" ng-model="form.bonus.value">元/桌
+                                                </label>
+                                            </div>
+                                            <div>
+                                                <label class="form-control-label">
+                                                    <input class="radio inline" type="radio" ng-model="form.bonus.method" value="1"/>按订单数量
+                                                </label>
+                                                <label class="form-control-label">
+                                                    <input type="number" ng-model="form.bonus.value">元/桌
+                                                </label>
+                                            </div>
+                                            <div>
+                                                <label class="form-control-label">
+                                                    <input type="radio" name="unit" ng-model="form.bonus.method" value="2"/>按消费人数
+                                                </label>
+                                                <label class="form-control-label">
+                                                    <input type="number" ng-model="form.bonus.value">元/人
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <!--开新客提成-->
                                         <label class="form-control-label">
-                                            <input type="checkbox" name="area" value="7"/> (智能电话)线路1
+                                            <input class="checkbox inline" type="checkbox" name="unit"/>开新客提成
+                                            <a class="warning">客户第一次在系统内生成订单消费成功，则接单人新开客数量加1。</a>
                                         </label>
-                                    </li>
-                                    <li>
+                                        <div class="p-2 bg-info">
+                                            <h5>提成结算方式</h5>
+                                            <div>
+                                                <label class="form-control-label inline">
+                                                    消费金额 * <input type="number">元/桌
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--TODO: 管辖桌位-->
+                                <div class="control-group">
+                                    <label class="control-label">管辖桌位：</label>
+                                    <div class="controls">
+                                        <!--管理全部桌位-->
                                         <label class="form-control-label">
-                                            <input type="checkbox" name="area" value="7"/> (智能电话)线路1
+                                            <input class="checkbox inline" type="checkbox" name="unit"/>管理全部桌位
                                         </label>
-                                    </li>
-                                    <li>
-                                        <label class="form-control-label">
-                                            <input type="checkbox" name="area" value="7"/> (智能电话)线路1
-                                        </label>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
+                                        <!--区域导航栏-->
+                                        <div>
+                                            区域导航栏
+                                        </div>
+                                        <!--桌位选择列表-->
+                                        <div>
+                                            桌位选择列表
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--TODO: 管辖区域-->
+                                <div class="control-group">
+                                    <label class="control-label">管辖区域：</label>
+                                    <div class="controls">
+                                        <ul class="inline">
+                                            <li><label class="form-control-label"><input type="checkbox" name="area" value="1"/>一楼</label></li>
+                                            <li><label class="form-control-label"><input type="checkbox" name="area" value="2"/>二楼</label></li>
+                                            <li><label class="form-control-label"><input type="checkbox" name="area" value="3"/>三楼</label></li>
+                                            <li><label class="form-control-label"><input type="checkbox" name="area" value="4"/>四楼</label></li>
+                                            <li><label class="form-control-label"><input type="checkbox" name="area" value="5"/>五楼</label></li>
+                                            <li><label class="form-control-label"><input type="checkbox" name="area" value="6"/>六楼</label></li>
+                                            <li><label class="form-control-label"><input type="checkbox" name="area" value="7"/>七楼</label></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <!--TODO: 沟通渠道-->
+                                <div class="control-group">
+                                    <label class="control-label">沟通渠道：</label>
+                                    <div class="controls">
+                                        <ul class="inline">
+                                            <li>
+                                                <label class="form-control-label">
+                                                    <input type="radio" name="communicate_channel" value="7"/>电话盒子
+                                                </label>
+                                                <ul class="inline">
+                                                    <li>
+                                                        <label class="form-control-label">
+                                                            <input type="checkbox" name="area" value="7"/> (来电盒子)线路1
+                                                        </label>
+                                                    </li>
+                                                    <li>
+                                                        <label class="form-control-label">
+                                                            <input type="checkbox" name="area" value="7"/> (来电盒子)线路1
+                                                        </label>
+                                                    </li>
+                                                    <li>
+                                                        <label class="form-control-label">
+                                                            <input type="checkbox" name="area" value="7"/> (来电盒子)线路1
+                                                        </label>
+                                                    </li>
+                                                    <li>
+                                                        <label class="form-control-label">
+                                                            <input type="checkbox" name="area" value="7"/> (来电盒子)线路1
+                                                        </label>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <label class="form-control-label">
+                                                    <input type="radio" name="communicate_channel" value="7"/>智能电话
+                                                </label>
+                                                <ul class="inline">
+                                                    <li>
+                                                        <label class="form-control-label">
+                                                            <input type="checkbox" name="area" value="7"/> (智能电话)线路1
+                                                        </label>
+                                                    </li>
+                                                    <li>
+                                                        <label class="form-control-label">
+                                                            <input type="checkbox" name="area" value="7"/> (智能电话)线路1
+                                                        </label>
+                                                    </li>
+                                                    <li>
+                                                        <label class="form-control-label">
+                                                            <input type="checkbox" name="area" value="7"/> (智能电话)线路1
+                                                        </label>
+                                                    </li>
+                                                    <li>
+                                                        <label class="form-control-label">
+                                                            <input type="checkbox" name="area" value="7"/> (智能电话)线路1
+                                                        </label>
+                                                    </li>
+                                                    <li>
+                                                        <label class="form-control-label">
+                                                            <input type="checkbox" name="area" value="7"/> (智能电话)线路1
+                                                        </label>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <!--操作栏-->
+                                <div class="control-group">
+                                    <label class="control-label"></label>
+                                    <div class="controls">
+                                        <div class="py-2">
+                                            <button class="btn btn-primary btn-sm">提交</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
                     </div>
                 </div>
-                <!--操作栏-->
-                <div class="control-group">
-                    <label class="control-label"></label>
-                    <div class="controls">
-                        <div class="py-2">
-                            <button class="btn btn-primary btn-sm">提交</button>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-        </form>
+            </div>
+            <div class="modal-footer">
+                This is footer<a class="close"></a>
+            </div>
+        </div>
     </div>
 </div>
