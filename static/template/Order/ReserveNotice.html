@@ -9,11 +9,7 @@
             <input class="form-control form-control-sm" type="date" ng-model="option.date_to" value="{{option.date_to}}"/>
             <select class="form-control form-control-sm" ng-model="option.select_area">
                 <option value="0">全部就餐区域</option>
-                <option value="就餐区域">就餐区域A</option>
-                <option value="就餐区域">就餐区域B</option>
-                <option value="就餐区域">就餐区域C</option>
-                <option value="就餐区域">就餐区域D</option>
-                <option value="就餐区域">就餐区域E</option>
+                <option ng-repeat="x in area" value="{{x.value}}">{{x.name}}</option>
             </select>
             <select class="form-control form-control-sm" ng-model="option.select_channel">
                 <option value="-1">全部接单渠道</option>
@@ -49,7 +45,7 @@
     </div>
     <!--详细信息-->
     <div class="p-2 mb-2 bg-success">
-        <a>订单数：17 桌位数：17 就餐人数：17</a>
+        <a>订单数：{{detail.order_count}} 桌位数：{{detail.seat_count}} 就餐人数：{{detail.customer_count}}</a>
         <label class="checkbox inline">
             <input type="checkbox" ng-model="option.phone_mask" value="电话号码以'*'代替"/>
             电话号码以'*'代替
@@ -180,8 +176,8 @@
                 <!--导航菜单-->
                 <nav class="nav px-3 py-2">
                     <ul class="nav nav-tabs">
-                        <li class="nav-item active"><a href="#ddxx" role="tab" data-toggle="tab">订单信息</a></li>
-                        <li class="nav-item"><a href="#czxx" role="tab" data-toggle="tab">操作信息</a></li>
+                        <li class="nav-item active"><a data-target="#ddxx" role="tab" data-toggle="tab">订单信息</a></li>
+                        <li class="nav-item"><a data-target="#czxx" role="tab" data-toggle="tab">操作信息</a></li>
                     </ul>
                 </nav>
                 <!--内容面板-->

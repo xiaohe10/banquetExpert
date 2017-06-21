@@ -5,14 +5,14 @@
         <div class="form-inline p-1">
             <a>只能录入最近七日内订单</a>
             <select class="form-control form-control-sm" ng-model="option.date">
-                <option ng-repeat="x in order" value="{{x.value}}">{{x.title}}</option>
+                <option ng-repeat="x in order" value="{{x.value}}">{{x.title}}订单</option>
             </select>
             <select class="form-control form-control-sm" ng-model="option.channel">
-                <option>全部接单渠道</option>
+                <option value="-1">全部接单渠道</option>
                 <optgroup label="内部渠道"></optgroup>
-                <option ng-repeat="x in channel.inner">内部渠道</option>
+                <option ng-repeat="x in channel.inner" value="{{x.value}}">{{x.name}}</option>
                 <optgroup label="外部渠道"></optgroup>
-                <option ng-repeat="x in channel.outer">外部渠道</option>
+                <option ng-repeat="x in channel.outer" value="{{x.value}}">{{x.name}}</option>
             </select>
             <input class="form-control form-control-sm" type="text" ng-model="option.keyword" placeholder="输入姓名或手机号"/>
             <input class="btn btn-primary btn-sm ml-2 mr-1" type="button" ng-click="search()" value="搜索"/>

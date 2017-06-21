@@ -32,7 +32,7 @@
             </thead>
             <tbody id="table">
             <tr align="center" ng-repeat="x in table">
-                <td>{{x.date}}</td>
+                <td>{{x.date|date:"yyyy/MM/dd"}}</td>
                 <td>{{x.time}}</td>
                 <td>{{x.phone}}</td>
                 <td>{{x.name}}</td>

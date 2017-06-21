@@ -1,0 +1,69 @@
+<!--主页/订单管理/来电记录/预订单详情对话框-->
+<div class="modal" role="dialog" aria-labelledby="order-details">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <a>预订单详情</a>
+            </div>
+            <div class="modal-body">
+                <!--提示栏-->
+                <div class="row mx-2 bg-faded">
+                    <div class="px-3 py-2">2017年6月7日 周三 晚餐</div>
+                </div>
+                <!--导航菜单-->
+                <nav class="nav px-3 py-2">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item active"><a data-target="#ddxx" role="tab" data-toggle="tab">订单信息</a></li>
+                        <li class="nav-item"><a data-target="#czxx" role="tab" data-toggle="tab">操作信息</a></li>
+                    </ul>
+                </nav>
+                <!--内容面板-->
+                <div class="tabbable">
+                    <div class="tab-content">
+                        <!--订单信息-->
+                        <div role="tabpanel" class="tab-pane active" id="ddxx">
+                            <div class="text-info">
+                                <p><strong>三楼 315</strong></p>
+                                <p><strong>张 先生 100 0000 0000 6人 未分类客户</strong></p>
+                                <p><strong>用餐时间：2017年6月7日 周三(晚餐) 14:57</strong></p>
+                                <p><strong>创建时间：2017年6月7日14:59 操作：XXX</strong></p>
+                            </div>
+                            <div class="text-info bg-faded p-2">
+                                <p>备注：给女朋友过生日，提前到店布置房间。</p>
+                            </div>
+                            <div class="row m-2">
+                                <div class="col-sm-10 d-inline">
+                                    <ul class="list-group nav nav-tabs">
+                                        <li class="list-group-item img-thumbnail p-2 m-1">IMG1</li>
+                                        <li class="list-group-item img-thumbnail p-2 m-1">IMG2</li>
+                                        <li class="list-group-item img-thumbnail p-2 m-1">IMG3</li>
+                                        <li class="list-group-item img-thumbnail p-2 m-1">IMG4</li>
+                                        <li class="list-group-item img-thumbnail p-2 m-1">IMG5</li>
+                                    </ul>
+                                </div>
+                                <div class="col-4">
+                                    <div class="row my-3 text-sm-center">已选0</div>
+                                    <div class="row my-3">
+                                        <input class="btn btn-secondary btn-sm px-2 mx-1" type="button" value="删除"/>
+                                        <input class="btn btn-primary btn-sm px-2 mx-1" type="button" value="下载"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--操作信息-->
+                        <div role="tabpanel" class="tab-pane" id="czxx">
+                            <p><a>2017/6/1 13:24:42 预订单修改 单蕾</a></p>
+                            <p class="text-info">对张先生18614023307预订的2017-06-02晚餐段315桌位</p>
+                            <p><a>2017/6/1 13:24:42 预订单修改 单蕾</a></p>
+                            <p class="text-info">对张先生18614023307预订的2017-06-02晚餐段315桌位</p>
+                            <p><a>系统ID：0cdc987e-e654-43f9-a6ed-01af184c3251</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                This is footer<a class="close"></a>
+            </div>
+        </div>
+    </div>
+</div>
