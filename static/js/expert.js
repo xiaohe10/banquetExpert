@@ -296,39 +296,10 @@ $(document).ready(function () {
 
 });
 
-// angular.directive('bsPopup', function ($parse) {
-//     return {
-//         require: 'ngModel',
-//         restrict: A,
-//         link: function (scope, elem, attrs, ctrl) {
-//             scope.watch(function () {
-//                 return $parse(ctrl.$modelValue)(scope);
-//             }, function (newValue) {
-//                 if (newValue === 0) {
-//                     $(elem).modal('hide');
-//                     return;
-//                 } else {
-//                     $(elem).modal('show');
-//                     return;
-//                 }
-//             });
-//         }
-//     }
-// });
-//
-var BanquetExpertApp = angular.module('BanquetExpertApp', ['ngRoute', 'ngDialog']);
+var BanquetExpertApp = angular.module('BanquetExpertApp', ['ngRoute', 'ui.bootstrap']);
 BanquetExpertApp.controller('drawerCtrl', function ($scope) {
     $scope.menus = BanquetExpert.menus;
 });
-// BanquetExpertApp.config(['ngDialogProvider', function (ngDialogProvider) {
-//     ngDialogProvider.setDefaults({
-//         className: 'ngdialog-theme-default',
-//         plain: true,
-//         showClose: true,
-//         closeByDocument: true,
-//         closeByEscape: true
-//     });
-// }]);
 BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
     $routeProvider
     // 账户管理
@@ -364,7 +335,48 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
         .when('/Account/SMSDetails', {templateUrl: "./template/" + Templates.Account.SMSDetails})
         .when('/Account/Restaurant', {templateUrl: "./template/" + Templates.Account.Restaurant})
         // 渠道管理
-        .when('/Channel/Channel', {templateUrl: "./template/" + Templates.Channel.Channel})
+        .when('/Channel/Channel', {
+            templateUrl: "./template/" + Templates.Channel.Channel, controller: function ($scope, $modal) {
+                var TAG = Templates.Channel.Channel;
+                // 对话框
+                $scope.add_reserve = function () {
+                    Log.i(TAG, "新增预订员和迎宾");
+                    var modalInstance = $modal.open({
+                        templateUrl: "./template/" + Dialog.Channel.Channel.AddReserve,
+                        controller: function ($scope) {
+                            Log.i(TAG, "对话框控制器");
+                        }
+                    });
+                    modalInstance.opened.then(function () {
+                        Log.i(TAG, "对话框已经打开");
+                    });
+                };
+                $scope.add_manager = function () {
+                    Log.i(TAG, "新增客户经理");
+                    var modalInstance = $modal.open({
+                        templateUrl: "./template/" + Dialog.Channel.Channel.AddManager,
+                        controller: function ($scope) {
+                            Log.i(TAG, "对话框控制器");
+                        }
+                    });
+                    modalInstance.opened.then(function () {
+                        Log.i(TAG, "对话框已经打开");
+                    });
+                };
+                $scope.add_outer_channel = function () {
+                    Log.i(TAG, "新增外部渠道");
+                    var modalInstance = $modal.open({
+                        templateUrl: "./template/" + Dialog.Channel.Channel.AddOuterChannel,
+                        controller: function ($scope) {
+                            Log.i(TAG, "对话框控制器");
+                        }
+                    });
+                    modalInstance.opened.then(function () {
+                        Log.i(TAG, "对话框已经打开");
+                    });
+                };
+            }
+        })
         .when('/Channel/Privilege', {templateUrl: "./template/" + Templates.Channel.Privilege})
         // 客户管理
         .when('/Customer/AnniversaryReport', {
@@ -396,6 +408,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
         .when('/Customer/CustomerProfiles', {
             templateUrl: "./template/" + Templates.Customer.CustomerProfiles, controller: function ($scope, $modal) {
                 var TAG = Templates.Customer.CustomerProfiles;
+                // 操作栏
                 $scope.option = {
                     selected_type: 0,
                     selected_channel: "",
@@ -411,6 +424,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 };
                 $scope.channel = BanquetExpert.channel;
                 $scope.type = ["VVIP", "VIP", "常旅客", "董事", "流失"];
+                // 表格数据
                 $scope.table = [];
                 for (var i = 0; i < 7; i++) {
                     $scope.table.push({
@@ -419,32 +433,9 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                         type: 0, rfm_type: "沉睡", channel: "王唯唯", marketing_sms: false, selected: false
                     });
                 }
+                // 事件处理
                 $scope.query = function () {
                     Log.i(TAG, JSON.stringify($scope.option));
-                };
-                $scope.profiles_add = function ($scope, ngDialog) {
-                    ngDialog.open({
-                        template: "./template/" + Dialog.Customer.AddCustomerProfiles,
-                        controller: function ($scope) {
-
-                        }
-                    });
-                };
-                $scope.profiles_import = function ($scope, ngDialog) {
-                    ngDialog.open({
-                        template: "./template/" + Dialog.Customer.BatchImport,
-                        controller: function ($scope) {
-
-                        }
-                    });
-                };
-                $scope.profiles_export = function ($scope, ngDialog) {
-                    ngDialog.open({
-                        template: "./template/" + Dialog.Customer.BatchExport,
-                        controller: function ($scope) {
-
-                        }
-                    });
                 };
                 $scope.member = function () {
                     Log.i(TAG, "会员价值设置");
@@ -480,6 +471,37 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                     });
                     Log.i(TAG, JSON.stringify($scope.table));
                 }
+                // 对话框
+                $scope.profiles_add = function () {
+                    Log.i(TAG, "添加档案");
+                    var modalInstance = $modal.open({
+                        templateUrl: "./template/" + Dialog.Customer.CustomerProfiles.AddCustomerProfiles,
+                        controller: function ($scope) {
+                            Log.i(TAG, "对话框控制器");
+                        }
+                    });
+                    modalInstance.opened.then(function () {
+                        Log.i(TAG, "对话框已经打开");
+                    });
+                };
+                $scope.profiles_import = function () {
+                    Log.i(TAG, "批量导入档案");
+                    $modal.open({
+                        templateUrl: "./template/" + Dialog.Customer.CustomerProfiles.BatchImport,
+                        controller: function ($scope) {
+
+                        }
+                    });
+                };
+                $scope.profiles_export = function () {
+                    Log.i(TAG, "批量导出档案");
+                    $modal.open({
+                        templateUrl: "./template/" + Dialog.Customer.CustomerProfiles.BatchExport,
+                        controller: function ($scope) {
+
+                        }
+                    });
+                };
             }
         })
         .when('/Customer/CustomerRecycleBin', {
@@ -557,7 +579,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
             }
         })
         .when('/Order/OrderHistory', {
-            templateUrl: "./template/" + Templates.Order.OrderHistory, controller: function ($scope) {
+            templateUrl: "./template/" + Templates.Order.OrderHistory, controller: function ($scope, $modal) {
                 var TAG = Templates.Order.OrderHistory;
                 // 操作栏
                 $scope.option = {
@@ -603,6 +625,31 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 };
                 $scope.filter = function (index) {
                     Log.i(TAG, "查看" + index + "：" + $scope.nav[index]);
+                };
+                // 对话框
+                $scope.order_append = function () {
+                    Log.i(TAG, "补录订单");
+                    var modalInstance = $modal.open({
+                        templateUrl: "./template/" + Dialog.Order.OrderHistory.OrderAppend,
+                        controller: function ($scope) {
+                            Log.i(TAG, "对话框控制器");
+                        }
+                    });
+                    modalInstance.opened.then(function () {
+                        Log.i(TAG, "对话框已经打开");
+                    });
+                };
+                $scope.order_details = function () {
+                    Log.i(TAG, "订单详情");
+                    var modalInstance = $modal.open({
+                        templateUrl: "./template/" + Dialog.Order.OrderHistory.OrderDetails,
+                        controller: function ($scope) {
+                            Log.i(TAG, "对话框控制器");
+                        }
+                    });
+                    modalInstance.opened.then(function () {
+                        Log.i(TAG, "对话框已经打开");
+                    });
                 }
             }
         })
@@ -632,8 +679,9 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
             }
         })
         .when('/Order/ReserveNotice', {
-            templateUrl: "./template/" + Templates.Order.ReserveNotice, controller: function ($scope) {
+            templateUrl: "./template/" + Templates.Order.ReserveNotice, controller: function ($scope, $modal) {
                 var TAG = Templates.Order.ReserveNotice;
+                // 操作栏
                 $scope.option = {
                     date_from: "",
                     date_to: "",
@@ -659,6 +707,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 $scope.print_size = [
                     "A4完整打印", "A4精简版打印", "58mm打印", "80mm打印"
                 ];
+                // 表格数据
                 $scope.table = [];
                 for (var i = 0; i < 10; i++) {
                     $scope.table.push({
@@ -667,6 +716,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                         order_time: "2017/6/8 10:57:33", type: "流失", unit: "单位", status: "已订", operator: "刘光艳"
                     });
                 }
+                // 事件处理
                 $scope.query = function () {
                     Log.i(TAG, JSON.stringify($scope.option));
                 };
@@ -690,8 +740,18 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                     ];
                     Log.i(TAG, "根据 '" + tags[index] + "' 过滤列表数据");
                 };
-                $scope.open = function (id) {
-                    Log.i(TAG, "编辑订单：" + id);
+                // 对话框
+                $scope.order_details = function (id) {
+                    Log.i(TAG, "订单详情：" + id);
+                    var modalInstance = $modal.open({
+                        templateUrl: "./template/" + Dialog.Order.ReserveNotice.ReserveOrderDetails,
+                        controller: function ($scope) {
+                            Log.i(TAG, "对话框控制器");
+                        }
+                    });
+                    modalInstance.opened.then(function () {
+                        Log.i(TAG, "对话框已经打开");
+                    });
                 }
             }
         })
