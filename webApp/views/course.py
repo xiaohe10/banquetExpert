@@ -97,7 +97,8 @@ def push_course(request, token, cc_video_id, title, tags, **kwargs):
     course_keys = ('price', 'description')
     with transaction.atomic():
         try:
-            course = Course(cc_video_id=cc_video_id, title=title, tags=tags)
+            course = request.staff.courses.create(
+                cc_video_id=cc_video_id, title=title, tags=tags)
             for k in course_keys:
                 if k in kwargs:
                     setattr(course, k, kwargs[k])

@@ -11,5 +11,5 @@ urlpatterns = [
     # 预约直播间
     url(r'^subscribe/$', subscribe_live, name='subscribe'),
     # 获取直播间的回放列表
-    url(r'^playback/', get_subscribed_lives, name='play_back'),
+    url(r'^playback/$', get_subscribed_lives, name='play_back'),
 ]

@@ -29,7 +29,7 @@ def get_validation_code(request, phone):
         # send_message(phone_number, code)
         return corr_response()
     else:
-        return err_response('err_3', '接口访问频率限制')
+        return err_response('err_2', '接口访问频率限制')
 
 
 @validate_args({
@@ -314,7 +314,7 @@ def get_branches(request, token, offset=0, limit=10, order=1):
           'city': b.city,
           'county': b.county,
           'address': b.address,
-          'hotel_name': b.hotel.hotel.name,
+          'hotel_name': b.hotel.name,
           'manager_name': b.manager.name,
           'create_time': b.create_time} for b in branches]
     return corr_response({'count': c, 'list': l})

@@ -1,3 +1,5 @@
+import json
+
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -19,16 +21,16 @@ def get_profile(request, token, branch_id):
     :return
         name: 名称
         icon: 头像
-        pictures: 图片(最多5张，json数组)
+        pictures: 图片(最多5张，数组)
         province: 省
         city: 市
         county: 区/县
         address: 详细地址
-        meal_period: 餐段设置(json字符串)
-        facility: 设施(json字符串)
-        pay_card: 可以刷哪些卡(json字符串)
-        phone: 联系电话(最多3个，json数组)
-        cuisine: 菜系(json字符串)
+        meal_period: 餐段设置(键值对)
+        facility: 设施(数组)
+        pay_card: 可以刷哪些卡(数组)
+        phone: 联系电话(数组)
+        cuisine: 菜系(键值对)
         hotel_name: 所属酒店名
         manager_name: 店长名字
         create_time: 创建时间
@@ -46,18 +48,19 @@ def get_profile(request, token, branch_id):
     d = {'branch_id': branch.id,
          'name': branch.name,
          'icon': branch.icon,
-         'pictures': branch.pictures,
+         'pictures': json.loads(branch.pictures) if branch.pictures else '',
          'province': branch.province,
          'city': branch.city,
          'county': branch.county,
          'address': branch.address,
-         'meal_period': branch.meal_period,
-         'facility': branch.facility,
-         'pay_card': branch.pay_card,
-         'phone': branch.phone,
-         'cuisine': branch.cuisine,
-         'hotel_name': branch.hotel.hotel.name,
-         'manager_name': branch.manager_name,
+         'meal_period': json.loads(branch.meal_period)
+         if branch.meal_period else '',
+         'facility': json.loads(branch.facility) if branch.facility else '',
+         'pay_card': json.loads(branch.pay_card) if branch.pay_card else '',
+         'phone': json.loads(branch.phone) if branch.phone else '',
+         'cuisine': json.loads(branch.cuisine) if branch.cuisine else '',
+         'hotel_name': branch.hotel.name,
+         'manager_name': branch.manager.name,
          'create_time': branch.create_time}
     return corr_response(d)
 
@@ -171,11 +174,12 @@ def get_desks(request, token, branch_id, date, dinner_period, area_id=None,
         d = {'desk_id': desk.id,
              'number': desk.number,
              'order': desk.order,
-             'min_guest_num': desk.min_guest_number,
-             'max_guest_num': desk.max_guest_number}
+             'area_name': desk.area.name,
+             'min_guest_num': desk.min_guest_num,
+             'max_guest_num': desk.max_guest_num}
 
         # 判断桌位在查询日和查询餐段的状态
-        desk_id = '$' + desk.id + '$'
+        desk_id = '$' + str(desk.id) + '$'
         if Order.objects.filter(
                 dinner_period=dinner_period, dinner_date=date, status=0,
                 desks__icontains=desk_id). \

@@ -35,7 +35,7 @@ def login(request, username, password):
         if (not admin.is_enabled) or (admin.type != 0):
             return err_response('err_2', '管理员不存在')
         if admin.password != password:
-            return err_response('err_4', '密码错误')
+            return err_response('err_3', '密码错误')
         admin.update_token()
         admin.save()
         return corr_response({'token': admin.token})
@@ -97,7 +97,7 @@ def modify_hotel_profile(request, token, hotel_id, **kwargs):
     try:
         hotel = Hotel.enabled_objects.filter(id=hotel_id)
     except Hotel.DoesNotExist:
-        return err_response('err_3', '酒店不存在')
+        return err_response('err_4', '酒店不存在')
 
     # 管理员只能管理自己酒店
     if hotel != request.admin.hotel:
@@ -108,7 +108,7 @@ def modify_hotel_profile(request, token, hotel_id, **kwargs):
         'owner_name' in kwargs else None
     if name:
         if Hotel.objects.filter(name=name).exists():
-            return err_response('err_3', '酒店名已注册')
+            return err_response('err_5', '酒店名已注册')
         hotel.name = name
 
     if owner_name:
@@ -126,7 +126,7 @@ def modify_hotel_profile(request, token, hotel_id, **kwargs):
             img = Image.open(icon)
             img.save(file_name, quality=90)
         except OSError:
-            return err_response('err4', '图片为空或图片格式错误')
+            return err_response('err6', '图片为空或图片格式错误')
 
         # 删除旧文件, 保存新的文件路径
         if hotel.icon:
@@ -161,23 +161,22 @@ def get_branches(request, token, hotel_id, is_enabled=True, offset=0, limit=10,
     :param order: 排序方式
         0: 注册时间升序
         1: 注册时间降序（默认值）
-        2: 昵称升序
-        3: 昵称降序
+        2: 名称升序
+        3: 名称降序
     :return:
         count: 门店总数
         list: 门店列表
             branch_id: ID
             name: 名称
             icon: 头像
-            pictures: 图片(最多5张，json数组)
+            pictures: 图片(最多5张，数组)
             province: 省
             city: 市
             county: 区/县
             address: 详细地址
-            facility: 设施(json字符串)
-            pay_card: 可以刷哪些卡(json字符串)
-            phone: 联系电话(最多3个，json数组)
-            cuisine: 菜系(json字符串)
+            facility: 设施(数组)
+            pay_card: 可以刷哪些卡(数组)
+            phone: 联系电话(最多3个，数组)
             hotel_name: 所属酒店名
             manager_name: 店长名字
             create_time: 创建时间
@@ -187,7 +186,7 @@ def get_branches(request, token, hotel_id, is_enabled=True, offset=0, limit=10,
     try:
         hotel = Hotel.enabled_objects.get(id=hotel_id)
     except Hotel.DoesNotExist:
-        return err_response('err_3', '酒店不存在')
+        return err_response('err_4', '酒店不存在')
 
     # 管理员只能查看自己酒店的门店
     if hotel != request.admin.hotel:
@@ -201,15 +200,14 @@ def get_branches(request, token, hotel_id, is_enabled=True, offset=0, limit=10,
     l = [{'branch_id': b.id,
           'name': b.name,
           'icon': b.icon,
-          'pictures': b.pictures,
+          'pictures': json.loads(b.pictures) if b.pictures else '',
           'province': b.province,
           'city': b.city,
           'county': b.county,
           'address': b.address,
-          'facility': b.facility,
-          'pay_card': b.pay_card,
-          'phone': b.phone,
-          'cuisine': b.cuisine,
+          'facility': json.loads(b.facility) if b.facility else '',
+          'pay_card': json.loads(b.pay_card) if b.pay_card else '',
+          'phone': json.loads(b.phone) if b.phone else '',
           'hotel_name': b.hotel.hotel.name,
           'manager_name': b.manager.name,
           'create_time': b.create_time} for b in branches]
@@ -225,10 +223,6 @@ def get_branches(request, token, hotel_id, is_enabled=True, offset=0, limit=10,
     'city': forms.CharField(min_length=1, max_length=20),
     'county': forms.CharField(min_length=1, max_length=20),
     'address': forms.CharField(min_length=1, max_length=50),
-    'phone': forms.CharField(min_length=1, max_length=50),
-    'facility': forms.CharField(max_length=100, required=False),
-    'pay_card': forms.CharField(max_length=20, required=False),
-    'cuisine': forms.CharField(max_length=100, required=False),
 })
 @validate_admin_token()
 def register_branch(request, token, hotel_id, staff_id, **kwargs):
@@ -242,34 +236,45 @@ def register_branch(request, token, hotel_id, staff_id, **kwargs):
         city: 市(必传)
         county: 区/县(必传)
         address: 详细地址(必传)
-        phone: 联系电话(最多3个，json数组)
-        facility: 设施(json字符串)
-        pay_card: 可以刷哪些卡(json字符串)
-        cuisine: 菜系(json字符串)
+        phone: 联系电话(最多3个，数组)
+        facility: 设施(数组)
+        pay_card: 可以刷哪些卡(数组)
+        cuisine: 菜系(健值对)
     :return 200/400
     """
 
     try:
         hotel = Hotel.enabled_objects.get(id=hotel_id)
     except Hotel.DoesNotExist:
-        return err_response('err_3', '酒店不存在')
+        return err_response('err_4', '酒店不存在')
     try:
         staff = Staff.enabled_objects.get(id=staff_id)
     except Staff.DoesNotExist:
-        return err_response('err_4', '员工不存在')
+        return err_response('err_5', '员工不存在')
 
-    branch_keys = ('name', 'province', 'city', 'county', 'address', 'phone',
-                   'facility', 'pay_card', 'cuisine')
+    branch_keys = ('name', 'province', 'city', 'county', 'address')
+    branch_other_keys = ('phone', 'facility', 'pay_card', 'cuisine')
+
     with transaction.atomic():
         try:
-            branch = HotelBranch(hotel=hotel, staff=staff)
+            branch = HotelBranch(hotel=hotel, manager=staff)
             for k in branch_keys:
                 if k in kwargs:
                     setattr(branch, k, kwargs[k])
+
+            data = json.loads(request.body)
+            for k in branch_other_keys:
+                if k in data:
+                    try:
+                        v = json.dumps(data[k])
+                        setattr(branch, k, v)
+                    except KeyError or ValueError:
+                        return err_response(
+                            'err_1', '参数不正确（缺少参数或者不符合格式）')
             branch.save()
-            return corr_response()
+            return corr_response({'branch_id': branch.id})
         except IntegrityError:
-            return err_response('error_5', '服务器创建门店失败')
+            return err_response('error_6', '服务器创建门店失败')
 
 
 @validate_args({
@@ -308,16 +313,16 @@ def get_branch_profile(request, token, branch_id, **kwargs):
     :return
         name: 名称
         icon: 头像
-        pictures: 图片(最多5张，json数组)
+        pictures: 图片(最多5张，数组)
         province: 省
         city: 市
         county: 区/县
         address: 详细地址
-        meal_period: 餐段设置(json字符串)
-        facility: 设施(json字符串)
-        pay_card: 可以刷哪些卡(json字符串)
-        phone: 联系电话(最多3个，json数组)
-        cuisine: 菜系(json字符串)
+        meal_period: 餐段设置(数组)
+        facility: 设施(数组)
+        pay_card: 可以刷哪些卡(数组)
+        phone: 联系电话(最多3个，数组)
+        cuisine: 菜系(键值对)
         hotel_name: 所属酒店名
         manager_name: 店长名字
         is_enabled: 是否有效
@@ -336,18 +341,19 @@ def get_branch_profile(request, token, branch_id, **kwargs):
     d = {'branch_id': branch.id,
          'name': branch.name,
          'icon': branch.icon,
-         'pictures': branch.pictures,
+         'pictures': json.loads(branch.pictures) if branch.pictures else '',
          'province': branch.province,
          'city': branch.city,
          'county': branch.county,
          'address': branch.address,
-         'meal_period': branch.meal_period,
-         'facility': branch.facility,
-         'pay_card': branch.pay_card,
-         'phone': branch.phone,
-         'cuisine': branch.cuisine,
-         'hotel_name': branch.hotel.hotel.name,
-         'manager_name': branch.manager_name,
+         'meal_period': json.loads(branch.meal_period)
+         if branch.meal_period else '',
+         'facility': json.loads(branch.facility) if branch.facility else '',
+         'pay_card': json.loads(branch.pay_card) if branch.pay_card else '',
+         'phone': json.loads(branch.phone) if branch.phone else '',
+         'cuisine': json.loads(branch.cuisine) if branch.cuisine else '',
+         'hotel_name': branch.hotel.name,
+         'manager_name': branch.manager.name,
          'is_enabled': branch.is_enabled,
          'create_time': branch.create_time}
     return corr_response(d)
@@ -363,10 +369,6 @@ def get_branch_profile(request, token, branch_id, **kwargs):
     'city': forms.CharField(min_length=1, max_length=20, required=False),
     'county': forms.CharField(min_length=1, max_length=20, required=False),
     'address': forms.CharField(min_length=1, max_length=50, required=False),
-    'phone': forms.CharField(min_length=1, max_length=50, required=False),
-    'facility': forms.CharField(max_length=100, required=False),
-    'pay_card': forms.CharField(max_length=20, required=False),
-    'cuisine': forms.CharField(max_length=100, required=False),
     'is_enabled': forms.BooleanField(required=False),
 })
 @validate_admin_token()
@@ -381,33 +383,42 @@ def modify_branch_profile(request, token, branch_id, staff_id=None, **kwargs):
         city: 市
         county: 区/县
         address: 详细地址
-        phone: 联系电话(最多3个，json数组)
-        facility: 设施(json字符串)
-        pay_card: 可以刷哪些卡(json字符串)
-        cuisine: 菜系(json字符串)
+        phone: 联系电话(最多3个，数组)
+        facility: 设施(数组)
+        pay_card: 可以刷哪些卡(数组)
+        cuisine: 菜系(数组)
         is_enabled: 是否有效
         icon: 头像, [file]格式图片
-    :return 200/400
+    :return 200
     """
 
     try:
         branch = HotelBranch.objects.get(id=branch_id)
     except ObjectDoesNotExist:
-        return err_response('err_3', '酒店不存在')
+        return err_response('err_4', '酒店不存在')
 
     if staff_id is not None:
         try:
             staff = Staff.enabled_objects.get(id=staff_id)
         except Staff.DoesNotExist:
-            return err_response('err_4', '员工不存在')
+            return err_response('err_5', '员工不存在')
         branch.manager = staff
 
-    branch_keys = ('name', 'province', 'city', 'county', 'address', 'phone',
-                   'facility', 'pay_card', 'cuisine', 'is_enabled')
+    branch_keys = ('name', 'province', 'city', 'county', 'address', 'is_enabled')
+    branch_other_keys = ('phone', 'facility', 'pay_card', 'cuisine')
 
     for k in branch_keys:
         if k in kwargs:
             setattr(branch, k, kwargs[k])
+
+    try:
+        data = json.loads(request.body)
+        for k in branch_other_keys:
+            if k in data:
+                v = json.dumps(data[k])
+                setattr(branch, k, v)
+    except KeyError or ValueError:
+        return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
 
     # 修改头像
     if 'icon' in request.FILES:
@@ -422,7 +433,7 @@ def modify_branch_profile(request, token, branch_id, staff_id=None, **kwargs):
             img = Image.open(icon)
             img.save(file_name, quality=90)
         except OSError:
-            return err_response('err4', '图片为空或图片格式错误')
+            return err_response('err_6', '图片为空或图片格式错误')
 
         # 删除旧文件, 保存新的文件路径
         if branch.icon:
@@ -439,66 +450,81 @@ def modify_branch_profile(request, token, branch_id, staff_id=None, **kwargs):
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
     'branch_id': forms.IntegerField(),
-    'meal_period': forms.CharField(max_length=500),
 })
 @validate_admin_token()
-def modify_meal_period(request, token, branch_id, meal_period):
+def modify_meal_period(request, token, branch_id):
     """修改门店的餐段
 
     :param token: 令牌(必传)
     :param branch_id: 酒店门店ID(必传)
-    :param meal_period: 餐段设置, json字符串, 格式如下
+    :param meal_period: 餐段设置, 格式如下
         {
             "Monday": {
-                "from": "8:30",
-                "to": "12:00",
-            }
+                "lunch": {
+                    "from": "8:30",
+                    "to": "12:00"
+                },
+                "dinner": {
+                    "from": "12:00",
+                    "to": "18:00"
+                }
+            },
             "TuesDay": {
-                "from": "8:30",
-                "to": "12:00",
-            }
+                "lunch": {
+                    "from": "8:30",
+                    "to": "12:00"
+                },
+                "dinner": {
+                    "from": "12:00",
+                    "to": "18:00"
+                }
+            },
             ...
         }
     :return:
     """
+
     days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
             'Saturday', 'Sunday']
 
     try:
         branch = HotelBranch.objects.get(id=branch_id)
     except ObjectDoesNotExist:
-        return err_response('err_3', '酒店不存在')
+        return err_response('err_4', '酒店不存在')
 
-    # 解析餐段json字符串
+    # 解析餐段
     try:
-        meal_period_dict = json.loads(meal_period)
+        meal_period = json.loads(request.body)['meal_period']
         with open('data/meal_period.json') as json_file:
             data = json.load(json_file)
         result = {}
         for day in days:
+            result[day] = {}
             # 午餐
             lunch = data['lunch']
-            if 'lunch' in meal_period_dict[day]:
-                begin = meal_period_dict[day]['lunch']['from']
-                end = meal_period_dict[day]['lunch']['to']
-                result['lunch'] = \
+            if 'lunch' in meal_period[day]:
+                begin = meal_period[day]['lunch']['from']
+                end = meal_period[day]['lunch']['to']
+                result[day]['lunch'] = \
                     lunch[lunch.index(begin): lunch.index(end) + 1]
             # 晚餐
             dinner = data['dinner']
-            if 'dinner' in meal_period_dict[day]:
-                begin = meal_period_dict[day]['dinner']['from']
-                end = meal_period_dict[day]['dinner']['to']
-                result['dinner'] = \
+            if 'dinner' in meal_period[day]:
+                begin = meal_period[day]['dinner']['from']
+                end = meal_period[day]['dinner']['to']
+                result[day]['dinner'] = \
                     dinner[dinner.index(begin): dinner.index(end) + 1]
             # 夜宵
             supper = data['supper']
-            if 'supper' in meal_period_dict[day]:
-                begin = meal_period_dict[day]['supper']['from']
-                end = meal_period_dict[day]['supper']['to']
-                result['supper'] = \
+            if 'supper' in meal_period[day]:
+                begin = meal_period[day]['supper']['from']
+                end = meal_period[day]['supper']['to']
+                result[day]['supper'] = \
                     supper[supper.index(begin): supper.index(end) + 1]
         branch.meal_period = json.dumps(result)
-    except ValueError or KeyError:
+        branch.save()
+        return corr_response()
+    except KeyError or ValueError:
         return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
 
 
@@ -519,7 +545,7 @@ def add_branch_picture(request, token, branch_id):
     try:
         branch = HotelBranch.objects.get(id=branch_id)
     except ObjectDoesNotExist:
-        return err_response('err_3', '酒店不存在')
+        return err_response('err_4', '酒店不存在')
 
     pictures = json.loads(branch.pictures)
 
@@ -539,7 +565,7 @@ def add_branch_picture(request, token, branch_id):
             img = Image.open(picture)
             img.save(file_name, quality=90)
         except OSError:
-            return err_response('err4', '图片为空或图片格式错误')
+            return err_response('err6', '图片为空或图片格式错误')
 
         pictures.append(file_name)
         branch.pictures = json.dumps(pictures)
@@ -553,38 +579,44 @@ def add_branch_picture(request, token, branch_id):
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
     'branch_id': forms.IntegerField(),
-    'pictures': forms.CharField(max_length=300),
 })
 @validate_admin_token()
-def delete_branch_picture(request, token, branch_id, pictures):
+def delete_branch_picture(request, token, branch_id):
     """删除酒店门店介绍图片
 
     :param token: 令牌(必传)
     :param branch_id: 酒店ID(必传)
-    :param pictures: 需要删除的酒店介绍图片, json数组, 最多5张
+    :param pictures: 需要删除的酒店介绍图片, 数组, 最多5张
     :return:
     """
 
     try:
         branch = HotelBranch.objects.get(id=branch_id)
     except ObjectDoesNotExist:
-        return err_response('err_3', '酒店不存在')
+        return err_response('err_4', '酒店不存在')
 
     try:
-        picture_list = json.loads(pictures)
-    except ValueError:
+        picture_list = json.loads(request.body)['pictures']
+    except KeyError or ValueError:
         return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
 
     pictures_tmp = json.loads(branch.pictures)
-    for picture in picture_list:
-        if picture in pictures_tmp:
-            pictures_tmp.remove(picture)
-        else:
-            return err_response('err_4', '图片不存在')
 
-    branch.pictures = json.dumps(pictures_tmp)
-    branch.save()
-    return corr_response()
+    with transaction.atomic():
+        for picture in picture_list:
+            if picture in pictures_tmp:
+                pictures_tmp.remove(picture)
+                # 删除旧文件
+                try:
+                    os.remove(picture)
+                except OSError:
+                    pass
+            else:
+                return err_response('err_5', '图片不存在')
+
+        branch.pictures = json.dumps(pictures_tmp)
+        branch.save()
+        return corr_response()
 
 
 @validate_args({
@@ -594,7 +626,7 @@ def delete_branch_picture(request, token, branch_id, pictures):
 })
 @validate_admin_token()
 def get_areas(request, token, branch_id, order=1):
-    """获取门店的餐厅区域
+    """获取门店的餐厅区域列表
 
     :param token: 令牌(必传)
     :param branch_id: 门店ID(必传)
@@ -617,7 +649,7 @@ def get_areas(request, token, branch_id, order=1):
     try:
         branch = HotelBranch.enabled_objects.get(id=branch_id)
     except ObjectDoesNotExist:
-        return err_response('err_3', '门店不存在')
+        return err_response('err_4', '门店不存在')
 
     # 只能查看自己酒店的门店
     if branch.hotel != request.admin.hotel:
@@ -712,14 +744,18 @@ def modify_area(request, token, area_id, **kwargs):
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
     'area_id': forms.IntegerField(),
+    'offset': forms.IntegerField(min_value=0, required=False),
+    'limit': forms.IntegerField(min_value=0, required=False),
     'order': forms.IntegerField(min_value=0, max_value=3, required=False),
 })
 @validate_admin_token()
-def get_desks(request, token, area_id, order=2):
+def get_desks(request, token, area_id, offset=0, limit=10, order=2):
     """获取门店的桌位列表
 
     :param token: 令牌(必传)
     :param area_id: 区域ID(必传)
+    :param offset: 起始值
+    :param limit: 偏移量
     :param order: 排序方式
         0: 注册时间升序
         1: 注册时间降序
@@ -729,14 +765,16 @@ def get_desks(request, token, area_id, order=2):
         count: 桌位数
         list:
             desk_id: 桌位ID
+            number: 编号
             order: 排序
             min_guest_num: 可容纳最小人数
             max_guest_num: 可容纳最大人数
             expense: 费用说明
             type: 房间类型
-            facility: 房间设施
+            facility: 房间设施（数组）
             picture: 图片
             is_beside_window: 是否靠窗
+            description: 备注
             create_time: 创建时间
     """
 
@@ -745,24 +783,26 @@ def get_desks(request, token, area_id, order=2):
     try:
         area = Area.objects.get(id=area_id)
     except ObjectDoesNotExist:
-        return err_response('err_3', '该区域不存在')
+        return err_response('err_4', '该区域不存在')
 
     # 只能查看自己酒店的门店区域
     if area.branch.hotel != request.admin.hotel:
         return err_response('err_2', '权限错误')
 
     c = area.desks.count()
-    ds = area.desks.order_by(ORDERS[order])
+    ds = area.desks.order_by(ORDERS[order])[offset:offset + limit]
 
     l = [{'desk_id': desk.id,
+          'number': desk.number,
           'order': desk.order,
-          'min_guest_num': desk.min_guest_number,
-          'max_guest_num': desk.max_guest_number,
+          'min_guest_num': desk.min_guest_num,
+          'max_guest_num': desk.max_guest_num,
           'expense': desk.expense,
           'type': desk.type,
-          'facility': desk.facility,
+          'facility': json.loads(desk.facility) if desk.facility else '',
           'picture': desk.picture,
           'is_beside_window': desk.is_beside_window,
+          'description': desk.description,
           'create_time': desk.create_time} for desk in ds]
 
     return corr_response({'count': c, 'list': l})
@@ -777,7 +817,6 @@ def get_desks(request, token, area_id, order=2):
     'max_guest_num': forms.IntegerField(),
     'expense': forms.CharField(max_length=100, required=False),
     'type': forms.CharField(max_length=10, required=False),
-    'facility': forms.CharField(max_length=100, required=False),
     'is_beside_window': forms.BooleanField(required=False),
     'description': forms.CharField(max_length=100, required=False),
 })
@@ -794,7 +833,7 @@ def add_desk(request, token, area_id, number, order, **kwargs):
         max_guest_num: 最大人数限制(必传)
         expense: 花费说明
         type: 桌位类型
-        facility: 设施, json字符串
+        facility: 设施(数组)
         is_beside_window: 是否靠窗
         description: 描述
     :return 200
@@ -813,14 +852,37 @@ def add_desk(request, token, area_id, number, order, **kwargs):
                  'type', 'facility', 'is_beside_window', 'description')
     with transaction.atomic():
         try:
-            desk = Desk(number=number, order=order)
+            desk = Desk(number=number, order=order, area=area)
             for k in desk_keys:
                 if k in kwargs:
                     setattr(desk, k, kwargs[k])
+
+            data = json.loads(request.body)
+            if 'facility' in data:
+                v = json.dumps(data['facility'])
+                setattr(desk, 'facility', v)
+
+            # 图片
+            if 'picture' in request.FILES:
+                picture = request.FILES['picture']
+
+                picture_time = timezone.now().strftime('%H%M%S%f')
+                picture_tail = str(picture).split('.')[-1]
+                dir_name = 'uploaded/picture/desk/%d/' % desk.id
+                os.makedirs(dir_name, exist_ok=True)
+                file_name = dir_name + '%s.%s' % (picture_time, picture_tail)
+                try:
+                    img = Image.open(picture)
+                    img.save(file_name, quality=90)
+                except OSError:
+                    return err_response('err5', '图片为空或图片格式错误')
+
             desk.save()
             return corr_response()
+        except KeyError or ValueError:
+            return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
         except IntegrityError:
-            return err_response('err_5', '服务器创建桌位失败')
+            return err_response('err_6', '服务器创建桌位失败')
 
 
 @validate_args({
@@ -832,7 +894,6 @@ def add_desk(request, token, area_id, number, order, **kwargs):
     'max_guest_num': forms.IntegerField(required=False),
     'expense': forms.CharField(max_length=100, required=False),
     'type': forms.CharField(max_length=10, required=False),
-    'facility': forms.CharField(max_length=100, required=False),
     'is_beside_window': forms.BooleanField(required=False),
     'description': forms.CharField(max_length=100, required=False),
 })
@@ -849,9 +910,10 @@ def modify_desk(request, token, desk_id, **kwargs):
         max_guest_num: 最大人数限制
         expense: 花费说明
         type: 桌位类型
-        facility: 设施, json字符串
+        facility: 设施（数组）
         is_beside_window: 是否靠窗
         description: 描述
+    :param picture: 桌位介绍图片,[file]文件
     :return 200
     """
 
@@ -865,26 +927,34 @@ def modify_desk(request, token, desk_id, **kwargs):
         return err_response('err_2', '权限错误')
 
     desk_keys = ('number', 'order', 'min_guest_num', 'max_guest_num', 'expense',
-                 'type', 'facility', 'is_beside_window', 'description')
+                 'type', 'is_beside_window', 'description')
 
     for k in desk_keys:
         if k in kwargs:
             setattr(desk, k, kwargs[k])
 
-    # 修改头像
-    if 'picture' in request.FILES:
-        icon = request.FILES['picture']
+    try:
+        data = json.loads(request.body)
+        if 'facility' in data:
+            v = json.dumps(data['facility'])
+            setattr(desk, 'facility', v)
+    except KeyError or ValueError:
+        return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
 
-        icon_time = timezone.now().strftime('%H%M%S%f')
-        icon_tail = str(icon).split('.')[-1]
+    # 修改图片
+    if 'picture' in request.FILES:
+        picture = request.FILES['picture']
+
+        picture_time = timezone.now().strftime('%H%M%S%f')
+        picture_tail = str(picture).split('.')[-1]
         dir_name = 'uploaded/picture/desk/%d/' % desk.id
         os.makedirs(dir_name, exist_ok=True)
-        file_name = dir_name + '%s.%s' % (icon_time, icon_tail)
+        file_name = dir_name + '%s.%s' % (picture_time, picture_tail)
         try:
-            img = Image.open(icon)
+            img = Image.open(picture)
             img.save(file_name, quality=90)
         except OSError:
-            return err_response('err4', '图片为空或图片格式错误')
+            return err_response('err_5', '图片为空或图片格式错误')
 
         # 删除旧文件, 保存新的文件路径
         if desk.picture:
@@ -910,7 +980,7 @@ def modify_desk(request, token, desk_id, **kwargs):
 @validate_admin_token()
 def get_staffs(request, token, hotel_id, status=1, is_enabled=True, offset=0,
                limit=10, order=1):
-    """获取员工列表
+    """获取酒店员工列表
 
     :param token: 令牌(必传)
     :param status: 员工状态, 0: 待审核, 1: 审核通过, 默认1
@@ -977,6 +1047,10 @@ def get_staffs(request, token, hotel_id, status=1, is_enabled=True, offset=0,
     'gender': forms.IntegerField(min_value=0, max_value=2, required=False),
     'position': forms.CharField(max_length=20),
     'id_number': forms.CharField(min_length=18, max_length=18),
+    'guest_channel': forms.IntegerField(
+        min_value=0, max_value=3, required=False),
+    'description': forms.CharField(max_length=100, required=False),
+    'authority': forms.CharField(max_length=20, required=False),
     'hotel_id': forms.IntegerField(),
 })
 @validate_admin_token()
@@ -989,9 +1063,13 @@ def register_staff(request, phone, password, hotel_id, **kwargs):
     :param kwargs:
         staff_number: 员工编号
         name: 姓名(必传)
-        gender: 性别, 0: 保密, 1: 男, 2: 女
         position: 职位(必传)
+        gender: 性别, 0: 保密, 1: 男, 2: 女
         id_number: 身份证号(必传)
+        guest_channel: 所属获客渠道, 0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理
+        description: 备注
+        authority: 权限
+        icon: 头像, [file]格式
     :return 200
     """
 
@@ -1004,8 +1082,9 @@ def register_staff(request, phone, password, hotel_id, **kwargs):
         return err_response('err_2', '权限错误')
 
     if Staff.objects.filter(phone=phone).exists():
-        return err_response('err_3', '该手机号已注册')
-    staff_keys = ('staff_number', 'name', 'gender', 'position', 'id_number')
+        return err_response('err_5', '该手机号已注册')
+    staff_keys = ('staff_number', 'name', 'gender', 'position', 'id_number',
+                  'guest_channel', 'description', 'authority')
     with transaction.atomic():
         try:
             staff = Staff(phone=phone, password=password, status=1,
@@ -1015,10 +1094,34 @@ def register_staff(request, phone, password, hotel_id, **kwargs):
             for k in staff_keys:
                 if k in kwargs:
                     setattr(staff, k, kwargs[k])
+
+            # 设置头像
+            if 'icon' in request.FILES:
+                icon = request.FILES['icon']
+
+                icon_time = timezone.now().strftime('%H%M%S%f')
+                icon_tail = str(icon).split('.')[-1]
+                dir_name = 'uploaded/icon/staff/%d/' % staff.id
+                os.makedirs(dir_name, exist_ok=True)
+                file_name = dir_name + '%s.%s' % (icon_time, icon_tail)
+                try:
+                    img = Image.open(icon)
+                    img.save(file_name, quality=90)
+                except OSError:
+                    return err_response('err6', '图片为空或图片格式错误')
+
+                # 删除旧文件, 保存新的文件路径
+                if staff.icon:
+                    try:
+                        os.remove(staff.icon)
+                    except OSError:
+                        pass
+                staff.icon = file_name
+
             staff.save()
             return corr_response()
         except IntegrityError:
-            return err_response('err_5', '服务器创建员工失败')
+            return err_response('err_7', '服务器创建员工失败')
 
 
 @validate_args({
@@ -1037,7 +1140,7 @@ def delete_staff(request, token, staff_id):
     try:
         staff = Staff.objects.get(id=staff_id)
     except Staff.DoesNotExist:
-        return err_response('err_3', '员工不存在')
+        return err_response('err_4', '员工不存在')
     # 管理员只能管理自己酒店的员工
     if staff.hotel != request.admin.hotel:
         return err_response('err_2', '权限错误')
@@ -1064,7 +1167,6 @@ def get_staff_profile(request, token, staff_id):
         icon: 员工头像
         gender: 性别
         status: 员工状态，0: 待审核，1: 审核通过
-        hotel_name: 员工所属酒店
         description: 备注
         position: 职位
         guest_channel: 所属获客渠道
@@ -1076,7 +1178,7 @@ def get_staff_profile(request, token, staff_id):
     try:
         staff = Staff.objects.get(id=staff_id)
     except Staff.DoesNotExist:
-        return err_response('err_3', '员工不存在')
+        return err_response('err_4', '员工不存在')
 
     # 管理员只能查看自己酒店的员工
     if staff.hotel != request.admin.hotel:
@@ -1085,6 +1187,7 @@ def get_staff_profile(request, token, staff_id):
     d = {'staff_id': staff.id,
          'staff_number': staff.staff_number,
          'name': staff.name,
+         'icon': staff.icon,
          'gender': staff.gender,
          'position': staff.position,
          'guest_channel': staff.guest_channel,
@@ -1099,7 +1202,6 @@ def get_staff_profile(request, token, staff_id):
     'token': forms.CharField(min_length=32, max_length=32),
     'staff_number': forms.CharField(
         min_length=1, max_length=20, required=False),
-    'name': forms.CharField(min_length=1, max_length=20, required=False),
     'gender': forms.IntegerField(min_value=0, max_value=2, required=False),
     'position': forms.CharField(max_length=20, required=False),
     'guest_channel': forms.IntegerField(
@@ -1107,11 +1209,12 @@ def get_staff_profile(request, token, staff_id):
     'description': forms.CharField(max_length=100, required=False),
     'authority': forms.CharField(max_length=20, required=False),
     'status': forms.IntegerField(required=False),
+    'is_enabled': forms.BooleanField(required=False),
     'staff_id': forms.IntegerField(),
 })
 @validate_admin_token()
 def modify_staff_profile(request, token, staff_id, **kwargs):
-    """修改员工信息
+    """修改员工信息，包括账号审核
 
     :param token: 令牌(必传)
     :param staff_id: 员工ID(必传)
@@ -1130,7 +1233,7 @@ def modify_staff_profile(request, token, staff_id, **kwargs):
     try:
         staff = Staff.objects.get(id=staff_id)
     except Staff.DoesNotExist:
-        return err_response('err_3', '员工不存在')
+        return err_response('err_4', '员工不存在')
 
     # 管理员只能管理自己酒店的员工
     if staff.hotel != request.admin.hotel:
@@ -1155,7 +1258,7 @@ def modify_staff_profile(request, token, staff_id, **kwargs):
             img = Image.open(icon)
             img.save(file_name, quality=90)
         except OSError:
-            return err_response('err4', '图片为空或图片格式错误')
+            return err_response('err_5', '图片为空或图片格式错误')
 
         # 删除旧文件, 保存新的文件路径
         if staff.icon:

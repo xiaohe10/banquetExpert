@@ -43,17 +43,18 @@ urlpatterns = [
     # 增加门店桌位
     url(r'^hotel_branch/desk/add/$', add_desk, name='add_desk'),
     # 修改门店桌位
-    url(r'^hotel_branch/desk/modify/$',modify_desk, name='modify_desk'),
+    url(r'^hotel_branch/desk/modify/$', modify_desk, name='modify_desk'),
     # 获取酒店员工列表
-    url(r'^staff/list/$', get_staffs, name='staff_list'),
+    url(r'^hotel/staff/list/$', get_staffs, name='staff_list'),
     # 注册新的员工
-    url(r'^staff/register/$', register_staff, name='register_staff'),
+    url(r'^hotel/staff/add/$', register_staff, name='register_staff'),
     # 删除员工
-    url(r'^staff/delete/$', delete_staff, name='delete_staff'),
+    url(r'^hotel/staff/delete/$', delete_staff, name='delete_staff'),
     # 获取员工资料
-    url(r'^staff/profile/get/$', get_staff_profile, name='get_staff_profile'),
+    url(r'^hotel/staff/profile/get/$', get_staff_profile,
+        name='get_staff_profile'),
     # 修改员工资料, 包括账号审核
-    url(r'^staff/profile/modify/$', modify_staff_profile,
+    url(r'^hotel/staff/profile/modify/$', modify_staff_profile,
         name='modify_staff_profile'),
     # 获取自己酒店的直播间列表
     url(r'^live/list/$', get_lives, name='live_list'),

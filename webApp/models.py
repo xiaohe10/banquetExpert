@@ -96,7 +96,7 @@ class HotelBranch(models.Model):
     # 详细地址
     address = models.CharField(max_length=50, default='')
     # 餐段
-    meal_period = models.CharField(max_length=500, default='')
+    meal_period = models.CharField(max_length=5000, default='')
     # 设施
     facility = models.CharField(max_length=100, default='')
     # 可以刷哪些卡
@@ -140,6 +140,10 @@ class Area(models.Model):
     # 所属门店
     branch = models.ForeignKey('HotelBranch', models.CASCADE, 'areas')
 
+    # 管理器
+    objects = models.Manager()
+    enabled_objects = EnabledManager()
+
     class Meta:
         ordering = ['-create_time']
 
@@ -162,9 +166,9 @@ class Desk(models.Model):
     # 是否靠窗
     is_beside_window = models.BooleanField(default=False)
     # 最小可容纳人数
-    min_guest_number = models.IntegerField(default=None, null=True)
+    min_guest_num = models.IntegerField(default=None, null=True)
     # 最大可容纳人数
-    max_guest_number = models.IntegerField(default=None, null=True)
+    max_guest_num = models.IntegerField(default=None, null=True)
     # 备注
     description = models.CharField(max_length=100, default='')
     # 是否有效
@@ -687,8 +691,8 @@ class ValidationCode(models.Model):
             return True if code == r.code and now <= r.time_expired else False
 
     @classmethod
-    def generate(cls, phone_number, minutes=3):
-        """为某个手机号生成验证码，有效时间为3分钟"""
+    def generate(cls, phone_number, minutes=10):
+        """为某个手机号生成验证码，有效时间为10分钟"""
 
         from datetime import timedelta
         from random import Random
@@ -696,7 +700,7 @@ class ValidationCode(models.Model):
         try:
             r = cls.objects.get(phone_number=phone_number)
             # 接口访问频率限制, 1分钟
-            if r.time_expired >= timezone.now() + timedelta(minutes=2):
+            if r.time_expired >= timezone.now() + timedelta(minutes=9):
                 return ''
         except cls.DoesNotExist:
             r = cls(phone_number)
