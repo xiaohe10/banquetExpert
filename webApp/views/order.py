@@ -1,7 +1,8 @@
 import json
 
 from django import forms
-from django.db.models import Q, timezone
+from django.db.models import Q
+from django.utils import timezone
 from django.db import IntegrityError, transaction
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -96,7 +97,7 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
           if UserArchives.objects.filter(phone=r.contact).count() == 1 else '',
           'contact': r.contact,
           'guest_number': r.guest_number,
-          'desks': json.loads(r.desks),
+          'desks': json.loads(r.desks) if r.desks else '',
           'internal_channel': r.internal_channel.name if
           r.internal_channel else '',
           'external_channel': r.external_channel.name if
@@ -124,7 +125,7 @@ def get_profile(request, token, order_id):
         guest_type: 顾客身份
         contact: 联系电话
         guest_number: 就餐人数
-        desks: 预定桌位, 可以多桌, json数组
+        desks: 预定桌位, 可以多桌, 数组, [{"id":1,"number":"110"}, ...]
         user_description: 用户备注
         staff_description: 员工备注
         water_card: 水牌
@@ -188,7 +189,12 @@ def get_profile(request, token, order_id):
 
     desks_list = json.loads(order.desks)
     for desk in desks_list:
-        d['desks'].append(desk[1:-1])
+        desk_id = desk[1:-1]
+        try:
+            number = Desk.objects.get(id=desk_id).number
+        except ObjectDoesNotExist:
+            number = ''
+        d['desks'].append({'id': desk_id, 'number': number})
 
     return corr_response(d)
 
@@ -201,7 +207,6 @@ def get_profile(request, token, order_id):
     'name': forms.CharField(min_length=1, max_length=20),
     'contact': forms.RegexField(r'[0-9]{11}'),
     'guest_number': forms.IntegerField(),
-    'desks': forms.CharField(max_length=50),
     'staff_description': forms.CharField(max_length=100, required=False),
     'water_card': forms.CharField(max_length=10, required=False),
     'door_card': forms.CharField(max_length=10, required=False),
@@ -227,7 +232,7 @@ def submit_order(request, token, dinner_date, dinner_time, dinner_period,
         name: 联系人(必传)
         contact: 联系电话(必传)
         guest_number: 就餐人数(必传)
-        desks: 预定桌位, 可以多桌, json数组(必传)
+        desks: 预定桌位, 可以多桌, 数组
         staff_description: 员工备注
         water_card: 水牌
         door_card: 门牌
@@ -242,20 +247,23 @@ def submit_order(request, token, dinner_date, dinner_time, dinner_period,
     :return: order_id
     """
 
-    desks = kwargs.pop('desks')
+    # 下单日期校验
+    if dinner_date < timezone.now().date():
+        return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+
     # 验证桌位是否存在和是否被预定
     try:
-        desk_list = json.loads(desks)
+        desk_list = json.loads(request.body)['desks']
         for i in range(len(desk_list)):
             # 桌位号加首尾限定符
             desk_id = '$' + str(desk_list[i]) + '$'
-            if Desk.enabled_objects.filter(id=desk_id).exists():
+            if not Desk.enabled_objects.filter(id=desk_list[i]).count() > 0:
                 return err_response('err_3', '桌位不存在')
             if Order.objects.filter(dinner_date=dinner_date,
                                     dinner_time=dinner_time,
                                     dinner_period=dinner_period,
                                     status__in=[0, 1],
-                                    desks__icontains=desk_id).exisits():
+                                    desks__icontains=desk_id).count() > 0:
                 return err_response('err_4', '桌位已被预定')
             desk_list[i] = desk_id
         desks = json.dumps(desk_list)
@@ -270,13 +278,15 @@ def submit_order(request, token, dinner_date, dinner_time, dinner_period,
     with transaction.atomic():
         try:
             order = Order(dinner_date=dinner_date, dinner_time=dinner_time,
-                          dinner_period=dinner_period, desks=desks)
+                          dinner_period=dinner_period, desks=desks,
+                          internal_channel=request.staff)
             for k in order_keys:
                 if k in kwargs:
                     setattr(order, k, kwargs[k])
             order.save()
             return corr_response({'order_id': order.id})
-        except IntegrityError:
+        except IntegrityError as e:
+            print(e)
             return err_response('err_5', '服务器创建订单错误')
 
 
@@ -290,7 +300,6 @@ def submit_order(request, token, dinner_date, dinner_time, dinner_period,
     'name': forms.CharField(min_length=1, max_length=20, required=False),
     'contact': forms.RegexField(r'[0-9]{11}', required=False),
     'guest_number': forms.IntegerField(required=False),
-    'desks': forms.CharField(max_length=50, required=False),
     'staff_description': forms.CharField(max_length=100, required=False),
     'water_card': forms.CharField(max_length=10, required=False),
     'door_card': forms.CharField(max_length=10, required=False),
@@ -317,7 +326,7 @@ def modify_order(request, token, order_id, **kwargs):
         name: 联系人
         contact: 联系电话
         guest_number: 就餐人数
-        desks: 预定桌位, 可以多桌, json数组
+        desks: 预定桌位, 可以多桌, 数组
         staff_description: 员工备注
         water_card: 水牌
         door_card: 门牌
@@ -342,6 +351,11 @@ def modify_order(request, token, order_id, **kwargs):
                   'welcome_fruit', 'welcome_card', 'background_music',
                   'has_candle', 'has_flower', 'has_balloon')
 
+    # 下单日期校验
+    if 'dinner_date' in kwargs:
+        if kwargs['dinner_date'] < timezone.now().date():
+            return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+
     # 订单状态切换验证
     if 'status' in kwargs:
         status = kwargs['status']
@@ -363,22 +377,22 @@ def modify_order(request, token, order_id, **kwargs):
     order.save()
 
     # 如果换桌
-    if 'desks' in kwargs:
-        desks = kwargs.pop('desks')
+    data = json.loads(request.body)
+    if 'desks' in data:
+        desk_list = data.pop('desks')
         # 验证桌位是否存在和是否被预定
         try:
-            desk_list = json.loads(desks)
             for i in range(len(desk_list)):
                 # 桌位号加首尾限定符
                 desk_id = '$' + str(desk_list[i]) + '$'
-                if Desk.enabled_objects.filter(id=desk_id).exists():
+                if not Desk.enabled_objects.filter(id=desk_list[i]).count() > 0:
                     return err_response('err_3', '桌位不存在')
                 if Order.objects.exclude(id=order_id).filter(
                         dinner_date=order.dinner_date,
                         dinner_time=order_id.dinner_time,
                         dinner_period=order.dinner_period,
                         status__in=[0, 1],
-                        desk__icontains=desk_id).exisits():
+                        desk__icontains=desk_id).count() > 0:
                     return err_response('err_4', '桌位已被预定')
                 desk_list[i] = desk_id
             desks = json.dumps(desk_list)
