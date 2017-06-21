@@ -1629,6 +1629,185 @@ URL：webApp/guest/profile/modify <br>
 
 
 # 评分管理
+
+## 获取评分列表
+URL：webApp/score/list/ <br>
+请求方式：POST <br>
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------:|
+| token         | 登录口令          |         yes  |
+| order_date    | 下单日期  |   no |
+| dinner_period | 餐段    |   no |
+| dinner_date   | 预定用餐日期  |   no  |
+| dinner_time   | 预定用餐时间  |   no  |
+| search_key | 搜索关键词（如姓名、手机等进行模糊搜索） | no |
+| offset | 起始值（默认0） | no |
+| limit | 偏移量（默认10） | no |
+| order | 排序方式（0: 注册时间升序，1: 注册时间降序，默认1） | no |
+
+
+请求示例:
+
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"state":0,
+	"search_key":"张总",
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| count | 订单数量 |
+| list | 订单列表 |
+| 以下为list中的数据 |
+| score_id  | 评分记录ID    |
+| order_id  | 订单ID |
+| create_time | 创建日期 |
+| cancel_time | 撤销日期 |
+| arrival_time  | 客到日期 |
+| finish_time | 完成日期 |
+| status | 状态((0, '已订'), (1, '客到'), (2, '已完成'), (3, '已撤单'))|
+| dinner_date | 预定用餐日期 |
+| dinner_time   | 预定用餐时间  |
+| dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') |
+| name | 联系人 |
+| contact | 联系电话 |
+| guest_type | 顾客身份 |
+| guest_number | 客人数量 |
+| desks | 桌位ID数组 |
+| internal_channel | 内部获客渠道, 即接单人名字, 如果存在 |
+| external_channel | 外部获客渠道, 即外部渠道名称, 如果存在 |
+| score | 总分    |
+
+
+返回示例：
+
+注意：返回的订单列表以数组来表示
+
+```
+{
+	"status":"true",
+	"data":{
+	    "count":100,
+	    "list":[
+	        "score_id":1,
+            "order_id":1,
+            "create_time":"2014-02-01 10:00:00",
+            "cancel_time":"2014-02-01 10:00:00",
+            "arrival_time":"2014-02-01 10:00:00",
+            "finish_time":"2014-02-01 10:00:00",
+            "status":0,
+            "order_id":"001",
+            "dinner_date":"2014-02-01",
+            "dinner_time":"12:00",
+            "dinner_period":0,
+            "name":"李四",
+            "guest_type":"vip",
+            "contact":"18813101211",
+            "guest_number":10,
+            "desks":[1,3,5],
+            "internal_channel":"刘光艳",
+            "external_channel":"美团",
+            "score":200
+            ],
+			...
+	    }
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+
+
+## 获取评分详情
+URL：webApp/score/matrix/ <br>
+请求方式：POST
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------|
+| token         | 登录口令(根据口令判断此员工所属酒店的评分标准）|         yes  |
+| score_id  | 评分记录 ID   | yes   |
+
+请求示例：
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"score_id":1
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| item_type | 项目类型  |
+| item_key | 项目关键词 （即英文字段名称）    |
+| item_name | 项目名称  |
+| item_need_picture | 是否需要上传图片(0代表不上传，1代表上传)    |
+| item_picture  | 图片地址  |
+| item_score    | 评分    |
+
+返回示例
+
+```
+{
+	"status":"true",
+	"data":[
+	{
+        "item_type":"私人订制",
+        "list":[
+        {
+            "item_key":"door_card",
+            "item_name":"门牌",
+            "item_need_picture":1,
+            "item_picture":"图片地址",
+            "item_score":9
+        },
+        {
+            "item_key":"sand_table",
+            "item_name":"沙盘",
+            "item_need_picture":1,
+            "item_picture":"图片地址",
+            "item_score":9
+        },
+        ....
+        ]
+    }
+    {
+        "item_type":"顾客满意度",
+        "list":[
+        {
+            "item_key":"praise_letter",
+            "item_name":"表扬信",
+            "item_need_picture":1,
+            "item_picture":"图片地址",
+            "item_score":9
+        },
+        {
+            "item_key":"friend_circle",
+            "item_name":"朋友圈",
+            "item_need_picture":1,
+            "item_picture":"图片地址",
+            "item_score":9
+        },
+        ....
+        ]
+    }
+    ...
+	]
+}
+```
+
 ## 获取评分项目
 URL：webApp/score/matrix/ <br>
 请求方式：POST
@@ -1649,8 +1828,6 @@ URL：webApp/score/matrix/ <br>
 
 | 参数名称       | 含义             |
 |:------------- |:---------------|
-| hotel_name | 酒店名称 |
-| branch_name | 店名  |
 | item_type | 项目类型  |
 | item_key | 项目关键词 （即英文字段名称）    |
 | item_name | 项目名称  |
@@ -1668,7 +1845,7 @@ URL：webApp/score/matrix/ <br>
         {
             "item_key":"door_card",
             "item_name":"门牌",
-            "item_need_picture":1,
+            "item_need_picture":1
         },
         {
             "item_key":"sand_table",
@@ -1684,7 +1861,7 @@ URL：webApp/score/matrix/ <br>
         {
             "item_key":"praise_letter",
             "item_name":"表扬信",
-            "item_need_picture":1,
+            "item_need_picture":1
         },
         {
             "item_key":"friend_circle",
@@ -3318,7 +3495,8 @@ URL：webApp/admin/hotel_branch/area/add/ <br>
 | err_2 | 权限错误 |
 | err_3 | 管理员不存在 |
 | err_4 | 门店不存在 |
-| err_5 | 服务器添加餐厅区域失败   |
+| err_5 | 区域已存在    |
+| err_6 | 服务器添加餐厅区域失败   |
 
 
 ## 修改门店的餐厅区域（包括删除）
@@ -3367,6 +3545,7 @@ URL：webApp/admin/hotel_branch/area/delete/ <br>
 | err_2 | 权限错误 |
 | err_3 | 管理员不存在 |
 | err_4 | 门店不存在 |
+| err_5 | 区域名已存在    |
 
 
 ## 获取门店的桌位列表
@@ -3509,8 +3688,9 @@ URL：webApp/admin/hotel_branch/desk/add/ <br>
 | err_2 | 权限错误 |
 | err_3 | 管理员不存在 |
 | err_4 | 地区不存在 |
-| err_5 | 图片为空或图片格式错误   |
-| err_6 | 服务器创建桌位失败 |
+| err_5 | 区域名已存在    |
+| err_6 | 图片为空或图片格式错误   |
+| err_7 | 服务器创建桌位失败 |
 
 
 ## 修改门店区域的桌位（包括删除）
@@ -3566,7 +3746,8 @@ URL：webApp/admin/hotel_branch/area/delete/ <br>
 | err_2 | 权限错误 |
 | err_3 | 管理员不存在 |
 | err_4 | 桌位不存在 |
-| err_5 | 图片为空或图片格式错误   |
+| err_5 | 桌位编号已存在   |
+| err_6 | 图片为空或图片格式错误   |
 
 
 ## 获取酒店的员工列表

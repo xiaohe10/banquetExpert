@@ -404,7 +404,7 @@ class Order(models.Model):
     # 预定桌位, 可能多桌
     desks = models.CharField(max_length=50, default='')
     # 支付金额
-    pay_number = models.IntegerField(default=None, db_index=True)
+    pay_number = models.IntegerField(default=None, null=True, db_index=True)
     # 水牌
     water_card = models.CharField(max_length=10, default='')
     # 门牌
@@ -444,11 +444,11 @@ class Order(models.Model):
     # 创建时间
     create_time = models.DateTimeField(default=timezone.now, db_index=True)
     # 客到时间
-    arrival_time = models.DateTimeField(default=None, db_index=True)
+    arrival_time = models.DateTimeField(default=None, null=True, db_index=True)
     # 完成时间
-    finish_time = models.DateTimeField(default=None, db_index=True)
+    finish_time = models.DateTimeField(default=None, null=True, db_index=True)
     # 撤销时间
-    cancel_time = models.DateTimeField(default=None, db_index=True)
+    cancel_time = models.DateTimeField(default=None, null=True, db_index=True)
 
     # 顾客(可能是散客)
     user = models.ForeignKey(

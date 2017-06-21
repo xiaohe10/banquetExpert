@@ -693,6 +693,9 @@ def add_area(request, token, branch_id, name, order):
     if branch.hotel != request.admin.hotel:
         return err_response('err_2', '权限错误')
 
+    if branch.areas.filter(name=name).count() > 0:
+        return err_response('err_5', '区域名已存在')
+
     with transaction.atomic():
         try:
             area = Area(name=name, order=order, branch=branch)
@@ -730,6 +733,10 @@ def modify_area(request, token, area_id, **kwargs):
     # 管理员只能查看自己酒店的门店
     if area.branch.hotel != request.admin.hotel:
         return err_response('err_2', '权限错误')
+
+    if 'name' in kwargs:
+        if area.branch.areas.filter(name=kwargs['name']).count() > 0:
+            return err_response('err_5', '区域名已存在')
 
     area_keys = ('name', 'order', 'is_enabled')
 
@@ -848,6 +855,9 @@ def add_desk(request, token, area_id, number, order, **kwargs):
     if area.branch.hotel != request.admin.hotel:
         return err_response('err_2', '权限错误')
 
+    if area.desks.filter(number=number).count() > 0:
+        return err_response('err_5', '桌位已存在')
+
     desk_keys = ('min_guest_num', 'max_guest_num', 'expense',
                  'type', 'facility', 'is_beside_window', 'description')
     with transaction.atomic():
@@ -875,14 +885,14 @@ def add_desk(request, token, area_id, number, order, **kwargs):
                     img = Image.open(picture)
                     img.save(file_name, quality=90)
                 except OSError:
-                    return err_response('err5', '图片为空或图片格式错误')
+                    return err_response('err_6', '图片为空或图片格式错误')
 
             desk.save()
             return corr_response()
         except KeyError or ValueError:
             return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
         except IntegrityError:
-            return err_response('err_6', '服务器创建桌位失败')
+            return err_response('err_7', '服务器创建桌位失败')
 
 
 @validate_args({
@@ -926,6 +936,10 @@ def modify_desk(request, token, desk_id, **kwargs):
     if desk.area.branch.hotel != request.admin.hotel:
         return err_response('err_2', '权限错误')
 
+    if 'number' in kwargs:
+        if desk.area.desks.filter(number=kwargs['number']).count() > 0:
+            return err_response('err_5', '桌位编号已存在')
+
     desk_keys = ('number', 'order', 'min_guest_num', 'max_guest_num', 'expense',
                  'type', 'is_beside_window', 'description')
 
@@ -954,7 +968,7 @@ def modify_desk(request, token, desk_id, **kwargs):
             img = Image.open(picture)
             img.save(file_name, quality=90)
         except OSError:
-            return err_response('err_5', '图片为空或图片格式错误')
+            return err_response('err_6', '图片为空或图片格式错误')
 
         # 删除旧文件, 保存新的文件路径
         if desk.picture:
