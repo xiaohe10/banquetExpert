@@ -1,57 +1,51 @@
 <!--主页/客户管理/客户档案列表/批量导入对话框-->
-<div class="modal" role="dialog" aria-labelledby="profiles-import">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-primary">
-                <a>批量导入</a>
-            </div>
-            <div class="modal-body">
-                <!--主页/客户管理/客户档案列表/批量导入-->
-                <!--内容-->
-                <div class="py-2 px-2 mt-2 bg-info">
-                    <!--表单-->
-                    <div class="p-2 mb-2 bg-faded">
-                        <!--表单-->
-                        <div class="p-2 mb-2 bg-faded">
-                            <form class="form-horizontal">
-                                <fieldset>
-                                    <!--请选取存储会员信息的EXCEL文档-->
-                                    <div class="col-form-legend">
-                                        <legend>请选取存储会员信息的EXCEL文档</legend>
-                                    </div>
-                                    <!--选取文件-->
-                                    <div class="control-group">
-                                        <label class="control-label">选择文件：</label>
-                                        <div class="controls">
-                                            <input class="form-control-sm mx-1" type="file" name="file" placeholder="未选择任何文件"/>
-                                        </div>
-                                    </div>
-                                    <!--操作栏-->
-                                    <div class="control-group">
-                                        <label class="control-label"></label>
-                                        <div class="controls">
-                                            <input class="btn btn-primary btn-sm px-2 mx-1" type="button" name="file" value="导入"/>
-                                        </div>
-                                    </div>
-                                </fieldset>
-                            </form>
+<div class="modal-header">
+    <a>批量导入</a>
+</div>
+<div class="modal-body">
+    <!--主页/客户管理/客户档案列表/批量导入-->
+    <!--内容-->
+    <div class="py-2 px-2 mt-2 bg-info">
+        <!--表单-->
+        <div class="p-2 mb-2 bg-faded">
+            <!--表单-->
+            <div class="p-2 mb-2 bg-faded">
+                <form class="form-horizontal">
+                    <fieldset>
+                        <!--请选取存储会员信息的EXCEL文档-->
+                        <div class="col-form-legend">
+                            <legend>请选取存储会员信息的EXCEL文档</legend>
                         </div>
-                        <!--提示-->
-                        <div class="p-2 mb-2 bg-warning">
-                            <p>注意事项:</p>
-                            <p>文件请另存为：Excel 97-2003 工作薄（*.xls）格式后使用</p>
-                            <p>可导入客户信息为：姓名、 手机、 性别、单位、喜好、忌口、服务要求</p>
-                            <p>性别可为“男”“男士”“先生”“女”“女士”，不可填写其他，为空时默认为“男”</p>
-                            <p>字段长度规则:1个汉字等于两个字节，其他字母数字1个占1字节 例如:小明=4字节，小明a=5字节</p>
-                            <p>客户名规范:不得超过20个字节长度</p>
-                            <p>公司名规范:不得超过40个字节长度</p>
+                        <!--选取文件-->
+                        <div class="control-group">
+                            <label class="control-label">选择文件：</label>
+                            <div class="controls">
+                                <input class="form-control-sm mx-1" type="file" name="file" placeholder="未选择任何文件"/>
+                            </div>
                         </div>
-                    </div>
-                </div>
+                        <!--操作栏-->
+                        <div class="control-group">
+                            <label class="control-label"></label>
+                            <div class="controls">
+                                <input class="btn btn-primary btn-sm px-2 mx-1" type="button" name="file" value="导入"/>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
             </div>
-            <div class="modal-footer">
-                This is footer<a class="close"></a>
+            <!--提示-->
+            <div class="p-2 mb-2 bg-warning">
+                <p>注意事项:</p>
+                <p>文件请另存为：Excel 97-2003 工作薄（*.xls）格式后使用</p>
+                <p>可导入客户信息为：姓名、 手机、 性别、单位、喜好、忌口、服务要求</p>
+                <p>性别可为“男”“男士”“先生”“女”“女士”，不可填写其他，为空时默认为“男”</p>
+                <p>字段长度规则:1个汉字等于两个字节，其他字母数字1个占1字节 例如:小明=4字节，小明a=5字节</p>
+                <p>客户名规范:不得超过20个字节长度</p>
+                <p>公司名规范:不得超过40个字节长度</p>
             </div>
         </div>
     </div>
+</div>
+<div class="modal-footer">
+    This is footer<a class="close"></a>
 </div>
