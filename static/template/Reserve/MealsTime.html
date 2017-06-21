@@ -13,14 +13,20 @@
         <thead class="bg-info">
         <tr>
             <td>餐段</td>
-            <td>午餐</td>
-            <td>晚餐</td>
-            <td>夜宵</td>
+            <td><label>午餐
+                <input type="checkbox" ng-model="MealsTime.hasLunch"/>
+            </label></td>
+            <td><label>晚餐
+                <input type="checkbox" ng-model="MealsTime.hasDinner"/>
+            </label></td>
+            <td><label>夜宵
+                <input type="checkbox" ng-model="MealsTime.hasSupper"/>
+            </label></td>
         </tr>
         </thead>
         <tbody class="align-content-center" id="MealsTime">
         <tr class="table-info" ng-repeat="x in MealsTime.Table">
-            <td>{{x.dayofweek}}</td>
+            <td>{{Week[0]}}</td>
             <td>
                 <select ng-model="x.lunch.from">
                     <option ng-repeat="lunch in MealsTime.Lunch" value="{{lunch}}">午餐{{lunch}}</option>

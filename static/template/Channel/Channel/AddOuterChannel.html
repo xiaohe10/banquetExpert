@@ -17,14 +17,14 @@
                     <div class="control-group">
                         <label class="control-label"><a style="color: red;">*</a>渠道名称：</label>
                         <div class="controls">
-                            <input class="form-control-sm" type="text" placeholder="118114 来电号码：010188114/0311118114/0312118114/118114"/>
+                            <input class="form-control-sm" type="text" ng-model="form.channel" placeholder=""/>
                         </div>
                     </div>
                     <!--直属上级-->
                     <div class="control-group">
                         <label class="control-label"><a style="color: red;">*</a>直属上级：</label>
                         <div class="controls">
-                            <select>
+                            <select ng-model="form.parent">
                                 <option>A1</option>
                                 <option>A2</option>
                                 <option>A3</option>
@@ -36,12 +36,8 @@
                     <div class="control-group">
                         <label class="control-label"><a style="color: red;">*</a>签约折扣标准：</label>
                         <div class="controls">
-                            <select>
-                                <option>无折扣</option>
-                                <option>9.5折</option>
-                                <option>9.0折</option>
-                                <option>8.5折</option>
-                                <option>8.0折</option>
+                            <select ng-model="form.discount">
+                                <option ng-repeat="(k, v) in discount" value="{{k}}">{{v}}</option>
                             </select>
                         </div>
                     </div>
@@ -49,9 +45,9 @@
                     <div class="control-group">
                         <label class="control-label">合作周期：</label>
                         <div class="controls">
-                            <input type="date" name="date-from" value="0"/>
+                            <input type="date" ng-model="form.date_from" value="0"/>
                             ~
-                            <input type="date" name="date-to" value="1"/>
+                            <input type="date" name="form.date_to" value="1"/>
                         </div>
                     </div>
                     <!--佣金核算方式-->
@@ -61,39 +57,29 @@
                             <ul class="list-unstyled list-group">
                                 <li class="list-group-item">
                                     <label class="form-control-label radio inline">
-                                        <input type="radio" name="unit"/>按消费额百分比
+                                        <input type="radio" ng-model="form.bonus.method" value="0"/>按消费额百分比
                                     </label>
                                     <label class="form-control-label inline">
-                                        消费金额 * <input type="number">元/桌
+                                        消费金额 * <input type="number" ng-model="form.bonus.value">元/桌
                                     </label>
                                 </li>
                                 <li class="list-group-item">
                                     <label class="form-control-label">
-                                        <input type="radio" name="unit"/>按订单数量
+                                        <input type="radio" ng-model="form.bonus.method" value="1"/>按订单数量
                                     </label>
                                     <label class="form-control-label">
-                                        <input type="number">元/桌
+                                        <input type="number" ng-model="form.bonus.value">元/桌
                                     </label>
                                 </li>
                                 <li class="list-group-item">
                                     <label class="form-control-label">
-                                        <input type="radio" name="unit"/>按消费人数
+                                        <input type="radio" ng-model="form.bonus.method" value="2"/>按消费人数
                                     </label>
                                     <label class="form-control-label">
-                                        <input type="number">元/人
+                                        <input type="number" ng-model="form.bonus.value">元/人
                                     </label>
                                 </li>
                             </ul>
-                        </div>
-                    </div>
-                    <!--操作栏-->
-                    <div class="control-group">
-                        <label class="control-label"></label>
-                        <div class="controls">
-                            <div class="py-2">
-                                <button class="btn btn-primary btn-sm">保存</button>
-                                <button class="btn btn-primary btn-sm">取消</button>
-                            </div>
                         </div>
                     </div>
                 </fieldset>
@@ -102,5 +88,6 @@
     </div>
 </div>
 <div class="modal-footer">
-    This is footer<a class="close"></a>
+    <button class="btn btn-primary btn-sm" ng-click="save()">保存</button>
+    <button class="btn btn-primary btn-sm" ng-click="cancel()">取消</button>
 </div>
