@@ -25,6 +25,7 @@
                         <label class="control-label"><a style="color: red;">*</a>直属上级：</label>
                         <div class="controls">
                             <select ng-model="form.parent">
+                                <optgroup label="直属上级"></optgroup>
                                 <option>A1</option>
                                 <option>A2</option>
                                 <option>A3</option>
@@ -37,7 +38,8 @@
                         <label class="control-label"><a style="color: red;">*</a>签约折扣标准：</label>
                         <div class="controls">
                             <select ng-model="form.discount">
-                                <option ng-repeat="(k, v) in discount" value="{{k}}">{{v}}</option>
+                                <optgroup label="签约折扣标准"></optgroup>
+                                <option ng-repeat="x in discount" value="{{$index}}">{{x}}</option>
                             </select>
                         </div>
                     </div>
@@ -45,9 +47,9 @@
                     <div class="control-group">
                         <label class="control-label">合作周期：</label>
                         <div class="controls">
-                            <input type="date" ng-model="form.date_from" value="0"/>
+                            <input type="date" ng-model="form.date_from"/>
                             ~
-                            <input type="date" name="form.date_to" value="1"/>
+                            <input type="date" name="form.date_to"/>
                         </div>
                     </div>
                     <!--佣金核算方式-->
@@ -88,6 +90,6 @@
     </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary btn-sm" ng-click="save()">保存</button>
-    <button class="btn btn-primary btn-sm" ng-click="cancel()">取消</button>
+    <input class="btn btn-primary btn-sm" ng-click="submit()" value="提交"/>
+    <input class="btn btn-secondary btn-sm" ng-click="cancel()" value="取消"/>
 </div>

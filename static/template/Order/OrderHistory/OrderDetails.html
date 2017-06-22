@@ -20,22 +20,18 @@
             <!--订单信息-->
             <div role="tabpanel" class="tab-pane active" id="ddxx">
                 <div class="text-info">
-                    <p><strong>三楼 315</strong></p>
-                    <p><strong>张 先生 100 0000 0000 6人 未分类客户</strong></p>
-                    <p><strong>用餐时间：2017年6月7日 周三(晚餐) 14:57</strong></p>
-                    <p><strong>创建时间：2017年6月7日14:59 操作：XXX</strong></p>
+                    <p><strong>{{order.area}} {{order.seat}} </strong></p>
+                    <p><strong>{{order.name}} {{order.gender}} {{order.phone}} {{order.count}} 人 {{order.type}}客户</strong></p>
+                    <p><strong>用餐时间：{{order.meal_time}}</strong></p>
+                    <p><strong>创建时间：{{order.create_time}} 操作：{{order.operator}} </strong></p>
                 </div>
                 <div class="text-info bg-faded p-2">
-                    <p>备注：给女朋友过生日，提前到店布置房间。</p>
+                    <p>备注：{{order.note}}</p>
                 </div>
                 <div class="row m-2">
                     <div class="col-sm-10 d-inline">
                         <ul class="list-group nav nav-tabs">
-                            <li class="list-group-item img-thumbnail p-2 m-1">IMG1</li>
-                            <li class="list-group-item img-thumbnail p-2 m-1">IMG2</li>
-                            <li class="list-group-item img-thumbnail p-2 m-1">IMG3</li>
-                            <li class="list-group-item img-thumbnail p-2 m-1">IMG4</li>
-                            <li class="list-group-item img-thumbnail p-2 m-1">IMG5</li>
+                            <li class="list-group-item img-thumbnail p-2 m-1" ng-repeat="x in order.images">{{x}}</li>
                         </ul>
                     </div>
                     <div class="col-4">
@@ -59,5 +55,5 @@
     </div>
 </div>
 <div class="modal-footer">
-    <input class="btn btn-secondary" type="button" value="关闭" id="cancel"/>
+    <input class="btn btn-secondary" type="button" value="关闭" ng-click="cancel()"/>
 </div>

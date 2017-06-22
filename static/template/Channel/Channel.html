@@ -44,10 +44,7 @@
                     <!--高层管理列表-->
                     <div>
                         <ul>
-                            <li>高层管理A</li>
-                            <li>高层管理B</li>
-                            <li>高层管理C</li>
-                            <li>高层管理D</li>
+                            <li ng-repeat="x in manager">账号：{{x.id}} 姓名：{{x.name}}</li>
                         </ul>
                     </div>
                 </div>
@@ -69,10 +66,7 @@
                     <!--预订员和迎宾列表-->
                     <div>
                         <ul>
-                            <li>预订员和迎宾A</li>
-                            <li>预订员和迎宾B</li>
-                            <li>预订员和迎宾C</li>
-                            <li>预订员和迎宾D</li>
+                            <li ng-repeat="x in reserve">{{x.id}} {{x.name}}</li>
                         </ul>
                     </div>
                 </div>
@@ -94,10 +88,7 @@
                     <!--客户经理列表-->
                     <div>
                         <ul>
-                            <li>客户经理A</li>
-                            <li>客户经理B</li>
-                            <li>客户经理C</li>
-                            <li>客户经理D</li>
+                            <li ng-repeat="x in channel.inner">{{x.value}} {{x.name}}</li>
                         </ul>
                     </div>
                 </div>
@@ -119,10 +110,7 @@
                     <!--外部渠道列表-->
                     <div>
                         <ul>
-                            <li>外部渠道A</li>
-                            <li>外部渠道B</li>
-                            <li>外部渠道C</li>
-                            <li>外部渠道D</li>
+                            <li ng-repeat="x in channel.outer">{{x.value}} {{x.name}}</li>
                         </ul>
                     </div>
                 </div>
@@ -150,10 +138,7 @@
                 <!--超级管理员列表-->
                 <div>
                     <ul>
-                        <li>超级管理员A</li>
-                        <li>超级管理员B</li>
-                        <li>超级管理员C</li>
-                        <li>超级管理员D</li>
+                        <li ng-repeat="x in manager">超级管理员 账号：{{x.id}} 姓名：{{x.name}}</li>
                     </ul>
                 </div>
             </div>
@@ -164,10 +149,7 @@
                 <!--高层管理列表-->
                 <div>
                     <ul>
-                        <li>高层管理A</li>
-                        <li>高层管理B</li>
-                        <li>高层管理C</li>
-                        <li>高层管理D</li>
+                        <li ng-repeat="x in manager">账号：{{x.id}} 姓名：{{x.name}}</li>
                     </ul>
                 </div>
             </div>
@@ -178,10 +160,7 @@
                 <!--预订员和迎宾列表-->
                 <div>
                     <ul>
-                        <li>预订员和迎宾A</li>
-                        <li>预订员和迎宾B</li>
-                        <li>预订员和迎宾C</li>
-                        <li>预订员和迎宾D</li>
+                        <li ng-repeat="x in reserve">{{x.id}} {{x.name}}</li>
                     </ul>
                 </div>
             </div>
@@ -192,10 +171,7 @@
                 <!--客户经理列表-->
                 <div>
                     <ul>
-                        <li>客户经理A</li>
-                        <li>客户经理B</li>
-                        <li>客户经理C</li>
-                        <li>客户经理D</li>
+                        <li ng-repeat="x in channel.inner">{{x.value}} {{x.name}}</li>
                     </ul>
                 </div>
             </div>
@@ -206,10 +182,7 @@
                 <!--外部渠道列表-->
                 <div>
                     <ul>
-                        <li>外部渠道A</li>
-                        <li>外部渠道B</li>
-                        <li>外部渠道C</li>
-                        <li>外部渠道D</li>
+                        <li ng-repeat="x in channel.outer">{{x.value}} {{x.name}}</li>
                     </ul>
                 </div>
             </div>

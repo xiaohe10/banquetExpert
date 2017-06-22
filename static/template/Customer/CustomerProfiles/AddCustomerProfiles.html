@@ -10,27 +10,23 @@
         <div class="p-2 mb-2 bg-faded">
             <form class="form-horizontal">
                 <fieldset>
-                    <!--添加客户档案-->
+                    <!--新增客户档案-->
                     <div class="col-form-legend">
-                        <legend>添加客户档案</legend>
+                        <legend class="">新增客户档案</legend>
                     </div>
                     <!--姓名-->
                     <div class="control-group">
                         <label class="control-label"><a style="color: red;">*</a>姓名：</label>
                         <div class="controls">
-                            <input class="form-control-sm" type="text"/>
+                            <input class="form-control-sm" type="text" ng-model="form.name"/>
                         </div>
                     </div>
                     <!--性别-->
                     <div class="control-group">
                         <label class="control-label"><a style="color: red;">*</a>性别：</label>
                         <div class="controls">
-                            <label class="radio inline">
-                                <input class="form-control-sm" type="radio" name="sex"/>先生
-                            </label>
-                            <label class="radio inline">
-                                <input class="form-control-sm" type="radio" name="sex"/>女士
-                            </label>
+                            <label><input class="form-control-sm" type="radio" ng-model="form.gender" value="male"/>先生</label>
+                            <label><input class="form-control-sm" type="radio" ng-model="form.gender" value="female"/>女士</label>
                         </div>
                     </div>
                     <!--电话-->
@@ -38,24 +34,29 @@
                         <label class="control-label"><a style="color: red;">*</a>电话：</label>
                         <div class="controls">
                             <!--电话列表-->
-                            <textarea name="phone" placeholder="请准确输入11位手机号码"></textarea>
-                            <a class="text-info">多个电话号码请使用 ';' 或 ',' 分隔</a>
+                            <ul class="inline">
+                                <li ng-repeat="x in form.phone"><label>
+                                    <input type="text" ng-model="x"/>
+                                </label></li>
+                            </ul>
+                            <a class="btn btn-primary btn-link">+增加电话</a>
+                            <a class="text-warning">请准确输入11位手机号码</a>
                         </div>
                     </div>
                     <!--生日-->
                     <div class="control-group">
                         <label class="control-label">生日：</label>
                         <div class="controls">
-                            <input type="date" name="birthday"/>
-                            <label class="radio inline"><input type="radio" name="calendar" value="0"/>公历</label>
-                            <label class="radio inline"><input type="radio" name="calendar" value="1"/>农历</label>
+                            <input type="date" ng-model="form.birthday"/>
+                            <label><input type="radio" ng-model="form.calendar" value="0"/>公历</label>
+                            <label><input type="radio" ng-model="form.calendar" value="1"/>农历</label>
                         </div>
                     </div>
                     <!--单位-->
                     <div class="control-group">
                         <label class="control-label">单位：</label>
                         <div class="controls">
-                            <input type="text" name="unit"/>
+                            <input type="text" ng-model="form.unit"/>
                         </div>
                     </div>
                     <!--现住址-->
@@ -63,23 +64,19 @@
                         <label class="control-label">现住址：</label>
                         <div class="controls">
                             <!--省-->
-                            <select class="form-control-sm inline">
-                                <option>北京</option>
+                            <select class="form-control-sm inline" ng-model="form.address.province">
                                 <option>北京</option>
                             </select>
                             <!--市-->
-                            <select class="form-control-sm inline">
-                                <option>北京</option>
+                            <select class="form-control-sm inline" ng-model="form.address.city">
                                 <option>北京</option>
                             </select>
                             <!--县-->
-                            <select class="form-control-sm inline">
-                                <option>北京</option>
+                            <select class="form-control-sm inline" ng-model="form.address.county">
                                 <option>北京</option>
                             </select>
                             <!--小区-->
-                            <select class="form-control-sm inline">
-                                <option>北京</option>
+                            <select class="form-control-sm inline" ng-model="form.address.block">
                                 <option>北京</option>
                             </select>
                         </div>
@@ -89,13 +86,11 @@
                         <label class="control-label">籍贯：</label>
                         <div class="controls">
                             <!--省-->
-                            <select class="form-control-sm inline">
-                                <option>北京</option>
+                            <select class="form-control-sm inline" ng-model="form.native.province">
                                 <option>北京</option>
                             </select>
                             <!--市-->
-                            <select class="form-control-sm inline">
-                                <option>北京</option>
+                            <select class="form-control-sm inline" ng-model="form.native.city">
                                 <option>北京</option>
                             </select>
                         </div>
@@ -104,16 +99,15 @@
                     <div class="control-group">
                         <label class="control-label">营销短信：</label>
                         <div class="controls">
-                            <label class="radio inline"><input type="radio" name="sms_marketing" value="0"/>开</label>
-                            <label class="radio inline"><input type="radio" name="sms_marketing" value="1"/>关</label>
+                            <label><input type="radio" ng-model="form.sms_marketing" value="enabled"/>开</label>
+                            <label><input type="radio" ng-model="form.sms_marketing" value="disabled"/>关</label>
                         </div>
                     </div>
                     <!--分类方法-->
                     <div class="control-group">
                         <label class="control-label">分类方法：</label>
                         <div class="controls">
-                            <select class="form-control-sm inline">
-                                <option>北京</option>
+                            <select class="form-control-sm inline" ng-model="form.classification_method">
                                 <option>北京</option>
                             </select>
                         </div>
@@ -123,8 +117,12 @@
                         <label class="control-label">病症：</label>
                         <div class="controls">
                             <!--病症列表-->
-                            <textarea name="phone" placeholder="病症列表"></textarea>
-                            <a>若是有多个标签请使用 ';' 或 ',' 分隔</a>
+                            <ul class="inline">
+                                <li ng-repeat="x in form.desease"><label>
+                                    <input type="text" ng-model="x"/>
+                                </label></li>
+                            </ul>
+                            <a class="btn btn-primary btn-link">+添加标签</a>
                         </div>
                     </div>
                     <!--喜好-->
@@ -132,8 +130,12 @@
                         <label class="control-label">喜好：</label>
                         <div class="controls">
                             <!--喜好列表-->
-                            <textarea name="phone" placeholder="喜好列表"></textarea>
-                            <a>若是有多个标签请使用 ';' 或 ',' 分隔</a>
+                            <ul class="inline">
+                                <li ng-repeat="x in from.hobby"><label>
+                                    <input type="text" ng-model="x"/>
+                                </label></li>
+                            </ul>
+                            <a class="btn btn-primary btn-link">+添加标签</a>
                         </div>
                     </div>
                     <!--忌口-->
@@ -141,16 +143,19 @@
                         <label class="control-label">忌口：</label>
                         <div class="controls">
                             <!--忌口列表-->
-                            <textarea name="phone" placeholder="忌口列表"></textarea>
-                            <a>若是有多个标签请使用 ';' 或 ',' 分隔</a>
+                            <ul class="inline">
+                                <li ng-repeat="x in form.dieting"><label>
+                                    <input class="form-control-sm" type="text" ng-model="x"/>
+                                </label></li>
+                            </ul>
+                            <a class="btn btn-primary btn-link">+添加标签</a>
                         </div>
                     </div>
                     <!--不良记录-->
                     <div class="control-group">
                         <label class="control-label">不良记录：</label>
                         <div class="controls">
-                            <textarea name="phone" placeholder="不良记录"></textarea>
-                            <a>若是有多个标签请使用 ';' 或 ',' 分隔</a>
+                            <textarea ng-model="form.bad_records"></textarea>
                         </div>
                     </div>
                 </fieldset>
@@ -159,6 +164,6 @@
     </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary btn-sm">提交</button>
-    <button class="btn btn-secondary btn-sm">取消</button>
+    <input class="btn btn-primary btn-sm" ng-click="submit()" value="提交"/>
+    <input class="btn btn-secondary btn-sm" ng-click="cancel()" value="取消"/>
 </div>

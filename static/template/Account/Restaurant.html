@@ -26,7 +26,7 @@
                     <div class="control-group">
                         <label class="control-label">餐厅名称：</label>
                         <div class="controls">
-                            北京宴总店
+                            {{hotel.name}}
                         </div>
                     </div>
                     <!--所在城市-->
@@ -36,33 +36,13 @@
                             <!--省-->
                             <select class="inline">
                                 <option>北京</option>
-                                <option>北京</option>
-                                <option>北京</option>
-                                <option>北京</option>
-                                <option>北京</option>
-                                <option>北京</option>
-                                <option>北京</option>
-                                <option>北京</option>
-                                <option>北京</option>
                             </select>
                             <!--市-->
                             <select class="inline">
                                 <option>北京</option>
-                                <option>北京</option>
-                                <option>北京</option>
-                                <option>北京</option>
-                                <option>北京</option>
-                                <option>北京</option>
-                                <option>北京</option>
                             </select>
                             <!--县-->
                             <select class="inline">
-                                <option>北京</option>
-                                <option>北京</option>
-                                <option>北京</option>
-                                <option>北京</option>
-                                <option>北京</option>
-                                <option>北京</option>
                                 <option>北京</option>
                             </select>
                         </div>
@@ -71,7 +51,7 @@
                     <div class="control-group">
                         <label class="control-label">详细地址：</label>
                         <div class="controls">
-                            <input type="text" value="丰台区靛厂路3号(永辉超市东侧)"/>
+                            <input type="text" ng-model="hotel.address" value=""/>
                         </div>
                     </div>
                     <!--预订电话-->
@@ -79,7 +59,7 @@
                         <label class="control-label">预订电话：</label>
                         <div class="controls">
                             <label>
-                                <input type="text" value="01088177777"/>多个电话号码请用','分隔
+                                <input type="text" ng-model="phone" value=""/>多个电话号码请用','分隔
                             </label>
                         </div>
                     </div>
@@ -87,15 +67,15 @@
                     <div class="control-group">
                         <label class="control-label">餐厅面积：</label>
                         <div class="controls">
-                            <input type="text" value="1700"/> 平米
+                            <input type="text" ng-model="hotel.space" value="1700"/> 平米
                         </div>
                     </div>
                     <!--人均消费-->
                     <div class="control-group">
                         <label class="control-label">人均消费：</label>
                         <div class="controls">
-                            <input class="mr-1" type="text" value="1700"/> 元/人 ~
-                            <input class="mx-1" type="text" value="1700"/> 元/人
+                            <input class="mr-1" type="text" ng-model="min_cost" value="1200"/> 元/人 ~
+                            <input class="mx-1" type="text" ng-model="max_cost" value="1700"/> 元/人
                         </div>
                     </div>
                     <!--餐厅设施-->
@@ -126,8 +106,8 @@
                     <div class="control-group">
                         <label class="control-label">可以刷卡：</label>
                         <div class="controls">
-                            <label class="checkbox inline"><input type="checkbox" name="VISA" value="2">VISA</label>
-                            <label class="checkbox inline"><input type="checkbox" name="UnionPay" value="3">银联卡</label>
+                            <label class="checkbox inline"><input type="checkbox" ng-model="VISA" value="2">VISA</label>
+                            <label class="checkbox inline"><input type="checkbox" ng-model="UnionPay" value="3">银联卡</label>
                         </div>
                     </div>
                     <!--上传Logo-->
@@ -138,8 +118,8 @@
                                 <img src="/static/bootstrap/css/img/glyphicons-halflings.png">
                             </div>
                             <div class="py-2">
-                                <button class="btn btn-primary btn-sm">上传Logo</button>
-                                <button class="btn btn-primary btn-sm">清除Logo</button>
+                                <input class="btn btn-primary btn-sm" type="file" ng-model="logo" value="上传Logo"/>
+                                <input class="btn btn-primary btn-sm" type="button" value="清除Logo"/>
                             </div>
                         </div>
                     </div>
@@ -151,7 +131,7 @@
                                 <img src="/static/bootstrap/css/img/glyphicons-halflings.png">
                             </div>
                             <div class="py-2">
-                                <button class="btn btn-primary btn-sm">上传图片</button>
+                                <input class="btn btn-primary btn-sm" type="file" ng-model="image" value="上传图片"/>
                             </div>
                         </div>
                     </div>

@@ -20,7 +20,7 @@
                         <div class="control-group">
                             <label class="control-label">选择文件：</label>
                             <div class="controls">
-                                <input class="form-control-sm mx-1" type="file" name="file" placeholder="未选择任何文件"/>
+                                <input class="form-control-sm mx-1" type="file" ng-model="form.file" placeholder="未选择任何文件"/>
                             </div>
                         </div>
                     </fieldset>
@@ -40,6 +40,6 @@
     </div>
 </div>
 <div class="modal-footer">
-    <input class="btn btn-primary btn-sm px-2 mx-1" type="button" name="file" value="导入"/>
-    <button class="btn btn-secondary btn-sm">取消</button>
+    <input class="btn btn-primary btn-sm px-2 mx-1" type="button" ng-click="import()" value="导入"/>
+    <input class="btn btn-primary btn-sm px-2 mx-1" type="button" ng-click="cannel()" value="取消"/>
 </div>
