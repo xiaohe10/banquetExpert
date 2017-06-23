@@ -1621,11 +1621,13 @@ URL：webApp/guest/profile/add/ <br>
 | token         | 登录口令          |         yes  |
 | phone | 客户手机号（作为查找的依据） | yes |
 | name | 姓名 | yes
-| birthday | 生日 | yes
-| like | 喜好 | yes
-| dislike | 忌讳 | yes
-| special_day | 纪念日 | yes 
-| personal_need | 个性化需求 | yes
+| guest_type | 客户类别 | no
+| birthday | 生日 | no
+| birthday_type | 生日类型，0:阳历，1:农历 | no
+| like | 喜好 | no
+| dislike | 忌讳 | no
+| special_day | 纪念日 | no
+| personal_need | 个性化需求 | no
 
 请求示例
 
@@ -1634,7 +1636,9 @@ URL：webApp/guest/profile/add/ <br>
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
 	"phone":"18813101211"
 	"name":"习某某",
+	"guest_type":"vip",
 	"birthday":"1992-02-15",
+	"birthday_type":0,
 	"like":"吃辣",
 	"dislike":"不吃香菜",
 	"special_day":"10-25",
@@ -1675,7 +1679,9 @@ URL：webApp/guest/profile/modify/ <br>
 | token         | 登录口令          |         yes  |
 | phone | 客户手机号（作为查找的依据） | yes |
 | name | 姓名 | no
+| guest_type | 客户类型 | no
 | birthday | 生日 | no
+| birthday_type | 生日类型，0:阳历，1:农历 | no
 | like | 喜好 | no
 | dislike | 忌讳 | no
 | special_day | 纪念日 | no 
@@ -1689,6 +1695,7 @@ URL：webApp/guest/profile/modify/ <br>
 	"phone":"18813101211"
 	"name":"习某某",
 	"birthday":"1992-02-15",
+	"birthday_type":0,
 	"like":"吃辣",
 	"dislike":"不吃香菜",
 	"special_day":"10-25",

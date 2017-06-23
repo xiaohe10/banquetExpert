@@ -27,6 +27,22 @@ def get_guests(request, token, search_key, guest_type, guest_from):
 
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
+})
+@validate_staff_token()
+def get_channels(request):
+    pass
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+})
+@validate_staff_token()
+def get_profile_general(request):
+    pass
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
     'guest_id': forms.IntegerField(required=False),
     'phone': forms.CharField(required=False),
 })
@@ -41,3 +57,18 @@ def get_profile(request, token, guest_id=None, phone=None):
     """
     pass
 
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+})
+@validate_staff_token()
+def add_profile(request):
+    pass
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+})
+@validate_staff_token()
+def modify_profile(request):
+    pass
