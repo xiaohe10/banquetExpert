@@ -1,8 +1,8 @@
 from django.conf.urls import include, url
 
 from webApp.views import common
-from . import super_admin, admin, hotel, hotel_branch, desk, order, staff,\
-    course, live
+from . import super_admin, admin, hotel, hotel_branch, desk, order, guest, \
+    staff, course, live
 
 urlpatterns = [
     url(r'^$', common.index, name='index'),
@@ -14,6 +14,7 @@ urlpatterns = [
                                    namespace='hotel_branch')),
     url(r'^desk/', include(desk.urlpatterns, namespace='desk')),
     url(r'^order/', include(order.urlpatterns, namespace='order')),
+    url(r'^guest/', include(guest.urlpatterns, namespace='guest')),
     url(r'^staff/', include(staff.urlpatterns, namespace='staff')),
     url(r'^course/', include(course.urlpatterns, namespace='course')),
     url(r'^live/', include(live.urlpatterns, namespace='live')),

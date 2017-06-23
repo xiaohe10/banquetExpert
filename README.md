@@ -69,7 +69,7 @@ URL：webApp/staff/validation_code/
 
 
 ## 注册
-URL：webApp/staff/register <br>
+URL：webApp/staff/register/ <br>
 请求方式：POST <br>
 请求参数：
 
@@ -129,7 +129,7 @@ URL：webApp/staff/register <br>
 
 
 ## 登录
-URL：webApp/staff/login <br>
+URL：webApp/staff/login/ <br>
 请求方式：POST <br>
 请求参数：
 
@@ -176,7 +176,7 @@ URL：webApp/staff/login <br>
 
 
 ## 修改密码
-URL：webApp/staff/pass_modify <br>
+URL：webApp/staff/pass_modify/ <br>
 请求方式：POST <br>
 请求参数：
 
@@ -340,7 +340,7 @@ URL：webApp/staff/profile/modify/ <br>
 
 ## 获取员工所在酒店信息
 
-URL：webApp/staff/hotel <br>
+URL：webApp/staff/hotel/ <br>
 请求方式：POST <br>
 
 | 参数名称       | 含义             | 是否必选       |
@@ -752,7 +752,7 @@ URL：webApp/hotel_branch/area/list/ <br>
 
 
 ## 获取门店某一天某餐段的桌位使用情况列表
-URL：webApp/hotel_branch/area/list/ <br>
+URL：webApp/hotel_branch/desk/list/ <br>
 请求方式：POST <br>
 
 | 请求参数      | 含义             | 是否必选       |
@@ -804,6 +804,8 @@ URL：webApp/hotel_branch/area/list/ <br>
 	        "status":0,
 		    "area_name":"一楼",
 		    "order":1,
+		    "min_guest_num":10,
+		    "max_guest_num":15,
 		    "create_time":"创建时间"
 		    ],
 		    ...
@@ -824,7 +826,7 @@ URL：webApp/hotel_branch/area/list/ <br>
 # 订单接口
 
 ## 提交订单
-URL：webApp/order/submit <br>
+URL：webApp/order/submit/ <br>
 请求方式：POST <br>
 
 | 参数名称       | 含义             | 是否必选       |
@@ -1189,7 +1191,7 @@ URL：webApp/order/update/ <br>
 
 ## 月订单列表（员工服务的订单，不是填写的预订单）
 
-URL：webApp/order/monthlist/ <br>
+URL：webApp/order/month_list/ <br>
 请求方式：POST <br>
 
 | 参数名称       | 含义             | 是否必选       |
@@ -1230,7 +1232,7 @@ desk_consumption | 桌均消费
 
 ## 日订单列表
 
-URL：webApp/order/daylist/ <br>
+URL：webApp/order/day_list/ <br>
 请求方式：POST <br>
 
 | 参数名称       | 含义             | 是否必选       |
@@ -1279,9 +1281,11 @@ desk_consumption | 桌均消费
 	]
 }
 ```
+
 # 客户管理
+
 ## 获取客户概况
-URL：webApp/guest/profile/general <br>
+URL：webApp/guest/profile/general/ <br>
 请求方式：POST
 
 | 参数名称       | 含义             | 是否必选       |
@@ -1292,8 +1296,7 @@ URL：webApp/guest/profile/general <br>
 
 ```
 {
-	"token":"129ASDFIOJIO3RN23U12934INASDF",
-	"phone_number":"18813101211"
+	"token":"129ASDFIOJIO3RN23U12934INASDF"
 }
 ```
 
@@ -1330,6 +1333,67 @@ guest_from\_outer | 客户来源：外部渠道
 }
 ```
 
+## 获取客户来源（内部销售和外部销售）
+URL：webApp/guest/channel/list/ <br>
+请求方式：POST
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------|
+| token         | 登录口令          |         yes  |
+
+请求示例
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF"
+}
+```
+
+返回参数
+
+
+| 参数名称       | 含义    |
+|:------------- |:---------------|
+| internal_channel | 内部销售  |
+| external_channel | 外部销售  |
+| id    | 对应销售的ID   |
+| name  | 对应销售的名称   |
+
+返回示例
+
+
+```
+{
+	"status":"true",
+	"data":
+	{
+	    "internal_channel":
+	    [
+            {
+                "id":1,
+                "name":"刘光艳"
+            },
+            ...
+	    ]
+		"external_channel":
+		[
+            {
+                "id":1,
+                "name":"美团"
+            },
+            ...
+		]
+	}
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_3 | 不存在该条件的用户
+
 ## 获取客户列表（搜索）
 
 URL：webApp/guest/list/ <br>
@@ -1340,7 +1404,8 @@ URL：webApp/guest/list/ <br>
 | token         | 登录口令          |         yes  |
 | search_key | 客户手机号或者姓名 | no |
 | guest_type | 客户类型 | no |
-| guest_from | 获客渠道| no |
+| internal_channel | 内部销售ID | no |
+| external_channel | 外部销售ID | no |
 
 请求示例
 
@@ -1348,8 +1413,8 @@ URL：webApp/guest/list/ <br>
 {
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
 	"search_key":"18813101211",
-	"guest_type":"vip",
-	"guest_from":"客户经理"
+	"guest_type":"活跃",
+	"internal_channel":1
 }
 ```
 
@@ -1357,13 +1422,18 @@ URL：webApp/guest/list/ <br>
 
 | 参数名称       | 含义             |
 |:------------- |:---------------|
+| count | 顾客总数 |
+| list  | 顾客列表 |
+| 以下为list中的数据 |
+| guest_id  | 顾客 ID |
 | name | 姓名 |
 | birthday | 生日 |
+| birthday_type | 生日类型，0:阳历，1:农历 |
 | like | 喜好 |
 | dislike | 忌讳 |
 | special_day | 纪念日 |
 | personal_need | 个性化需求 |
-| state | 客户状态：活跃（active），沉睡（sleep），流失（lost）等 |
+| state | 客户状态：0：活跃，1：沉睡，2：流失，3：无订单 |
 
 
 返回示例
@@ -1371,17 +1441,24 @@ URL：webApp/guest/list/ <br>
 ```
 {
 	"status":"true",
-	"data":[
-		{
+	"data":
+	{
+	    "count":100,
+	    "list":[
+	    {
+	        "guest_id":1,
 			"name":"习某某",
 			"birthday":"1992-02-15",
+			"birthday_type":0,
 			"like":"吃辣",
 			"dislike":"不吃香菜",
 			"special_day":"",
 			"personal_need":"",
-			"state":"avtive"
-		}
-	]
+			"state":0
+		},
+		...
+		]
+	}
 }
 ```
 
@@ -1394,7 +1471,7 @@ URL：webApp/guest/list/ <br>
 | err_3 | 不存在该条件的用户
 
 
-## 获取客户档案
+## 获取客户档案（根据顾客ID或手机）
 
 URL：webApp/guest/profile/ <br>
 请求方式：POST
@@ -1402,13 +1479,15 @@ URL：webApp/guest/profile/ <br>
 | 参数名称       | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------|
 | token         | 登录口令          |         yes  |
+| guest_id      | 顾客 ID          |         no   |
+| phone         | 手机             |         no  |
 
 请求示例
 
 ```
 {
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
-	"phone_number":"18813101211"
+	"phone":"18813101211"
 }
 ```
 
@@ -1448,8 +1527,6 @@ URL：webApp/guest/profile/ <br>
 }
 ```
 
-错误代码
-
 错误代码：
 
 | 错误代码      | 含义             |
@@ -1467,7 +1544,7 @@ URL：webApp/guest/history_orders/ <br>
 | 参数名称       | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------|
 | token         | 登录口令          |         yes  |
-| phone_number | 客户手机号（作为查找的依据） | yes |
+| phone | 客户手机号（作为查找的依据） | yes |
 | offset | 分页获取的地方（默认为0) | no
 | limit | 获取的个数 (默认为20）| no
 
@@ -1476,7 +1553,7 @@ URL：webApp/guest/history_orders/ <br>
 ```
 {
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
-	"phone_number":"18813101211",
+	"phone":"18813101211",
 	"offset":40,
 	"limit":20
 }
@@ -1522,13 +1599,13 @@ description | 备注
 | err_3 | 不存在该手机号码的用户 |
 
 ## 添加客户档案（现场添加客户）
-URL：webApp/guest/profile/add <br>
+URL：webApp/guest/profile/add/ <br>
 请求方式：POST
 
 | 参数名称       | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------|
 | token         | 登录口令          |         yes  |
-| phone_number | 客户手机号（作为查找的依据） | yes |
+| phone | 客户手机号（作为查找的依据） | yes |
 | name | 姓名 | yes
 | birthday | 生日 | yes
 | like | 喜好 | yes
@@ -1541,7 +1618,7 @@ URL：webApp/guest/profile/add <br>
 ```
 {
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
-	"phone_number":"18813101211"
+	"phone":"18813101211"
 	"name":"习某某",
 	"birthday":"1992-02-15",
 	"like":"吃辣",
@@ -1576,13 +1653,13 @@ URL：webApp/guest/profile/add <br>
 
 ## 修改客户档案
 
-URL：webApp/guest/profile/modify <br>
+URL：webApp/guest/profile/modify/ <br>
 请求方式：POST
 
 | 参数名称       | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------|
 | token         | 登录口令          |         yes  |
-| phone_number | 客户手机号（作为查找的依据） | yes |
+| phone | 客户手机号（作为查找的依据） | yes |
 | name | 姓名 | no
 | birthday | 生日 | no
 | like | 喜好 | no
@@ -1595,7 +1672,7 @@ URL：webApp/guest/profile/modify <br>
 ```
 {
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
-	"phone_number":"18813101211"
+	"phone":"18813101211"
 	"name":"习某某",
 	"birthday":"1992-02-15",
 	"like":"吃辣",
@@ -1751,6 +1828,9 @@ URL：webApp/score/matrix/ <br>
 | 参数名称       | 含义             |
 |:------------- |:---------------|
 | item_type | 项目类型  |
+| total_score   | 总分    |
+| list  |   评分列表    |
+| 以下为list中的数据   |
 | item_key | 项目关键词 （即英文字段名称）    |
 | item_name | 项目名称  |
 | item_need_picture | 是否需要上传图片(0代表不上传，1代表上传)    |
@@ -1765,6 +1845,7 @@ URL：webApp/score/matrix/ <br>
 	"data":[
 	{
         "item_type":"私人订制",
+        "total_score":20,
         "list":[
         {
             "item_key":"door_card",
@@ -1785,6 +1866,7 @@ URL：webApp/score/matrix/ <br>
     }
     {
         "item_type":"顾客满意度",
+        "total_score":20,
         "list":[
         {
             "item_key":"praise_letter",
@@ -1931,7 +2013,7 @@ URL：webApp/score/submit/ <br>
 
 
 ## 评分排名（酒店）
-URL：webApp/score/ranking/hotel <br>
+URL：webApp/score/ranking/hotel/ <br>
 请求方式：POST
 
 | 参数名称       | 含义             | 是否必选       |
@@ -1993,7 +2075,7 @@ manager | 店总
 
 
 ## 评分排名（房间）
-URL：webApp/score/ranking/room <br>
+URL：webApp/score/ranking/room/ <br>
 请求方式：POST
 
 | 参数名称       | 含义             | 是否必选       |
@@ -2060,7 +2142,7 @@ manager | 店总
 
 
 ## 评分排名（宴会）
-URL：webApp/score/ranking/dinner <br>
+URL：webApp/score/ranking/dinner/ <br>
 请求方式：POST
 
 | 参数名称       | 含义             | 是否必选       |
@@ -2127,7 +2209,7 @@ manager | 店总
 
 ## 评分详情
 
-URL：webApp/score/ranking/dinner <br>
+URL：webApp/score/ranking/dinner/ <br>
 请求方式：POST
 
 | 参数名称       | 含义             | 是否必选       |

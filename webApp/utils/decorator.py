@@ -102,12 +102,16 @@ def validate_args(dic):
     def decorator(function):
         @wraps(function)
         def returned_wrapper(request, *args, **kwargs):
-            if request.method == "GET":
-                data = request.GET
-            elif request.method == "POST":
-                data = json.loads(request.body)
-            else:
-                data = QueryDict(request.body)
+            try:
+                if request.method == "GET":
+                    data = request.GET
+                elif request.method == "POST":
+                    data = json.loads(request.body)
+                else:
+                    data = QueryDict(request.body)
+            except ValueError:
+                return err_response(
+                    'err_1', '参数不正确（缺少参数或者不符合格式）')
             for k, v in dic.items():
                 try:
                     kwargs[k] = v.clean(data[k])

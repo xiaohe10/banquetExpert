@@ -8,7 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from ..utils.decorator import validate_args, validate_staff_token
 from ..utils.response import corr_response, err_response
-from ..models import Desk, Order, UserArchives
+from ..models import Desk, Order, Guest
 
 
 @validate_args({
@@ -93,8 +93,8 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
           'dinner_time': r.dinner_time,
           'dinner_period': r.dinner_period,
           'name': r.name,
-          'guest_type': UserArchives.objects.get(phone=r.contact).name
-          if UserArchives.objects.filter(phone=r.contact).count() == 1 else '',
+          'guest_type': Guest.objects.get(phone=r.contact).name
+          if Guest.objects.filter(phone=r.contact).count() == 1 else '',
           'contact': r.contact,
           'guest_number': r.guest_number,
           'desks': json.loads(r.desks) if r.desks else '',
@@ -159,8 +159,8 @@ def get_profile(request, token, order_id):
          'status': order.status,
          'name': order.name,
          'contact': order.contact,
-         'guest_type': UserArchives.objects.get(phone=order.contact).name
-         if UserArchives.objects.filter(
+         'guest_type': Guest.objects.get(phone=order.contact).name
+         if Guest.objects.filter(
              phone=order.contact).count() == 1 else '',
          'guest_number': order.guest_number,
          'user_description': order.user_description,
