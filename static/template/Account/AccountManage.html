@@ -3,7 +3,7 @@
 <div class="py-2 px-2 mt-2 bg-info">
     <!--表单-->
     <div class="p-2 mb-2 bg-faded">
-        <form class="form-horizontal">
+        <form class="form-horizontal" ng-submit="save()">
             <!--修改密码-->
             <div id="legend" class="">
                 <legend class="">修改密码</legend>
@@ -12,45 +12,36 @@
             <div class="form-group">
                 <label class="control-label">用户名：</label>
                 <div class="controls">
-                    <input class="form-control" type="text" name="username" placeholder="10000000000"/>
+                    <input class="form-control" type="text" ng-model="form.username" placeholder="10000000000"/>
                 </div>
             </div>
             <!--密码-->
             <div class="form-group">
                 <label class="control-label">密码：</label>
                 <div class="controls">
-                    <input class="form-control" type="text" name="password" placeholder="10000000000"/>
+                    <input class="form-control" type="text" ng-model="form.password" placeholder="10000000000"/>
                 </div>
             </div>
             <!--新密码-->
             <div class="form-group">
                 <label class="control-label">新密码：</label>
                 <div class="controls">
-                    <input class="form-control" type="text" name="new-password" placeholder="10000000000"/>
+                    <input class="form-control" type="text" ng-model="form.new_password" placeholder="10000000000"/>
                 </div>
             </div>
             <!--新密码验证-->
             <div class="form-group">
                 <label class="control-label">新密码验证：</label>
                 <div class="controls">
-                    <input class="form-control" type="text" name="new-password-acc" placeholder="10000000000"/>
+                    <input class="form-control" type="text" ng-model="form.new_password_acc" placeholder="10000000000"/>
                 </div>
             </div>
             <!--操作栏-->
             <div class="form-group">
                 <div class="controls">
-                    <input class="btn btn-primary" type="submit" name="save" value="保存"/>
+                    <input class="btn btn-primary" type="submit" value="保存"/>
                 </div>
             </div>
         </form>
     </div>
 </div>
-<script>
-    $("input[name='save']").click(function () {
-        var username = $("input[name='username']");
-        var password = $("input[name='password']");
-        var new_password = $("input[name='new-password']");
-        var new_password_acc = $("input[name='new-password-acc']");
-        alert("用户名：" + username.val());
-    })
-</script>

@@ -57,7 +57,7 @@
                         </div>
                     </div>
                     <!--电话隐私[预订员]-->
-                    <div class="control-group" ng-if="form.option==='edit'">
+                    <div class="control-group">
                         <label class="control-label">电话隐私：</label>
                         <div class="controls">
                             <input type="text" ng-model="form.private_phone"/>
@@ -93,13 +93,13 @@
                         <label class="control-label">销售职能：</label>
                         <div class="controls">
                             <label class="form-control-label checkbox inline">
-                                <input type="checkbox" ng-model="form.sale" value="true" disabled/>
+                                <input type="checkbox" ng-model="form.sale"/>
                                 开通销售职能（可通过手机预订占座，统计本人订单业绩，并协助分析客户价值）
                             </label>
                         </div>
                     </div>
                     <!--销售职能/订单短信[预订员][客户经理]-->
-                    <div class="control-group" ng-show="form.sale===true">
+                    <div class="control-group" ng-show="form.sale">
                         <label class="control-label">订单短信：</label>
                         <div class="controls">
                             <label class="form-control-label checkbox inline">
@@ -108,7 +108,7 @@
                         </div>
                     </div>
                     <!--销售职能/短信附加[预订员]-->
-                    <div class="control-group" ng-if="form.sale===true">
+                    <div class="control-group" ng-show="form.sale">
                         <label class="control-label">短信附加：</label>
                         <div class="controls">
                             <label class="form-control-label checkbox inline">
@@ -117,7 +117,7 @@
                         </div>
                     </div>
                     <!--销售职能/提成结算[预订员]-->
-                    <div class="control-group" ng-if="form.sale===true">
+                    <div class="control-group" ng-show="form.sale">
                         <label class="control-label">提成结算：</label>
                         <div class="controls">
                             <!--接单提成-->
@@ -179,7 +179,7 @@
                                 区域导航栏
                             </div>
                             <!--桌位选择列表-->
-                            <div ng-if="form.desk_manage.all_seat===false">
+                            <div ng-hide="form.desk_manage.all_seat">
                                 桌位选择列表
                             </div>
                         </div>
@@ -206,7 +206,7 @@
                                     <label class="form-control-label">
                                         <input type="radio" ng-model="form.communicate.channel" value="tel_box"/>电话盒子
                                     </label>
-                                    <ul class="inline" ng-if="form.communicate.channel==='tel_box'">
+                                    <ul class="inline" ng-hide="form.communicate.channel">
                                         <li ng-repeat="x in form.communicate.tel_box">
                                             <label class="form-control-label">
                                                 <input type="checkbox" ng-model="x" ng-click="check_box($index)"/>{{x}}
@@ -218,7 +218,7 @@
                                     <label class="form-control-label">
                                         <input type="radio" ng-model="form.communicate.channel" value="smart_tel"/>智能电话
                                     </label>
-                                    <ul class="inline" ng-show="form.communicate.channel==='smart_tel'">
+                                    <ul class="inline" ng-show="form.communicate.channel">
                                         <li ng-repeat="x in form.communicate.smart_tel">
                                             <label class="form-control-label">
                                                 <input type="checkbox" ng-model="x" ng-click="check_phone($index)"/>{{x}}
@@ -236,5 +236,6 @@
 </div>
 <div class="modal-footer">
     <input class="btn btn-primary btn-sm" ng-click="submit()" value="提交"/>
+    <input class="btn btn-primary btn-sm" ng-click="exit()" value="离岗"/>
     <input class="btn btn-secondary btn-sm" ng-click="cancel()" value="取消"/>
 </div>

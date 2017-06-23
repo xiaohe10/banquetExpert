@@ -1,113 +1,95 @@
 <!--主页/后台用户管理/渠道管理/新增外部渠道-->
-<div class="modal" role="dialog" aria-labelledby="add-outer-channel">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-primary">
-                <a>新增外部渠道</a>
-            </div>
-            <div class="modal-body">
-                <!--主页/后台用户管理/渠道管理/新增外部渠道-->
-                <!--内容-->
-                <div class="py-2 px-2 mt-2 bg-info">
-                    <!--表单-->
-                    <div class="p-2 mb-2 bg-faded">
-                        <form class="form-horizontal">
-                            <fieldset>
-                                <!--新增外部渠道-->
-                                <div id="legend" class="col-form-legend">
-                                    <legend class="">新增外部渠道</legend>
-                                </div>
-                                <!--渠道名称-->
-                                <div class="control-group">
-                                    <label class="control-label"><a style="color: red;">*</a>渠道名称：</label>
-                                    <div class="controls">
-                                        <input class="form-control-sm" type="text" placeholder="118114 来电号码：010188114/0311118114/0312118114/118114"/>
-                                    </div>
-                                </div>
-                                <!--直属上级-->
-                                <div class="control-group">
-                                    <label class="control-label"><a style="color: red;">*</a>直属上级：</label>
-                                    <div class="controls">
-                                        <select>
-                                            <option>A1</option>
-                                            <option>A2</option>
-                                            <option>A3</option>
-                                            <option>A4</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <!--签约折扣标准-->
-                                <div class="control-group">
-                                    <label class="control-label"><a style="color: red;">*</a>签约折扣标准：</label>
-                                    <div class="controls">
-                                        <select>
-                                            <option>无折扣</option>
-                                            <option>9.5折</option>
-                                            <option>9.0折</option>
-                                            <option>8.5折</option>
-                                            <option>8.0折</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <!--合作周期-->
-                                <div class="control-group">
-                                    <label class="control-label">合作周期：</label>
-                                    <div class="controls">
-                                        <input type="date" name="date-from" value="0"/>
-                                        ~
-                                        <input type="date" name="date-to" value="1"/>
-                                    </div>
-                                </div>
-                                <!--佣金核算方式-->
-                                <div class="control-group">
-                                    <label class="control-label">佣金核算方式：</label>
-                                    <div class="controls">
-                                        <ul class="list-unstyled list-group">
-                                            <li class="list-group-item">
-                                                <label class="form-control-label radio inline">
-                                                    <input type="radio" name="unit"/>按消费额百分比
-                                                </label>
-                                                <label class="form-control-label inline">
-                                                    消费金额 * <input type="number">元/桌
-                                                </label>
-                                            </li>
-                                            <li class="list-group-item">
-                                                <label class="form-control-label">
-                                                    <input type="radio" name="unit"/>按订单数量
-                                                </label>
-                                                <label class="form-control-label">
-                                                    <input type="number">元/桌
-                                                </label>
-                                            </li>
-                                            <li class="list-group-item">
-                                                <label class="form-control-label">
-                                                    <input type="radio" name="unit"/>按消费人数
-                                                </label>
-                                                <label class="form-control-label">
-                                                    <input type="number">元/人
-                                                </label>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <!--操作栏-->
-                                <div class="control-group">
-                                    <label class="control-label"></label>
-                                    <div class="controls">
-                                        <div class="py-2">
-                                            <button class="btn btn-primary btn-sm">保存</button>
-                                            <button class="btn btn-primary btn-sm">取消</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </form>
+<div class="modal-header">
+    <a>新增外部渠道</a>
+</div>
+<div class="modal-body">
+    <!--内容-->
+    <div class="py-2 px-2 mt-2 bg-info">
+        <!--表单-->
+        <div class="p-2 mb-2 bg-faded">
+            <form class="form-horizontal">
+                <fieldset>
+                    <!--新增外部渠道-->
+                    <div id="legend" class="col-form-legend">
+                        <legend class="">新增外部渠道</legend>
                     </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                This is footer<a class="close"></a>
-            </div>
+                    <!--渠道名称-->
+                    <div class="control-group">
+                        <label class="control-label"><a style="color: red;">*</a>渠道名称：</label>
+                        <div class="controls">
+                            <input class="form-control-sm" type="text" ng-model="form.channel" placeholder=""/>
+                        </div>
+                    </div>
+                    <!--直属上级-->
+                    <div class="control-group">
+                        <label class="control-label"><a style="color: red;">*</a>直属上级：</label>
+                        <div class="controls">
+                            <select ng-model="form.parent">
+                                <optgroup label="直属上级"></optgroup>
+                                <option>A1</option>
+                                <option>A2</option>
+                                <option>A3</option>
+                                <option>A4</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!--签约折扣标准-->
+                    <div class="control-group">
+                        <label class="control-label"><a style="color: red;">*</a>签约折扣标准：</label>
+                        <div class="controls">
+                            <select ng-model="form.discount">
+                                <optgroup label="签约折扣标准"></optgroup>
+                                <option ng-repeat="x in discount" value="{{$index}}">{{x}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!--合作周期-->
+                    <div class="control-group">
+                        <label class="control-label">合作周期：</label>
+                        <div class="controls">
+                            <input type="date" ng-model="form.date_from"/>
+                            ~
+                            <input type="date" name="form.date_to"/>
+                        </div>
+                    </div>
+                    <!--佣金核算方式-->
+                    <div class="control-group">
+                        <label class="control-label">佣金核算方式：</label>
+                        <div class="controls">
+                            <ul class="list-unstyled list-group">
+                                <li class="list-group-item">
+                                    <label class="form-control-label radio inline">
+                                        <input type="radio" ng-model="form.bonus.method" value="0"/>按消费额百分比
+                                    </label>
+                                    <label class="form-control-label inline">
+                                        消费金额 * <input type="number" ng-model="form.bonus.value">元/桌
+                                    </label>
+                                </li>
+                                <li class="list-group-item">
+                                    <label class="form-control-label">
+                                        <input type="radio" ng-model="form.bonus.method" value="1"/>按订单数量
+                                    </label>
+                                    <label class="form-control-label">
+                                        <input type="number" ng-model="form.bonus.value">元/桌
+                                    </label>
+                                </li>
+                                <li class="list-group-item">
+                                    <label class="form-control-label">
+                                        <input type="radio" ng-model="form.bonus.method" value="2"/>按消费人数
+                                    </label>
+                                    <label class="form-control-label">
+                                        <input type="number" ng-model="form.bonus.value">元/人
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
         </div>
     </div>
+</div>
+<div class="modal-footer">
+    <input class="btn btn-primary btn-sm" ng-click="submit()" value="提交"/>
+    <input class="btn btn-secondary btn-sm" ng-click="cancel()" value="取消"/>
 </div>
