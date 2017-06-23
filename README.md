@@ -919,7 +919,7 @@ URL：webApp/order/search/ <br>
 | dinner_period | 餐段    |   no |
 | dinner_date   | 预定用餐日期  |   no  |
 | dinner_time   | 预定用餐时间  |   no  |
-| state | 订单状态（0: 进行中，1: 已完成，默认为0）  | no |
+| status | 订单状态（0: 进行中，1: 已完成，2: 已删除，默认为0）  | no |
 | search_key | 搜索关键词（如姓名、手机等进行模糊搜索） | no |
 | offset | 起始值（默认0） | no |
 | limit | 偏移量（默认10） | no |
@@ -932,7 +932,7 @@ URL：webApp/order/search/ <br>
 ```
 {
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
-	"state":0,
+	"status":0,
 	"search_key":"张总",
 }
 ```
@@ -948,7 +948,8 @@ URL：webApp/order/search/ <br>
 | create_time | 创建日期 |
 | cancel_time | 撤销日期 |
 | arrival_time  | 客到日期 |
-| finish_time | 完成日期 | 
+| finish_time | 完成日期 |
+| consumption   | 消费金额  |
 | status | 状态((0, '已订'), (1, '客到'), (2, '已完成'), (3, '已撤单'))|
 | dinner_date | 预定用餐日期 |
 | dinner_time   | 预定用餐时间  |
@@ -977,6 +978,7 @@ URL：webApp/order/search/ <br>
             "cancel_time":"2014-02-01 10:00:00",
             "arrival_time":"2014-02-01 10:00:00",
             "finish_time":"2014-02-01 10:00:00",
+            "consumption":1000,
             "status":0,
             "order_id":"001",
             "dinner_date":"2014-02-01",
@@ -1031,6 +1033,7 @@ URL：webApp/order/detail/ <br>
 | cancel_time | 撤销日期 |
 | arrival_time  | 客到日期 |
 | finish_time | 完成日期 |
+| consumption   | 消费金额  |
 | status | 状态((0, '已订'), (1, '客到'), (2, '已完成'), (3, '已撤单'))|
 | dinner_date | 预定用餐日期 | yes |
 | dinner_time   | 预定用餐时间  |   yes  |
@@ -1071,6 +1074,7 @@ URL：webApp/order/detail/ <br>
 		"cancel_time":"2014-02-01 10:00:00",
 		"arrival_time":"2014-02-01 10:00:00",
 		"finish_time":"2014-02-01 10:00:00",
+		"consumption":1000,
 		"status":0,
 		"order_id":"001",
 		"dinner_date":"2014-02-01",
@@ -1121,6 +1125,8 @@ URL：webApp/order/update/ <br>
 | dinner_date | 预定用餐日期 | no |
 | dinner_time   | 预定用餐时间  |   no  |
 | dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') | no |
+| consumption   | 消费金额  |
+| status | 订单状态, 0: 已订, 1: 客到, 2: 已完成, 3: 已撤单   | no    |
 | name | 联系人 | no |
 | contact | 联系电话 | no |
 | guest_number | 客人数量 | no |
@@ -1147,11 +1153,13 @@ URL：webApp/order/update/ <br>
 	"order_id":1,
 	"dinner_time":"2014-02-01",
 	"dinner_period":0,
+	"consumption":1000,
+	"status":2,
 	"name":"李四",
 	"contact":"18813101211",
 	"guest_number":10,
 	"desk":[1,3,5],
-	"staff_description":"客户年级大，做好防滑",
+	"staff_description":"客户年纪大，做好防滑",
 	"water_card":"水牌内容",
 	"door_card":"门牌内容",
 	"sand_table":"沙盘内容",
@@ -1403,7 +1411,7 @@ URL：webApp/guest/list/ <br>
 |:------------- |:---------------| :-------------|
 | token         | 登录口令          |         yes  |
 | search_key | 客户手机号或者姓名 | no |
-| guest_type | 客户类型 | no |
+| status | 客户状态：0：活跃，1：沉睡，2：流失，3：无订单 | no |
 | internal_channel | 内部销售ID | no |
 | external_channel | 外部销售ID | no |
 
@@ -1413,7 +1421,7 @@ URL：webApp/guest/list/ <br>
 {
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
 	"search_key":"18813101211",
-	"guest_type":"活跃",
+	"guest_type":0,
 	"internal_channel":1
 }
 ```
@@ -1429,11 +1437,12 @@ URL：webApp/guest/list/ <br>
 | name | 姓名 |
 | birthday | 生日 |
 | birthday_type | 生日类型，0:阳历，1:农历 |
+| guest_type  | 顾客类别  |
 | like | 喜好 |
 | dislike | 忌讳 |
 | special_day | 纪念日 |
 | personal_need | 个性化需求 |
-| state | 客户状态：0：活跃，1：沉睡，2：流失，3：无订单 |
+| status | 客户状态：0：活跃，1：沉睡，2：流失，3：无订单 |
 
 
 返回示例
@@ -1448,13 +1457,14 @@ URL：webApp/guest/list/ <br>
 	    {
 	        "guest_id":1,
 			"name":"习某某",
+			"guest_type":"vip",
 			"birthday":"1992-02-15",
 			"birthday_type":0,
 			"like":"吃辣",
 			"dislike":"不吃香菜",
 			"special_day":"",
 			"personal_need":"",
-			"state":0
+			"status":0
 		},
 		...
 		]
@@ -1496,7 +1506,9 @@ URL：webApp/guest/profile/ <br>
 | 参数名称       | 含义             |
 |:------------- |:---------------|
 | name | 姓名 |
+| guest_type  | 顾客类别  |
 | birthday | 生日 |
+| birthday_type | 生日类型，0:阳历，1:农历 |
 | like | 喜好 |
 | dislike | 忌讳 |
 | special_day | 纪念日 |
@@ -1514,7 +1526,9 @@ URL：webApp/guest/profile/ <br>
 	"status":"true",
 	"data":{
 		"name":"习某某",
+		"guest_type":"vip",
 		"birthday":"1992-02-15",
+		"birthday_type":0,
 		"like":"吃辣",
 		"dislike":"不吃香菜",
 		"special_day":"",
@@ -1579,7 +1593,7 @@ description | 备注
 	"data":[
 		{
 			"time":"2014-05-12 10:00:00",
-			"state":0,
+			"status":0,
 			"guest_number":10,
 			"consumption":1000,
 			"desks":["一楼101"],
@@ -1730,7 +1744,6 @@ URL：webApp/score/list/ <br>
 ```
 {
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
-	"state":0,
 	"search_key":"张总",
 }
 ```

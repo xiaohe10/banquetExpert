@@ -415,7 +415,7 @@ class Order(models.Model):
     # 预定桌位, 可能多桌
     desks = models.CharField(max_length=50, default='')
     # 支付金额
-    pay_number = models.IntegerField(default=None, null=True, db_index=True)
+    consumption = models.IntegerField(default=None, null=True, db_index=True)
     # 水牌
     water_card = models.CharField(max_length=10, default='')
     # 门牌

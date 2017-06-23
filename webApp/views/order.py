@@ -16,7 +16,7 @@ from ..models import Desk, Order, Guest
     'order_date': forms.DateField(required=False),
     'dinner_date': forms.DateField(required=False),
     'dinner_time': forms.TimeField(required=False),
-    'status': forms.IntegerField(min_value=0, max_value=1, required=False),
+    'status': forms.IntegerField(min_value=0, max_value=2, required=False),
     'search_key': forms.CharField(min_length=1, max_length=20, required=False),
     'offset': forms.IntegerField(min_value=0, required=False),
     'limit': forms.IntegerField(min_value=0, required=False),
@@ -28,7 +28,7 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
     """搜索订单列表
 
     :param token: 令牌(必传)
-    :param status: 订单状态, 0: 进行中(默认), 1: 已完成
+    :param status: 订单状态, 0: 进行中(默认), 1: 已完成, 2: 已撤单
     :param offset: 起始值
     :param limit: 偏移量
     :param order: 排序方式
@@ -48,10 +48,11 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
             cancel_time: 撤销日期
             arrival_time: 客到日期
             finish_time: 完成日期
-            state: 状态, 0: 已订, 1: 客到, 2: 已完成, 3: 已撤单
+            status: 状态, 0: 已订, 1: 进行中, 2: 已完成, 3: 已撤单
             dinner_date: 预定用餐日期
             dinner_time: 预定用餐时间
             dinner_period: 订餐时段, 0: 午餐, 1: 晚餐, 2: 夜宵
+            consumption: 消费金额
             name: 联系人
             guest_type: 顾客身份
             contact: 联系电话
@@ -62,10 +63,12 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
     """
     ORDERS = ('create_time', '-create_time')
 
-    if status:
+    if status == 0:
         rs = Order.objects.filter(Q(status__in=[0, 1]))
+    elif status == 1:
+        rs = Order.objects.filter(Q(status=2))
     else:
-        rs = Order.objects.filter(Q(status__in=[2, 3]))
+        rs = Order.objects.filter(Q(status=3))
 
     if 'search_key' in kwargs:
         rs = rs.filter(Q(name__icontains=kwargs['search_key']) |
@@ -83,25 +86,35 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
     c = rs.count()
     rs = rs.order_by(ORDERS[order])[offset:offset + limit]
 
-    l = [{'order_id': r.id,
-          'create_time': r.create_time,
-          'cancel_time': r.cancel_time,
-          'arrival_time': r.arrival_time,
-          'finish_time': r.finish_time,
-          'status': r.status,
-          'dinner_date': r.dinner_date,
-          'dinner_time': r.dinner_time,
-          'dinner_period': r.dinner_period,
-          'name': r.name,
-          'guest_type': Guest.objects.get(phone=r.contact).name
-          if Guest.objects.filter(phone=r.contact).count() == 1 else '',
-          'contact': r.contact,
-          'guest_number': r.guest_number,
-          'desks': json.loads(r.desks) if r.desks else '',
-          'internal_channel': r.internal_channel.name if
-          r.internal_channel else '',
-          'external_channel': r.external_channel.name if
-          r.internal_channel else ''} for r in rs]
+    l = []
+    for r in rs:
+        d = {'order_id': r.id,
+             'create_time': r.create_time,
+             'cancel_time': r.cancel_time,
+             'arrival_time': r.arrival_time,
+             'finish_time': r.finish_time,
+             'status': r.status,
+             'dinner_date': r.dinner_date,
+             'dinner_time': r.dinner_time,
+             'dinner_period': r.dinner_period,
+             'consumption': r.consumption,
+             'name': r.name,
+             'guest_type': Guest.objects.get(phone=r.contact).name
+             if Guest.objects.filter(phone=r.contact).count() == 1 else '',
+             'contact': r.contact,
+             'guest_number': r.guest_number,
+             'internal_channel': r.internal_channel.name if
+             r.internal_channel else '',
+             'external_channel': r.external_channel.name if
+             r.external_channel else ''}
+
+        desks_list = json.loads(r.desks)
+        d['desks'] = []
+        for desk in desks_list:
+            desk_id = int(desk[1:-1])
+            d['desks'].append(desk_id)
+
+        l.append(d)
 
     return corr_response({'count': c, 'list': l})
 
@@ -121,6 +134,7 @@ def get_profile(request, token, order_id):
         dinner_time: 预定就餐时间
         dinner_period: 餐段, 0: 午餐, 1: 晚餐, 2: 夜宵
         status: 状态, 0: 已订, 1: 客到, 2: 已完成, 3: 已撤单
+        consumption: 消费金额
         name: 联系人
         guest_type: 顾客身份
         contact: 联系电话
@@ -157,6 +171,7 @@ def get_profile(request, token, order_id):
          'dinner_time': order.dinner_time,
          'dinner_period': order.dinner_period,
          'status': order.status,
+         'consumption': order.consumption,
          'name': order.name,
          'contact': order.contact,
          'guest_type': Guest.objects.get(phone=order.contact).name
@@ -189,7 +204,7 @@ def get_profile(request, token, order_id):
 
     desks_list = json.loads(order.desks)
     for desk in desks_list:
-        desk_id = desk[1:-1]
+        desk_id = int(desk[1:-1])
         try:
             number = Desk.objects.get(id=desk_id).number
         except ObjectDoesNotExist:
@@ -293,10 +308,12 @@ def submit_order(request, token, dinner_date, dinner_time, dinner_period,
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
     'order_id': forms.IntegerField(),
+    'status': forms.IntegerField(min_value=0, max_value=3, required=False),
     'dinner_date': forms.DateField(required=False),
     'dinner_time': forms.TimeField(required=False),
     'dinner_period': forms.IntegerField(
         min_value=0, max_value=2, required=False),
+    'consumption': forms.IntegerField(min_value=0, required=False),
     'name': forms.CharField(min_length=1, max_length=20, required=False),
     'contact': forms.RegexField(r'[0-9]{11}', required=False),
     'guest_number': forms.IntegerField(required=False),
@@ -323,6 +340,7 @@ def modify_order(request, token, order_id, **kwargs):
         dinner_date: 预定就餐日期
         dinner_time: 预定就餐时间
         dinner_period: 餐段, 0: 午餐, 1: 晚餐, 2: 夜宵
+        consumption: 消费金额
         name: 联系人
         contact: 联系电话
         guest_number: 就餐人数
@@ -349,7 +367,7 @@ def modify_order(request, token, order_id, **kwargs):
                   'name', 'contact', 'guest_number', 'staff_description',
                   'water_card', 'door_card', 'sand_table', 'welcome_screen',
                   'welcome_fruit', 'welcome_card', 'background_music',
-                  'has_candle', 'has_flower', 'has_balloon')
+                  'has_candle', 'has_flower', 'has_balloon', 'consumption')
 
     # 下单日期校验
     if 'dinner_date' in kwargs:
