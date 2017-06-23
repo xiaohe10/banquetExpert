@@ -1414,6 +1414,9 @@ URL：webApp/guest/list/ <br>
 | status | 客户状态：0：活跃，1：沉睡，2：流失，3：无订单 | no |
 | internal_channel | 内部销售ID | no |
 | external_channel | 外部销售ID | no |
+| offset | 起始值（默认0） | no |
+| limit | 偏移量（默认10） | no |
+| order | 排序方式（0: 最近就餐，1: 总预定桌数，2: 人均消费，3: 消费频度，默认0） | no |
 
 请求示例
 
