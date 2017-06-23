@@ -370,8 +370,6 @@ class Guest(models.Model):
     # 生日类型
     birthday_type = models.IntegerField(
         choices=((0, '阳历'), (1, '农历')), default=0)
-    # 详细地址
-    address = models.CharField(max_length=50, default='')
     # 爱好
     like = models.CharField(max_length=100, default='')
     # 忌讳
@@ -380,8 +378,6 @@ class Guest(models.Model):
     special_day = models.CharField(max_length=20, default='')
     # 个性化需求
     personal_need = models.CharField(max_length=100, default='')
-    # 备注
-    description = models.CharField(max_length=100, default='')
 
     # 创建时间
     create_time = models.DateTimeField(default=timezone.now, db_index=True)

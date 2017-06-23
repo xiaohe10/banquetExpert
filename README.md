@@ -1005,7 +1005,7 @@ URL：webApp/order/search/ <br>
 | err_2 | 权限错误 |
 
 ## 获取订单详情
-URL：webApp/order/detail/ <br>
+URL：webApp/order/profile/ <br>
 请求方式：POST
 
 | 参数名称       | 含义             | 是否必选       |
@@ -1084,7 +1084,7 @@ URL：webApp/order/detail/ <br>
 		"guest_type":"vip",
 		"contact":"18813101211",
 		"guest_number":10,
-		"desks":[{"id":1,"number":"309"},{"id":2,"number":"312"},{"id":3,"number":"311"}],
+		"desks":[{"desk_id":1,"number":"309"},{"desk_id":2,"number":"312"},{"desk_id":3,"number":"311"}],
 		"user_description":"生日宴，准备蜡烛",
 		"staff_description":"客户年级大，做好防滑",
 		"water_card":"水牌内容",

@@ -139,7 +139,7 @@ def get_profile(request, token, order_id):
         guest_type: 顾客身份
         contact: 联系电话
         guest_number: 就餐人数
-        desks: 预定桌位, 可以多桌, 数组, [{"id":1,"number":"110"}, ...]
+        desks: 预定桌位, 可以多桌, 数组, [{"desk_id":1,"number":"110"}, ...]
         user_description: 用户备注
         staff_description: 员工备注
         water_card: 水牌
@@ -186,7 +186,7 @@ def get_profile(request, token, order_id):
          'welcome_screen': order.welcome_screen,
          'welcome_fruit': order.welcome_fruit,
          'welcome_card': order.welcome_card,
-         'pictures': order.pictures,
+         'pictures': json.loads(order.pictures) if order.pictures else '',
          'group_photo': order.group_photo,
          'background_music': order.background_music,
          'has_candle': order.has_candle,
@@ -209,7 +209,7 @@ def get_profile(request, token, order_id):
             number = Desk.objects.get(id=desk_id).number
         except ObjectDoesNotExist:
             number = ''
-        d['desks'].append({'id': desk_id, 'number': number})
+        d['desks'].append({'desk_id': desk_id, 'number': number})
 
     return corr_response(d)
 
