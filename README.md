@@ -1437,7 +1437,9 @@ URL：webApp/guest/list/ <br>
 | list  | 顾客列表 |
 | 以下为list中的数据 |
 | guest_id  | 顾客 ID |
+| phone | 电话    |
 | name | 姓名 |
+| gender    | 性别，0:保密，1:男，2:女    |
 | birthday | 生日 |
 | birthday_type | 生日类型，0:阳历，1:农历 |
 | guest_type  | 顾客类别  |
@@ -1459,7 +1461,9 @@ URL：webApp/guest/list/ <br>
 	    "list":[
 	    {
 	        "guest_id":1,
+	        "phone":"13111111111",
 			"name":"习某某",
+			"gender":1,
 			"guest_type":"vip",
 			"birthday":"1992-02-15",
 			"birthday_type":0,
@@ -1509,6 +1513,8 @@ URL：webApp/guest/profile/ <br>
 | 参数名称       | 含义             |
 |:------------- |:---------------|
 | name | 姓名 |
+| gender    | 性别，0:保密，1:男，2:女   |
+| phone | 电话    |
 | guest_type  | 顾客类别  |
 | birthday | 生日 |
 | birthday_type | 生日类型，0:阳历，1:农历 |
@@ -1529,6 +1535,8 @@ URL：webApp/guest/profile/ <br>
 	"status":"true",
 	"data":{
 		"name":"习某某",
+		"gender":1,
+		"phone":"13111111111",
 		"guest_type":"vip",
 		"birthday":"1992-02-15",
 		"birthday_type":0,
@@ -1623,14 +1631,15 @@ URL：webApp/guest/profile/add/ <br>
 |:------------- |:---------------| :-------------|
 | token         | 登录口令          |         yes  |
 | phone | 客户手机号（作为查找的依据） | yes |
-| name | 姓名 | yes
-| guest_type | 客户类别 | no
-| birthday | 生日 | no
-| birthday_type | 生日类型，0:阳历，1:农历 | no
-| like | 喜好 | no
-| dislike | 忌讳 | no
-| special_day | 纪念日 | no
-| personal_need | 个性化需求 | no
+| name | 姓名 | yes |
+| gender    | 性别，0:保密，1:男，2:女   | no    |
+| guest_type | 客户类别 | no    |
+| birthday | 生日 | no    |
+| birthday_type | 生日类型，0:阳历，1:农历 | no   |
+| like | 喜好 | no    |
+| dislike | 忌讳 | no |
+| special_day | 纪念日 | no    |
+| personal_need | 个性化需求 | no    |
 
 请求示例
 
@@ -1639,6 +1648,7 @@ URL：webApp/guest/profile/add/ <br>
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
 	"phone":"18813101211"
 	"name":"习某某",
+	"gender":1,
 	"guest_type":"vip",
 	"birthday":"1992-02-15",
 	"birthday_type":0,
@@ -1682,6 +1692,7 @@ URL：webApp/guest/profile/modify/ <br>
 | token         | 登录口令          |         yes  |
 | phone | 客户手机号（作为查找的依据） | yes |
 | name | 姓名 | no
+| gender    | 性别，0:保密，1:男，2:女   | no
 | guest_type | 客户类型 | no
 | birthday | 生日 | no
 | birthday_type | 生日类型，0:阳历，1:农历 | no
@@ -1697,6 +1708,7 @@ URL：webApp/guest/profile/modify/ <br>
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
 	"phone":"18813101211"
 	"name":"习某某",
+	"gender":1,
 	"birthday":"1992-02-15",
 	"birthday_type":0,
 	"like":"吃辣",

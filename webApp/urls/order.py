@@ -10,5 +10,5 @@ urlpatterns = [
     # 提交订单
     url(r'^submit/$', submit_order, name='submit'),
     # 修改订单
-    url(r'^modify/$', modify_order, name='modify'),
+    url(r'^update/$', modify_order, name='modify'),
 ]
