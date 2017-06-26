@@ -1,6 +1,6 @@
-<!--主页/后台用户管理/员工管理/编辑员工-->
+<!--主页/后台用户管理/员工管理/[编辑/添加]员工-->
 <div class="modal-header">
-    <a>编辑员工</a>
+    <a>{{option}}员工</a>
 </div>
 <div class="modal-body">
     <!--内容-->
@@ -11,7 +11,7 @@
                 <fieldset>
                     <!--编辑员工-->
                     <div class="col-form-legend">
-                        <legend class="">编辑员工</legend>
+                        <legend class="">{{option}}员工</legend>
                     </div>
                     <!--姓名 性别-->
                     <div class="control-group">
@@ -62,7 +62,7 @@
     </div>
 </div>
 <div class="modal-footer">
-    <input class="btn btn-primary btn-sm" ng-click="submit()" value="提交"/>
-    <input class="btn btn-primary btn-sm" ng-click="exit()" value="离岗"/>
-    <input class="btn btn-secondary btn-sm" ng-click="cancel()" value="取消"/>
+    <input class="btn btn-primary btn-sm" type="button" ng-click="submit()" value="提交"/>
+    <input class="btn btn-primary btn-sm" type="button" ng-click="exit()" value="离岗"/>
+    <input class="btn btn-secondary btn-sm" type="button" ng-click="cancel()" value="取消"/>
 </div>

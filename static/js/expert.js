@@ -247,7 +247,8 @@ Dialog = {
             AddReserve: "Channel/Channel/AddReserve.html"
         },
         Staff: {
-            EditStaff: "Channel/Staff/EditStaff.html"
+            EditStaff: "Channel/Staff/EditStaff.html",
+            Approve: "Channel/Staff/Approve.html"
         }
     },
     Customer: {
@@ -315,9 +316,23 @@ $(document).ready(function () {
 });
 
 var BanquetExpertApp = angular.module('BanquetExpertApp', ['ngRoute', 'ui.bootstrap']);
+// 过滤器定义
+BanquetExpertApp.filter('gender', function () {
+    return function (gender) {
+        var TAG = {"male": "先生", "female": "女士"};
+        return TAG[gender];
+    }
+});
+BanquetExpertApp.filter('surname', function () {
+    return function (name) {
+        return name.charAt(0);
+    }
+});
+// 侧边导航栏控制器
 BanquetExpertApp.controller('drawerCtrl', function ($scope) {
     $scope.menus = BanquetExpert.menus;
 });
+// Angular路由配置
 BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
     $routeProvider
     // 账户管理
@@ -391,34 +406,19 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 var TAG = Templates.Channel.Channel;
                 // 高层管理
                 $scope.manager = [
-                    {id: 1, name: "高层管理A"},
-                    {id: 2, name: "高层管理B"},
-                    {id: 3, name: "高层管理C"},
-                    {id: 4, name: "高层管理D"},
-                    {id: 5, name: "高层管理E"},
-                    {id: 1, name: "高层管理F"},
-                    {id: 2, name: "高层管理G"},
-                    {id: 3, name: "高层管理H"},
-                    {id: 4, name: "高层管理I"},
-                    {id: 5, name: "高层管理J"}
+                    {id: 2, name: "预订员B", gender: "male"},
+                    {id: 2, name: "预订员B", gender: "male"}
                 ];
                 // 预订员和迎宾
                 $scope.reserve = [
-                    {id: 1, name: "预订员A"},
-                    {id: 2, name: "预订员B"},
-                    {id: 3, name: "预订员C"},
-                    {id: 4, name: "预订员D"},
-                    {id: 5, name: "预订员E"},
-                    {id: 1, name: "预订员F"},
-                    {id: 2, name: "预订员G"},
-                    {id: 3, name: "预订员H"},
-                    {id: 4, name: "预订员I"},
-                    {id: 5, name: "预订员J"},
-                    {id: 1, name: "预订员K"},
-                    {id: 2, name: "预订员L"},
-                    {id: 3, name: "预订员M"},
-                    {id: 4, name: "预订员N"},
-                    {id: 5, name: "预订员O"}
+                    {id: 1, name: "预订员A", gender: "male"},
+                    {id: 2, name: "预订员B", gender: "male"},
+                    {id: 2, name: "预订员B", gender: "male"},
+                    {id: 2, name: "预订员B", gender: "male"},
+                    {id: 2, name: "预订员B", gender: "male"},
+                    {id: 2, name: "预订员B", gender: "male"},
+                    {id: 2, name: "预订员B", gender: "male"},
+                    {id: 2, name: "预订员B", gender: "male"}
                 ];
                 // 渠道
                 $scope.channel = BanquetExpert.channel;
@@ -509,7 +509,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                                 $scope.form.communicate.phone[value] = true;
                             };
                             $scope.submit = function () {
-                                dlg.close({id:0, name:10});
+                                dlg.close($scope.form);
                             };
                             $scope.cancel = function () {
                                 dlg.dismiss('取消操作');
@@ -616,62 +616,104 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
             templateUrl: "./template/" + Templates.Channel.Staff, controller: function ($scope, $modal) {
                 var TAG = Templates.Channel.Staff;
                 // 待审核员工
-                $scope.manager = [
-                    {id: 1, name: "高层管理A"},
-                    {id: 2, name: "高层管理B"},
-                    {id: 3, name: "高层管理C"},
-                    {id: 4, name: "高层管理D"},
-                    {id: 5, name: "高层管理E"},
-                    {id: 1, name: "高层管理F"},
-                    {id: 2, name: "高层管理G"},
-                    {id: 3, name: "高层管理H"},
-                    {id: 4, name: "高层管理I"},
-                    {id: 5, name: "高层管理J"},
-                    {id: 1, name: "高层管理A"},
-                    {id: 2, name: "高层管理B"},
-                    {id: 3, name: "高层管理C"},
-                    {id: 4, name: "高层管理D"},
-                    {id: 5, name: "高层管理E"},
-                    {id: 1, name: "高层管理F"},
-                    {id: 2, name: "高层管理G"},
-                    {id: 3, name: "高层管理H"},
-                    {id: 4, name: "高层管理I"},
-                    {id: 5, name: "高层管理J"}
-                ];
+                $scope.manager = [];
+                for (var idx = 0; idx < 10; idx++) {
+                    $scope.manager.push({
+                        id: idx, name: "赵强" + idx + "号", phone: "100000005", job: "No Job", gender: "male",
+                        username: "赵总" + idx + "号", password: "123456", status: "valid"
+                    });
+                }
                 // 已审核员工
-                $scope.reserve = [
-                    {id: 1, name: "预订员A"},
-                    {id: 2, name: "预订员B"},
-                    {id: 3, name: "预订员C"},
-                    {id: 4, name: "预订员D"},
-                    {id: 5, name: "预订员E"},
-                    {id: 1, name: "预订员F"},
-                    {id: 2, name: "预订员G"},
-                    {id: 3, name: "预订员H"},
-                    {id: 4, name: "预订员I"},
-                    {id: 5, name: "预订员J"},
-                    {id: 1, name: "预订员A"},
-                    {id: 2, name: "预订员B"},
-                    {id: 3, name: "预订员C"},
-                    {id: 4, name: "预订员D"},
-                    {id: 5, name: "预订员E"},
-                    {id: 1, name: "预订员F"},
-                    {id: 2, name: "预订员G"},
-                    {id: 3, name: "预订员H"},
-                    {id: 4, name: "预订员I"},
-                    {id: 5, name: "预订员J"}
-                ];
+                $scope.staff = [];
+                // 审核员工
                 $scope.approve = function (id) {
-                    Log.i(TAG, "编辑：" + JSON.stringify($scope.manager[id]));
+                    Log.i(TAG, "审核员工：" + JSON.stringify($scope.manager[id]));
                     $modal.open({
-                        templateUrl: Dialog.Channel.Staff.EditStaff,
-                        controller: function ($scope) {
-                            Log.i(TAG, "编辑员工控制器");
+                        templateUrl: "./template/" + Dialog.Channel.Staff.Approve,
+                        controller: function ($scope, form) {
+                            $scope.form = form;
+                            $scope.admit = function () {
+
+                            };
+                            $scope.reject = function () {
+
+                            };
+                            $scope.cancel = function () {
+
+                            }
+                        },
+                        resolve: {
+                            form: function () {
+                                return $scope.manager[id];
+                            }
                         }
-                    })
+                    });
                 };
+                // 编辑员工信息
                 $scope.edit = function (id) {
-                    Log.i(TAG, "编辑：" + JSON.stringify($scope.reserve[id]));
+                    Log.i(TAG, "编辑员工信息：" + JSON.stringify($scope.staff[id]));
+                    $modal.open({
+                        templateUrl: "./template/" + Dialog.Channel.Staff.EditStaff,
+                        controller: function ($scope, form) {
+                            var TAG = Dialog.Channel.Staff.EditStaff;
+                            Log.i(TAG, "编辑员工控制器");
+                            $scope.option = "编辑";
+                            $scope.form = form;
+                            $scope.submit = function () {
+                                Log.i(TAG, "提交员工信息：" + $scope.form);
+                            };
+                            $scope.exit = function () {
+                                Log.i(TAG, "员工离岗");
+                            };
+                            $scope.cancel = function () {
+                                Log.i(TAG, "取消员工信息");
+                            }
+                        },
+                        resolve: {
+                            form: function () {
+                                return $scope.staff[id];
+                            }
+                        }
+                    });
+                };
+                // 添加员工
+                $scope.add_staff = function () {
+                    Log.i(TAG, "添加员工");
+                    var dlg = $modal.open({
+                        templateUrl: "./template/" + Dialog.Channel.Staff.EditStaff,
+                        controller: function ($scope) {
+                            var TAG = Dialog.Channel.Staff.EditStaff;
+                            Log.i(TAG, "添加员工控制器");
+                            $scope.option = "添加";
+                            $scope.form = {
+                                name: "",
+                                gender: "male",
+                                phone: "",
+                                job: "",
+                                username: "",
+                                password: ""
+                            };
+                            $scope.submit = function () {
+                                Log.i(TAG, "提交员工信息：" + $scope.form);
+                                dlg.close($scope.form);
+                            };
+                            $scope.exit = function () {
+                                Log.i(TAG, "员工离岗");
+                            };
+                            $scope.cancel = function () {
+                                Log.i(TAG, "取消员工信息");
+                            }
+                        }
+                    });
+                    dlg.opened.then(function () {
+                        Log.i(TAG, "对话框已经打开");
+                    });
+                    dlg.result.then(function (result) {
+                        Log.i(TAG, JSON.stringify(result));
+                        $scope.staff.push(result);
+                    }, function (reason) {
+                        Log.i(TAG, reason);
+                    });
                 }
             }
         })
@@ -1383,5 +1425,5 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
         })
         .otherwise({redirectTo: "/SmartOrder/SmartOrder"});
 }]);
-
+// 启动BanquetExpertApp
 angular.bootstrap($("#main"), ['BanquetExpertApp']);
