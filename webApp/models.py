@@ -64,6 +64,10 @@ class Hotel(models.Model):
     icon = models.CharField(max_length=100, default='')
     # 法人代表
     owner_name = models.CharField(max_length=20)
+    # 会员价值分类的最小区间值(根据最小区间与最大区间将客户分为:活跃会员、沉睡会员和流失会员)
+    min_vip_category = models.IntegerField(default=60)
+    # 会员价值分类的最大区间值
+    max_vip_category = models.IntegerField(default=120)
     # 是否有效
     is_enabled = models.BooleanField(default=True, db_index=True)
 
@@ -466,6 +470,9 @@ class Order(models.Model):
     # 外部获客渠道
     external_channel = models.ForeignKey(
         'ExternalChannel', models.CASCADE, 'orders', default=None, null=True)
+
+    # 所属门店
+    branch = models.ForeignKey('HotelBranch', models.CASCADE, 'orders')
 
     class Meta:
         ordering = ['-create_time']

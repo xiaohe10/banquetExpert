@@ -44,6 +44,8 @@ urlpatterns = [
     url(r'^hotel_branch/desk/add/$', add_desk, name='add_desk'),
     # 修改门店桌位
     url(r'^hotel_branch/desk/modify/$', modify_desk, name='modify_desk'),
+    # 获取获客渠道
+    url(r'^channel/list/$', get_channels, name='get_channel_list'),
     # 获取酒店员工列表
     url(r'^hotel/staff/list/$', get_staffs, name='staff_list'),
     # 注册新的员工
@@ -56,6 +58,12 @@ urlpatterns = [
     # 修改员工资料, 包括账号审核
     url(r'^hotel/staff/profile/modify/$', modify_staff_profile,
         name='modify_staff_profile'),
+    # 搜索订单
+    url(r'^order/search/$', search_orders, name='search_order'),
+    # 获取订单详情
+    url(r'^order/profile/$', get_order_profile, name='get_order_profile'),
+    # 编辑订单
+    url(r'^order/update/$', update_order, name='update_order'),
     # 获取自己酒店的直播间列表
     url(r'^live/list/$', get_lives, name='live_list'),
     # 发布直播间

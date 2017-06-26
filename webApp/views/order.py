@@ -8,7 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from ..utils.decorator import validate_args, validate_staff_token
 from ..utils.response import corr_response, err_response
-from ..models import Desk, Order, Guest
+from ..models import Desk, Order, Guest, HotelBranch
 
 
 @validate_args({
@@ -63,12 +63,14 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
     """
     ORDERS = ('create_time', '-create_time')
 
+    hotel = request.staff.hotel
+
     if status == 0:
-        rs = Order.objects.filter(Q(status__in=[0, 1]))
+        rs = Order.objects.filter(Q(branch__hotel=hotel, status__in=[0, 1]))
     elif status == 1:
-        rs = Order.objects.filter(Q(status=2))
+        rs = Order.objects.filter(Q(branch__hotel=hotel, status=2))
     else:
-        rs = Order.objects.filter(Q(status=3))
+        rs = Order.objects.filter(Q(branch__hotel=hotel, status=3))
 
     if 'search_key' in kwargs:
         rs = rs.filter(Q(name__icontains=kwargs['search_key']) |
@@ -235,8 +237,8 @@ def get_profile(request, token, order_id):
     'has_balloon': forms.BooleanField(required=False),
 })
 @validate_staff_token()
-def submit_order(request, token, dinner_date, dinner_time, dinner_period,
-                 **kwargs):
+def submit_order(request, token, dinner_date, dinner_time,
+                 dinner_period, **kwargs):
     """提交订单
 
     :param token: 令牌(必传)
@@ -266,6 +268,8 @@ def submit_order(request, token, dinner_date, dinner_time, dinner_period,
     if dinner_date < timezone.now().date():
         return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
 
+    branch_list = []
+    branch = None
     # 验证桌位是否存在和是否被预定
     try:
         desk_list = json.loads(request.body)['desks']
@@ -274,6 +278,12 @@ def submit_order(request, token, dinner_date, dinner_time, dinner_period,
             desk_id = '$' + str(desk_list[i]) + '$'
             if not Desk.enabled_objects.filter(id=desk_list[i]).count() > 0:
                 return err_response('err_3', '桌位不存在')
+
+            # 查找订餐的门店
+            branch = Desk.enabled_objects.get(id=desk_list[i]).area.branch
+            if branch.id not in branch_list:
+                branch_list.append(branch.id)
+
             if Order.objects.filter(dinner_date=dinner_date,
                                     dinner_time=dinner_time,
                                     dinner_period=dinner_period,
@@ -285,6 +295,11 @@ def submit_order(request, token, dinner_date, dinner_time, dinner_period,
     except KeyError or ValueError:
         return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
 
+    # 桌位验证
+    if (len(branch_list) != 1) or (branch is None) or \
+            (branch.hotel != request.staff.hotel):
+        return err_response('err_3', '桌位不存在')
+
     order_keys = ('name', 'contact', 'guest_number', 'staff_description',
                   'water_card', 'door_card', 'sand_table', 'welcome_screen',
                   'welcome_fruit', 'welcome_card', 'background_music',
@@ -294,7 +309,7 @@ def submit_order(request, token, dinner_date, dinner_time, dinner_period,
         try:
             order = Order(dinner_date=dinner_date, dinner_time=dinner_time,
                           dinner_period=dinner_period, desks=desks,
-                          internal_channel=request.staff)
+                          internal_channel=request.staff, branch=branch)
             for k in order_keys:
                 if k in kwargs:
                     setattr(order, k, kwargs[k])
@@ -397,6 +412,8 @@ def modify_order(request, token, order_id, **kwargs):
     # 如果换桌
     data = json.loads(request.body)
     if 'desks' in data:
+        branch_list = []
+        branch = None
         desk_list = data.pop('desks')
         # 验证桌位是否存在和是否被预定
         try:
@@ -405,6 +422,12 @@ def modify_order(request, token, order_id, **kwargs):
                 desk_id = '$' + str(desk_list[i]) + '$'
                 if not Desk.enabled_objects.filter(id=desk_list[i]).count() > 0:
                     return err_response('err_3', '桌位不存在')
+
+                # 查找订餐的门店
+                branch = Desk.enabled_objects.get(id=desk_list[i]).area.branch
+                if branch.id not in branch_list:
+                    branch_list.append(branch.id)
+
                 if Order.objects.exclude(id=order_id).filter(
                         dinner_date=order.dinner_date,
                         dinner_time=order_id.dinner_time,
@@ -418,5 +441,10 @@ def modify_order(request, token, order_id, **kwargs):
             order.save()
         except KeyError or ValueError:
             return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+
+        # 桌位验证
+        if (len(branch_list) != 1) or (branch is None) or \
+                (branch.hotel != request.staff.hotel):
+            return err_response('err_3', '桌位不存在')
 
     return corr_response()
