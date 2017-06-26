@@ -353,8 +353,8 @@ class User(models.Model):
         self.save()
 
 
-class UserArchives(models.Model):
-    """用户档案模型"""
+class Guest(models.Model):
+    """顾客模型"""
 
     # 手机
     phone = models.CharField(max_length=11, unique=True)
@@ -370,19 +370,26 @@ class UserArchives(models.Model):
     # 生日类型
     birthday_type = models.IntegerField(
         choices=((0, '阳历'), (1, '农历')), default=0)
-    # 详细地址
-    address = models.CharField(max_length=50, default='')
     # 爱好
-    hobby = models.CharField(max_length=100, default='')
+    like = models.CharField(max_length=100, default='')
     # 忌讳
-    taboo = models.CharField(max_length=100, default='')
+    dislike = models.CharField(max_length=100, default='')
+    # 纪念日
+    special_day = models.CharField(max_length=20, default='')
     # 个性化需求
-    Individualization = models.CharField(max_length=100, default='')
-    # 备注
-    description = models.CharField(max_length=100, default='')
+    personal_need = models.CharField(max_length=100, default='')
 
     # 创建时间
     create_time = models.DateTimeField(default=timezone.now, db_index=True)
+
+    # 所属酒店
+    hotel = models.ForeignKey('Hotel', models.CASCADE, 'archives')
+    # 内部销售
+    internal_channel = models.ForeignKey(
+        'Staff', models.CASCADE, 'archives', default=None, null=True)
+    # 外部销售
+    external_channel = models.ForeignKey(
+        'ExternalChannel', models.CASCADE, 'archives', default=None, null=True)
 
     class Meta:
         ordering = ['-create_time']
@@ -404,7 +411,7 @@ class Order(models.Model):
     # 预定桌位, 可能多桌
     desks = models.CharField(max_length=50, default='')
     # 支付金额
-    pay_number = models.IntegerField(default=None, null=True, db_index=True)
+    consumption = models.IntegerField(default=None, null=True, db_index=True)
     # 水牌
     water_card = models.CharField(max_length=10, default='')
     # 门牌
