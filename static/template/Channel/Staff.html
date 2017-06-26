@@ -1,0 +1,58 @@
+<!--主页/后台用户管理/员工管理-->
+<!--内容-->
+<div class="py-2 px-2 mt-2 bg-info">
+    <!--折叠效果-->
+    <div class="panel-group" id="accordion">
+        <!--待审核员工-->
+        <div class="panel panel-default">
+            <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#collapseOne">
+                <h4 class="panel-title">
+                    <a>
+                        待审核员工
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <!--待审核员工列表-->
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-3 col-xs-4" ng-repeat="x in manager">
+                            <div class="thumbnail" ng-click="approve($index)">
+                                <span class="badge badge-success">{{$index + 1}}</span>
+                                <img class="img-responsive" src="/static/css/image/head1.jpg" style="width: 80px;height: 80px">
+                                <span class="">职位：{{x.name}}</span>
+                                <p>简介：员工</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--已审核员工-->
+        <div class="panel panel-default">
+            <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" data-target="#collapseTwo">
+                <h4 class="panel-title">
+                    <a>
+                        已审核员工
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <!--操作栏-->
+                    <a class="btn btn-link btn-sm" ng-click="add_reserve()">添加员工</a>
+                    <!--高层管理列表-->
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-3 col-xs-4" ng-repeat="x in reserve">
+                            <a class="thumbnail" ng-click="edit($index)">
+                                <img class="img-circle" src="/static/css/image/head1.jpg" style="width: 80px;height: 80px">
+                                <span>{{x.id}}</span>
+                                <span>员工{{x.name}}</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

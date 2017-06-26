@@ -51,7 +51,7 @@
                 <td>{{x.seat}}</td>
                 <td><input type="number" ng-model="x.count" value="{{x.count}}"/></td>
                 <td>{{x.meal_time}}</td>
-                <td><input type="number" ng-model="x.money" value="{{x.money}}"/></td>
+                <td><input type="number" ng-model="x.money" value="{{x.money|currency:'￥'}}"/></td>
                 <td>{{x.operator}}</td>
                 <td>{{x.channel}}</td>
                 <td>{{x.status}}</td>

@@ -40,15 +40,14 @@
             </tr>
             </thead>
             <tbody class="align-content-center">
-
             <tr class="table-info" ng-repeat="x in table">
-                <td>{{x.date}}</td>
-                <td>{{x.recharge|currency}}</td>
-                <td>{{x.sms_cost|currency}}</td>
-                <td>{{x.order_cost|currency}}</td>
-                <td>{{x.service_cost|currency}}</td>
-                <td>{{x.sum|currency}}</td>
-                <td>{{x.rest|currency}}</td>
+                <td>{{x.date|date:"yyyy/mm/dd"}}</td>
+                <td>{{x.recharge|currency:"￥"}}</td>
+                <td>{{x.sms_cost|currency:"￥"}}</td>
+                <td>{{x.order_cost|currency:"￥"}}</td>
+                <td>{{x.service_cost|currency:"￥"}}</td>
+                <td>{{x.sum|currency:"￥"}}</td>
+                <td>{{x.rest|currency:"￥"}}</td>
             </tr>
             </tbody>
         </table>

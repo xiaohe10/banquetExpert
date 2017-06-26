@@ -14,6 +14,8 @@ BanquetExpert = {
     zh_ch: {
         display: "Display"
     },
+    branch: ["门店1", "门店2", "门店3", "门店4", "门店5", "门店6"],
+    selected_branch: 1,
     meals: {
         lunch: [
             "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "11:45",
@@ -92,6 +94,7 @@ BanquetExpert = {
             title: "后台用户管理",
             menu_id: "Channel",
             item: [
+                {title: "员工管理", item_id: "Staff"},
                 {title: "获客渠道", item_id: "Channel"},
                 {title: "用户权限管理", item_id: "Privilege"}
             ]
@@ -147,6 +150,13 @@ BanquetExpert = {
             ]
         },
         {
+            title: "酒店管理",
+            menu_id: "Hotel",
+            item: [
+                {title: "门店管理", item_id: "Branch"}
+            ]
+        },
+        {
             title: "评分审阅",
             menu_id: "Review",
             item: [
@@ -179,6 +189,7 @@ Templates = {
     // 后台用户管理
     Channel: {
         Channel: "Channel/Channel.html", // 获客渠道*** AddManager AddOuterChannel AddReserve
+        Staff: "Channel/Staff.html", // 员工管理
         Privilege: "Channel/Privilege.html"// 权限管理
     },
     // 智能订餐台
@@ -216,6 +227,10 @@ Templates = {
         Restaurant: "Account/Restaurant.html", // 餐厅基本信息
         AccountManage: "Account/AccountManage.html"
     },
+    // 酒店管理
+    Hotel: {
+        Branch: "Hotel/Branch.html" // 门店管理
+    },
     // 评分审阅
     Review: {
         Rank: "Review/Rank.html", // 餐厅排名
@@ -230,6 +245,9 @@ Dialog = {
             AddManager: "Channel/Channel/AddManager.html",
             AddOuterChannel: "Channel/Channel/AddOuterChannel.html",
             AddReserve: "Channel/Channel/AddReserve.html"
+        },
+        Staff: {
+            EditStaff: "Channel/Staff/EditStaff.html"
         }
     },
     Customer: {
@@ -377,7 +395,12 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                     {id: 2, name: "高层管理B"},
                     {id: 3, name: "高层管理C"},
                     {id: 4, name: "高层管理D"},
-                    {id: 5, name: "高层管理E"}
+                    {id: 5, name: "高层管理E"},
+                    {id: 1, name: "高层管理F"},
+                    {id: 2, name: "高层管理G"},
+                    {id: 3, name: "高层管理H"},
+                    {id: 4, name: "高层管理I"},
+                    {id: 5, name: "高层管理J"}
                 ];
                 // 预订员和迎宾
                 $scope.reserve = [
@@ -385,14 +408,25 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                     {id: 2, name: "预订员B"},
                     {id: 3, name: "预订员C"},
                     {id: 4, name: "预订员D"},
-                    {id: 5, name: "预订员E"}
+                    {id: 5, name: "预订员E"},
+                    {id: 1, name: "预订员F"},
+                    {id: 2, name: "预订员G"},
+                    {id: 3, name: "预订员H"},
+                    {id: 4, name: "预订员I"},
+                    {id: 5, name: "预订员J"},
+                    {id: 1, name: "预订员K"},
+                    {id: 2, name: "预订员L"},
+                    {id: 3, name: "预订员M"},
+                    {id: 4, name: "预订员N"},
+                    {id: 5, name: "预订员O"}
                 ];
                 // 渠道
                 $scope.channel = BanquetExpert.channel;
                 // 对话框
                 $scope.add_reserve = function () {
                     Log.i(TAG, "新增预订员和迎宾");
-                    $modal.open({
+                    var dlg = $modal.open({
+                        size: 'lg',
                         templateUrl: "./template/" + Dialog.Channel.Channel.AddReserve,
                         controller: function ($scope) {
                             var TAG = Dialog.Channel.Channel.AddReserve;
@@ -475,12 +509,21 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                                 $scope.form.communicate.phone[value] = true;
                             };
                             $scope.submit = function () {
-                                Log.i(TAG, JSON.stringify($scope.form));
+                                dlg.close({id:0, name:10});
                             };
                             $scope.cancel = function () {
-                                Log.i(TAG, JSON.stringify($scope.form));
+                                dlg.dismiss('取消操作');
                             }
                         }
+                    });
+                    dlg.opened.then(function () {
+                        Log.i(TAG, "对话框已经打开");
+                    });
+                    dlg.result.then(function (result) {
+                        Log.i(TAG, JSON.stringify(result));
+                        $scope.reserve.push(result);
+                    }, function (reason) {
+                        Log.i(TAG, reason);
                     });
                 };
                 $scope.add_manager = function () {
@@ -567,6 +610,69 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                         }
                     });
                 };
+            }
+        })
+        .when('/Channel/Staff', {
+            templateUrl: "./template/" + Templates.Channel.Staff, controller: function ($scope, $modal) {
+                var TAG = Templates.Channel.Staff;
+                // 待审核员工
+                $scope.manager = [
+                    {id: 1, name: "高层管理A"},
+                    {id: 2, name: "高层管理B"},
+                    {id: 3, name: "高层管理C"},
+                    {id: 4, name: "高层管理D"},
+                    {id: 5, name: "高层管理E"},
+                    {id: 1, name: "高层管理F"},
+                    {id: 2, name: "高层管理G"},
+                    {id: 3, name: "高层管理H"},
+                    {id: 4, name: "高层管理I"},
+                    {id: 5, name: "高层管理J"},
+                    {id: 1, name: "高层管理A"},
+                    {id: 2, name: "高层管理B"},
+                    {id: 3, name: "高层管理C"},
+                    {id: 4, name: "高层管理D"},
+                    {id: 5, name: "高层管理E"},
+                    {id: 1, name: "高层管理F"},
+                    {id: 2, name: "高层管理G"},
+                    {id: 3, name: "高层管理H"},
+                    {id: 4, name: "高层管理I"},
+                    {id: 5, name: "高层管理J"}
+                ];
+                // 已审核员工
+                $scope.reserve = [
+                    {id: 1, name: "预订员A"},
+                    {id: 2, name: "预订员B"},
+                    {id: 3, name: "预订员C"},
+                    {id: 4, name: "预订员D"},
+                    {id: 5, name: "预订员E"},
+                    {id: 1, name: "预订员F"},
+                    {id: 2, name: "预订员G"},
+                    {id: 3, name: "预订员H"},
+                    {id: 4, name: "预订员I"},
+                    {id: 5, name: "预订员J"},
+                    {id: 1, name: "预订员A"},
+                    {id: 2, name: "预订员B"},
+                    {id: 3, name: "预订员C"},
+                    {id: 4, name: "预订员D"},
+                    {id: 5, name: "预订员E"},
+                    {id: 1, name: "预订员F"},
+                    {id: 2, name: "预订员G"},
+                    {id: 3, name: "预订员H"},
+                    {id: 4, name: "预订员I"},
+                    {id: 5, name: "预订员J"}
+                ];
+                $scope.approve = function (id) {
+                    Log.i(TAG, "编辑：" + JSON.stringify($scope.manager[id]));
+                    $modal.open({
+                        templateUrl: Dialog.Channel.Staff.EditStaff,
+                        controller: function ($scope) {
+                            Log.i(TAG, "编辑员工控制器");
+                        }
+                    })
+                };
+                $scope.edit = function (id) {
+                    Log.i(TAG, "编辑：" + JSON.stringify($scope.reserve[id]));
+                }
             }
         })
         .when('/Channel/Privilege', {templateUrl: "./template/" + Templates.Channel.Privilege})
@@ -890,9 +996,9 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 $scope.table = [];
                 for (var i = 0; i < 10; i++) {
                     $scope.table.push({
-                        id: i, meal_time: "06月08日晚餐18:00", area: "二楼", seat: "(CEIEC)215", name: "高", gender: "女士",
-                        phone: "18510515888", count: "18", order_channel: "刘光艳", order_time: "2017/6/8 10:57:33",
-                        type: "流失", status: "已订", operator: "刘光艳", detail: "...."
+                        id: i, name: "王", gender: "先生", phone: "18050082265", order_time: "2017/6/23 19:04:48	",
+                        meal_time: "06月08日晚餐18:00", order_channel: "预订台", area: "二楼", seat: "二楼", people: "6",
+                        amount: "4135.00", order_status: "消费成功", operator: "张欢欢"
                     });
                 }
                 // 事件处理
@@ -909,6 +1015,13 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 };
                 $scope.filter = function (index) {
                     Log.i(TAG, "查看" + index + "：" + $scope.nav[index]);
+                };
+                $scope.sort = function (index) {
+                    var tags = [
+                        "客户姓名", "手机", "下单时间", "就餐时间", "接单渠道", "区域",
+                        "桌位", "就餐人数", "消费金额", "订单状态", "操作人"
+                    ];
+                    Log.i(TAG, "根据 '" + tags[index] + "' 对列表排序");
                 };
                 // 对话框
                 $scope.order_append = function () {
@@ -992,6 +1105,10 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                                 operator: "赵强",
                                 note: "给女朋友过生日，提前到店布置房间。",
                                 images: ["IMG1", "IMG2", "IMG3", "IMG4", "IMG5"]
+                            };
+                            $scope.check = function (index) {
+                                Integer.parseAsJs("");
+                                Log.i(TAG, "checked: " + JSON.stringify($scope.images[index]));
                             };
                             $scope.cancel = function () {
                                 Log.i(TAG, JSON.stringify($scope.order));
@@ -1137,8 +1254,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
         .when('/Reserve/MealsTime', {
             templateUrl: "./template/" + Templates.Reserve.MealsTime, controller: function ($scope) {
                 var TAG = Templates.Reserve.MealsTime;
-                var Week = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期天"];
-                var MealsTime = {
+                $scope.MealsTime = {
                     Lunch: BanquetExpert.meals.lunch,
                     Dinner: BanquetExpert.meals.dinner,
                     Supper: BanquetExpert.meals.supper,
@@ -1185,18 +1301,13 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                     ]
                 };
                 $scope.save = function () {
-                    // var data;
-                    // $.forEach(MealsTime.Table, function (key, value) {
-                    //
-                    // });
                     Log.i(TAG, JSON.stringify({
-                        hasLunch: MealsTime.hasLunch,
-                        hasDinner: MealsTime.hasDinner,
-                        hasSupper: MealsTime.hasSupper,
-                        Table: MealsTime.Table
+                        hasLunch: $scope.MealsTime.hasLunch,
+                        hasDinner: $scope.MealsTime.hasDinner,
+                        hasSupper: $scope.MealsTime.hasSupper,
+                        Table: $scope.MealsTime.Table
                     }));
                 };
-                $scope.MealsTime = MealsTime;
             }
         })
         .when('/Reserve/MealsArea', {
@@ -1244,12 +1355,33 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 }
             }
         })
+        // 酒店管理
+        .when('/Hotel/Branch', {
+            templateUrl: "./template/" + Templates.Hotel.Branch, controller: function ($scope) {
+
+            }
+        })
         // 评分审阅
         .when('/Review/Rank', {templateUrl: "./template/" + Templates.Review.Rank})
         .when('/Review/Tutorial', {templateUrl: "./template/" + Templates.Review.Tutorial})
         // 智能订餐台
-        .when('/SmartOrder/SmartOrder', {templateUrl: "./template/" + Templates.SmartOrder.SmartOrder})
-        .otherwise({redirectTo: "/"});
+        .when('/SmartOrder/SmartOrder', {
+            templateUrl: "./template/" + Templates.SmartOrder.SmartOrder, controller: function ($scope) {
+                // 预订员和迎宾
+                $scope.reserve = [
+                    {id: 1, name: "预订员A"},
+                    {id: 2, name: "预订员B"},
+                    {id: 3, name: "预订员C"},
+                    {id: 4, name: "预订员D"},
+                    {id: 5, name: "预订员E"},
+                    {id: 1, name: "预订员F"},
+                    {id: 2, name: "预订员G"},
+                    {id: 3, name: "预订员H"},
+                    {id: 4, name: "预订员I"},
+                ];
+            }
+        })
+        .otherwise({redirectTo: "/SmartOrder/SmartOrder"});
 }]);
 
 angular.bootstrap($("#main"), ['BanquetExpertApp']);
