@@ -40,7 +40,7 @@
     <div class="p-2 mb-2 bg-success form-inline">
         <a>
             订单总数：{{detail.order_count}} 就餐人数：{{detail.customer_count}}人
-            总金额：{{detail.total|currency}} 人均消费：{{detail.average|currency}}
+            总金额：{{detail.total|currency:"￥"}} 人均消费：{{detail.average|currency:"￥"}}
         </a>
         <a class="btn btn-sm btn-secondary mx-1 px-2" ng-click="order_append()">补录订单</a>
     </div>
@@ -50,32 +50,32 @@
         <table class="table table-hover table-bordered small">
             <thead class="bg-info">
             <tr align="center">
-                <td>就餐时间</td>
-                <td>区域</td>
-                <td>桌号</td>
-                <td>姓名</td>
-                <td>手机</td>
-                <td>人数</td>
-                <td>接单渠道</td>
-                <td>下单时间</td>
-                <td>分类</td>
-                <td>订单状态</td>
-                <td>操作员</td>
-                <td>订单详情</td>
+                <th>客户姓名</th>
+                <th>手机</th>
+                <th><a class="glyphicon-arrow-down" ng-click="sort(2)">下单时间</a></th>
+                <th><a class="glyphicon-arrow-down" ng-click="sort(3)">就餐时间</a></th>
+                <th>接单渠道</th>
+                <th>区域</th>
+                <th><a class="glyphicon-arrow-down" ng-click="sort(6)">桌位</a></th>
+                <th>就餐人数</th>
+                <th>消费金额</th>
+                <th>订单状态</th>
+                <th>操作人</th>
+                <th>订单详情</th>
             </tr>
             </thead>
             <tbody>
             <tr align="center" ng-repeat="x in table">
-                <td>{{x.meal_time}}</td>
-                <td>{{x.area}}</td>
-                <td>{{x.seat}} [备注]</td>
                 <td>{{x.name}} {{x.gender}}</td>
                 <td>{{x.phone}}</td>
-                <td>{{x.count}}</td>
-                <td>{{x.order_channel}}</td>
                 <td>{{x.order_time}}</td>
-                <td>{{x.type}}</td>
-                <td>{{x.status}}</td>
+                <td>{{x.meal_time}} </td>
+                <td>{{x.order_channel}}</td>
+                <td>{{x.area}}</td>
+                <td>{{x.seat}}</td>
+                <td>{{x.people}}</td>
+                <td>{{x.amount|currency:'¥'}}</td>
+                <td>{{x.order_status}}</td>
                 <td>{{x.operator}}</td>
                 <td><a ng-click="order_details()">订单详情</a></td>
             </tr>

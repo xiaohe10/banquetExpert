@@ -2,7 +2,7 @@
 <!--内容-->
 <div class="py-2 px-2 mt-2 bg-info">
     <!--折叠效果-->
-    <div class="panel-group hidden-lg" id="accordion">
+    <div class="panel-group hidden" id="accordion">
         <!--超级管理员-->
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -122,8 +122,7 @@
         <!--HabHost-->
         <nav class="mb-2">
             <ul class="nav nav-tabs" role="tablist">
-                <li class="nav-item p-2 active"><a data-target="#cjgly" role="tab" data-toggle="tab">超级管理员</a></li>
-                <li class="nav-item p-2"><a data-target="#gcgl" role="tab" data-toggle="tab">高层管理</a></li>
+                <li class="nav-item p-2 active"><a data-target="#gcgl" role="tab" data-toggle="tab">高层管理</a></li>
                 <li class="nav-item p-2"><a data-target="#ydyhyb" role="tab" data-toggle="tab">预订员和迎宾</a></li>
                 <li class="nav-item p-2"><a data-target="#khjl" role="tab" data-toggle="tab">客户经理</a></li>
                 <li class="nav-item p-2"><a data-target="#wbqd" role="tab" data-toggle="tab">外部渠道</a></li>
@@ -131,59 +130,114 @@
         </nav>
         <!--TabContent-->
         <div class="tab-content">
-            <!--超级管理员-->
-            <div class="tab-pane active" id="cjgly">
-                <!--操作栏-->
-                <a class="btn btn-link btn-sm" ng-click="add_reserve">新增超级管理员</a>
-                <!--超级管理员列表-->
-                <div>
-                    <ul>
-                        <li ng-repeat="x in manager">超级管理员 账号：{{x.id}} 姓名：{{x.name}}</li>
-                    </ul>
-                </div>
-            </div>
             <!--高层管理-->
-            <div class="tab-pane" id="gcgl">
-                <!--操作栏-->
-                <a class="btn btn-link btn-sm" ng-click="add_reserve()">新增高层管理</a>
-                <!--高层管理列表-->
-                <div>
-                    <ul>
-                        <li ng-repeat="x in manager">账号：{{x.id}} 姓名：{{x.name}}</li>
-                    </ul>
+            <div class="tab-pane active" id="gcgl">
+                <div class="panel-body">
+                    <div class="row">
+                        <!--高层管理列表-->
+                        <div class="col-lg-2 col-sm-3 col-xm-4" ng-repeat="x in manager">
+                            <div class="thumbnail" style="background: url('/static/css/image/vip.jpg') no-repeat;">
+                                <span class="badge badge-success">{{$index + 1}}</span>
+                                <img class="img-responsive" src="/static/css/image/head1.jpg" style="width: 80px;height: 80px">
+                                <span class="">职位：{{x.name}}</span>
+                                <p>高层管理</p>
+                                <p>2017年6月26日</p>
+                            </div>
+                        </div>
+                        <!--添加高层管理-->
+                        <div class="col-lg-2 col-sm-3 col-xm-4">
+                            <div class="thumbnail" ng-click="add_manager()">
+                                <span class="badge badge-success">新增高层管理</span>
+                                <img class="img-responsive" src="/static/css/image/head.jpg" style="width: 80px;height: 80px">
+                                <span class="">职位：{{x.name}}</span>
+                                <p>高层管理</p>
+                                <p>2017年6月26日</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!--预订员和迎宾-->
             <div class="tab-pane" id="ydyhyb">
-                <!--操作栏-->
-                <a class="btn btn-link btn-sm" ng-click="add_reserve()">新增预订员和迎宾</a>
-                <!--预订员和迎宾列表-->
-                <div>
-                    <ul>
-                        <li ng-repeat="x in reserve">{{x.id}} {{x.name}}</li>
-                    </ul>
+                <div class="panel-body">
+                    <div class="row">
+                        <!--预订员和迎宾列表-->
+                        <div class="col-lg-2 col-sm-3 col-xm-4" ng-repeat="x in reserve">
+                            <div class="thumbnail">
+                                <span class="badge badge-success">{{$index + 1}}</span>
+                                <img class="img-responsive" src="/static/css/image/head1.jpg" style="width: 80px;height: 80px">
+                                <span class="">职位：{{x.name}}</span>
+                                <p>姓名：赵强</p>
+                                <p>电话：999999999</p>
+                                <p>2017年6月26日</p>
+                            </div>
+                        </div>
+                        <!--添加预订员和迎宾-->
+                        <div class="col-lg-2 col-sm-3 col-xm-4">
+                            <div class="thumbnail" ng-click="add_reserve()">
+                                <span class="badge badge-success">新增预订员和迎宾</span>
+                                <img class="img-responsive" src="/static/css/image/head.jpg" style="width: 80px;height: 80px">
+                                <span class="">职位：{{x.name}}</span>
+                                <p>姓名：赵强</p>
+                                <p>电话：999999999</p>
+                                <p>2017年6月26日</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!--客户经理-->
             <div class="tab-pane" id="khjl">
-                <!--操作栏-->
-                <a class="btn btn-link btn-sm" ng-click="add_manager()">新增客户经理</a>
-                <!--客户经理列表-->
-                <div>
-                    <ul>
-                        <li ng-repeat="x in channel.inner">{{x.value}} {{x.name}}</li>
-                    </ul>
+                <div class="panel-body">
+                    <div class="row">
+                        <!--客户经理列表-->
+                        <div class="col-lg-2 col-sm-3 col-xm-4" ng-repeat="x in reserve">
+                            <div class="thumbnail">
+                                <span class="badge badge-success">{{$index + 1}}</span>
+                                <img class="img-responsive" src="/static/css/image/head1.jpg" style="width: 80px;height: 80px">
+                                <span class="">职位：{{x.name}}</span>
+                                <p>姓名：赵强</p>
+                                <p>电话：999999999</p>
+                                <p>2017年6月26日</p>
+                            </div>
+                        </div>
+                        <!--新增客户经理-->
+                        <div class="col-lg-2 col-sm-3 col-xm-4">
+                            <div class="thumbnail" ng-click="add_manager()">
+                                <span class="badge badge-success">新增客户经理</span>
+                                <img class="img-responsive" src="/static/css/image/head.jpg" style="width: 80px;height: 80px">
+                                <span class="">职位：{{x.name}}</span>
+                                <p>姓名：赵强</p>
+                                <p>电话：999999999</p>
+                                <p>2017年6月26日</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!--外部渠道-->
             <div class="tab-pane" id="wbqd">
-                <!--操作栏-->
-                <a class="btn btn-link btn-sm" ng-click="add_outer_channel()">新增外部渠道</a>
-                <!--外部渠道列表-->
-                <div>
-                    <ul>
-                        <li ng-repeat="x in channel.outer">{{x.value}} {{x.name}}</li>
-                    </ul>
+                <div class="panel-body">
+                    <div class="row">
+                        <!--外部渠道列表-->
+                        <div class="col-lg-2 col-sm-3 col-xm-4" ng-repeat="x in reserve">
+                            <div class="thumbnail">
+                                <span class="badge badge-success">{{$index + 1}}</span>
+                                <img class="img-responsive" src="/static/css/image/head1.jpg" style="width: 80px;height: 80px">
+                                <span class="">渠道名称：{{x.name}}</span>
+                                <p>预定9折</p>
+                            </div>
+                        </div>
+                        <!--新增外部渠道-->
+                        <div class="col-lg-2 col-sm-3 col-xm-4">
+                            <div class="thumbnail" ng-click="add_outer_channel()">
+                                <span class="badge badge-success">添加外部渠道</span>
+                                <img class="img-responsive" src="/static/css/image/head.jpg" style="width: 80px;height: 80px">
+                                <span class="">渠道名称：{{x.name}}</span>
+                                <p>预定9折</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

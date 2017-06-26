@@ -1,0 +1,68 @@
+<!--主页/后台用户管理/员工管理/编辑员工-->
+<div class="modal-header">
+    <a>编辑员工</a>
+</div>
+<div class="modal-body">
+    <!--内容-->
+    <div class="py-2 px-2 mt-2 bg-info">
+        <!--表单-->
+        <div class="p-2 mb-2 bg-faded">
+            <form class="form-horizontal">
+                <fieldset>
+                    <!--编辑员工-->
+                    <div class="col-form-legend">
+                        <legend class="">编辑员工</legend>
+                    </div>
+                    <!--姓名 性别-->
+                    <div class="control-group">
+                        <label class="control-label"><a style="color: red;">*</a>姓名：</label>
+                        <div class="controls">
+                            <input class="form-control-sm inline" type="text" ng-model="form.name"/>
+                            <label class="form-control-label radio inline">
+                                <input type="radio" ng-model="form.gender" value="male"/>先生
+                            </label>
+                            <label class="form-control-label radio inline">
+                                <input type="radio" ng-model="form.gender" value="female"/>女士
+                            </label>
+                        </div>
+                    </div>
+                    <!--电话-->
+                    <div class="control-group">
+                        <label class="control-label"><a style="color: red;">*</a>电话：</label>
+                        <div class="controls">
+                            <label class="form-control-label text-warning inline">
+                                <input type="text" ng-model="form.phone" value="18800184976"/>请准确输入11位手机号码
+                            </label>
+                        </div>
+                    </div>
+                    <!--职位-->
+                    <div class="control-group">
+                        <label class="control-label">职位：</label>
+                        <div class="controls">
+                            <input type="text" ng-model="form.job"/>
+                        </div>
+                    </div>
+                    <!--用户名-->
+                    <div class="control-group">
+                        <label class="control-label">用户名：</label>
+                        <div class="controls">
+                            <input type="text" ng-model="form.username"/>
+                        </div>
+                    </div>
+                    <!--密码-->
+                    <div class="control-group">
+                        <label class="control-label">密码：</label>
+                        <div class="controls">
+                            <input type="text" ng-model="form.password"/>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <input class="btn btn-primary btn-sm" ng-click="submit()" value="提交"/>
+    <input class="btn btn-primary btn-sm" ng-click="exit()" value="离岗"/>
+    <input class="btn btn-secondary btn-sm" ng-click="cancel()" value="取消"/>
+</div>

@@ -14,14 +14,14 @@
                         <legend class="">新增客户经理</legend>
                     </div>
                     <!--姓名-->
-                    <div class="control-group">
+                    <div class="form-group">
                         <label class="control-label"><a style="color: red;">*</a>姓名：</label>
                         <div class="controls">
                             <input class="form-control-sm" type="text" ng-model="form.name"/>
                         </div>
                     </div>
                     <!--性别-->
-                    <div class="control-group">
+                    <div class="form-group">
                         <label class="control-label"><a style="color: red;">*</a>性别：</label>
                         <div class="controls">
                             <label><input class="form-control-sm" type="radio" ng-model="form.gender" value="male"/>先生</label>
@@ -29,7 +29,7 @@
                         </div>
                     </div>
                     <!--电话-->
-                    <div class="control-group">
+                    <div class="form-group">
                         <label class="control-label"><a style="color: red;">*</a>电话：</label>
                         <div class="controls">
                             <!--电话列表-->
@@ -43,7 +43,7 @@
                         </div>
                     </div>
                     <!--生日-->
-                    <div class="control-group">
+                    <div class="form-group">
                         <label class="control-label">生日：</label>
                         <div class="controls">
                             <input type="date" ng-model="form.birthday"/>
@@ -52,14 +52,14 @@
                         </div>
                     </div>
                     <!--单位-->
-                    <div class="control-group">
+                    <div class="form-group">
                         <label class="control-label">单位：</label>
                         <div class="controls">
                             <input type="text" ng-model="form.unit"/>
                         </div>
                     </div>
                     <!--现住址-->
-                    <div class="control-group">
+                    <div class="form-group">
                         <label class="control-label">现住址：</label>
                         <div class="controls">
                             <!--省-->
@@ -81,7 +81,7 @@
                         </div>
                     </div>
                     <!--籍贯-->
-                    <div class="control-group">
+                    <div class="form-group">
                         <label class="control-label">籍贯：</label>
                         <div class="controls">
                             <!--省-->
@@ -95,7 +95,7 @@
                         </div>
                     </div>
                     <!--营销短信-->
-                    <div class="control-group">
+                    <div class="form-group">
                         <label class="control-label">营销短信：</label>
                         <div class="controls">
                             <label><input type="radio" ng-model="form.sms_marketing" value="enabled"/>开</label>
@@ -103,7 +103,7 @@
                         </div>
                     </div>
                     <!--分类方法-->
-                    <div class="control-group">
+                    <div class="form-group">
                         <label class="control-label">分类方法：</label>
                         <div class="controls">
                             <select class="form-control-sm inline" ng-model="form.classification_method">
@@ -112,7 +112,7 @@
                         </div>
                     </div>
                     <!--病症-->
-                    <div class="control-group">
+                    <div class="form-group">
                         <label class="control-label">病症：</label>
                         <div class="controls">
                             <!--病症列表-->
@@ -125,7 +125,7 @@
                         </div>
                     </div>
                     <!--喜好-->
-                    <div class="control-group">
+                    <div class="form-group">
                         <label class="control-label">喜好：</label>
                         <div class="controls">
                             <!--喜好列表-->
@@ -138,7 +138,7 @@
                         </div>
                     </div>
                     <!--忌口-->
-                    <div class="control-group">
+                    <div class="form-group">
                         <label class="control-label">忌口：</label>
                         <div class="controls">
                             <!--忌口列表-->
@@ -151,7 +151,7 @@
                         </div>
                     </div>
                     <!--不良记录-->
-                    <div class="control-group">
+                    <div class="form-group">
                         <label class="control-label">不良记录：</label>
                         <div class="controls">
                             <textarea ng-model="form.bad_records"></textarea>
@@ -163,6 +163,6 @@
     </div>
 </div>
 <div class="modal-footer">
-    <input class="btn btn-primary btn-sm" ng-click="submit()" value="提交"/>
-    <input class="btn btn-secondary btn-sm" ng-click="cancel()" value="取消"/>
+    <input class="btn btn-primary btn-sm" type="button" ng-click="submit()" value="提交"/>
+    <input class="btn btn-secondary btn-sm" type="button" ng-click="cancel()" value="取消"/>
 </div>

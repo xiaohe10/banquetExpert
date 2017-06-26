@@ -45,7 +45,6 @@
             <option ng-repeat="(k, v) in type" value="{{$index}}">{{v}}</option>
         </select>
         <input class="btn btn-sm btn-" type="button" ng-click="move()" value="移动"/>
-        <a class="btn btn-sm btn-secondary mx-1 px-2" data-toggle="modal" data-target=".order-append">补录订单</a>
     </div>
     <!--表格-->
     <div class="p-2 mb-2 bg-faded">
@@ -83,7 +82,7 @@
                 <td>{{x.cancel_rate|number:2}}</td>
                 <td>{{x.credit|number:2}}</td>
                 <td>{{x.order_count|number}}</td>
-                <td>{{x.consumption|currency}}</td>
+                <td>{{x.consumption|currency:"￥"}}</td>
                 <td>{{x.last_meal_date|date:"yyyy/MM/dd"}}</td>
                 <td style="cursor: pointer">{{type[x.type]}};({{x.rfm_type}})</td>
                 <td>{{x.channel}}</td>
