@@ -16,14 +16,15 @@
                 <div class="panel-body">
                     <!--待审核员工列表-->
                     <div class="row">
-                        <div class="col-lg-2 col-sm-3 col-xs-4" ng-repeat="x in manager">
+                        <div class="col-lg-2 col-sm-3 col-xs-4" ng-repeat="x in staff | filter:{status: 0}">
                             <div class="thumbnail" ng-click="approve($index)">
                                 <span class="badge badge-warning">
-                                    {{$index + 1}} {{x.name|surname}} {{x.gender|gender}}
+                                    {{$index + 1}} {{x.name}}
                                 </span>
                                 <img class="img-responsive" src="/static/css/image/head1.jpg" style="width: 80px;height: 80px">
-                                <p>职位：{{x.username}}</p>
-                                <p>简介：{{x.phone}}</p>
+                                <p>用户名：{{x.username}}</p>
+                                <p>职位：{{x.job}}</p>
+                                <p>电话：{{x.phone}}</p>
                             </div>
                         </div>
                     </div>
@@ -43,10 +44,10 @@
                 <div class="panel-body">
                     <div class="row">
                         <!--已审核员工列表-->
-                        <div class="col-lg-2 col-sm-3 col-xs-4" ng-repeat="x in staff">
+                        <div class="col-lg-2 col-sm-3 col-xs-4" ng-repeat="x in staff | filter:{status: 1}">
                             <div class="thumbnail" ng-click="edit($index)">
                                 <span class="badge badge-info">
-                                    {{$index + 1}} {{x.name|surname}} {{x.gender|gender}}
+                                    {{$index + 1}} {{x.name}}
                                 </span>
                                 <img class="img-circle" src="/static/css/image/head1.jpg" style="width: 80px;height: 80px">
                                 <p>用户名：{{x.username}}</p>

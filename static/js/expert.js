@@ -70,10 +70,7 @@ BanquetExpert = {
             ]
         }
     ],
-    staff: [
-        {value: 0, name: 'aaa'},
-        {value: 0, name: 'bbb'}
-    ],
+    staff: [],
     channel: {
         inner: [
             {value: 1, name: 'A'},
@@ -81,13 +78,7 @@ BanquetExpert = {
             {value: 3, name: 'C'},
             {value: 4, name: 'D'}
         ],
-        outer: [
-            {value: 5, name: 'E'},
-            {value: 6, name: 'F'},
-            {value: 7, name: 'G'},
-            {value: 8, name: 'H'},
-            {value: 9, name: 'I'}
-        ]
+        outer: []
     },
     menus: [
         {
@@ -312,7 +303,6 @@ $(document).ready(function () {
     //     $.observable(BanquetExpert.Breadcrumb).insert({title: menu.title});
     //     $.observable(BanquetExpert.Breadcrumb).insert({title: item.title});
     // };
-
 });
 
 var BanquetExpertApp = angular.module('BanquetExpertApp', ['ngRoute', 'ui.bootstrap']);
@@ -326,6 +316,12 @@ BanquetExpertApp.filter('gender', function () {
 BanquetExpertApp.filter('surname', function () {
     return function (name) {
         return name.charAt(0);
+    }
+});
+BanquetExpertApp.filter('discount', function () {
+    return function (discount) {
+        var TAG = ["无折扣", "9.5折", "9.0折", "8.5折", "8.0折"];
+        return TAG[discount];
     }
 });
 // 侧边导航栏控制器
@@ -405,21 +401,9 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
             templateUrl: "./template/" + Templates.Channel.Channel, controller: function ($scope, $modal) {
                 var TAG = Templates.Channel.Channel;
                 // 高层管理
-                $scope.manager = [
-                    {id: 2, name: "预订员B", gender: "male"},
-                    {id: 2, name: "预订员B", gender: "male"}
-                ];
+                $scope.manager = [];
                 // 预订员和迎宾
-                $scope.reserve = [
-                    {id: 1, name: "预订员A", gender: "male"},
-                    {id: 2, name: "预订员B", gender: "male"},
-                    {id: 2, name: "预订员B", gender: "male"},
-                    {id: 2, name: "预订员B", gender: "male"},
-                    {id: 2, name: "预订员B", gender: "male"},
-                    {id: 2, name: "预订员B", gender: "male"},
-                    {id: 2, name: "预订员B", gender: "male"},
-                    {id: 2, name: "预订员B", gender: "male"}
-                ];
+                $scope.reserve = [];
                 // 渠道
                 $scope.channel = BanquetExpert.channel;
                 // 对话框
@@ -579,21 +563,22 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 };
                 $scope.add_outer_channel = function () {
                     Log.i(TAG, "新增外部渠道");
-                    $modal.open({
+                    var dlg = $modal.open({
                         templateUrl: "./template/" + Dialog.Channel.Channel.AddOuterChannel,
                         controller: function ($scope) {
                             var TAG = Dialog.Channel.Channel.AddOuterChannel;
                             Log.i(TAG, "对话框控制器");
+                            $scope.option = "新增";
                             $scope.form = {
                                 // 渠道名称
                                 channel: "118114",
                                 // 直属上级
-                                parent: "我",
+                                parent: 1,
                                 // 签约折扣标准
                                 discount: 2,
                                 // 合作周期
-                                date_from: "",
-                                date_to: "",
+                                date_from: "2017/06/27",
+                                date_to: "2017/06/27",
                                 // 佣金核算方式
                                 bonus: {
                                     method: 1,
@@ -602,32 +587,68 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                             };
                             $scope.discount = ["无折扣", "9.5折", "9.0折", "8.5折", "8.0折"];
                             $scope.submit = function () {
-                                Log.i(TAG, JSON.stringify($scope.form));
+                                dlg.close($scope.form);
                             };
                             $scope.cancel = function () {
+                                dlg.dismiss('cancel');
                                 Log.i(TAG, JSON.stringify($scope.form));
                             }
                         }
                     });
+                    dlg.opened.then(function () {
+                        Log.i(TAG, "对话框已经打开");
+                    });
+                    dlg.result.then(function (result) {
+                        Log.i(TAG, "添加" + JSON.stringify(result));
+                        $scope.channel.outer.push(result);
+                    }, function (reason) {
+                        Log.i(TAG, reason);
+                    });
                 };
+                $scope.edit = function (index) {
+                    Log.i(TAG, "编辑外部渠道");
+                    var dlg = $modal.open({
+                        templateUrl: "./template/" + Dialog.Channel.Channel.AddOuterChannel,
+                        resolve: {
+                            form: function () {
+                                return $scope.channel.outer[index];
+                            }
+                        },
+                        controller: function ($scope, form) {
+                            var TAG = Dialog.Channel.Channel.AddOuterChannel;
+                            Log.i(TAG, "对话框控制器");
+                            $scope.option = "编辑";
+                            $scope.form = form;
+                            $scope.discount = ["无折扣", "9.5折", "9.0折", "8.5折", "8.0折"];
+                            $scope.submit = function () {
+                                dlg.close($scope.form);
+                            };
+                            $scope.cancel = function () {
+                                dlg.dismiss('cancel');
+                                Log.i(TAG, JSON.stringify($scope.form));
+                            }
+                        }
+                    });
+                    dlg.opened.then(function () {
+                        Log.i(TAG, "对话框已经打开");
+                    });
+                    dlg.result.then(function (result) {
+                        Log.i(TAG, "添加" + JSON.stringify(result));
+                        $scope.channel.outer.push(result);
+                    }, function (reason) {
+                        Log.i(TAG, reason);
+                    });
+                }
             }
         })
         .when('/Channel/Staff', {
             templateUrl: "./template/" + Templates.Channel.Staff, controller: function ($scope, $modal) {
                 var TAG = Templates.Channel.Staff;
-                // 待审核员工
-                $scope.manager = [];
-                for (var idx = 0; idx < 10; idx++) {
-                    $scope.manager.push({
-                        id: idx, name: "赵强" + idx + "号", phone: "100000005", job: "No Job", gender: "male",
-                        username: "赵总" + idx + "号", password: "123456", status: "valid"
-                    });
-                }
-                // 已审核员工
-                $scope.staff = [];
+                // 员工列表
+                $scope.staff = BanquetExpert.staff;
                 // 审核员工
                 $scope.approve = function (id) {
-                    Log.i(TAG, "审核员工：" + JSON.stringify($scope.manager[id]));
+                    Log.i(TAG, "审核员工：" + JSON.stringify($scope.staff[id]));
                     $modal.open({
                         templateUrl: "./template/" + Dialog.Channel.Staff.Approve,
                         controller: function ($scope, form) {
@@ -644,7 +665,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                         },
                         resolve: {
                             form: function () {
-                                return $scope.manager[id];
+                                return $scope.staff[id];
                             }
                         }
                     });
@@ -652,7 +673,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 // 编辑员工信息
                 $scope.edit = function (id) {
                     Log.i(TAG, "编辑员工信息：" + JSON.stringify($scope.staff[id]));
-                    $modal.open({
+                    var dlg = $modal.open({
                         templateUrl: "./template/" + Dialog.Channel.Staff.EditStaff,
                         controller: function ($scope, form) {
                             var TAG = Dialog.Channel.Staff.EditStaff;
@@ -664,6 +685,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                             };
                             $scope.exit = function () {
                                 Log.i(TAG, "员工离岗");
+                                dlg.close(id);
                             };
                             $scope.cancel = function () {
                                 Log.i(TAG, "取消员工信息");
@@ -674,6 +696,14 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                                 return $scope.staff[id];
                             }
                         }
+                    });
+                    dlg.opened.then(function () {
+                        Log.i(TAG, "对话框已经打开");
+                    });
+                    dlg.result.then(function (result) {
+                        Log.i(TAG, JSON.stringify(result));
+                    }, function (reason) {
+                        Log.i(TAG, reason);
                     });
                 };
                 // 添加员工
@@ -686,12 +716,13 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                             Log.i(TAG, "添加员工控制器");
                             $scope.option = "添加";
                             $scope.form = {
-                                name: "",
-                                gender: "male",
-                                phone: "",
-                                job: "",
-                                username: "",
-                                password: ""
+                                name: "赵强",
+                                gender: "female",
+                                phone: "1000000000",
+                                job: "无业游民",
+                                username: "赵XX",
+                                password: "",
+                                status: 1
                             };
                             $scope.submit = function () {
                                 Log.i(TAG, "提交员工信息：" + $scope.form);
@@ -746,7 +777,77 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
         })
         .when('/Customer/CustomerAnalysis', {
             templateUrl: "./template/" + Templates.Customer.CustomerAnalysis, controller: function ($scope) {
-
+                var json = {
+                    chart: {type: 'area'},
+                    title: {text: 'US and USSR nuclear stockpiles'},
+                    subtitle: {
+                        text: 'Source: the bullet in</a>'
+                    },
+                    tooltip: {
+                        pointFormat: '{series.name} produced <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
+                    },
+                    xAxis: {
+                        allowDecimals: false,
+                        labels: {
+                            formatter: function () {
+                                return this.value; // clean, unformatted number for year
+                            }
+                        }
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Nuclear weapon states'
+                        },
+                        labels: {
+                            formatter: function () {
+                                return this.value / 1000 + 'k';
+                            }
+                        }
+                    },
+                    series: [
+                        {
+                            name: 'USA',
+                            data: [
+                                null, null, null, null, null, 6, 11, 32, 110, 235, 369, 640,
+                                1005, 1436, 2063, 3057, 4618, 6444, 9822, 15468, 20434, 24126,
+                                27387, 29459, 31056, 31982, 32040, 31233, 29224, 27342, 26662,
+                                26956, 27912, 28999, 28965, 27826, 25579, 25722, 24826, 24605,
+                                24304, 23464, 23708, 24099, 24357, 24237, 24401, 24344, 23586,
+                                22380, 21004, 17287, 14747, 13076, 12555, 12144, 11009, 10950,
+                                10871, 10824, 10577, 10527, 10475, 10421, 10358, 10295, 10104
+                            ]
+                        },
+                        {
+                            name: 'USSR/Russia',
+                            data: [
+                                null, null, null, null, null, null, null, null, null, null,
+                                5, 25, 50, 120, 150, 200, 426, 660, 869, 1060, 1605, 2471, 3322,
+                                4238, 5221, 6129, 7089, 8339, 9399, 10538, 11643, 13092, 14478,
+                                15915, 17385, 19055, 21205, 23044, 25393, 27935, 30062, 32049,
+                                33952, 35804, 37431, 39197, 45000, 43000, 41000, 39000, 37000,
+                                35000, 33000, 31000, 29000, 27000, 25000, 24000, 23000, 22000,
+                                21000, 20000, 19000, 18000, 18000, 17000, 16000
+                            ]
+                        }
+                    ],
+                    plotOptions: {
+                        area: {
+                            pointStart: 1940,
+                            marker: {
+                                enabled: false,
+                                symbol: 'circle',
+                                radius: 2,
+                                states: {
+                                    hover: {
+                                        enabled: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                };
+                $("#chart1").highcharts(json);
+                $("#chart2").highcharts(json);
             }
         })
         .when('/Customer/CustomerProfiles', {
@@ -1409,18 +1510,37 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
         // 智能订餐台
         .when('/SmartOrder/SmartOrder', {
             templateUrl: "./template/" + Templates.SmartOrder.SmartOrder, controller: function ($scope) {
-                // 预订员和迎宾
-                $scope.reserve = [
-                    {id: 1, name: "预订员A"},
-                    {id: 2, name: "预订员B"},
-                    {id: 3, name: "预订员C"},
-                    {id: 4, name: "预订员D"},
-                    {id: 5, name: "预订员E"},
-                    {id: 1, name: "预订员F"},
-                    {id: 2, name: "预订员G"},
-                    {id: 3, name: "预订员H"},
-                    {id: 4, name: "预订员I"},
-                ];
+                var TAG = Templates.SmartOrder.SmartOrder;
+                // 区域列表
+                $scope.area = BanquetExpert.area;
+                // 来电列表
+                $scope.phone = [];
+                // 预约列表
+                $scope.reserve = [];
+                // 订单列表
+                $scope.orders = [];
+                // 分页导航、
+                $scope.pages = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+                // 构造列表
+                for (var i = 0; i < 5; i++) {
+                    $scope.phone.push({
+                        id: i, time: "14:39", name: "赵强", gender: "male", phone: "18800184976", type: "活跃"
+                    });
+                    $scope.reserve.push({
+                        id: i, time: "14:39", name: "姜璐", gender: "female", phone: "18800184976", type: "流失"
+                    });
+                    $scope.orders.push({
+                        id: i, name: "赵强", gender: "male", phone: "18050082265", order_time: "2017/6/23 19:04:48",
+                        meal_time: "06月08日晚餐18:00", order_channel: "预订台", area: "二楼", seat: "525", people: "6",
+                        amount: "4135.00", order_status: "消费成功", operator: "张欢欢"
+                    });
+                }
+                $scope.handlePhone = function (index) {
+                    Log.i(TAG, JSON.stringify($scope.phone[index]));
+                };
+                $scope.handleReserve = function (index) {
+                    Log.i(TAG, JSON.stringify($scope.reserve[index]));
+                };
             }
         })
         .otherwise({redirectTo: "/SmartOrder/SmartOrder"});

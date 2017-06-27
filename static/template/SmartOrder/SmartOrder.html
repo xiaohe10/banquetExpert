@@ -3,120 +3,208 @@
     <div class="p-2 bg-success">
         <div class="container">
             <div class="row">
+                <!--餐段日期选择-->
+                <div class="col-lg-12 py-2">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <span><strong>6</strong>月</span>
+                                <span>2017</span>
+                            </div>
+                            <div class="col-lg-1 input-group">
+                                <input type="button" value="午餐">
+                                <input type="button" value="晚餐">
+                            </div>
+                            <div class="col-lg-4 input-group px-2">
+                                <input type="button" value="周一"/>
+                                <input type="button" value="周一"/>
+                                <input type="button" value="周一"/>
+                                <input type="button" value="周一"/>
+                                <input type="button" value="周一"/>
+                                <input type="button" value="周一"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!--餐位列表-->
-                <div class="col-lg-4">
+                <div class="col-lg-4" style="height: 60%">
                     <!--折叠效果-->
                     <div class="panel-group" id="accordion">
                         <!--一楼-->
-                        <div class="panel panel-default">
+                        <div class="panel panel-default" ng-repeat="x in area">
                             <div class="panel-heading">
                                 <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordion" data-target="#collapseOne">
-                                        超级管理员
+                                    <a data-toggle="collapse" data-parent="#accordion" data-target="#collapse{{$index}}">
+                                        {{x.name}}（{{x.seat.length}}桌）（06-05 周一）
                                     </a>
                                 </h4>
                             </div>
-                            <div id="collapseOne" class="panel-collapse collapse in">
-                                <div class="panel-body">
-                                    <!--超级管理员列表-->
-                                    <ul class="list-group">
-                                        <li class="list-group-item" ng-repeat="x in reserve">{{x.id}} {{x.name}}</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <!--二楼-->
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordion" data-target="#collapseTwo">
-                                        高层管理
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="collapseTwo" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                    <!--高层管理列表-->
-                                    <ul class="list-group">
-                                        <li class="list-group-item" ng-repeat="x in reserve">{{x.id}} {{x.name}}</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <!--三楼-->
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordion" data-target="#collapseThree">
-                                        预订员和迎宾
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="collapseThree" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                    <!--操作栏-->
-                                    <a class="btn btn-link btn-sm" ng-click="add_reserve()">新增预订员和迎宾</a>
-                                    <!--预订员和迎宾列表-->
-                                    <ul class="list-group">
-                                        <li class="list-group-item" ng-repeat="x in reserve">{{x.id}} {{x.name}}</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <!--四楼-->
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordion" data-target="#collapseFour">
-                                        客户经理
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="collapseFour" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                    <!--操作栏-->
-                                    <a class="btn btn-link btn-sm" ng-click="add_manager()">新增客户经理</a>
-                                    <!--客户经理列表-->
-                                    <ul class="list-group">
-                                        <li class="list-group-item" ng-repeat="x in reserve">{{x.id}} {{x.name}}</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <!--五楼-->
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a data-toggle="collapse" data-parent="#accordion" data-target="#collapseFive">
-                                        外部渠道
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="collapseFive" class="panel-collapse collapse">
-                                <div class="panel-body">
-                                    <ul class="list-group">
-                                        <li class="list-group-item" ng-repeat="x in reserve">{{x.id}} {{x.name}}</li>
-                                    </ul>
-                                </div>
+                            <div id="collapse{{$index}}" class="panel-collapse collapse">
+                                <!--<div class="panel-body">-->
+                                <!--桌位列表-->
+                                <ul class="list-group">
+                                    <li class="list-group-item" ng-repeat="y in x.seat">
+                                        {{y.name}} {{y.min}}人~{{y.max}}人 {{y.type}}
+                                    </li>
+                                </ul>
+                                <!--</div>-->
                             </div>
                         </div>
                     </div>
                 </div>
                 <!--电话/预约-->
-                <div class="col-lg-4">
+                <div class="col-lg-4" style="height: 60%">
                     <!--TabHost-->
-                    <div>
-                        <nav>
-                            <ul class="nav nav-tabs">
-                                <li>电话</li>
-                                <li>预定</li>
+                    <nav class="mb-2">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item p-2">
+                                <a role="tab" data-toggle="tab" data-target="#phone">电话</a>
+                            </li>
+                            <li class="nav-item p-2 active">
+                                <a role="tab" data-toggle="tab" data-target="#reserve">预定</a>
+                            </li>
+                        </ul>
+                    </nav>
+                    <!--TabContent-->
+                    <div class="tab-content">
+                        <!--来电-->
+                        <div class="tab-pane" role="tabpanel" id="phone">
+                            <!--来电列表-->
+                            <ul class="list-group">
+                                <li class="list-group-item" ng-repeat="x in phone">
+                                    <div class="container">
+                                        <div class="row">
+                                            <!--头像-->
+                                            <div class="col-lg-3 col-sm-3">
+                                                <img class="img-responsive" src="/static/css/image/head.jpg">
+                                                <span class="align-items-center">{{x.time}}</span>
+                                            </div>
+                                            <!--个人信息-->
+                                            <div class="col-lg-6 col-sm-6">
+                                                <p>{{x.name|surname}} {{x.gender|gender}}</p>
+                                                <p>{{x.phone}} {{x.type}}</p>
+                                            </div>
+                                            <!--操作-->
+                                            <div class="col-lg-3 col-sm-3">
+                                                <input class="btn btn-secondary btn-sm" type="button" ng-click="handlePhone($index)" value="处理"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
                             </ul>
-                        </nav>
+                            <!--分页导航-->
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination pagination-sm">
+                                    <li>
+                                        <a href="#" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <li ng-repeat="(k, v) in pages"><a href="#{{v}}">{{v}}</a></li>
+                                    <li>
+                                        <a href="#" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                        <!--预约-->
+                        <div class="tab-pane active" role="tabpanel" id="reserve">
+                            <!--预约列表-->
+                            <ul class="list-group">
+                                <li class="list-group-item" ng-repeat="x in reserve">
+                                    <div class="container">
+                                        <div class="row">
+                                            <!--头像-->
+                                            <div class="col-lg-3 col-sm-3">
+                                                <img class="img-responsive" src="/static/css/image/head.jpg">
+                                                <span class="align-items-center">{{x.time}}</span>
+                                            </div>
+                                            <!--个人信息-->
+                                            <div class="col-lg-6 col-sm-6">
+                                                <p>{{x.name|surname}} {{x.gender|gender}}</p>
+                                                <p>{{x.phone}} {{x.type}}</p>
+                                            </div>
+                                            <!--操作-->
+                                            <div class="col-lg-3 col-sm-3">
+                                                <input class="btn btn-secondary btn-sm" type="button" ng-click="handleReserve($index)" value="处理"/>
+                                            </div>
+                                            <!--操作栏-->
+                                            <div class="col-lg-12 col-sm-12 p-2 bg-primary">
+                                                操作栏
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <!--分页导航-->
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination pagination-sm">
+                                    <li>
+                                        <a href="#" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <li ng-repeat="(k, v) in pages"><a href="#{{v}}">{{v}}</a></li>
+                                    <li>
+                                        <a href="#" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
                     </div>
                 </div>
                 <!--订单列表-->
-                <div class="col-lg-4">
-                    订单列表
+                <div class="col-lg-4" style="height: 60%">
+                    <div class="panel-group panel-primary">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="panel-title">
+                                    <div class="bg-danger">
+                                        <input class="input-sm" type="text" placeholder="手机号筛选"/>
+                                        <select class="input-sm">
+                                            <optgroup label="筛选方式"></optgroup>
+                                            <option>by 桌号</option>
+                                            <option>by 时间</option>
+                                            <option>by 客户姓名</option>
+                                            <option>by 电话</option>
+                                            <option>by 性别</option>
+                                        </select>
+                                    </div>
+                                    <div class="bg-info">
+                                        <span>晚餐 39桌</span>
+                                        <span>周一 262人</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-collapse">
+                                <!--<div class="panel-body">-->
+                                <!--订单列表-->
+                                <ul class="list-group">
+                                    <li class="list-group-item" ng-repeat="x in orders">
+                                        <div class="container">
+                                            <div class="row">
+                                                <!--左侧信息-->
+                                                <div class="col-4">
+                                                    <h5>{{x.seat}} ({{x.people}}人)</h5>
+                                                    <span>{{x.order_time}}</span>
+                                                </div>
+                                                <!--右侧信息-->
+                                                <div class="col-8">
+                                                    <p><strong>{{x.name|surname}}</strong> 先生</p>
+                                                    <p>备注：桌号({{x.seat}}) {{x.order_status}}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <!--</div>-->
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
