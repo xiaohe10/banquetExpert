@@ -15,8 +15,8 @@
                     </div>
                     <!--姓名 性别-->
                     <div class="control-group">
-                        <label class="control-label"><a style="color: red;">*</a>姓名：</label>
-                        <div class="controls">
+                        <label class="col-sm-2"><a style="color: red;">*</a>姓名：</label>
+                        <div class="col-sm-6">
                             <input class="form-control-sm inline" type="text" ng-model="form.name"/>
                             <label class="form-control-label radio inline">
                                 <input type="radio" ng-model="form.gender" value="male"/>先生
@@ -28,8 +28,8 @@
                     </div>
                     <!--电话-->
                     <div class="control-group">
-                        <label class="control-label"><a style="color: red;">*</a>电话：</label>
-                        <div class="controls">
+                        <label class="col-sm-2"><a style="color: red;">*</a>电话：</label>
+                        <div class="col-sm-6">
                             <label class="form-control-label text-warning inline">
                                 <input type="text" ng-model="form.phone" value="18800184976"/>请准确输入11位手机号码
                             </label>
@@ -37,36 +37,36 @@
                     </div>
                     <!--职位-->
                     <div class="control-group">
-                        <label class="control-label">职位：</label>
-                        <div class="controls">
+                        <label class="col-sm-2">职位：</label>
+                        <div class="col-sm-6">
                             <input type="text" ng-model="form.job"/>
                         </div>
                     </div>
                     <!--用户名-->
                     <div class="control-group">
-                        <label class="control-label">用户名：</label>
-                        <div class="controls">
+                        <label class="col-sm-2">用户名：</label>
+                        <div class="col-sm-6">
                             <input type="text" ng-model="form.username"/>
                         </div>
                     </div>
                     <!--密码-->
                     <div class="control-group">
-                        <label class="control-label">密码：</label>
-                        <div class="controls">
+                        <label class="col-sm-2">密码：</label>
+                        <div class="col-sm-6">
                             <input type="text" ng-model="form.password"/>
                         </div>
                     </div>
                     <!--电话隐私[预订员]-->
                     <div class="control-group">
-                        <label class="control-label">电话隐私：</label>
-                        <div class="controls">
+                        <label class="col-sm-2">电话隐私：</label>
+                        <div class="col-sm-6">
                             <input type="text" ng-model="form.private_phone"/>
                         </div>
                     </div>
                     <!--职能权限-->
                     <div class="control-group">
-                        <label class="control-label">职能权限：</label>
-                        <div class="controls">
+                        <label class="col-sm-2">职能权限：</label>
+                        <div class="col-sm-6">
                             <!--职能权限表-->
                             <table class="table table-hover table-bordered table-responsive">
                                 <thead>
@@ -90,8 +90,8 @@
                     </div>
                     <!--销售职能[客户经理：默认打开]-->
                     <div class="control-group">
-                        <label class="control-label">销售职能：</label>
-                        <div class="controls">
+                        <label class="col-sm-2">销售职能：</label>
+                        <div class="col-sm-6">
                             <label class="form-control-label checkbox inline">
                                 <input type="checkbox" ng-model="form.sale"/>
                                 开通销售职能（可通过手机预订占座，统计本人订单业绩，并协助分析客户价值）
@@ -100,8 +100,8 @@
                     </div>
                     <!--销售职能/订单短信[预订员][客户经理]-->
                     <div class="control-group" ng-show="form.sale">
-                        <label class="control-label">订单短信：</label>
-                        <div class="controls">
+                        <label class="col-sm-2">订单短信：</label>
+                        <div class="col-sm-6">
                             <label class="form-control-label checkbox inline">
                                 <input type="checkbox" ng-model="form.order_sms"/>接收客户预定通知
                             </label>
@@ -109,8 +109,8 @@
                     </div>
                     <!--销售职能/短信附加[预订员]-->
                     <div class="control-group" ng-show="form.sale">
-                        <label class="control-label">短信附加：</label>
-                        <div class="controls">
+                        <label class="col-sm-2">短信附加：</label>
+                        <div class="col-sm-6">
                             <label class="form-control-label checkbox inline">
                                 <input type="checkbox" ng-model="form.order_sms"/>为客户预订餐位时，发送给客户的短信中自动嵌入本人职位、姓名及联系电话
                             </label>
@@ -118,8 +118,8 @@
                     </div>
                     <!--销售职能/提成结算[预订员]-->
                     <div class="control-group" ng-show="form.sale">
-                        <label class="control-label">提成结算：</label>
-                        <div class="controls">
+                        <label class="col-sm-2">提成结算：</label>
+                        <div class="col-sm-6">
                             <!--接单提成-->
                             <label class="form-control-label">
                                 <input class="checkbox inline" type="checkbox" ng-model="form.order_bonus.enabled"/>接单提成
@@ -168,8 +168,8 @@
                     </div>
                     <!--管辖桌位-->
                     <div class="control-group">
-                        <label class="control-label">管辖桌位：</label>
-                        <div class="controls">
+                        <label class="col-sm-2">管辖桌位：</label>
+                        <div class="col-sm-6">
                             <!--管理全部桌位-->
                             <label class="form-control-label">
                                 <input class="checkbox inline" type="checkbox" ng-model="form.desk_manage.all_seat"/>管理全部桌位
@@ -186,8 +186,8 @@
                     </div>
                     <!--管辖区域-->
                     <div class="control-group">
-                        <label class="control-label">管辖区域：</label>
-                        <div class="controls">
+                        <label class="col-sm-2">管辖区域：</label>
+                        <div class="col-sm-6">
                             <ul class="inline">
                                 <li ng-repeat="x in area">
                                     <label class="form-control-label">
@@ -199,8 +199,8 @@
                     </div>
                     <!--沟通渠道-->
                     <div class="control-group">
-                        <label class="control-label">沟通渠道：</label>
-                        <div class="controls">
+                        <label class="col-sm-2">沟通渠道：</label>
+                        <div class="col-sm-6">
                             <ul class="inline">
                                 <li>
                                     <label class="form-control-label">

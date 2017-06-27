@@ -136,7 +136,7 @@
                     <div class="row">
                         <!--高层管理列表-->
                         <div class="col-lg-2 col-sm-3 col-xm-4" ng-repeat="x in manager">
-                            <div class="thumbnail" style="background: url('/static/css/image/vip.jpg') no-repeat;">
+                            <div class="thumbnail" style="background: #ffd04e no-repeat;">
                                 <span class="badge badge-success">{{$index + 1}}</span>
                                 <img class="img-responsive" src="/static/css/image/head1.jpg" style="width: 80px;height: 80px">
                                 <span class="">职位：{{x.name}}</span>
@@ -220,12 +220,13 @@
                 <div class="panel-body">
                     <div class="row">
                         <!--外部渠道列表-->
-                        <div class="col-lg-2 col-sm-3 col-xm-4" ng-repeat="x in reserve">
-                            <div class="thumbnail">
-                                <span class="badge badge-success">{{$index + 1}}</span>
+                        <div class="col-lg-2 col-sm-3 col-xm-4" ng-repeat="x in channel.outer">
+                            <div class="thumbnail" ng-click="edit($index)">
+                                <span class="badge badge-success">{{$index + 1}} {{x.channel}}</span>
                                 <img class="img-responsive" src="/static/css/image/head1.jpg" style="width: 80px;height: 80px">
-                                <span class="">渠道名称：{{x.name}}</span>
-                                <p>预定9折</p>
+                                <p>{{x.channel}}</p>
+                                <p>{{x.date_from}}~{{x.date_to}}</p>
+                                <p>{{x.discount|discount}}</p>
                             </div>
                         </div>
                         <!--新增外部渠道-->
@@ -233,8 +234,8 @@
                             <div class="thumbnail" ng-click="add_outer_channel()">
                                 <span class="badge badge-success">添加外部渠道</span>
                                 <img class="img-responsive" src="/static/css/image/head.jpg" style="width: 80px;height: 80px">
-                                <span class="">渠道名称：{{x.name}}</span>
-                                <p>预定9折</p>
+                                <span class="">渠道名称：无</span>
+                                <p>无折扣</p>
                             </div>
                         </div>
                     </div>

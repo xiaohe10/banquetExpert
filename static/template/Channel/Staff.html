@@ -16,12 +16,15 @@
                 <div class="panel-body">
                     <!--待审核员工列表-->
                     <div class="row">
-                        <div class="col-lg-2 col-sm-3 col-xs-4" ng-repeat="x in manager">
+                        <div class="col-lg-2 col-sm-3 col-xs-4" ng-repeat="x in staff | filter:{status: 0}">
                             <div class="thumbnail" ng-click="approve($index)">
-                                <span class="badge badge-success">{{$index + 1}}</span>
+                                <span class="badge badge-warning">
+                                    {{$index + 1}} {{x.name}}
+                                </span>
                                 <img class="img-responsive" src="/static/css/image/head1.jpg" style="width: 80px;height: 80px">
-                                <span class="">职位：{{x.name}}</span>
-                                <p>简介：员工</p>
+                                <p>用户名：{{x.username}}</p>
+                                <p>职位：{{x.job}}</p>
+                                <p>电话：{{x.phone}}</p>
                             </div>
                         </div>
                     </div>
@@ -39,16 +42,28 @@
             </div>
             <div id="collapseTwo" class="panel-collapse collapse">
                 <div class="panel-body">
-                    <!--操作栏-->
-                    <a class="btn btn-link btn-sm" ng-click="add_reserve()">添加员工</a>
-                    <!--高层管理列表-->
                     <div class="row">
-                        <div class="col-lg-2 col-sm-3 col-xs-4" ng-repeat="x in reserve">
-                            <a class="thumbnail" ng-click="edit($index)">
+                        <!--已审核员工列表-->
+                        <div class="col-lg-2 col-sm-3 col-xs-4" ng-repeat="x in staff | filter:{status: 1}">
+                            <div class="thumbnail" ng-click="edit($index)">
+                                <span class="badge badge-info">
+                                    {{$index + 1}} {{x.name}}
+                                </span>
                                 <img class="img-circle" src="/static/css/image/head1.jpg" style="width: 80px;height: 80px">
-                                <span>{{x.id}}</span>
-                                <span>员工{{x.name}}</span>
-                            </a>
+                                <p>用户名：{{x.username}}</p>
+                                <p>职位：{{x.job}}</p>
+                                <p>电话：{{x.phone}}</p>
+                            </div>
+                        </div>
+                        <!--添加员工-->
+                        <div class="col-lg-2 col-sm-3 col-xs-4">
+                            <div class="thumbnail" ng-click="add_staff()">
+                                <span class="badge badge-info">添加员工</span>
+                                <img class="img-circle" src="/static/css/image/head.jpg" style="width: 80px;height: 80px">
+                                <p>用户名：No Name</p>
+                                <p>职位：No Job</p>
+                                <p>电话：No Phone</p>
+                            </div>
                         </div>
                     </div>
                 </div>
