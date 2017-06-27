@@ -19,4 +19,8 @@ urlpatterns = [
     url(r'^hotel/$', get_hotel, name='get_hotel'),
     # 获取员工所在酒店的门店列表
     url(r'^hotel_branch/list/$', get_branches, name='get_branch_list'),
+    # 获取员工的客户列表
+    url(r'^guest/list/$', get_guests, name='get_guest_list'),
+    # 获取员工的客户统计
+    url(r'^guest/statistic/$', get_guest_statistic, name='get_guest_statistic'),
 ]

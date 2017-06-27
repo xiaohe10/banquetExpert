@@ -62,6 +62,8 @@ urlpatterns = [
     url(r'^order/search/$', search_orders, name='search_order'),
     # 获取订单详情
     url(r'^order/profile/$', get_order_profile, name='get_order_profile'),
+    # 提交订单
+    url(r'^submit/$', submit_order, name='submit'),
     # 编辑订单
     url(r'^order/update/$', update_order, name='update_order'),
     # 获取自己酒店的直播间列表

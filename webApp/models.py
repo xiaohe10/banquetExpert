@@ -361,7 +361,7 @@ class Guest(models.Model):
     """顾客模型"""
 
     # 手机
-    phone = models.CharField(max_length=11, unique=True)
+    phone = models.CharField(max_length=11)
     # 姓名
     name = models.CharField(max_length=20, default='')
     # 用户会员类别
@@ -387,13 +387,13 @@ class Guest(models.Model):
     create_time = models.DateTimeField(default=timezone.now, db_index=True)
 
     # 所属酒店
-    hotel = models.ForeignKey('Hotel', models.CASCADE, 'archives')
+    hotel = models.ForeignKey('Hotel', models.CASCADE, 'guests')
     # 内部销售
     internal_channel = models.ForeignKey(
-        'Staff', models.CASCADE, 'archives', default=None, null=True)
+        'Staff', models.CASCADE, 'guests', default=None, null=True)
     # 外部销售
     external_channel = models.ForeignKey(
-        'ExternalChannel', models.CASCADE, 'archives', default=None, null=True)
+        'ExternalChannel', models.CASCADE, 'guests', default=None, null=True)
 
     class Meta:
         ordering = ['-create_time']
@@ -461,7 +461,7 @@ class Order(models.Model):
     # 撤销时间
     cancel_time = models.DateTimeField(default=None, null=True, db_index=True)
 
-    # 顾客(可能是散客)
+    # 顾客(顾客端订餐关联)
     user = models.ForeignKey(
         'User', models.CASCADE, 'orders', default=None, null=True)
     # 内部获客渠道

@@ -916,7 +916,7 @@ URL：webApp/order/search/ <br>
 |:------------- |:---------------| :-------------:|
 | token         | 登录口令          |         yes  |
 | order_date    | 下单日期  |   no |
-| dinner_period | 餐段    |   no |
+| dinner_period | 餐段，0：午餐，1：晚餐，2：夜宵    |   no |
 | dinner_date   | 预定用餐日期  |   no  |
 | dinner_time   | 预定用餐时间  |   no  |
 | status | 订单状态（0: 进行中，1: 已完成，2: 已删除，默认为0）  | no |
@@ -1086,7 +1086,7 @@ URL：webApp/order/profile/ <br>
 		"guest_number":10,
 		"desks":[{"desk_id":1,"number":"309"},{"desk_id":2,"number":"312"},{"desk_id":3,"number":"311"}],
 		"user_description":"生日宴，准备蜡烛",
-		"staff_description":"客户年级大，做好防滑",
+		"staff_description":"客户年纪大，做好防滑",
 		"water_card":"水牌内容",
 		"door_card":"门牌内容",
 		"sand_table":"沙盘内容",
@@ -1125,7 +1125,6 @@ URL：webApp/order/update/ <br>
 | dinner_date | 预定用餐日期 | no |
 | dinner_time   | 预定用餐时间  |   no  |
 | dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') | no |
-| consumption   | 消费金额  |
 | status | 订单状态, 0: 已订, 1: 客到, 2: 已完成, 3: 已撤单   | no    |
 | name | 联系人 | no |
 | contact | 联系电话 | no |
@@ -1153,7 +1152,6 @@ URL：webApp/order/update/ <br>
 	"order_id":1,
 	"dinner_time":"2014-02-01",
 	"dinner_period":0,
-	"consumption":1000,
 	"status":2,
 	"name":"李四",
 	"contact":"18813101211",
@@ -1290,6 +1288,131 @@ desk_consumption | 桌均消费
 }
 ```
 
+# 我的客户
+
+## 获取员工的客户列表（搜索）
+
+URL：webApp/staff/guest/list/ <br>
+请求方式：POST
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------|
+| token         | 登录口令          |         yes  |
+| search_key | 客户手机号或者姓名 | no |
+| status | 客户状态，0：活跃，1：沉睡，2：流失，3：无订单 | no |
+| offset | 起始值（默认0） | no |
+| limit | 偏移量（默认10） | no |
+
+请求示例
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"search_key":"18813101211"
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| count | 顾客总数 |
+| list  | 顾客列表 |
+| 以下为list中的数据 |
+| guest_id  | 顾客 ID |
+| phone | 电话    |
+| name | 姓名 |
+| gender    | 性别，0:保密，1:男，2:女    |
+| birthday | 生日 |
+| birthday_type | 生日类型，0:阳历，1:农历 |
+| guest_type  | 顾客类别  |
+| like | 喜好 |
+| dislike | 忌讳 |
+| special_day | 纪念日 |
+| personal_need | 个性化需求 |
+| status | 客户状态：0：活跃，1：沉睡，2：流失，3：无订单 |
+
+
+返回示例
+
+```
+{
+	"status":"true",
+	"data":
+	{
+	    "count":100,
+	    "list":[
+	    {
+	        "guest_id":1,
+	        "phone":"13111111111",
+			"name":"习某某",
+			"gender":1,
+			"guest_type":"vip",
+			"birthday":"1992-02-15",
+			"birthday_type":0,
+			"like":"吃辣",
+			"dislike":"不吃香菜",
+			"special_day":"",
+			"personal_need":"",
+			"status":0
+		},
+		...
+		]
+	}
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 不存在该条件的用户 |
+
+
+## 获取员工的客户统计
+URL：webApp/staff/guest/statistic/ <br>
+请求方式：POST
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------|
+| token         | 登录口令          |         yes  |
+
+请求示例
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF"
+}
+```
+
+返回参数
+
+
+| 参数名称       | 含义    |
+|:------------- |:---------------|
+| all_guest\_number | 所有客户
+active_guest\_number | 活跃客户数量
+sleep_guest\_number | 沉睡客户数量
+lost_guest\_number | 流失客户数量
+
+返回示例
+
+
+```
+{
+	"status":"true",
+	"data":{
+		"all_guest_number":1000,
+		"active_guest_number": 1000,
+		"sleep_guest_number": 1000,
+		"lost_guest_number": 1000
+	}
+}
+```
+
+
 # 客户管理
 
 ## 获取客户概况
@@ -1424,7 +1547,7 @@ URL：webApp/guest/list/ <br>
 {
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
 	"search_key":"18813101211",
-	"guest_type":0,
+	"status":0,
 	"internal_channel":1
 }
 ```
@@ -1485,7 +1608,9 @@ URL：webApp/guest/list/ <br>
 |:------------- |:---------------|
 | err_1 | 参数不正确（缺少参数或者不符合格式） |
 | err_2 | 权限错误 |
-| err_3 | 不存在该条件的用户
+| err_3 | 不存在该条件的用户 |
+| err_4 | 内部销售渠道不存在 |
+| err_5 | 外部销售渠道不存在 |
 
 
 ## 获取客户档案（根据顾客ID或手机）
@@ -4169,3 +4294,383 @@ URL：webApp/admin/hotel/staff/profile/modify/ <br>
 | err_3 | 管理员不存在 |
 | err_4 | 员工不存在 |
 | err_5 | 图片为空或图片格式错误   |
+
+
+## 搜索订单列表
+URL：webApp/admin/order/search/ <br>
+请求方式：POST <br>
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------:|
+| token         | 登录口令          |         yes  |
+| dinner_date_begin   | 预定用餐日期开始  |   yes  |
+| dinner_date_end   | 预定用餐日期终止  |   yes  |
+| search_key | 搜索关键词（如姓名、手机等进行模糊搜索） | no |
+| dinner_period | 餐段，0：午餐，1：晚餐，2：夜宵    |   no |
+| status | 订单状态（0: 进行中，1: 已完成，2: 已删除，默认为0）  | no |
+| offset | 起始值（默认0） | no |
+| limit | 偏移量（默认10） | no |
+| order | 排序方式（0: 注册时间升序，1: 注册时间降序，默认1） | no |
+
+
+请求示例:
+
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"status":0,
+	"search_key":"张总",
+	"dinner_date_begin":"2017-2-2",
+	"dinner_date_end":"2017-6-6"
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| count | 订单数量 |
+| list | 订单列表 |
+| 以下为list中的数据 |
+| order_id| 订单ID |
+| create_time | 创建日期 |
+| cancel_time | 撤销日期 |
+| arrival_time  | 客到日期 |
+| finish_time | 完成日期 |
+| consumption   | 消费金额  |
+| status | 状态((0, '已订'), (1, '客到'), (2, '已完成'), (3, '已撤单'))|
+| dinner_date | 预定用餐日期 |
+| dinner_time   | 预定用餐时间  |
+| dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') |
+| name | 联系人 |
+| contact | 联系电话 |
+| guest_type | 顾客身份 |
+| guest_number | 客人数量 |
+| desks | 桌位ID数组 |
+| internal_channel | 内部获客渠道, 即接单人名字, 如果存在 |
+| external_channel | 外部获客渠道, 即外部渠道名称, 如果存在 |
+
+
+返回示例：
+
+注意：返回的订单列表以数组来表示
+
+```
+{
+	"status":"true",
+	"data":{
+	    "count":100,
+	    "list":[
+            "order_id":1,
+            "create_time":"2014-02-01 10:00:00",
+            "cancel_time":"2014-02-01 10:00:00",
+            "arrival_time":"2014-02-01 10:00:00",
+            "finish_time":"2014-02-01 10:00:00",
+            "consumption":1000,
+            "status":0,
+            "order_id":"001",
+            "dinner_date":"2014-02-01",
+            "dinner_time":"12:00",
+            "dinner_period":0,
+            "name":"李四",
+            "guest_type":"vip",
+            "contact":"18813101211",
+            "guest_number":10,
+            "desks":[1,3,5],
+            "internal_channel":"刘光艳",
+            "external_channel":"美团"
+            ],
+			...
+	    }
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 管理员不存在    |
+
+## 获取订单详情
+URL：webApp/admin/order/profile/ <br>
+请求方式：POST
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------|
+| token         | 登录口令          |         yes  |
+| order_id | 订单ID | yes |
+
+
+请求示例:
+
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"order_id":"order_id",
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| order_id| 订单ID |
+| create_time | 创建日期 |
+| cancel_time | 撤销日期 |
+| arrival_time  | 客到日期 |
+| finish_time | 完成日期 |
+| consumption   | 消费金额  |
+| status | 状态((0, '已订'), (1, '客到'), (2, '已完成'), (3, '已撤单'))|
+| dinner_date | 预定用餐日期 | yes |
+| dinner_time   | 预定用餐时间  |   yes  |
+| dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') | yes |
+| name | 联系人 |
+| guest_type | 顾客身份 |
+| contact | 联系电话 |
+| guest_number | 客人数量 |
+| desks | 桌位ID和编号 |
+| user_description | 用户备注 |
+| staff_description | 员工备注 |
+|以下是私人订制的字段|
+| water_card | 水牌 |
+| door_card | 门牌 |
+| sand_table | 沙盘 |
+| welcome_screen | 欢迎屏 |
+| welcome_fruit | 迎宾水果的价格 |
+| welcome_card | 欢迎卡 |
+| pictures | 用户上传的图片（最多5张) |
+| background_music | 背景音乐 |
+| has_candle | 是否有蜡烛 |
+| has_flower | 是否有鲜花 |
+| has_balloon | 是否有气球 |
+| group_photo | 用户上传的合照 |
+| internal_channel | 内部获客渠道, 即接单人名字, 如果存在 |
+| external_channel | 外部获客渠道, 即外部渠道名称, 如果存在 |
+
+
+返回示例：
+
+```
+{
+	"status":"true",
+	data:{
+		"order_id":1,
+		"staff_name":"小二",
+		"create_time":"2014-02-01 10:00:00",
+		"cancel_time":"2014-02-01 10:00:00",
+		"arrival_time":"2014-02-01 10:00:00",
+		"finish_time":"2014-02-01 10:00:00",
+		"consumption":1000,
+		"status":0,
+		"order_id":"001",
+		"dinner_date":"2014-02-01",
+		"dinner_time":"12:00",
+		"dinner_period":0,
+		"name":"李四",
+		"guest_type":"vip",
+		"contact":"18813101211",
+		"guest_number":10,
+		"desks":[{"desk_id":1,"number":"309"},{"desk_id":2,"number":"312"},{"desk_id":3,"number":"311"}],
+		"user_description":"生日宴，准备蜡烛",
+		"staff_description":"客户年纪大，做好防滑",
+		"water_card":"水牌内容",
+		"door_card":"门牌内容",
+		"sand_table":"沙盘内容",
+		"welcome_screen":"欢迎xx领导",
+		"welcome_fruit": 128,
+		"welcome_card":"欢迎你",
+		"pictures":["http://demo.com/1.jpg","http://demo.com/2.jpg", ...],
+		"background_music":"我爱你中国",
+		"has_candle":true,
+		"has_flower":false,
+		"has_balloon":false,
+		"group_photo":"合照名称",
+		"internal_channel":"刘光艳",
+		"external_channel":"美团"
+	}
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 管理员不存在    |
+| err_4 | 该订单不存在 |
+
+
+## 提交订单
+URL：webApp/admin/order/submit/ <br>
+请求方式：POST <br>
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------:|
+| token         | 登录口令          |         yes  |
+| dinner_date | 预定用餐日期 | yes |
+| dinner_time | 预定用餐时间 | yes |
+| dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') | yes |
+| name | 联系人 | yes |
+| contact | 联系电话 | yes |
+| guest_number | 客人数量 | yes |
+| desks | 桌位ID的数组 | yes |
+| staff_description | 员工备注 | no |
+|以下是私人订制的字段|
+| water_card | 水牌 | no |
+| door_card | 门牌 | no |
+| sand_table | 沙盘 | no |
+| welcome_screen | 欢迎屏 | no |
+| welcome_fruit | 迎宾水果的价格 | no |
+| welcome_card | 欢迎卡 | no |
+| background_music | 背景音乐 | no |
+| has_candle | 是否有蜡烛 | no |
+| has_flower | 是否有鲜花 | no |
+| has_balloon | 是否有气球 | no |
+
+
+请求示例:
+
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"dinner_date":"2014-02-01",
+	"dinner_time":"12:00"
+	"dinner_period":0,
+	"name":"李四",
+	"contact":"18813101211",
+	"guest_number":10,
+	"desks":[1,3,5],
+	"staff_description":"客户年纪大，做好防滑",
+	"water_card":"水牌内容",
+	"door_card":"门牌内容",
+	"sand_table":"沙盘内容",
+	"welcome_screen":"欢迎xx领导",
+	"welcome_fruit": 128,
+	"welcome_card":"欢迎你",
+	"background_music":"我爱你中国",
+	"has_candle":true,
+	"has_flower":false,
+	"has_balloon":false,
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| order_id | 订单 ID |
+
+
+返回示例：
+
+```
+{
+	"status":"true",
+	"data":{
+		"order_id":1
+	}
+}
+```
+
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 管理员不存在    |
+| err_4 | 桌位不存在 |
+| err_5 | 桌位已被预定    |
+| err_6 | 服务器创建订单错误 |
+
+
+##编辑订单
+URL：webApp/admin/order/update/ <br>
+请求方式：POST <br>
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------:|
+| token         | 登录口令          |         yes  |
+| order_id| 订单 ID | yes|
+| dinner_date | 预定用餐日期 | no |
+| dinner_time   | 预定用餐时间  |   no  |
+| dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') | no |
+| consumption   | 消费金额  | no    |
+| status | 订单状态, 0: 已订, 1: 客到, 2: 已完成, 3: 已撤单   | no    |
+| name | 联系人 | no |
+| contact | 联系电话 | no |
+| guest_number | 客人数量 | no |
+| desks | 桌位ID数组 | no |
+| staff_description | 员工备注 | no |
+|以下是私人订制的字段|
+| water_card | 水牌 | no |
+| door_card | 门牌 | no |
+| sand_table | 沙盘 | no |
+| welcome_screen | 欢迎屏 | no |
+| welcome_fruit | 迎宾水果的价格 | no |
+| welcome_card | 欢迎卡 | no |
+| background_music | 背景音乐 | no |
+| has_candle | 是否有蜡烛 | no |
+| has_flower | 是否有鲜花 | no |
+| has_balloon | 是否有气球 | no |
+
+请求示例:
+
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"order_id":1,
+	"dinner_time":"2014-02-01",
+	"dinner_period":0,
+	"consumption":1000,
+	"status":2,
+	"name":"李四",
+	"contact":"18813101211",
+	"guest_number":10,
+	"desk":[1,3,5],
+	"staff_description":"客户年纪大，做好防滑",
+	"water_card":"水牌内容",
+	"door_card":"门牌内容",
+	"sand_table":"沙盘内容",
+	"welcome_screen":"欢迎xx领导",
+	"welcome_fruit": 128,
+	"welcome_card":"欢迎你",
+	"background_music":"我爱你中国",
+	"has_candle":true,
+	"has_flower":false,
+	"has_balloon":false,
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+
+
+返回示例：
+
+```
+{
+	"status":"true"
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 管理员不存在    |
+| err_4 | 不存在该订单 |
+| err_5 | 桌位不存在 |
+| err_6 | 桌位已被预定    |

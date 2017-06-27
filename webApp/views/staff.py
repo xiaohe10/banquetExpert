@@ -1,15 +1,19 @@
 import os
+import time
 
+from datetime import timedelta
 from PIL import Image
 from django import forms
 from django.db import IntegrityError, transaction
+from django.db.models import Q, Sum
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import RegexValidator
 
 from ..utils.decorator import validate_args, validate_staff_token
 from ..utils.response import corr_response, err_response
-from ..models import Staff, Hotel, ValidationCode as ValidationCodeModel
+from ..models import Staff, Hotel, Order, Guest,\
+    ValidationCode as ValidationCodeModel
 
 
 @validate_args({
@@ -318,3 +322,172 @@ def get_branches(request, token, offset=0, limit=10, order=1):
           'manager_name': b.manager.name,
           'create_time': b.create_time} for b in branches]
     return corr_response({'count': c, 'list': l})
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+    'search_key': forms.CharField(max_length=11, required=False),
+    'status': forms.IntegerField(min_value=0, max_value=3, required=False),
+    'offset': forms.IntegerField(min_value=0, required=False),
+    'limit': forms.IntegerField(min_value=0, required=False),
+})
+@validate_staff_token()
+def get_guests(request, token, offset=0, limit=10, order=0, **kwargs):
+    """获取客户列表(搜索)
+
+    :param token: 令牌(必传)
+    :param offset: 起始值
+    :param limit: 偏移量
+    :param kwargs:
+        search_key: 搜索关键字, 姓名或手机号
+        status: 客户类型, 0: 活跃, 1: 沉睡, 2: 流失, 3: 无订单
+    :return:
+        count: 客户数量
+        list:
+            guest_id: 顾客ID
+            phone: 电话
+            name: 名称
+            gender: 性别, 0: 保密, 1: 男, 2: 女
+            birthday: 生日
+            birthday_type: 生日类型，0:阳历，1:农历
+            guest_type: 顾客类型
+            like: 喜好
+            dislike: 忌讳
+            special_day: 特殊
+            personal_need: 个性化需求
+            status: 客户状态, 0: 活跃, 1: 沉睡, 2: 流失, 3: 无订单
+    """
+
+    hotel = request.staff.hotel
+
+    # 会员价值分类的最小区间
+    min_day = timezone.now() - timedelta(days=hotel.min_vip_category)
+    # 会员价值分类的最大区间
+    max_day = timezone.now() - timedelta(days=hotel.max_vip_category)
+
+    qs = Guest.objects.filter(hotel=hotel, internal_channel=request.staff)
+
+    if 'search_key' in kwargs:
+        search_key = kwargs['search_key']
+        qs = qs.filter(Q(phone__icontains=search_key) |
+                       Q(name__icontains=search_key))
+
+    status = None
+    if 'status' in kwargs:
+        status = kwargs['status']
+
+        # 活跃客户
+        if status == 0:
+            phones = Order.objects.filter(
+                branch__hotel=hotel, status=2, finish_time__gte=min_day). \
+                values_list("contact", flat=True).distinct()
+            qs = qs.filter(Q(phone__in=phones))
+        # 沉睡客户
+        elif status == 1:
+            phones = Order.objects.filter(
+                branch__hotel=hotel, status=2, finish_time__lt=min_day,
+                finish_time__gte=max_day).values_list(
+                "contact", flat=True).distinct()
+            qs = qs.filter(Q(phone__in=phones))
+        # 流失客户
+        elif status == 2:
+            phones = Order.objects.filter(
+                branch__hotel=hotel, status=2, finish_time__lt=max_day). \
+                values_list("contact", flat=True).distinct()
+            qs = qs.filter(Q(phone__in=phones))
+        # 无订单客户
+        else:
+            phones = Order.objects.filter(
+                branch__hotel=hotel, status=2).values_list(
+                "contact", flat=True).distinct()
+            qs = qs.exclude(Q(phone__in=phones))
+
+    c = qs.count()
+    guests = qs[offset:offset + limit]
+
+    l = []
+    for guest in guests:
+        d = {'guest_id': guest.id,
+             'phone': guest.phone,
+             'name': guest.name,
+             'gender': guest.gender,
+             'birthday': guest.birthday,
+             'birthday_type': guest.birthday_type,
+             'guest_type': guest.type,
+             'like': guest.like,
+             'dislike': guest.dislike,
+             'special_day': guest.special_day,
+             'personal_need': guest.personal_need}
+
+        if status is None:
+            if Order.objects.filter(
+                    branch__hotel=hotel, contact=guest.phone, status=2).\
+                    count() == 0:
+                d['status'] = 3
+            elif Order.objects.filter(
+                    branch__hotel=hotel, contact=guest.phone, status=2,
+                    finish_time__gte=min_day).count() > 0:
+                d['status'] = 0
+            elif Order.objects.filter(
+                    branch__hotel=hotel, contact=guest.phone, status=2,
+                    finish_time__gte=max_day).count() > 0:
+                d['status'] = 1
+            else:
+                d['status'] = 2
+        else:
+            d['status'] = status
+
+        l.append(d)
+
+    return corr_response({'count': c, 'list': l})
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+})
+@validate_staff_token()
+def get_guest_statistic(request, token):
+    """获取员工的客户统计
+
+    :param token:
+    :return:
+        all_guest_number: 所有客户数量
+        active_guest_number: 活跃客户数量
+        sleep_guest_number: 沉睡客户数量
+        lost_guest_number: 流失客户数量
+    """
+
+    hotel = request.staff.hotel
+
+    # 会员价值分类的最小区间
+    min_day = timezone.now() - timedelta(days=hotel.min_vip_category)
+    # 会员价值分类的最大区间
+    max_day = timezone.now() - timedelta(days=hotel.max_vip_category)
+
+    # 活跃客户数量
+    phones = Order.objects.filter(
+        branch__hotel=hotel, status=2, finish_time__gte=min_day).\
+        values_list("contact", flat=True)
+    active_guest_number = Guest.objects.filter(
+        hotel=hotel, internal_channel=request.staff, phone__in=phones).count()
+
+    # 沉睡客户数量
+    phones = Order.objects.filter(
+        branch__hotel=hotel, status=2, finish_time__lt=min_day,
+        finish_time__gte=max_day).values_list("contact", flat=True)
+    sleep_guest_number = Guest.objects.filter(
+        hotel=hotel, internal_channel=request.staff, phone__in=phones).count()
+
+    # 流失客户数量
+    phones = Order.objects.filter(
+        branch__hotel=hotel, status=2, finish_time__lt=max_day). \
+        values_list("contact", flat=True)
+    lost_guest_number = Guest.objects.filter(
+        hotel=hotel, internal_channel=request.staff, phone__in=phones).count()
+
+    d = {'all_guest_number': Guest.objects.all().count(),
+         'active_guest_number': active_guest_number,
+         'sleep_guest_number': sleep_guest_number,
+         'lost_guest_number': lost_guest_number}
+
+    return corr_response(d)
