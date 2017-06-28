@@ -1,3 +1,6 @@
+import time
+import json
+
 from datetime import timedelta
 
 from django import forms
@@ -9,7 +12,7 @@ from django.utils import timezone
 
 from ..utils.decorator import validate_args, validate_staff_token
 from ..utils.response import corr_response, err_response
-from ..models import Guest, Staff, ExternalChannel, Order
+from ..models import Guest, Staff, ExternalChannel, Order, Desk
 
 
 @validate_args({
@@ -74,23 +77,27 @@ def get_guests(request, token, offset=0, limit=10, order=0, **kwargs):
         if status == 0:
             phones = Order.objects.filter(
                 branch__hotel=hotel, status=2, finish_time__gte=min_day). \
-                values_list("contact", flat=True)
+                values_list("contact", flat=True).distinct()
+            qs = qs.filter(Q(phone__in=phones))
         # 沉睡客户
         elif status == 1:
             phones = Order.objects.filter(
                 branch__hotel=hotel, status=2, finish_time__lt=min_day,
-                finish_time__gte=max_day).values_list("contact", flat=True)
+                finish_time__gte=max_day).values_list(
+                "contact", flat=True).distinct()
+            qs = qs.filter(Q(phone__in=phones))
         # 流失客户
         elif status == 2:
             phones = Order.objects.filter(
                 branch__hotel=hotel, status=2, finish_time__lt=max_day). \
-                values_list("contact", flat=True)
+                values_list("contact", flat=True).distinct()
+            qs = qs.filter(Q(phone__in=phones))
         # 无订单客户
         else:
             phones = Order.objects.filter(
-                branch__hotel=hotel, status=2).values_list("contact", flat=True)
-
-        qs = qs.filter(Q(phone__in=phones))
+                branch__hotel=hotel, status=2).values_list(
+                "contact", flat=True).distinct()
+            qs = qs.exclude(Q(phone__in=phones))
 
     if 'internal_channel' in kwargs:
         internal_channel = kwargs['internal_channel']
@@ -105,27 +112,49 @@ def get_guests(request, token, offset=0, limit=10, order=0, **kwargs):
         try:
             ex_channel = Staff.objects.filter(id=external_channel)
         except ObjectDoesNotExist:
-            return err_response('err_4', '外部销售渠道不存在')
+            return err_response('err_5', '外部销售渠道不存在')
         qs = qs.filter(Q(external_channel=ex_channel))
 
     c = qs.count()
     guests = qs[offset:offset + limit]
 
+    sorted_guest_list = list()
     # todo 查询结果排序
+    # 按最近就餐时间先后排序
+    guest_list = list()
+    if order == 0:
+        for g in guests:
+            orders = Order.objects.filter(
+                contact=g.phone, branch__hotel=hotel).order_by('-create_time')
+            if orders:
+                t = int(time.mktime(orders[0].create_time.timetuple()))
+            else:
+                t = 0
+            guest_list.append((g, t))
+        sorted_guest_list = sorted(guest_list, key=lambda x: x[1], reverse=True)
+    # 总预定桌数
+    elif order == 1:
+        pass
+    # 人均消费
+    elif order == 2:
+        pass
+    # 消费频度
+    else:
+        pass
 
     l = []
-    for guest in guests:
-        d = {'guest_id': guest.id,
-             'phone': guest.phone,
-             'name': guest.name,
-             'gender': guest.gender,
-             'birthday': guest.birthday,
-             'birthday_type': guest.birthday_type,
-             'guest_type': guest.type,
-             'like': guest.like,
-             'dislike': guest.dislike,
-             'special_day': guest.special_day,
-             'personal_need': guest.personal_need}
+    for guest in sorted_guest_list:
+        d = {'guest_id': guest[0].id,
+             'phone': guest[0].phone,
+             'name': guest[0].name,
+             'gender': guest[0].gender,
+             'birthday': guest[0].birthday,
+             'birthday_type': guest[0].birthday_type,
+             'guest_type': guest[0].type,
+             'like': guest[0].like,
+             'dislike': guest[0].dislike,
+             'special_day': guest[0].special_day,
+             'personal_need': guest[0].personal_need}
 
         if status is None:
             if Order.objects.filter(
@@ -210,24 +239,28 @@ def get_profile_general(request, token):
     phones = Order.objects.filter(
         branch__hotel=hotel, status=2, finish_time__gte=min_day).\
         values_list("contact", flat=True)
-    active_guest_number = Guest.objects.filter(phone__in=phones).count()
+    active_guest_number = Guest.objects.filter(
+        hotel=hotel, phone__in=phones).count()
 
     # 沉睡客户数量
     phones = Order.objects.filter(
         branch__hotel=hotel, status=2, finish_time__lt=min_day,
         finish_time__gte=max_day).values_list("contact", flat=True)
-    sleep_guest_number = Guest.objects.filter(phone__in=phones).count()
+    sleep_guest_number = Guest.objects.filter(
+        hotel=hotel, phone__in=phones).count()
 
     # 流失客户数量
     phones = Order.objects.filter(
         branch__hotel=hotel, status=2, finish_time__lt=max_day). \
         values_list("contact", flat=True)
-    lost_guest_number = Guest.objects.filter(phone__in=phones).count()
+    lost_guest_number = Guest.objects.filter(
+        hotel=hotel, phone__in=phones).count()
 
     # 无订单客户数量
     phones = Order.objects.filter(
         branch__hotel=hotel, status=2).values_list("contact", flat=True)
-    blank_guest_number = Guest.objects.exclude(phone__in=phones).count()
+    blank_guest_number = Guest.objects.filter(
+        hotel=hotel).exclude(phone__in=phones).count()
 
     d = {'all_guest_number': Guest.objects.all().count(),
          'active_guest_number': active_guest_number,
@@ -247,7 +280,7 @@ def get_profile_general(request, token):
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
     'guest_id': forms.IntegerField(required=False),
-    'phone': forms.CharField(required=False),
+    'phone': forms.CharField(max_length=11, required=False),
 })
 @validate_staff_token()
 def get_profile(request, token, guest_id=None, phone=None):
@@ -279,14 +312,14 @@ def get_profile(request, token, guest_id=None, phone=None):
 
     if guest_id:
         try:
-            guest = Guest.objects.get(id=guest_id, hotel=hotel)
+            guest = Guest.objects.get(id=guest_id)
         except ObjectDoesNotExist:
-            return corr_response()
+            return err_response('err_4', '客户不存在')
     elif phone:
         try:
             guest = Guest.objects.get(phone=phone, hotel=hotel)
         except ObjectDoesNotExist:
-            return corr_response()
+            return err_response('err_4', '客户不存在')
     else:
         return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
 
@@ -339,6 +372,83 @@ def get_profile(request, token, guest_id=None, phone=None):
 
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
+    'phone': forms.CharField(max_length=11),
+    'offset': forms.IntegerField(min_value=0, required=False),
+    'limit': forms.IntegerField(min_value=0, required=False)
+})
+@validate_staff_token()
+def get_history_orders(request, token, phone, offset=0, limit=10):
+    """获取客户的历史订单列表(根据电话)
+
+    :param token: 令牌(必传)
+    :param phone: 手机(必传)
+    :param offset: 起始值
+    :param limit: 偏移量
+    :return:
+    """
+
+    hotel = request.staff.hotel
+
+    orders = Order.objects.filter(branch__hotel=hotel, contact=phone)
+
+    c = orders.count()
+    orders = orders.order_by(
+        "-dinner_date", "-dinner_time")[offset: offset + limit]
+
+    l = []
+    for order in orders:
+        d = {'time': order.dinner_date.strftime('%Y-%m-%d') + " " +
+                     order.dinner_time.strftime('%H:%M:%S'),
+             'status': order.status,
+             'area': '',
+             'guest_number': order.guest_number,
+             'consumption': order.consumption,
+             'description': ''}
+
+        desks_list = json.loads(order.desks)
+        d['desks'] = []
+        desk_id = 0
+        for desk in desks_list:
+            desk_id = int(desk[1:-1])
+            d['desks'].append(desk_id)
+        try:
+            desk = Desk.objects.get(id=desk_id)
+            d['area'] = desk.area.name
+        except ObjectDoesNotExist:
+            pass
+
+        description_list = []
+        if order.banquet:
+            description_list.append(order.banquet)
+        if order.water_card:
+            description_list.append(order.water_card)
+        if order.door_card:
+            description_list.append(order.door_card)
+        if order.sand_table:
+            description_list.append(order.sand_table)
+        if order.welcome_screen:
+            description_list.append(order.welcome_screen)
+        if order.welcome_card:
+            description_list.append(order.welcome_card)
+        if order.background_music:
+            description_list.append(order.background_music)
+        if order.has_candle:
+            description_list.append("蜡烛")
+        if order.has_flower:
+            description_list.append("鲜花")
+        if order.has_balloon:
+            description_list.append("气球")
+
+        if len(description_list) > 0:
+            d['description'] = " ".join(description_list)
+
+        l.append(d)
+
+    return corr_response({"count": c, "list": l})
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
     'phone': forms.CharField(validators=[RegexValidator(regex=r'^[0-9]{11}$')]),
     'name': forms.CharField(max_length=20),
     'guest_type': forms.CharField(max_length=10, required=False),
@@ -387,8 +497,7 @@ def add_profile(request, token, phone, name, **kwargs):
                     setattr(guest, k, kwargs[k])
             guest.save()
             return corr_response({'guest_id': guest.id})
-        except IntegrityError as e:
-            print(e)
+        except IntegrityError:
             return err_response('err_4', '服务器创建员工错误')
 
 

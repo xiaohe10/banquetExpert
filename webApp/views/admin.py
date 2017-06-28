@@ -1320,9 +1320,10 @@ def modify_staff_profile(request, token, staff_id, **kwargs):
 
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
-    'order_date': forms.DateField(required=False),
-    'dinner_date': forms.DateField(required=False),
-    'dinner_time': forms.TimeField(required=False),
+    'dinner_date_begin': forms.DateField(required=False),
+    'dinner_date_end': forms.DateField(required=False),
+    'dinner_period': forms.IntegerField(
+        min_value=0, max_value=2, required=False),
     'status': forms.IntegerField(min_value=0, max_value=2, required=False),
     'search_key': forms.CharField(min_length=1, max_length=20, required=False),
     'offset': forms.IntegerField(min_value=0, required=False),
@@ -1343,10 +1344,9 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
         1: 注册时间降序（默认值）
     :param kwargs:
         search_key: 关键字
-        order_date: 下单日期
-        dinner_date: 预定用餐日期
-        dinner_time: 预定用餐时间
-        dinner_period: 餐段
+        dinner_date_begin: 预定用餐日期起始
+        dinner_date_end: 预定用餐日期终止
+        dinner_period: 餐段, 0: 午餐, 1: 晚餐, 2: 夜宵
     :return:
         count: 订单总数
         list: 订单列表
@@ -1381,14 +1381,14 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
         rs = rs.filter(Q(name__icontains=kwargs['search_key']) |
                        Q(contact__icontains=kwargs['search_key']))
 
-    if 'dinner_date' in kwargs:
-        rs = rs.filter(Q(dinner_date=kwargs['dinner_date']))
+    if 'dinner_date_begin' in kwargs:
+        rs = rs.filter(Q(dinner_date__gte=kwargs['dinner_date_begin']))
 
-    if 'dinner_time' in kwargs:
-        rs = rs.filter(Q(dinner_time=kwargs['dinner_time']))
+    if 'dinner_date_end' in kwargs:
+        rs = rs.filter(Q(dinner_date__lte=kwargs['dinner_date_end']))
 
-    if 'order_date' in kwargs:
-        rs = rs.filter(Q(create_time__startswith=kwargs['order_date']))
+    if 'dinner_period' in kwargs:
+        rs = rs.filter(Q(dinner_period=kwargs['dinner_period']))
 
     c = rs.count()
     rs = rs.order_by(ORDERS[order])[offset:offset + limit]
@@ -1441,6 +1441,7 @@ def get_order_profile(request, token, order_id):
         dinner_time: 预定就餐时间
         dinner_period: 餐段, 0: 午餐, 1: 晚餐, 2: 夜宵
         status: 状态, 0: 已订, 1: 客到, 2: 已完成, 3: 已撤单
+        banquet: 订单类型
         consumption: 消费金额
         name: 联系人
         guest_type: 顾客身份
@@ -1472,12 +1473,13 @@ def get_order_profile(request, token, order_id):
     try:
         order = Order.objects.get(id=order_id)
     except ObjectDoesNotExist:
-        return err_response('err_3', '订单不存在')
+        return err_response('err_4', '订单不存在')
 
     d = {'dinner_date': order.dinner_date,
          'dinner_time': order.dinner_time,
          'dinner_period': order.dinner_period,
          'status': order.status,
+         'banquet': order.banquet,
          'consumption': order.consumption,
          'name': order.name,
          'contact': order.contact,
@@ -1523,8 +1525,116 @@ def get_order_profile(request, token, order_id):
 
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
+    'dinner_date': forms.DateField(),
+    'dinner_time': forms.TimeField(),
+    'dinner_period': forms.IntegerField(min_value=0, max_value=2),
+    'name': forms.CharField(min_length=1, max_length=20),
+    'contact': forms.RegexField(r'[0-9]{11}'),
+    'guest_number': forms.IntegerField(),
+    'banquet': forms.CharField(max_length=10, required=False),
+    'staff_description': forms.CharField(max_length=100, required=False),
+    'water_card': forms.CharField(max_length=10, required=False),
+    'door_card': forms.CharField(max_length=10, required=False),
+    'sand_table': forms.CharField(max_length=10, required=False),
+    'welcome_screen': forms.CharField(max_length=10, required=False),
+    'welcome_fruit': forms.IntegerField(required=False),
+    'welcome_card': forms.CharField(max_length=10, required=False),
+    'background_music': forms.CharField(max_length=20, required=False),
+    'has_candle': forms.BooleanField(required=False),
+    'has_flower': forms.BooleanField(required=False),
+    'has_balloon': forms.BooleanField(required=False),
+})
+@validate_admin_token()
+def submit_order(request, token, dinner_date, dinner_time,
+                 dinner_period, **kwargs):
+    """提交订单
+
+    :param token: 令牌(必传)
+    :param dinner_date: 预定就餐日期(必传)
+    :param dinner_time: 预定就餐时间(必传)
+    :param dinner_period: 餐段, 0: 午餐, 1: 晚餐, 2: 夜宵(必传)
+    :param kwargs:
+        name: 联系人(必传)
+        contact: 联系电话(必传)
+        guest_number: 就餐人数(必传)
+        desks: 预定桌位, 可以多桌, 数组(必传)
+        banquet: 宴会类型
+        staff_description: 员工备注
+        water_card: 水牌
+        door_card: 门牌
+        sand_table: 沙盘
+        welcome_screen: 欢迎屏
+        welcome_fruit: 迎宾水果的价格
+        welcome_card: 欢迎卡
+        background_music: 背景音乐
+        has_candle: 是否有糖果
+        has_flower: 是否有鲜花
+        has_balloon: 是否有气球
+    :return: order_id
+    """
+
+    # 下单日期校验
+    if dinner_date < timezone.now().date():
+        return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+
+    branch_list = []
+    branch = None
+    # 验证桌位是否存在和是否被预定
+    try:
+        desk_list = json.loads(request.body)['desks']
+        for i in range(len(desk_list)):
+            # 桌位号加首尾限定符
+            desk_id = '$' + str(desk_list[i]) + '$'
+            if not Desk.enabled_objects.filter(id=desk_list[i]).count() > 0:
+                return err_response('err_4', '桌位不存在')
+
+            # 查找订餐的门店
+            branch = Desk.enabled_objects.get(id=desk_list[i]).area.branch
+            if branch.id not in branch_list:
+                branch_list.append(branch.id)
+
+            if Order.objects.filter(dinner_date=dinner_date,
+                                    dinner_time=dinner_time,
+                                    dinner_period=dinner_period,
+                                    status__in=[0, 1],
+                                    desks__icontains=desk_id).count() > 0:
+                return err_response('err_5', '桌位已被预定')
+            desk_list[i] = desk_id
+        desks = json.dumps(desk_list)
+    except KeyError or ValueError:
+        return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+
+    # 桌位验证
+    if (len(branch_list) != 1) or (branch is None) or \
+            (branch.hotel != request.admin.hotel):
+        return err_response('err_4', '桌位不存在')
+
+    order_keys = ('name', 'contact', 'guest_number', 'staff_description',
+                  'water_card', 'door_card', 'sand_table', 'welcome_screen',
+                  'welcome_fruit', 'welcome_card', 'background_music',
+                  'has_candle', 'has_flower', 'has_balloon', 'banquet')
+
+    with transaction.atomic():
+        try:
+            # todo 管理员预定时订单需绑定为前台
+            order = Order(dinner_date=dinner_date, dinner_time=dinner_time,
+                          dinner_period=dinner_period, desks=desks,
+                          branch=branch)
+            for k in order_keys:
+                if k in kwargs:
+                    setattr(order, k, kwargs[k])
+            order.save()
+            return corr_response({'order_id': order.id})
+        except IntegrityError as e:
+            print(e)
+            return err_response('err_6', '服务器创建订单错误')
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
     'order_id': forms.IntegerField(),
     'status': forms.IntegerField(min_value=0, max_value=3, required=False),
+    'banquet': forms.CharField(max_length=10, required=False),
     'dinner_date': forms.DateField(required=False),
     'dinner_time': forms.TimeField(required=False),
     'dinner_period': forms.IntegerField(
@@ -1553,6 +1663,7 @@ def update_order(request, token, order_id, **kwargs):
     :param order_id: 订单ID(必传)
     :param kwargs:
         status: 订单状态, 0: 已订, 1: 客到, 2: 已完成, 3: 已撤单
+        banquet: 宴会类型
         dinner_date: 预定就餐日期
         dinner_time: 预定就餐时间
         dinner_period: 餐段, 0: 午餐, 1: 晚餐, 2: 夜宵
@@ -1577,13 +1688,17 @@ def update_order(request, token, order_id, **kwargs):
     try:
         order = Order.objects.get(id=order_id)
     except ObjectDoesNotExist:
-        return err_response('err_3', '订单不存在')
+        return err_response('err_4', '订单不存在')
+
+    if order.branch.hotel != request.admin.hotel:
+        return err_response('err_2', '权限错误')
 
     order_keys = ('status', 'dinner_date', 'dinner_time', 'dinner_period',
                   'name', 'contact', 'guest_number', 'staff_description',
                   'water_card', 'door_card', 'sand_table', 'welcome_screen',
-                  'welcome_fruit', 'welcome_card', 'background_music',
-                  'has_candle', 'has_flower', 'has_balloon', 'consumption')
+                  'welcome_fruit', 'welcome_card', 'background_music'
+                  'has_candle', 'has_flower', 'has_balloon', 'consumption',
+                  'banquet')
 
     # 下单日期校验
     if 'dinner_date' in kwargs:
@@ -1613,6 +1728,8 @@ def update_order(request, token, order_id, **kwargs):
     # 如果换桌
     data = json.loads(request.body)
     if 'desks' in data:
+        branch_list = []
+        branch = None
         desk_list = data.pop('desks')
         # 验证桌位是否存在和是否被预定
         try:
@@ -1620,14 +1737,20 @@ def update_order(request, token, order_id, **kwargs):
                 # 桌位号加首尾限定符
                 desk_id = '$' + str(desk_list[i]) + '$'
                 if not Desk.enabled_objects.filter(id=desk_list[i]).count() > 0:
-                    return err_response('err_3', '桌位不存在')
+                    return err_response('err_5', '桌位不存在')
+
+                # 查找订餐的门店
+                branch = Desk.enabled_objects.get(id=desk_list[i]).area.branch
+                if branch.id not in branch_list:
+                    branch_list.append(branch.id)
+
                 if Order.objects.exclude(id=order_id).filter(
                         dinner_date=order.dinner_date,
                         dinner_time=order_id.dinner_time,
                         dinner_period=order.dinner_period,
                         status__in=[0, 1],
                         desk__icontains=desk_id).count() > 0:
-                    return err_response('err_4', '桌位已被预定')
+                    return err_response('err_6', '桌位已被预定')
                 desk_list[i] = desk_id
             desks = json.dumps(desk_list)
             order.desks = desks
@@ -1635,8 +1758,12 @@ def update_order(request, token, order_id, **kwargs):
         except KeyError or ValueError:
             return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
 
-    return corr_response()
+        # 桌位验证
+        if (len(branch_list) != 1) or (branch is None) or \
+                (branch.hotel != request.admin.hotel):
+            return err_response('err_5', '桌位不存在')
 
+    return corr_response()
 
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),

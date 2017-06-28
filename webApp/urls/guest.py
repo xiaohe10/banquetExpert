@@ -11,6 +11,8 @@ urlpatterns = [
     url(r'profile/general/$', get_profile_general, name='profile_general'),
     # 获取客户档案详情
     url(r'profile/$', get_profile, name='profile'),
+    # 客户历史订单列表
+    url(r'history_orders/$', get_history_orders, name='history_order_list'),
     # 添加客户档案(谁添加的就是谁的客户)
     url(r'profile/add/$', add_profile, name='profile_add'),
     # 修改客户档案
