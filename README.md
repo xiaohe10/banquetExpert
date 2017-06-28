@@ -465,6 +465,103 @@ URL：webApp/staff/hotel_branch/list/ <br>
 | err_3 | 不存在该员工 |
 
 
+## 搜索我的订单列表
+URL：webApp/staff/order/search/ <br>
+请求方式：POST <br>
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------:|
+| token         | 登录口令          |         yes  |
+| order_date    | 下单日期  |   no |
+| dinner_period | 餐段，0：午餐，1：晚餐，2：夜宵    |   no |
+| dinner_date   | 预定用餐日期  |   no  |
+| dinner_time   | 预定用餐时间  |   no  |
+| status | 订单状态（0: 进行中，1: 已完成，2: 已删除，默认为0）  | no |
+| search_key | 搜索关键词（如姓名、手机等进行模糊搜索） | no |
+| offset | 起始值（默认0） | no |
+| limit | 偏移量（默认10） | no |
+| order | 排序方式（0: 注册时间升序，1: 注册时间降序，默认1） | no |
+
+
+请求示例:
+
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"status":0,
+	"search_key":"张总",
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| count | 订单数量 |
+| list | 订单列表 |
+| 以下为list中的数据 |
+| order_id| 订单ID |
+| create_time | 创建日期 |
+| cancel_time | 撤销日期 |
+| arrival_time  | 客到日期 |
+| finish_time | 完成日期 |
+| consumption   | 消费金额  |
+| status | 状态((0, '已订'), (1, '客到'), (2, '已完成'), (3, '已撤单'))|
+| dinner_date | 预定用餐日期 |
+| dinner_time   | 预定用餐时间  |
+| dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') |
+| name | 联系人 |
+| contact | 联系电话 |
+| guest_type | 顾客身份 |
+| guest_number | 客人数量 |
+| desks | 桌位ID数组 |
+| internal_channel | 内部获客渠道, 即接单人名字, 如果存在 |
+| external_channel | 外部获客渠道, 即外部渠道名称, 如果存在 |
+
+
+返回示例：
+
+注意：返回的订单列表以数组来表示
+
+```
+{
+	"status":"true",
+	"data":{
+	    "count":100,
+	    "list":[
+            "order_id":1,
+            "create_time":"2014-02-01 10:00:00",
+            "cancel_time":"2014-02-01 10:00:00",
+            "arrival_time":"2014-02-01 10:00:00",
+            "finish_time":"2014-02-01 10:00:00",
+            "consumption":1000,
+            "status":0,
+            "order_id":"001",
+            "dinner_date":"2014-02-01",
+            "dinner_time":"12:00",
+            "dinner_period":0,
+            "name":"李四",
+            "guest_type":"vip",
+            "contact":"18813101211",
+            "guest_number":10,
+            "desks":[1,3,5],
+            "internal_channel":"刘光艳",
+            "external_channel":"美团"
+            ],
+			...
+	    }
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+
+
 # 酒店接口
 
 ## 获取所有酒店列表
@@ -839,6 +936,7 @@ URL：webApp/order/submit/ <br>
 | contact | 联系电话 | yes |
 | guest_number | 客人数量 | yes |
 | desks | 桌位ID的数组 | yes |
+| banquet   | 宴会类型，来自36宴  | no    |
 | staff_description | 员工备注 | no |
 |以下是私人订制的字段|
 | water_card | 水牌 | no |
@@ -865,6 +963,7 @@ URL：webApp/order/submit/ <br>
 	"name":"李四",
 	"contact":"18813101211",
 	"guest_number":10,
+	"banquet":"满月宴",
 	"desks":[1,3,5],
 	"staff_description":"客户年纪大，做好防滑",
 	"water_card":"水牌内容",
@@ -1042,6 +1141,7 @@ URL：webApp/order/profile/ <br>
 | guest_type | 顾客身份 |
 | contact | 联系电话 |
 | guest_number | 客人数量 |
+| banquet   | 宴会类型  |
 | desks | 桌位ID和编号 |
 | user_description | 用户备注 |
 | staff_description | 员工备注 |
@@ -1084,6 +1184,7 @@ URL：webApp/order/profile/ <br>
 		"guest_type":"vip",
 		"contact":"18813101211",
 		"guest_number":10,
+		"banquet":"满月宴",
 		"desks":[{"desk_id":1,"number":"309"},{"desk_id":2,"number":"312"},{"desk_id":3,"number":"311"}],
 		"user_description":"生日宴，准备蜡烛",
 		"staff_description":"客户年纪大，做好防滑",
@@ -1126,6 +1227,7 @@ URL：webApp/order/update/ <br>
 | dinner_time   | 预定用餐时间  |   no  |
 | dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') | no |
 | status | 订单状态, 0: 已订, 1: 客到, 2: 已完成, 3: 已撤单   | no    |
+| banquet   | 宴会类型，来自36宴    | no    |
 | name | 联系人 | no |
 | contact | 联系电话 | no |
 | guest_number | 客人数量 | no |
@@ -1153,6 +1255,7 @@ URL：webApp/order/update/ <br>
 	"dinner_time":"2014-02-01",
 	"dinner_period":0,
 	"status":2,
+	"banquet":"满月宴",
 	"name":"李四",
 	"contact":"18813101211",
 	"guest_number":10,
@@ -1713,10 +1816,14 @@ URL：webApp/guest/history_orders/ <br>
 
 | 参数名称       | 含义             |
 |:------------- |:---------------|
+| count | 数量    |
+| list  | 列表    |
+| 以下为list中的数据   |
 | time | 日期时间 |
 | status | 状态((0, '已订'), (1, '客到'), (2, '已完成'), (3, '已撤单'))|
 guest_number | 人数
 consumption | 消费
+area    | 区域
 desks | 桌位
 description | 备注
 
@@ -1726,16 +1833,22 @@ description | 备注
 ```
 {
 	"status":"true",
-	"data":[
-		{
-			"time":"2014-05-12 10:00:00",
-			"status":0,
-			"guest_number":10,
-			"consumption":1000,
-			"desks":["一楼101"],
-			"description":"生日宴 水牌 门牌 沙盘 欢迎屏 背景音乐 气球 欢迎卡 花瓣 蜡烛 手语操作"
-		}
-	]
+	"data":
+	{
+        "count":10,
+        "list":{
+        [
+            "time":"2014-05-12 10:00:00",
+            "status":0,
+            "guest_number":10,
+            "consumption":1000,
+            "area":"一楼",
+            "desks":["101"],
+            "description":"生日宴 水牌 门牌 沙盘 欢迎屏 背景音乐 气球 欢迎卡 花瓣 蜡烛 手语操作"
+	    ]
+	    ...
+	    }
+	}
 }
 ```
 
@@ -4424,6 +4537,7 @@ URL：webApp/admin/order/profile/ <br>
 | arrival_time  | 客到日期 |
 | finish_time | 完成日期 |
 | consumption   | 消费金额  |
+| banquet   | 宴会类型  |
 | status | 状态((0, '已订'), (1, '客到'), (2, '已完成'), (3, '已撤单'))|
 | dinner_date | 预定用餐日期 | yes |
 | dinner_time   | 预定用餐时间  |   yes  |
@@ -4465,6 +4579,7 @@ URL：webApp/admin/order/profile/ <br>
 		"arrival_time":"2014-02-01 10:00:00",
 		"finish_time":"2014-02-01 10:00:00",
 		"consumption":1000,
+		"banquet":"满月宴",
 		"status":0,
 		"order_id":"001",
 		"dinner_date":"2014-02-01",
@@ -4519,6 +4634,7 @@ URL：webApp/admin/order/submit/ <br>
 | contact | 联系电话 | yes |
 | guest_number | 客人数量 | yes |
 | desks | 桌位ID的数组 | yes |
+| banquet   | 宴会类型  | no    |
 | staff_description | 员工备注 | no |
 |以下是私人订制的字段|
 | water_card | 水牌 | no |
@@ -4546,6 +4662,7 @@ URL：webApp/admin/order/submit/ <br>
 	"contact":"18813101211",
 	"guest_number":10,
 	"desks":[1,3,5],
+	"banquet":"满月宴",
 	"staff_description":"客户年纪大，做好防滑",
 	"water_card":"水牌内容",
 	"door_card":"门牌内容",
@@ -4604,6 +4721,7 @@ URL：webApp/admin/order/update/ <br>
 | dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') | no |
 | consumption   | 消费金额  | no    |
 | status | 订单状态, 0: 已订, 1: 客到, 2: 已完成, 3: 已撤单   | no    |
+| banquet   | 宴会类型  | no    |
 | name | 联系人 | no |
 | contact | 联系电话 | no |
 | guest_number | 客人数量 | no |
@@ -4632,6 +4750,7 @@ URL：webApp/admin/order/update/ <br>
 	"dinner_period":0,
 	"consumption":1000,
 	"status":2,
+	"banquet":"满月宴",
 	"name":"李四",
 	"contact":"18813101211",
 	"guest_number":10,

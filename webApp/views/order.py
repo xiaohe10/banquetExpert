@@ -8,7 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from ..utils.decorator import validate_args, validate_staff_token
 from ..utils.response import corr_response, err_response
-from ..models import Desk, Order, Guest, HotelBranch
+from ..models import Desk, Order, Guest
 
 
 @validate_args({
@@ -141,6 +141,7 @@ def get_profile(request, token, order_id):
         dinner_time: 预定就餐时间
         dinner_period: 餐段, 0: 午餐, 1: 晚餐, 2: 夜宵
         status: 状态, 0: 已订, 1: 客到, 2: 已完成, 3: 已撤单
+        banquet: 宴会类型
         consumption: 消费金额
         name: 联系人
         guest_type: 顾客身份
@@ -178,6 +179,7 @@ def get_profile(request, token, order_id):
          'dinner_time': order.dinner_time,
          'dinner_period': order.dinner_period,
          'status': order.status,
+         'banquet': order.banquet,
          'consumption': order.consumption,
          'name': order.name,
          'contact': order.contact,
@@ -229,6 +231,7 @@ def get_profile(request, token, order_id):
     'name': forms.CharField(min_length=1, max_length=20),
     'contact': forms.RegexField(r'[0-9]{11}'),
     'guest_number': forms.IntegerField(),
+    'banquet': forms.CharField(max_length=10, required=False),
     'staff_description': forms.CharField(max_length=100, required=False),
     'water_card': forms.CharField(max_length=10, required=False),
     'door_card': forms.CharField(max_length=10, required=False),
@@ -254,7 +257,8 @@ def submit_order(request, token, dinner_date, dinner_time,
         name: 联系人(必传)
         contact: 联系电话(必传)
         guest_number: 就餐人数(必传)
-        desks: 预定桌位, 可以多桌, 数组
+        desks: 预定桌位, 可以多桌, 数组(必传)
+        banquet: 宴会类型
         staff_description: 员工备注
         water_card: 水牌
         door_card: 门牌
@@ -308,7 +312,7 @@ def submit_order(request, token, dinner_date, dinner_time,
     order_keys = ('name', 'contact', 'guest_number', 'staff_description',
                   'water_card', 'door_card', 'sand_table', 'welcome_screen',
                   'welcome_fruit', 'welcome_card', 'background_music',
-                  'has_candle', 'has_flower', 'has_balloon')
+                  'has_candle', 'has_flower', 'has_balloon', 'banquet')
 
     with transaction.atomic():
         try:
@@ -329,6 +333,7 @@ def submit_order(request, token, dinner_date, dinner_time,
     'token': forms.CharField(min_length=32, max_length=32),
     'order_id': forms.IntegerField(),
     'status': forms.IntegerField(min_value=0, max_value=3, required=False),
+    'banquet': forms.CharField(max_length=10, required=False),
     'dinner_date': forms.DateField(required=False),
     'dinner_time': forms.TimeField(required=False),
     'dinner_period': forms.IntegerField(
@@ -356,6 +361,7 @@ def modify_order(request, token, order_id, **kwargs):
     :param order_id: 订单ID(必传)
     :param kwargs:
         status: 订单状态, 0: 已订, 1: 客到, 2: 已完成, 3: 已撤单
+        banquet: 宴会类型
         dinner_date: 预定就餐日期
         dinner_time: 预定就餐时间
         dinner_period: 餐段, 0: 午餐, 1: 晚餐, 2: 夜宵
@@ -385,7 +391,7 @@ def modify_order(request, token, order_id, **kwargs):
                   'name', 'contact', 'guest_number', 'staff_description',
                   'water_card', 'door_card', 'sand_table', 'welcome_screen',
                   'welcome_fruit', 'welcome_card', 'background_music',
-                  'has_candle', 'has_flower', 'has_balloon')
+                  'has_candle', 'has_flower', 'has_balloon', 'banquet')
 
     # 下单日期校验
     if 'dinner_date' in kwargs:

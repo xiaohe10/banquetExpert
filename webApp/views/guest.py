@@ -1,4 +1,5 @@
 import time
+import json
 
 from datetime import timedelta
 
@@ -11,7 +12,7 @@ from django.utils import timezone
 
 from ..utils.decorator import validate_args, validate_staff_token
 from ..utils.response import corr_response, err_response
-from ..models import Guest, Staff, ExternalChannel, Order
+from ..models import Guest, Staff, ExternalChannel, Order, Desk
 
 
 @validate_args({
@@ -279,7 +280,7 @@ def get_profile_general(request, token):
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
     'guest_id': forms.IntegerField(required=False),
-    'phone': forms.CharField(required=False),
+    'phone': forms.CharField(max_length=11, required=False),
 })
 @validate_staff_token()
 def get_profile(request, token, guest_id=None, phone=None):
@@ -313,12 +314,12 @@ def get_profile(request, token, guest_id=None, phone=None):
         try:
             guest = Guest.objects.get(id=guest_id)
         except ObjectDoesNotExist:
-            return corr_response()
+            return err_response('err_4', '客户不存在')
     elif phone:
         try:
             guest = Guest.objects.get(phone=phone, hotel=hotel)
         except ObjectDoesNotExist:
-            return corr_response()
+            return err_response('err_4', '客户不存在')
     else:
         return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
 
@@ -367,6 +368,83 @@ def get_profile(request, token, guest_id=None, phone=None):
         d['status'] = 2
 
     return corr_response(d)
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+    'phone': forms.CharField(max_length=11),
+    'offset': forms.IntegerField(min_value=0, required=False),
+    'limit': forms.IntegerField(min_value=0, required=False)
+})
+@validate_staff_token()
+def get_history_orders(request, token, phone, offset=0, limit=10):
+    """获取客户的历史订单列表(根据电话)
+
+    :param token: 令牌(必传)
+    :param phone: 手机(必传)
+    :param offset: 起始值
+    :param limit: 偏移量
+    :return:
+    """
+
+    hotel = request.staff.hotel
+
+    orders = Order.objects.filter(branch__hotel=hotel, contact=phone)
+
+    c = orders.count()
+    orders = orders.order_by(
+        "-dinner_date", "-dinner_time")[offset: offset + limit]
+
+    l = []
+    for order in orders:
+        d = {'time': order.dinner_date.strftime('%Y-%m-%d') + " " +
+                     order.dinner_time.strftime('%H:%M:%S'),
+             'status': order.status,
+             'area': '',
+             'guest_number': order.guest_number,
+             'consumption': order.consumption,
+             'description': ''}
+
+        desks_list = json.loads(order.desks)
+        d['desks'] = []
+        desk_id = 0
+        for desk in desks_list:
+            desk_id = int(desk[1:-1])
+            d['desks'].append(desk_id)
+        try:
+            desk = Desk.objects.get(id=desk_id)
+            d['area'] = desk.area.name
+        except ObjectDoesNotExist:
+            pass
+
+        description_list = []
+        if order.banquet:
+            description_list.append(order.banquet)
+        if order.water_card:
+            description_list.append(order.water_card)
+        if order.door_card:
+            description_list.append(order.door_card)
+        if order.sand_table:
+            description_list.append(order.sand_table)
+        if order.welcome_screen:
+            description_list.append(order.welcome_screen)
+        if order.welcome_card:
+            description_list.append(order.welcome_card)
+        if order.background_music:
+            description_list.append(order.background_music)
+        if order.has_candle:
+            description_list.append("蜡烛")
+        if order.has_flower:
+            description_list.append("鲜花")
+        if order.has_balloon:
+            description_list.append("气球")
+
+        if len(description_list) > 0:
+            d['description'] = " ".join(description_list)
+
+        l.append(d)
+
+    return corr_response({"count": c, "list": l})
 
 
 @validate_args({

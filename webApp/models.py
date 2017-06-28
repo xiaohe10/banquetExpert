@@ -416,6 +416,8 @@ class Order(models.Model):
     desks = models.CharField(max_length=50, default='')
     # 支付金额
     consumption = models.IntegerField(default=None, null=True, db_index=True)
+    # 宴会类型
+    banquet = models.CharField(max_length=10, default='')
     # 水牌
     water_card = models.CharField(max_length=10, default='')
     # 门牌
