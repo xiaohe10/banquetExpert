@@ -1,6 +1,6 @@
-<!--主页/订单管理/来电记录/预订单详情对话框-->
+<!--主页/订单管理/预定通知单/预订单详情对话框-->
 <div class="modal-header">
-    <a>预订单详情</a>
+    <a>订单详情</a>
 </div>
 <div class="modal-body">
     <!--提示栏-->
@@ -20,29 +20,29 @@
             <!--订单信息-->
             <div role="tabpanel" class="tab-pane active" id="ddxx">
                 <div class="text-info">
-                    <p><strong>三楼 315</strong></p>
-                    <p><strong>张 先生 100 0000 0000 6人 未分类客户</strong></p>
-                    <p><strong>用餐时间：2017年6月7日 周三(晚餐) 14:57</strong></p>
-                    <p><strong>创建时间：2017年6月7日14:59 操作：XXX</strong></p>
+                    <p><strong>{{order.area}} {{order.seat}} </strong></p>
+                    <p><strong>{{order.name}} {{order.gender}} {{order.phone}} {{order.count}} 人 {{order.type}}客户</strong></p>
+                    <p><strong>用餐时间：{{order.meal_time}}</strong></p>
+                    <p><strong>创建时间：{{order.create_time}} 操作：{{order.operator}} </strong></p>
                 </div>
                 <div class="text-info bg-faded p-2">
-                    <p>备注：给女朋友过生日，提前到店布置房间。</p>
+                    <p>备注：{{order.note}}</p>
                 </div>
                 <div class="row m-2">
                     <div class="col-sm-10 d-inline">
-                        <ul class="list-group nav nav-tabs">
-                            <li class="list-group-item img-thumbnail p-2 m-1">IMG1</li>
-                            <li class="list-group-item img-thumbnail p-2 m-1">IMG2</li>
-                            <li class="list-group-item img-thumbnail p-2 m-1">IMG3</li>
-                            <li class="list-group-item img-thumbnail p-2 m-1">IMG4</li>
-                            <li class="list-group-item img-thumbnail p-2 m-1">IMG5</li>
-                        </ul>
-                    </div>
-                    <div class="col-4">
-                        <div class="row my-3 text-sm-center">已选0</div>
-                        <div class="row my-3">
-                            <input class="btn btn-secondary btn-sm px-2 mx-1" type="button" value="删除"/>
-                            <input class="btn btn-primary btn-sm px-2 mx-1" type="button" value="下载"/>
+                        <div class="row">
+                            <div class="col-lg-2 col-sm-3 col-xs-4" ng-repeat="(k, x) in order.images">
+                                <a class="" ng-click="check(k)">
+                                    <img class="img-responsive" src="/static/css/image/head.jpg" alt="{{x}}">
+                                </a>
+                            </div>
+                            <div class="col-lg-3 col-sm-4 col-xs-5">
+                                <div class="row">已选0</div>
+                                <div class="row">
+                                    <input class="btn btn-secondary btn-sm" type="button" ng-click="delete()" value="删除"/>
+                                    <input class="btn btn-primary btn-sm" type="button" ng-click="download()" value="下载"/>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -59,5 +59,5 @@
     </div>
 </div>
 <div class="modal-footer">
-    <input class="btn btn-secondary" type="button" value="关闭" id="cancel"/>
+    <input class="btn btn-secondary" type="button" value="关闭" ng-click="cancel()"/>
 </div>

@@ -1,6 +1,62 @@
 <!--主页/评分审阅/餐厅排名-->
 <div class="p-1">
     <div class="p-2 bg-success">
-        <div class="alert alert-warning alert-dismissible" role="alert">餐厅排名</div>
+        <select>
+            <option>2012</option>
+            <option>2012</option>
+            <option>2012</option>
+            <option>2012</option>
+            <option>2012</option>
+        </select>
+        <select>
+            <option>10月</option>
+            <option>10月</option>
+            <option>10月</option>
+            <option>10月</option>
+        </select>
+        <input class="btn btn-secondary btn-sm" type="button" value="查询"/>
+    </div>
+</div>
+<!--内容-->
+<div class="py-2 px-2 bg-info">
+    <div class="p-1 bg-success">
+        餐厅总分排名
+    </div>
+    <div class="p-1 bg-faded">
+        <div class="container">
+            <div class="row" ng-repeat="branch in branches">
+                <!--左边-->
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                    <h3>餐厅：{{branch.name}}</h3>
+                    <h4>评分记录</h4>
+                    <h5>顾客满意度：{{branch.score}}</h5>
+                </div>
+                <!--右边-->
+                <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+                    <div class="container">
+                        <div class="row card-group">
+                            <!--私人定制-->
+                            <div class="rol-lg-3" ng-repeat="image in branch.images">
+                                <div class="thumbnail" ng-click="edit(branch.id, image.id)">
+                                    <div class="card-header">
+                                        <div class="card-title">
+                                            {{image.name}}
+                                        </div>
+                                    </div>
+                                    <div class="card-block">
+                                        <img class="img-circle" src="{{image.url}}" width="64" height="64"/>
+                                    </div>
+                                    <div class="card-footer">
+                                        评分
+                                        <span class="badge badge-info">{{image.score}}</span>
+                                        <span class="badge badge-info">{{image.score}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

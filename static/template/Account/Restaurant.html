@@ -23,16 +23,16 @@
                         <legend class="">酒店基本信息</legend>
                     </div>
                     <!--餐厅名称-->
-                    <div class="control-group">
-                        <label class="control-label">餐厅名称：</label>
-                        <div class="controls">
+                    <div class="row">
+                        <label class="col-lg-2 col-md-2">餐厅名称：</label>
+                        <div class="col-lg-8 col-md-8">
                             {{hotel.name}}
                         </div>
                     </div>
                     <!--所在城市-->
-                    <div class="control-group">
-                        <label class="control-label">所在城市：</label>
-                        <div class="controls">
+                    <div class="row">
+                        <label class="col-lg-2 col-md-2">所在城市：</label>
+                        <div class="col-lg-8 col-md-8">
                             <!--省-->
                             <select class="inline">
                                 <option>北京</option>
@@ -48,40 +48,40 @@
                         </div>
                     </div>
                     <!--详细地址-->
-                    <div class="control-group">
-                        <label class="control-label">详细地址：</label>
-                        <div class="controls">
+                    <div class="row">
+                        <label class="col-lg-2 col-md-2">详细地址：</label>
+                        <div class="col-lg-8 col-md-8">
                             <input type="text" ng-model="hotel.address" value=""/>
                         </div>
                     </div>
                     <!--预订电话-->
-                    <div class="control-group">
-                        <label class="control-label">预订电话：</label>
-                        <div class="controls">
+                    <div class="row">
+                        <label class="col-lg-2 col-md-2">预订电话：</label>
+                        <div class="col-lg-8 col-md-8">
                             <label>
                                 <input type="text" ng-model="phone" value=""/>多个电话号码请用','分隔
                             </label>
                         </div>
                     </div>
                     <!--餐厅面积-->
-                    <div class="control-group">
-                        <label class="control-label">餐厅面积：</label>
-                        <div class="controls">
+                    <div class="row">
+                        <label class="col-lg-2 col-md-2">餐厅面积：</label>
+                        <div class="col-lg-8 col-md-8">
                             <input type="text" ng-model="hotel.space" value="1700"/> 平米
                         </div>
                     </div>
                     <!--人均消费-->
-                    <div class="control-group">
-                        <label class="control-label">人均消费：</label>
-                        <div class="controls">
+                    <div class="row">
+                        <label class="col-lg-2 col-md-2">人均消费：</label>
+                        <div class="col-lg-8 col-md-8">
                             <input class="mr-1" type="text" ng-model="min_cost" value="1200"/> 元/人 ~
                             <input class="mx-1" type="text" ng-model="max_cost" value="1700"/> 元/人
                         </div>
                     </div>
                     <!--餐厅设施-->
-                    <div class="control-group">
-                        <label class="control-label">餐厅设施：</label>
-                        <div class="controls">
+                    <div class="row">
+                        <label class="col-lg-2 col-md-2">餐厅设施：</label>
+                        <div class="col-lg-8 col-md-8">
                             <div class="inline">
                                 <label class="checkbox inline"><input type="checkbox" name="facility" value="1">万事达(Master)</label>
                                 <label class="checkbox inline"><input type="checkbox" name="facility" value="2">可以刷卡</label>
@@ -103,17 +103,17 @@
                         </div>
                     </div>
                     <!--可以刷卡-->
-                    <div class="control-group">
-                        <label class="control-label">可以刷卡：</label>
-                        <div class="controls">
+                    <div class="row">
+                        <label class="col-lg-2 col-md-2">可以刷卡：</label>
+                        <div class="col-lg-8 col-md-8">
                             <label class="checkbox inline"><input type="checkbox" ng-model="VISA" value="2">VISA</label>
                             <label class="checkbox inline"><input type="checkbox" ng-model="UnionPay" value="3">银联卡</label>
                         </div>
                     </div>
                     <!--上传Logo-->
-                    <div class="control-group">
-                        <label class="control-label">上传Logo：</label>
-                        <div class="controls">
+                    <div class="row">
+                        <label class="col-lg-2 col-md-2">上传Logo：</label>
+                        <div class="col-lg-8 col-md-8">
                             <div class="py-2">
                                 <img src="/static/bootstrap/css/img/glyphicons-halflings.png">
                             </div>
@@ -124,9 +124,9 @@
                         </div>
                     </div>
                     <!--上传大图-->
-                    <div class="control-group">
-                        <label class="control-label">上传大图：</label>
-                        <div class="controls">
+                    <div class="row">
+                        <label class="col-lg-2 col-md-2">上传大图：</label>
+                        <div class="col-lg-8 col-md-8">
                             <div class="py-2">
                                 <img src="/static/bootstrap/css/img/glyphicons-halflings.png">
                             </div>
@@ -136,9 +136,9 @@
                         </div>
                     </div>
                     <!--提交-->
-                    <div class="control-group">
-                        <label class="control-label"></label>
-                        <div class="controls">
+                    <div class="row">
+                        <label class="col-lg-2 col-md-2"></label>
+                        <div class="col-lg-8 col-md-8">
                             <div class="py-2">
                                 <button class="btn btn-primary btn-sm">提交</button>
                             </div>
