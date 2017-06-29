@@ -5,12 +5,13 @@
     <title>宴专家后台管理</title>
     <!-- 新 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="bootstrap/3.3.7/dist/css/bootstrap.min.css"/>
-    <!--<link rel="stylesheet" href="bootstrap/3.3.7/dist/css/bootstrap-responsive.min.css"/>-->
+    <link rel="stylesheet" href="bootstrap/3.3.7/dist/css/bootstrap-responsive.min.css"/>
     <!--<link rel="stylesheet" href="bootstrap/4.0.0/dist/css/bootstrap.min.css"/>-->
     <link rel="stylesheet" href="bootstrap/4.0.0/dist/css/bootstrap-grid.min.css"/>
     <!--<link rel="stylesheet" href="bootstrap/4.0.0/dist/css/bootstrap-reboot.min.css"/>-->
     <script src="js/jquery-1.12.3.min.js"></script>
     <script src="bootstrap/3.3.7/dist/js/bootstrap.min.js"></script>
+    <!--<script src="bootstrap/4.0.0/dist/js/bootstrap.min.js"></script>-->
     <!--AngularJS-->
     <script src="http://code.angularjs.org/1.2.7/angular.js"></script>
     <script src="http://code.angularjs.org/1.2.7/angular-route.js"></script>
@@ -51,24 +52,22 @@
         <!--内容页-->
         <div class="col-sm-10">
             <!--路径导航-->
-            <div>
+            <header>
                 <ol class="breadcrumb mb-2 bg-faded" id="breadcrumb">
                     路径导航
                 </ol>
-            </div>
-            <!--门店选择-->
-            <!--<div>-->
-                <!--<div class="mb-2 bg-faded">-->
-                    <!--<select ng-model="BanquetExpert.selected_branch">-->
-                        <!--<optgroup label="门店选择"></optgroup>-->
-                        <!--<option ng-repeat="x in BanquetExpert.branch">{{x}}</option>-->
-                    <!--</select>-->
-                <!--</div>-->
-            <!--</div>-->
+            </header>
             <!--内容面板-->
             <main ng-view>
                 内容面板
             </main>
+            <!--页脚-->
+            <footer class="">
+                <p>Posted by: Hege Refsnes</p>
+                <p>
+                    <time pubdate datetime="2012-03-01"></time>
+                </p>
+            </footer>
         </div>
     </div>
 </div>
