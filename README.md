@@ -1306,6 +1306,7 @@ URL：webApp/order/month_list/ <br>
 | 参数名称       | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------:|
 | token         | 登录口令          |         yes  |
+| year          | 年份，默认为当前年份 |          no  |
 
 返回参数：
 
@@ -1333,7 +1334,8 @@ desk_consumption | 桌均消费
 			"consumption":100000,
 			"person_consumption":1000,
 			"desk_consumption":99
-		}
+		},
+		...
 	]
 }
 ```

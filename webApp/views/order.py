@@ -5,10 +5,12 @@ from django.db.models import Q
 from django.utils import timezone
 from django.db import IntegrityError, transaction
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.validators import RegexValidator
 
 from ..utils.decorator import validate_args, validate_staff_token
 from ..utils.response import corr_response, err_response
-from ..models import Desk, Order, Guest
+from ..models import Desk, Order, Guest, HotelDayConsumption, \
+    HotelMonthConsumption
 
 
 @validate_args({
@@ -457,3 +459,73 @@ def modify_order(request, token, order_id, **kwargs):
             return err_response('err_3', '桌位不存在')
 
     return corr_response()
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+    'year': forms.IntegerField(required=False),
+})
+@validate_staff_token()
+def get_month_orders(request, token, year=None):
+    """获取月订单列表
+
+    :param token: 令牌(必传)
+    :param year: 年份
+    :return:
+        month: 月份, 例: 2017-05
+        order_number: 订单数
+        desk_number: 订的桌数
+        guest_number: 用餐人数
+        consumption: 总消费
+        person_consumption: 人均消费
+        desk_consumption: 桌均消费
+    """
+
+    if year is None:
+        year = timezone.now().year
+
+    hotel = request.staff.hotel
+    month_consumptions = hotel.month_consumptions.filter(
+        date__startswith=str(year)).order_by('-date')
+    l = [{'month': c.month,
+          'order_number': c.order_number,
+          'desk_number': c.desk_number,
+          'guest_number': c.guest_number,
+          'consumption': c.consumption,
+          'person_consumption': c.person_consumption,
+          'desk_consumption': c.desk_consumption} for c in month_consumptions]
+    return corr_response(l)
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+    'month': forms.CharField(
+        validators=[RegexValidator(regex=r'^[0-9]{4}-[0-9]{2}$')]),
+})
+@validate_staff_token()
+def get_day_orders(request, token, month):
+    """获取日订单列表
+
+    :param token: 令牌(必传)
+    :param month: 月份(必传), 例: 2017-05
+    :return:
+        date: 日期, 例: 2017-05-01
+        order_number: 订单数
+        desk_number: 订的桌数
+        guest_number: 用餐人数
+        consumption: 总消费
+        person_consumption: 人均消费
+        desk_consumption: 桌均消费
+    """
+
+    hotel = request.staff.hotel
+    day_consumptions = hotel.day_consumptions.filter(
+        date__startswith=month).order_by('-date')
+    l = [{'date': c.date,
+          'order_number': c.order_number,
+          'desk_number': c.desk_number,
+          'guest_number': c.guest_number,
+          'consumption': c.consumption,
+          'person_consumption': c.person_consumption,
+          'desk_consumption': c.desk_consumption} for c in day_consumptions]
+    return corr_response(l)

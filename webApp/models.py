@@ -480,6 +480,62 @@ class Order(models.Model):
         ordering = ['-create_time']
 
 
+class HotelDayConsumption(models.Model):
+    """酒店的日消费统计模型"""
+
+    # 总订单数
+    order_number = models.IntegerField(default=0)
+    # 总人数
+    guest_number = models.IntegerField(default=0)
+    # 总消费
+    consumption = models.IntegerField(default=0)
+    # 总桌数
+    desk_number = models.IntegerField(default=0)
+    # 人均消费
+    person_consumption = models.FloatField(default=0.0)
+    # 桌均消费
+    desk_consumption = models.FloatField(default=0.0)
+
+    # 日期
+    date = models.DateField(db_index=True)
+    # 创建时间
+    create_time = models.DateTimeField(default=timezone.now)
+
+    # 酒店
+    hotel = models.ForeignKey('Hotel', models.CASCADE, 'day_consumptions')
+
+    class Meta:
+        ordering = ['-create_time']
+
+
+class HotelMonthConsumption(models.Model):
+    """酒店的月消费统计模型"""
+
+    # 总订单数
+    order_number = models.IntegerField(default=0)
+    # 总人数
+    guest_number = models.IntegerField(default=0)
+    # 总消费
+    consumption = models.IntegerField(default=0)
+    # 总桌数
+    desk_number = models.IntegerField(default=0)
+    # 人均消费
+    person_consumption = models.FloatField(default=0.0)
+    # 桌均消费
+    desk_consumption = models.FloatField(default=0.0)
+
+    # 年月(例, 2017-06)
+    month = models.CharField(max_length=10, db_index=True)
+    # 创建时间
+    create_time = models.DateTimeField(default=timezone.now)
+
+    # 酒店
+    hotel = models.ForeignKey('Hotel', models.CASCADE, 'month_consumptions')
+
+    class Meta:
+        ordering = ['-create_time']
+
+
 class OrderScore(models.Model):
     """评分模型"""
 
