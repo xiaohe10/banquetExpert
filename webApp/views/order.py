@@ -486,7 +486,7 @@ def get_month_orders(request, token, year=None):
 
     hotel = request.staff.hotel
     month_consumptions = hotel.month_consumptions.filter(
-        date__startswith=str(year)).order_by('-date')
+        month__startswith=str(year)).order_by('-month')
     l = [{'month': c.month,
           'order_number': c.order_number,
           'desk_number': c.desk_number,

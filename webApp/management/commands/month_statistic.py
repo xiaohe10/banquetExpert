@@ -9,8 +9,16 @@ from webApp.models import Order, Hotel
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
+        date = timezone.now().date()
+        # 上个月的天数
+        day = (date - timedelta(days=1)).day
+
         # 获得上个月的日期(年-月)
-        self.month = (timezone.now() - timedelta(days=1)).strftime('%Y-%m')
+        self.month = (date - timedelta(days=1)).strftime('%Y-%m')
+        # 月初
+        self.first_date = date - timedelta(days=day)
+        # 月末
+        self.last_date = date - timedelta(days=1)
         self.count_hotel_consumption()
 
     def count_hotel_consumption(self):
@@ -20,7 +28,8 @@ class Command(BaseCommand):
         for hotel in hotels:
             # 获取酒店上个月的所有订单
             orders = Order.objects.filter(branch__hotel=hotel,
-                                          dinner_date__startswith=self.month,
+                                          dinner_date__gte=self.first_date,
+                                          dinner_date__lte=self.last_date,
                                           status=2)
             # 总订单数
             order_number = orders.count()

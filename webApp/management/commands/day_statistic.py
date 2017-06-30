@@ -10,7 +10,7 @@ from webApp.models import Order, Hotel
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
-        self.date = timezone.now() - timedelta(days=1)
+        self.date = timezone.now().date() - timedelta(days=1)
         self.count_hotel_consumption()
 
     def count_hotel_consumption(self):
