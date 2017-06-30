@@ -78,7 +78,12 @@ BanquetExpert = {
             {value: 3, name: 'C'},
             {value: 4, name: 'D'}
         ],
-        outer: []
+        outer: [
+            {value: 5, name: 'E'},
+            {value: 6, name: 'F'},
+            {value: 7, name: 'G'},
+            {value: 8, name: 'H'}
+        ]
     },
     menus: [
         {
@@ -144,6 +149,7 @@ BanquetExpert = {
             title: "酒店管理",
             menu_id: "Hotel",
             item: [
+                {title: "酒店管理", item_id: "Hotel"},
                 {title: "门店管理", item_id: "Branch"}
             ]
         },
@@ -234,7 +240,8 @@ Templates = {
     },
     // 酒店管理
     Hotel: {
-        Branch: "Hotel/Branch.html" // 门店管理
+        Branch: "Hotel/Branch.html", // 门店管理
+        Hotel: "Hotel/Hotel.html" // 酒店管理
     },
     // 评分审阅
     Review: {
@@ -1239,7 +1246,56 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
     $routeProvider
         .when('/Hotel/Branch', {
             templateUrl: "./template/" + Templates.Hotel.Branch, controller: function ($scope) {
+                $scope.data = {
+                    count: 20,
+                    list: [{
+                        branch_id: 1,
+                        name: "北京宴总店",
+                        icon: "/static/css/image/head1.jpg",
+                        pictures: ["picture1", "picture2"],
+                        province: "北京市",
+                        city: "北京市",
+                        county: "丰台区",
+                        address: "靛厂路333号",
+                        facility: ["停车场", "吸烟区"],
+                        pay_card: ["支付宝", "微信"],
+                        phone: ["13051391335", "13188888888"],
+                        cuisine: {},
+                        hotel_name: "北京宴",
+                        manager_name: "陈总",
+                        create_time: "创建时间"
+                    }]
+                };
+                $scope.addBranch = function () {
 
+                };
+                $scope.editBranch = function (branch_id) {
+
+                }
+            }
+        })
+        .when('/Hotel/Hotel', {
+            templateUrl: "./template/" + Templates.Hotel.Hotel, controller: function ($scope) {
+                $scope.data = {
+                    count: 20,
+                    list: [
+                        {
+                            hotel_id: 1,
+                            name: "北京宴",
+                            icon: "/static/css/image/head2.jpg",
+                            branches_count: 10,
+                            owner_name: "杨秀荣",
+                            is_enabled: true,
+                            create_time: "创建时间"
+                        }
+                    ]
+                };
+                $scope.addHotel = function () {
+
+                };
+                $scope.editHotel = function (hotel_id) {
+
+                }
             }
         });
 

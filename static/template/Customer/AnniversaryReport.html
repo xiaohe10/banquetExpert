@@ -1,8 +1,13 @@
 <!--主页/客户管理/纪念日查询报表-->
-<!--操作栏-->
-<div class="py-1 bg-info">
-    <div class="p-2 bg-success">
-        <div class="form-inline p-1">
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">
+            纪念日查询报表
+        </div>
+    </div>
+    <div class="panel-body">
+        <!--操作栏-->
+        <div class="well well-sm form-inline">
             <input class="form-control form-control-sm mx-1" type="date" ng-model="option.date_from"/>
             ~
             <input class="form-control form-control-sm mx-1" type="date" ng-model="option.date_to"/>
@@ -12,15 +17,9 @@
             </select>
             <button class="btn btn-primary btn-sm mx-1" ng-click="query()" value="查询"><a class="icon-search"></a>查询</button>
         </div>
-    </div>
-</div>
-<!--内容-->
-<div class="py-2 px-2 mt-2 bg-info">
-    <!--表格-->
-    <div class="p-2 mb-2 bg-faded">
         <!--表格-->
         <table class="table table-hover table-bordered small">
-            <thead class="bg-info">
+            <thead>
             <tr>
                 <th>纪念日</th>
                 <th>关系</th>
@@ -72,5 +71,8 @@
                 </li>
             </ul>
         </nav>
+    </div>
+    <div class="panel-footer">
+        This is footer
     </div>
 </div>

@@ -1,11 +1,14 @@
 <!--主页/客户管理/客户档案回收站-->
-<!--内容-->
-<div class="py-2 px-2 mt-2 bg-info">
-    <!--表格-->
-    <div class="p-2 mb-2 bg-faded">
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">
+            客户档案回收站
+        </div>
+    </div>
+    <div class="panel-body">
         <!--表格-->
         <table class="table table-hover table-bordered small">
-            <thead class="bg-info">
+            <thead class="">
             <tr align="center">
                 <th>姓名</th>
                 <th>性别</th>
@@ -18,7 +21,6 @@
             </tr>
             </thead>
             <tbody>
-
             <tr ng-repeat="x in table">
                 <td>{{x.name}}</td>
                 <td>{{x.gender}}</td>
@@ -56,5 +58,8 @@
                 </li>
             </ul>
         </nav>
+    </div>
+    <div class="panel-footer">
+        This is footer
     </div>
 </div>

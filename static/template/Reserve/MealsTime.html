@@ -1,63 +1,65 @@
 <!--主页/预订管理/餐段设置-->
-<!--操作栏-->
-<div class="py-1 bg-info">
-    <div class="p-2 bg-success">
-        <a>>餐段设置</a>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">
+            餐段设置
+        </div>
+    </div>
+    <div class="panel-body">
+        <!--表格-->
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <td>餐段</td>
+                <td><label>午餐
+                    <input type="checkbox" ng-model="MealsTime.hasLunch"/>
+                </label></td>
+                <td><label>晚餐
+                    <input type="checkbox" ng-model="MealsTime.hasDinner"/>
+                </label></td>
+                <td><label>夜宵
+                    <input type="checkbox" ng-model="MealsTime.hasSupper"/>
+                </label></td>
+            </tr>
+            </thead>
+            <tbody id="MealsTime">
+            <tr class="table-info" ng-repeat="x in MealsTime.Table">
+                <td>{{MealsTime.Week[$index]}}</td>
+                <td>
+                    <select ng-model="x.lunch.from">
+                        <option ng-repeat="lunch in MealsTime.Lunch" value="{{lunch}}">午餐{{lunch}}</option>
+                    </select>
+                    ~
+                    <select ng-model="x.lunch.to">
+                        <option ng-repeat="lunch in MealsTime.Lunch" value="{{lunch}}">午餐{{lunch}}</option>
+                    </select>
+                    <span style="color:red" ng-show="x.lunch.from >= x.lunch.to">min必须小于max</span>
+                </td>
+                <td>
+                    <select ng-model="x.dinner.from">
+                        <option ng-repeat="dinner in MealsTime.Dinner" value="{{dinner}}">晚餐{{dinner}}</option>
+                    </select>
+                    ~
+                    <select ng-model="x.dinner.to">
+                        <option ng-repeat="dinner in MealsTime.Dinner" value="{{dinner}}">晚餐{{dinner}}</option>
+                    </select>
+                    <span style="color:red" ng-show="x.dinner.from >= x.dinner.to">min必须小于max</span>
+                </td>
+                <td>
+                    <select ng-model="x.supper.from">
+                        <option ng-repeat="supper in MealsTime.Supper" value="{{supper}}">夜宵{{supper}}</option>
+                    </select>
+                    ~
+                    <select ng-model="x.supper.to">
+                        <option ng-repeat="supper in MealsTime.Supper" value="{{supper}}">夜宵{{supper}}</option>
+                    </select>
+                    <span style="color:red" ng-show="x.supper.from >= x.supper.to">min必须小于max</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
         <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" ng-click="save()" value="保存"/>
     </div>
-</div>
-<!--内容-->
-<div class="py-2 px-2 bg-info">
-    <!--表格-->
-    <table class="table table-bordered table-hover">
-        <thead class="bg-info">
-        <tr>
-            <td>餐段</td>
-            <td><label>午餐
-                <input type="checkbox" ng-model="MealsTime.hasLunch"/>
-            </label></td>
-            <td><label>晚餐
-                <input type="checkbox" ng-model="MealsTime.hasDinner"/>
-            </label></td>
-            <td><label>夜宵
-                <input type="checkbox" ng-model="MealsTime.hasSupper"/>
-            </label></td>
-        </tr>
-        </thead>
-        <tbody class="align-content-center" id="MealsTime">
-        <tr class="table-info" ng-repeat="x in MealsTime.Table">
-            <td>{{MealsTime.Week[$index]}}</td>
-            <td>
-                <select ng-model="x.lunch.from">
-                    <option ng-repeat="lunch in MealsTime.Lunch" value="{{lunch}}">午餐{{lunch}}</option>
-                </select>
-                ~
-                <select ng-model="x.lunch.to">
-                    <option ng-repeat="lunch in MealsTime.Lunch" value="{{lunch}}">午餐{{lunch}}</option>
-                </select>
-                <span style="color:red" ng-show="x.lunch.from >= x.lunch.to">min必须小于max</span>
-            </td>
-            <td>
-                <select ng-model="x.dinner.from">
-                    <option ng-repeat="dinner in MealsTime.Dinner" value="{{dinner}}">晚餐{{dinner}}</option>
-                </select>
-                ~
-                <select ng-model="x.dinner.to">
-                    <option ng-repeat="dinner in MealsTime.Dinner" value="{{dinner}}">晚餐{{dinner}}</option>
-                </select>
-                <span style="color:red" ng-show="x.dinner.from >= x.dinner.to">min必须小于max</span>
-            </td>
-            <td>
-                <select ng-model="x.supper.from">
-                    <option ng-repeat="supper in MealsTime.Supper" value="{{supper}}">夜宵{{supper}}</option>
-                </select>
-                ~
-                <select ng-model="x.supper.to">
-                    <option ng-repeat="supper in MealsTime.Supper" value="{{supper}}">夜宵{{supper}}</option>
-                </select>
-                <span style="color:red" ng-show="x.supper.from >= x.supper.to">min必须小于max</span>
-            </td>
-        </tr>
-        </tbody>
-    </table>
 </div>

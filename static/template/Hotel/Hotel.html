@@ -1,0 +1,40 @@
+<!--主页/酒店管理/酒店管理-->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">
+            酒店列表
+            <small>(共{{data.count}}家酒店)</small>
+        </div>
+    </div>
+    <div class="panel-body">
+        <!--已添加酒店列表-->
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5" ng-repeat="x in data.list">
+            <div class="thumbnail" ng-click="editHotel(x.hotel_id)">
+                <div class="label label-info">
+                    {{x.id + 1}}. {{x.name}} <span ng-hide="x.is_enabled">失效</span>
+                </div>
+                <img class="img-circle" src="{{x.icon}}" style="width: 96px;height: 96px">
+                <div class="caption">
+                    <p>门店数：{{x.branches_count}}</p>
+                    <p>法人：{{x.owner_name}}</p>
+                    <p>电话：{{x.create_time}}</p>
+                </div>
+            </div>
+        </div>
+        <!--添加门店-->
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5">
+            <div class="thumbnail" ng-click="addHotel()">
+                <div class="label label-info">添加酒店</div>
+                <img class="img-circle" src="/static/css/image/head.jpg" style="width: 96px;height: 96px">
+                <div class="caption">
+                    <p>门店数：无</p>
+                    <p>法人：无</p>
+                    <p>电话：无</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer">
+        This is footer.
+    </div>
+</div>
