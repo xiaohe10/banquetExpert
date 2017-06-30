@@ -1,6 +1,11 @@
 <!--主页/智能订餐台/智能订餐台-->
-<div class="p-1">
-    <div class="p-2 bg-success">
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">
+            智能订餐台
+        </div>
+    </div>
+    <div class="panel-body">
         <div class="container">
             <div class="row">
                 <!--餐段日期选择-->
@@ -11,17 +16,16 @@
                                 <span><strong>6</strong>月</span>
                                 <span>2017</span>
                             </div>
-                            <div class="col-lg-1 input-group">
-                                <input type="button" value="午餐">
-                                <input type="button" value="晚餐">
-                            </div>
-                            <div class="col-lg-4 input-group px-2">
-                                <input type="button" value="周一"/>
-                                <input type="button" value="周一"/>
-                                <input type="button" value="周一"/>
-                                <input type="button" value="周一"/>
-                                <input type="button" value="周一"/>
-                                <input type="button" value="周一"/>
+                            <div class="col-lg-5 input-group">
+                                <div class="btn-toolbar" role="toolbar">
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <input type="button" value="午餐">
+                                        <input type="button" value="晚餐">
+                                    </div>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <input type="button" value="{{x}}" ng-repeat="x in weekdays"/>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -29,25 +33,37 @@
                 <!--餐位列表-->
                 <div class="col-lg-4" style="height: 60%">
                     <!--折叠效果-->
-                    <div class="panel-group" id="accordion">
+                    <div class="panel-group" id="accordion" role="tablist">
                         <!--一楼-->
                         <div class="panel panel-default" ng-repeat="x in area">
-                            <div class="panel-heading">
+                            <div class="panel-heading" role="tab">
                                 <h4 class="panel-title">
                                     <a data-toggle="collapse" data-parent="#accordion" data-target="#collapse{{$index}}">
-                                        {{x.name}}（{{x.seat.length}}桌）（06-05 周一）
+                                        {{x.name}}（{{x.seat.length}}桌）（06-05 周一） 晚餐
                                     </a>
                                 </h4>
                             </div>
-                            <div id="collapse{{$index}}" class="panel-collapse collapse">
-                                <!--<div class="panel-body">-->
-                                <!--桌位列表-->
+                            <div id="collapse{{$index}}" class="panel-collapse collapse" role="tabpanel">
+                                <!--桌位列表 list-group-->
                                 <ul class="list-group">
                                     <li class="list-group-item" ng-repeat="y in x.seat">
                                         {{y.name}} {{y.min}}人~{{y.max}}人 {{y.type}}
                                     </li>
                                 </ul>
-                                <!--</div>-->
+                                <!--桌位列表 panel-body-->
+                                <div class="panel-body hidden">
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-2 col-sm-3 col-xs-4" ng-repeat="y in x.seat">
+                                            <div class="thumbnail" ng-class="{'bg-warning':y.id%2 === 1}">
+                                                <h5 class="text-center">{{y.name}}</h5>
+                                                <img src="/static/css/image/head1.jpg" width="20px" height="20px"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-footer">
+                                This is footer
                             </div>
                         </div>
                     </div>
@@ -55,7 +71,7 @@
                 <!--电话/预约-->
                 <div class="col-lg-4" style="height: 60%">
                     <!--TabHost-->
-                    <nav class="mb-2">
+                    <nav class="mb-2 bg-info">
                         <ul class="nav nav-tabs">
                             <li class="nav-item p-2">
                                 <a role="tab" data-toggle="tab" data-target="#phone">电话</a>
@@ -130,13 +146,6 @@
                                             <div class="col-lg-3 col-sm-3">
                                                 <input class="btn btn-secondary btn-sm" type="button" ng-click="handleReserve($index)" value="处理"/>
                                             </div>
-                                            <!--操作栏-->
-                                            <div class="col-lg-12 col-sm-12 p-2 bg-success">
-                                                <div class="input-group">
-                                                    <input type="button" value="添加"/>
-                                                    <input type="button" value="删除"/>
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                 </li>
@@ -184,7 +193,6 @@
                                 </div>
                             </div>
                             <div class="panel-collapse">
-                                <!--<div class="panel-body">-->
                                 <!--订单列表-->
                                 <ul class="list-group">
                                     <li class="list-group-item" ng-repeat="x in orders">
@@ -200,16 +208,41 @@
                                                     <p><strong>{{x.name|surname}}</strong> 先生</p>
                                                     <p>备注：桌号({{x.seat}}) {{x.order_status}}</p>
                                                 </div>
+                                                <!--操作栏-->
+                                                <div class="col-lg-12 col-sm-12 p-2 bg-success">
+                                                    <!--第一行-->
+                                                    <div class="input-group">
+                                                        <input type="button" value="撤单"/>
+                                                        <div class="btn-group btn-group-sm">
+                                                            <input type="button" value="换桌"/>
+                                                            <input type="button" value="加桌"/>
+                                                            <input type="button" value="修改"/>
+                                                        </div>
+                                                        <input type="button" value="关闭"/>
+                                                    </div>
+                                                    <!--第二行-->
+                                                    <select>
+                                                        <option ng-repeat="x in [1,2,3,4]">x</option>
+                                                    </select>
+                                                    <div class="input-group">
+                                                        <input type="button" value="发路线"/>
+                                                        <input type="button" value="发短信"/>
+                                                        <input type="button" value="相关订单"/>
+                                                        <input type="button" value="客户档案"/>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </li>
                                 </ul>
-                                <!--</div>-->
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+    <div class="panel-footer">
+        This is footer.
     </div>
 </div>

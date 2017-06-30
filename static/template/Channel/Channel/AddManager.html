@@ -10,28 +10,28 @@
             <form class="form-horizontal">
                 <fieldset>
                     <!--新增客户经理-->
-                    <div class="col-form-legend">
-                        <legend class="">新增客户经理</legend>
+                    <div class="row">
+                        <legend>新增客户经理</legend>
                     </div>
                     <!--姓名-->
-                    <div class="form-group">
-                        <label class="control-label"><a style="color: red;">*</a>姓名：</label>
-                        <div class="controls">
-                            <input class="" type="text" ng-model="form.name"/>
+                    <div class="row">
+                        <label class="col-lg-2 text-right"><a style="color: red;">*</a>姓名：</label>
+                        <div class="col-lg-10">
+                            <input type="text" ng-model="form.name"/>
                         </div>
                     </div>
                     <!--性别-->
-                    <div class="form-group">
-                        <label class="control-label"><a style="color: red;">*</a>性别：</label>
-                        <div class="controls">
-                            <label><input class="" type="radio" ng-model="form.gender" value="male"/>先生</label>
-                            <label><input class="" type="radio" ng-model="form.gender" value="female"/>女士</label>
+                    <div class="row">
+                        <label class="col-lg-2 text-right"><a style="color: red;">*</a>性别：</label>
+                        <div class="col-lg-10">
+                            <label class="radio"><input type="radio" ng-model="form.gender" value="male"/>先生</label>
+                            <label class="radio"><input type="radio" ng-model="form.gender" value="female"/>女士</label>
                         </div>
                     </div>
                     <!--电话-->
-                    <div class="form-group">
-                        <label class="control-label"><a style="color: red;">*</a>电话：</label>
-                        <div class="controls">
+                    <div class="row">
+                        <label class="col-lg-2 text-right"><a style="color: red;">*</a>电话：</label>
+                        <div class="col-lg-10">
                             <!--电话列表-->
                             <ul class="inline">
                                 <li ng-repeat="x in form.phone"><label>
@@ -43,78 +43,78 @@
                         </div>
                     </div>
                     <!--生日-->
-                    <div class="form-group">
-                        <label class="control-label">生日：</label>
-                        <div class="controls">
+                    <div class="row">
+                        <label class="col-lg-2 text-right">生日：</label>
+                        <div class="col-lg-10">
                             <input type="date" ng-model="form.birthday"/>
                             <label><input type="radio" ng-model="form.calendar" value="0"/>公历</label>
                             <label><input type="radio" ng-model="form.calendar" value="1"/>农历</label>
                         </div>
                     </div>
                     <!--单位-->
-                    <div class="form-group">
-                        <label class="control-label">单位：</label>
-                        <div class="controls">
+                    <div class="row">
+                        <label class="col-lg-2 text-right">单位：</label>
+                        <div class="col-lg-10">
                             <input type="text" ng-model="form.unit"/>
                         </div>
                     </div>
                     <!--现住址-->
-                    <div class="form-group">
-                        <label class="control-label">现住址：</label>
-                        <div class="controls">
+                    <div class="row">
+                        <label class="col-lg-2 text-right">现住址：</label>
+                        <div class="col-lg-10">
                             <!--省-->
-                            <select class=" inline" ng-model="form.address.province">
+                            <select ng-model="form.address.province">
                                 <option>北京</option>
                             </select>
                             <!--市-->
-                            <select class=" inline" ng-model="form.address.city">
+                            <select ng-model="form.address.city">
                                 <option>北京</option>
                             </select>
                             <!--县-->
-                            <select class=" inline" ng-model="form.address.county">
+                            <select ng-model="form.address.county">
                                 <option>北京</option>
                             </select>
                             <!--小区-->
-                            <select class=" inline" ng-model="form.address.block">
+                            <select ng-model="form.address.block">
                                 <option>北京</option>
                             </select>
                         </div>
                     </div>
                     <!--籍贯-->
-                    <div class="form-group">
-                        <label class="control-label">籍贯：</label>
-                        <div class="controls">
+                    <div class="row">
+                        <label class="col-lg-2 text-right">籍贯：</label>
+                        <div class="col-lg-10">
                             <!--省-->
-                            <select class=" inline" ng-model="form.native.province">
+                            <select ng-model="form.native.province">
                                 <option>北京</option>
                             </select>
                             <!--市-->
-                            <select class=" inline" ng-model="form.native.city">
+                            <select ng-model="form.native.city">
                                 <option>北京</option>
                             </select>
                         </div>
                     </div>
                     <!--营销短信-->
-                    <div class="form-group">
-                        <label class="control-label">营销短信：</label>
-                        <div class="controls">
+                    <div class="row">
+                        <label class="col-lg-2 text-right">营销短信：</label>
+                        <div class="col-lg-10">
                             <label><input type="radio" ng-model="form.sms_marketing" value="enabled"/>开</label>
                             <label><input type="radio" ng-model="form.sms_marketing" value="disabled"/>关</label>
                         </div>
                     </div>
                     <!--分类方法-->
-                    <div class="form-group">
-                        <label class="control-label">分类方法：</label>
-                        <div class="controls">
-                            <select class=" inline" ng-model="form.classification_method">
+                    <div class="row">
+                        <label class="col-lg-2 text-right">分类方法：</label>
+                        <div class="col-lg-10">
+                            <select ng-model="form.classification_method">
                                 <option>北京</option>
                             </select>
                         </div>
                     </div>
                     <!--病症-->
-                    <div class="form-group">
-                        <label class="control-label">病症：</label>
-                        <div class="controls">
+                    <div class="row">
+                        <label class="col-lg-2 text-right">病症：</label>
+                        <div class="col-lg-10">
                             <!--病症列表-->
                             <ul class="inline">
                                 <li ng-repeat="x in form.desease"><label>
@@ -125,9 +125,9 @@
                         </div>
                     </div>
                     <!--喜好-->
-                    <div class="form-group">
-                        <label class="control-label">喜好：</label>
-                        <div class="controls">
+                    <div class="row">
+                        <label class="col-lg-2 text-right">喜好：</label>
+                        <div class="col-lg-10">
                             <!--喜好列表-->
                             <ul class="inline">
                                 <li ng-repeat="x in from.hobby"><label>
@@ -138,22 +138,22 @@
                         </div>
                     </div>
                     <!--忌口-->
-                    <div class="form-group">
-                        <label class="control-label">忌口：</label>
-                        <div class="controls">
+                    <div class="row">
+                        <label class="col-lg-2 text-right">忌口：</label>
+                        <div class="col-lg-10">
                             <!--忌口列表-->
                             <ul class="inline">
                                 <li ng-repeat="x in form.dieting"><label>
-                                    <input class="" type="text" ng-model="x"/>
+                                    <input type="text" ng-model="x"/>
                                 </label></li>
                             </ul>
                             <a class="btn btn-primary btn-link">+添加标签</a>
                         </div>
                     </div>
                     <!--不良记录-->
-                    <div class="form-group">
-                        <label class="control-label">不良记录：</label>
-                        <div class="controls">
+                    <div class="row">
+                        <label class="col-lg-2 text-right">不良记录：</label>
+                        <div class="col-lg-10">
                             <textarea ng-model="form.bad_records"></textarea>
                         </div>
                     </div>

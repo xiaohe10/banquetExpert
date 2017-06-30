@@ -1,30 +1,34 @@
 <!--主页/账户管理/财务报表-->
-<!--操作栏-->
-<div class="py-1 bg-info">
-    <div class="p-2 bg-success">
-        <div class="form-inline p-1">
-            <label for="year">>年 </label>
-            <select class="form-control form-control-sm mx-1" id="year" ng-model="option.selected_year">
-                <option ng-repeat="(k, v) in year" value="{{$index}}">{{v}}</option>
-            </select>
-            <label for="month">>月 </label>
-            <select class="form-control form-control-sm mx-1" id="month" ng-model="option.selected_month">
-                <option ng-repeat="(k, v) in month" value="{{$index}}">{{v}}</option>
-            </select>
-            <input class="btn btn-sm btn-primary mx-1" type="button" ng-click="query()" value="查询"/>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">
+            财务报表
         </div>
     </div>
-</div>
-<!--内容-->
-<div class="py-2 px-2 mt-2 bg-info">
-    <!--详细信息-->
-    <div class="p-2 mb-2 bg-success">
-        <a>账户余额： ￥{{detail.rest}} 本月充值：{{detail.recharge}} 短信费用： ￥{{detail.sms_cost}} 系统服务费：{{detail.service_cost}}</a>
-    </div>
-    <!--表格-->
-    <form class="form-group small">
-        <table class="table table-bordered table-hover">
-            <thead class="bg-info">
+    <div class="panel-body">
+        <!--操作栏-->
+        <div class="well well-sm form-inline">
+            选择日期
+            <label for="year">
+                <select class="form-control form-control-sm mx-1" id="year" ng-model="option.selected_year">
+                    <option ng-repeat="(k, v) in year" value="{{$index}}">{{v}}</option>
+                </select> 年
+            </label>
+            <label for="month">
+                <select class="form-control form-control-sm mx-1" id="month" ng-model="option.selected_month">
+                    <option ng-repeat="(k, v) in month" value="{{$index}}">{{v}}</option>
+                </select> 月
+            </label>
+            <input class="btn btn-sm btn-primary mx-1" type="button" ng-click="query()" value="查询"/>
+        </div>
+        <!--详细信息-->
+        <div class="well well-sm">
+            账户余额： ￥{{detail.rest}} 本月充值：{{detail.recharge}}
+            短信费用： ￥{{detail.sms_cost}} 系统服务费：{{detail.service_cost}}
+        </div>
+        <!--表格-->
+        <table class="table table-bordered table-hover small">
+            <thead>
             <tr align="center">
                 <td align="middle" rowspan="2">日期</td>
                 <td align="middle" rowspan="2">充值</td>
@@ -40,7 +44,7 @@
             </tr>
             </thead>
             <tbody class="align-content-center">
-            <tr class="table-info" ng-repeat="x in table">
+            <tr ng-repeat="x in table">
                 <td>{{x.date|date:"yyyy/mm/dd"}}</td>
                 <td>{{x.recharge|currency:"￥"}}</td>
                 <td>{{x.sms_cost|currency:"￥"}}</td>
@@ -51,5 +55,8 @@
             </tr>
             </tbody>
         </table>
-    </form>
+    </div>
+    <div class="panel-footer">
+        This is footer.
+    </div>
 </div>

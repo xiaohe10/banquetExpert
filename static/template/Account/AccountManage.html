@@ -1,47 +1,49 @@
 <!--主页/账户管理/修改密码-->
-<!--内容-->
-<div class="py-2 px-2 mt-2 bg-info">
-    <!--表单-->
-    <div class="p-2 mb-2 bg-faded">
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">
+            修改密码
+        </div>
+    </div>
+    <div class="panel-body">
         <form class="form-horizontal" ng-submit="save()">
-            <!--修改密码-->
-            <div id="legend" class="">
-                <legend class="">修改密码</legend>
-            </div>
             <!--用户名-->
-            <div class="form-group">
+            <div class="control-group">
                 <label class="control-label">用户名：</label>
                 <div class="controls">
                     <input class="form-control" type="text" ng-model="form.username" placeholder="10000000000"/>
                 </div>
             </div>
             <!--密码-->
-            <div class="form-group">
+            <div class="control-group">
                 <label class="control-label">密码：</label>
                 <div class="controls">
                     <input class="form-control" type="text" ng-model="form.password" placeholder="10000000000"/>
                 </div>
             </div>
             <!--新密码-->
-            <div class="form-group">
+            <div class="control-group">
                 <label class="control-label">新密码：</label>
                 <div class="controls">
                     <input class="form-control" type="text" ng-model="form.new_password" placeholder="10000000000"/>
                 </div>
             </div>
             <!--新密码验证-->
-            <div class="form-group">
+            <div class="control-group">
                 <label class="control-label">新密码验证：</label>
                 <div class="controls">
                     <input class="form-control" type="text" ng-model="form.new_password_acc" placeholder="10000000000"/>
                 </div>
             </div>
             <!--操作栏-->
-            <div class="form-group">
+            <div class="control-group">
                 <div class="controls">
                     <input class="btn btn-primary" type="submit" value="保存"/>
                 </div>
             </div>
         </form>
+    </div>
+    <div class="panel-footer">
+        This is footer.
     </div>
 </div>

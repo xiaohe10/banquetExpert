@@ -1,18 +1,15 @@
 <!--主页/预订管理/餐位设置-->
-<!--操作栏-->
-<div class="py-1 bg-info">
-    <div class="p-2 bg-success">
-        <a>>全部桌位，共{{area.length}}个</a>
-        <input class="btn btn-sm btn-secondary ml-1 mr-2" type="button" ng-click="sync_area()" value="同步区域列表"/>
-        <input class="btn btn-sm btn-secondary ml-1 mr-2" type="button" ng-click="add_area()" value="新增区域"/>
-        <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" ng-click="save()" value="保存"/>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">
+            餐位设置
+            <small>(共{{area.length}}个桌位)</small>
+        </div>
     </div>
-</div>
-<!--表格-->
-<div class="py-2 px-2 bg-info">
-    <form class="form-group">
+    <div class="panel-body">
+        <!--表格-->
         <table class="table table-bordered table-hover">
-            <thead class="bg-info">
+            <thead>
             <tr>
                 <td>状态</td>
                 <td>餐厅区域</td>
@@ -20,8 +17,8 @@
                 <td>操作</td>
             </tr>
             </thead>
-            <tbody class="align-content-center" id="area-info-table">
-            <tr class="table-info" ng-repeat="x in area">
+            <tbody id="area-info-table">
+            <tr ng-repeat="x in area">
                 <td>应用</td>
                 <td><input type="text" ng-model="x.name" value="{{x.name}}"/></td>
                 <td><input type="text" ng-model="x.order" value="{{x.order}}"/></td>
@@ -32,5 +29,10 @@
             </tr>
             </tbody>
         </table>
-    </form>
+    </div>
+    <div class="panel-footer">
+        <input class="btn btn-sm btn-secondary ml-1 mr-2" type="button" ng-click="sync_area()" value="同步区域列表"/>
+        <input class="btn btn-sm btn-secondary ml-1 mr-2" type="button" ng-click="add_area()" value="新增区域"/>
+        <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" ng-click="save()" value="保存"/>
+    </div>
 </div>

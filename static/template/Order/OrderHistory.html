@@ -1,8 +1,13 @@
 <!--主页/订单管理/历史订单-->
-<!--操作栏-->
-<div class="py-1 bg-info" id="option">
-    <div class="p-2 bg-success">
-        <div class="form-inline p-1">
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">
+            历史订单
+        </div>
+    </div>
+    <div class="panel-body">
+        <!--操作栏-->
+        <div class="well well-sm form-inline">
             <a>就餐日期：</a>
             <input class="form-control form-control-sm" type="date" ng-model="option.date_from"/>
             ~
@@ -26,85 +31,84 @@
             <input class="btn btn-sm btn-primary mx-1 px-2" type="button" ng-click="query()" value="查询"/>
             <input class="btn btn-sm btn-secondary mx-1 px-2" type="button" ng-click="export()" value="生成报表"/>
         </div>
+        <div class="panel panel-default">
+            <!--导航栏-->
+            <div class="panel-heading">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item" ng-repeat="(k,v) in nav"><a ng-click="filter(k)">{{v}}</a></li>
+                </ul>
+            </div>
+            <div class="panel-body">
+                <!--详细信息-->
+                <div class="well well-sm form-inline">
+                    订单总数：{{detail.order_count}} 就餐人数：{{detail.customer_count}}人
+                    总金额：{{detail.total|currency:"￥"}} 人均消费：{{detail.average|currency:"￥"}}
+                    <input class="btn btn-primary btn-sm mx-1 px-2" type="button" value="补录订单" ng-click="order_append()"/>
+                </div>
+                <!--表格-->
+                <table class="table table-hover table-bordered small">
+                    <thead>
+                    <tr align="center">
+                        <th>客户姓名</th>
+                        <th>手机</th>
+                        <th><a class="glyphicon-arrow-down" ng-click="sort(2)">下单时间</a></th>
+                        <th><a class="glyphicon-arrow-down" ng-click="sort(3)">就餐时间</a></th>
+                        <th>接单渠道</th>
+                        <th>区域</th>
+                        <th><a class="glyphicon-arrow-down" ng-click="sort(6)">桌位</a></th>
+                        <th>就餐人数</th>
+                        <th>消费金额</th>
+                        <th>订单状态</th>
+                        <th>操作人</th>
+                        <th>订单详情</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr align="center" ng-repeat="x in table">
+                        <td>{{x.name}} {{x.gender}}</td>
+                        <td>{{x.phone}}</td>
+                        <td>{{x.order_time}}</td>
+                        <td>{{x.meal_time}}</td>
+                        <td>{{x.order_channel}}</td>
+                        <td>{{x.area}}</td>
+                        <td>{{x.seat}}</td>
+                        <td>{{x.people}}</td>
+                        <td>{{x.amount|currency:'¥'}}</td>
+                        <td>{{x.order_status}}</td>
+                        <td>{{x.operator}}</td>
+                        <td><a ng-click="order_details($index)">订单详情</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <!--分页导航-->
+                <nav aria-label="Page navigation">
+                    <ul class="pagination pagination-sm">
+                        <li>
+                            <a href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li><a href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li class="active"><a href="#">3</a></li>
+                        <li><a href="#">4</a></li>
+                        <li><a href="#">5</a></li>
+                        <li><a href="#">6</a></li>
+                        <li><a href="#">7</a></li>
+                        <li><a href="#">8</a></li>
+                        <li><a href="#">9</a></li>
+                        <li><a href="#">10</a></li>
+                        <li>
+                            <a href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
     </div>
-</div>
-<!--内容-->
-<div class="py-2 px-2 mt-2 bg-info" id="content">
-    <!--导航栏-->
-    <div class="pb-2">
-        <ul class="nav nav-tabs">
-            <li class="nav-item" ng-repeat="(k,v) in nav"><a ng-click="filter(k)">{{v}}</a></li>
-        </ul>
-    </div>
-    <!--详细信息-->
-    <div class="p-2 mb-2 bg-success form-inline">
-        <a>
-            订单总数：{{detail.order_count}} 就餐人数：{{detail.customer_count}}人
-            总金额：{{detail.total|currency:"￥"}} 人均消费：{{detail.average|currency:"￥"}}
-        </a>
-        <a class="btn btn-sm btn-secondary mx-1 px-2" ng-click="order_append()">补录订单</a>
-    </div>
-    <!--表格-->
-    <div class="p-2 mb-2 bg-faded">
-        <!--表格-->
-        <table class="table table-hover table-bordered small">
-            <thead class="bg-info">
-            <tr align="center">
-                <th>客户姓名</th>
-                <th>手机</th>
-                <th><a class="glyphicon-arrow-down" ng-click="sort(2)">下单时间</a></th>
-                <th><a class="glyphicon-arrow-down" ng-click="sort(3)">就餐时间</a></th>
-                <th>接单渠道</th>
-                <th>区域</th>
-                <th><a class="glyphicon-arrow-down" ng-click="sort(6)">桌位</a></th>
-                <th>就餐人数</th>
-                <th>消费金额</th>
-                <th>订单状态</th>
-                <th>操作人</th>
-                <th>订单详情</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr align="center" ng-repeat="x in table">
-                <td>{{x.name}} {{x.gender}}</td>
-                <td>{{x.phone}}</td>
-                <td>{{x.order_time}}</td>
-                <td>{{x.meal_time}} </td>
-                <td>{{x.order_channel}}</td>
-                <td>{{x.area}}</td>
-                <td>{{x.seat}}</td>
-                <td>{{x.people}}</td>
-                <td>{{x.amount|currency:'¥'}}</td>
-                <td>{{x.order_status}}</td>
-                <td>{{x.operator}}</td>
-                <td><a ng-click="order_details($index)">订单详情</a></td>
-            </tr>
-            </tbody>
-        </table>
-        <!--分页导航-->
-        <nav aria-label="Page navigation">
-            <ul class="pagination pagination-sm">
-                <li>
-                    <a href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <li><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li class="active"><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">5</a></li>
-                <li><a href="#">6</a></li>
-                <li><a href="#">7</a></li>
-                <li><a href="#">8</a></li>
-                <li><a href="#">9</a></li>
-                <li><a href="#">10</a></li>
-                <li>
-                    <a href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+    <div class="panel-footer">
+        This is footer.
     </div>
 </div>

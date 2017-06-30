@@ -1,28 +1,29 @@
 <!--主页/评分审阅/餐厅排名-->
-<div class="p-1">
-    <div class="p-2 bg-success">
-        <select>
-            <option>2012</option>
-            <option>2012</option>
-            <option>2012</option>
-            <option>2012</option>
-            <option>2012</option>
-        </select>
-        <select>
-            <option>10月</option>
-            <option>10月</option>
-            <option>10月</option>
-            <option>10月</option>
-        </select>
-        <input class="btn btn-secondary btn-sm" type="button" value="查询"/>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">
+            餐厅排名
+        </div>
     </div>
-</div>
-<!--内容-->
-<div class="py-2 px-2 bg-info">
-    <div class="p-1 bg-success">
-        餐厅总分排名
-    </div>
-    <div class="p-1 bg-faded">
+    <div class="panel-body">
+        <!--操作栏-->
+        <div class="well well-sm form-inline">
+            <select class="form-control form-control-sm">
+                <option>2012</option>
+                <option>2012</option>
+                <option>2012</option>
+                <option>2012</option>
+                <option>2012</option>
+            </select>
+            <select class="form-control form-control-sm">
+                <option>10月</option>
+                <option>10月</option>
+                <option>10月</option>
+                <option>10月</option>
+            </select>
+            <input class="btn btn-primary btn-sm" type="button" value="查询"/>
+        </div>
+        <!--内容页-->
         <div class="container">
             <div class="row" ng-repeat="branch in branches">
                 <!--左边-->
@@ -58,5 +59,8 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="panel-footer">
+        This is footer
     </div>
 </div>

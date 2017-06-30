@@ -1,8 +1,44 @@
 <!--主页/酒店管理/门店管理-->
-<div class="py-1 bg-info">
-    <div class="p-2 bg-success">
-        <div class="form-inline p-1">
-            <div class="alert alert-warning alert-dismissible" role="alert">未实现门店管理模块</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">
+            门店列表
+            <small>(共{{data.count}}家门店)</small>
         </div>
+    </div>
+    <div class="panel-body">
+        <!--已添加门店列表-->
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5" ng-repeat="x in data.list">
+            <div class="thumbnail" ng-click="editBranch(x.branch_id)" ng-class="{'bg-warnning':x.is_enabled}">
+                <div class="label label-info">
+                    {{x.id + 1}}. {{x.name}}
+                </div>
+                <img class="img-circle" ng-src="{{x.icon}}" style="width: 96px;height: 96px">
+                <div class="caption">
+                    <p>地址：{{x.province}} {{x.city}} {{x.county}} {{x.address}}</p>
+                    <p>电话：
+                    <ul>
+                        <li><span class="badge badge-info" ng-repeat="y in x.phone">{{y}}</span></li>
+                    </ul>
+                    </p>
+                    <p>经理：{{x.manager_name}}</p>
+                </div>
+            </div>
+        </div>
+        <!--添加门店-->
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5">
+            <div class="thumbnail" ng-click="addBranch()">
+                <div class="label label-info">添加门店</div>
+                <img class="img-circle" src="/static/css/image/head.jpg" style="width: 96px;height: 96px">
+                <div class="caption">
+                    <p>地址：无</p>
+                    <p>电话：无</p>
+                    <p>经理：无</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer">
+        This is footer.
     </div>
 </div>

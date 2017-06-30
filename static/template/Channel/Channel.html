@@ -1,266 +1,158 @@
 <!--主页/后台用户管理/获客渠道-->
-<!--内容-->
-<div class="py-2 px-2 mt-2 bg-info">
-    <!--折叠效果-->
-    <div class="panel-group hidden" id="accordion">
-        <!--超级管理员-->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">
+            获客渠道
+        </div>
+    </div>
+    <div class="panel-body">
+        <!--Tab效果-->
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion" data-target="#collapseOne">
-                        超级管理员
-                    </a>
-                </h4>
-            </div>
-            <div id="collapseOne" class="panel-collapse collapse in">
-                <div class="panel-body">
-                    <!--操作栏-->
-                    <a class="btn btn-link btn-sm" ng-click="add_reserve()">新增超级管理员</a>
-                    <!--超级管理员列表-->
-                    <div>
-                        <ul>
-                            <li>超级管理员A</li>
-                            <li>超级管理员B</li>
-                            <li>超级管理员C</li>
-                            <li>超级管理员D</li>
-                        </ul>
+            <!--HabHost-->
+            <nav class="panel-heading">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item p-2 active"><a data-target="#gcgl" role="tab" data-toggle="tab">高层管理</a></li>
+                    <li class="nav-item p-2"><a data-target="#ydyhyb" role="tab" data-toggle="tab">预订员和迎宾</a></li>
+                    <li class="nav-item p-2"><a data-target="#khjl" role="tab" data-toggle="tab">客户经理</a></li>
+                    <li class="nav-item p-2"><a data-target="#wbqd" role="tab" data-toggle="tab">外部渠道</a></li>
+                </ul>
+            </nav>
+            <!--TabContent-->
+            <div class="tab-content">
+                <!--高层管理-->
+                <div class="tab-pane active" id="gcgl">
+                    <div class="panel-body">
+                        <div class="row">
+                            <!--高层管理列表-->
+                            <div class="col-lg-2 col-sm-3 col-xm-4" ng-repeat="x in staff">
+                                <div class="thumbnail" ng-click="editManager(x)">
+                                    <span class="label label-success">{{x.id}}. {{x.name}}</span>
+                                    <img class="img-responsive" src="/static/css/image/head1.jpg" style="width: 96px;height: 96px">
+                                    <div class="caption">
+                                        <h4>姓名：{{x.name}}</h4>
+                                        <!--<p>高层管理</p>-->
+                                        <p>2017年6月26日</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--添加高层管理-->
+                            <div class="col-lg-2 col-sm-3 col-xm-4">
+                                <div class="thumbnail" ng-click="addManager()">
+                                    <span class="label label-success">新增高层管理</span>
+                                    <img class="img-responsive" src="/static/css/image/head.jpg" style="width: 96px;height: 96px">
+                                    <div class="caption">
+                                        <h4>姓名：{{x.name}}</h4>
+                                        <!--<p>高层管理</p>-->
+                                        <p>2017年6月26日</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <!--高层管理-->
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion" data-target="#collapseTwo">
-                        高层管理
-                    </a>
-                </h4>
-            </div>
-            <div id="collapseTwo" class="panel-collapse collapse">
-                <div class="panel-body">
-                    <!--操作栏-->
-                    <a class="btn btn-link btn-sm" ng-click="add_reserve()">新增高层管理</a>
-                    <!--高层管理列表-->
-                    <div>
-                        <ul>
-                            <li ng-repeat="x in manager">账号：{{x.id}} 姓名：{{x.name}}</li>
-                        </ul>
+                <!--预订员和迎宾-->
+                <div class="tab-pane" id="ydyhyb">
+                    <div class="panel-body">
+                        <div class="row">
+                            <!--预订员和迎宾列表-->
+                            <div class="col-lg-2 col-sm-3 col-xm-4" ng-repeat="x in reserve">
+                                <div class="thumbnail" ng-click="editReserve(x)">
+                                    <span class="label label-success">{{x.id}}. {{x.name|surname}} {{x.gender|gender}}</span>
+                                    <img class="img-responsive" src="/static/css/image/head1.jpg" style="width: 96px;height: 96px">
+                                    <div class="caption">
+                                        <h4>姓名：{{x.name}}</h4>
+                                        <p>电话：{{x.phone}}</p>
+                                        <p>职位：{{x.job}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--添加预订员和迎宾-->
+                            <div class="col-lg-2 col-sm-3 col-xm-4">
+                                <div class="thumbnail" ng-click="addReserve()">
+                                    <span class="label label-success">新增预订员和迎宾</span>
+                                    <img class="img-responsive" src="/static/css/image/head.jpg" style="width: 96px;height: 96px">
+                                    <div class="caption">
+                                        <h4>姓名：无</h4>
+                                        <p>电话：无</p>
+                                        <p>职位：无</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <!--预订员和迎宾-->
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion" data-target="#collapseThree">
-                        预订员和迎宾
-                    </a>
-                </h4>
-            </div>
-            <div id="collapseThree" class="panel-collapse collapse">
-                <div class="panel-body">
-                    <!--操作栏-->
-                    <a class="btn btn-link btn-sm" ng-click="add_reserve()">新增预订员和迎宾</a>
-                    <!--预订员和迎宾列表-->
-                    <div>
-                        <ul>
-                            <li ng-repeat="x in reserve">{{x.id}} {{x.name}}</li>
-                        </ul>
+                <!--客户经理-->
+                <div class="tab-pane" id="khjl">
+                    <div class="panel-body">
+                        <div class="row">
+                            <!--客户经理列表-->
+                            <div class="col-lg-2 col-sm-3 col-xm-4" ng-repeat="x in reserve">
+                                <div class="thumbnail" ng-click="editManager(x)">
+                                    <span class="label label-success">{{x.id}}. {{x.name}}</span>
+                                    <img class="img-responsive" src="/static/css/image/head1.jpg" style="width: 96px;height: 96px">
+                                    <div class="caption">
+                                        <h4>姓名：赵强</h4>
+                                        <!--<p>职位：{{x.name}}</p>-->
+                                        <p>电话：999999999</p>
+                                        <p>日期：2017年6月26日</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--新增客户经理-->
+                            <div class="col-lg-2 col-sm-3 col-xm-4">
+                                <div class="thumbnail" ng-click="addManager()">
+                                    <span class="label label-success">新增客户经理</span>
+                                    <img class="img-responsive" src="/static/css/image/head.jpg" style="width: 96px;height: 96px">
+                                    <div class="caption">
+                                        <h4>姓名：无</h4>
+                                        <!--<p>职位：无</p>-->
+                                        <p>电话：无</p>
+                                        <p>日期：无</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <!--客户经理-->
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion" data-target="#collapseFour">
-                        客户经理
-                    </a>
-                </h4>
-            </div>
-            <div id="collapseFour" class="panel-collapse collapse">
-                <div class="panel-body">
-                    <!--操作栏-->
-                    <a class="btn btn-link btn-sm" ng-click="add_manager()">新增客户经理</a>
-                    <!--客户经理列表-->
-                    <div>
-                        <ul>
-                            <li ng-repeat="x in channel.inner">{{x.value}} {{x.name}}</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--外部渠道-->
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion" data-target="#collapseFive">
-                        外部渠道
-                    </a>
-                </h4>
-            </div>
-            <div id="collapseFive" class="panel-collapse collapse">
-                <div class="panel-body">
-                    <!--操作栏-->
-                    <a class="btn btn-link btn-sm" ng-click="add_outer_channel()">新增外部渠道</a>
-                    <!--外部渠道列表-->
-                    <div>
-                        <ul>
-                            <li ng-repeat="x in channel.outer">{{x.value}} {{x.name}}</li>
-                        </ul>
+                <!--外部渠道-->
+                <div class="tab-pane" id="wbqd">
+                    <div class="panel-body">
+                        <div class="row">
+                            <!--外部渠道列表-->
+                            <div class="col-lg-3 col-md-4 col-sm-5 col-xm-6" ng-repeat="x in channel.outer">
+                                <div class="thumbnail" ng-click="editExternalChannel(x)">
+                                    <span class="label label-success">{{x.id}}. {{x.channel}}</span>
+                                    <img class="img-responsive" src="/static/css/image/head1.jpg" style="width: 96px;height: 96px">
+                                    <div class="caption">
+                                        <h4>{{x.channel}}</h4>
+                                        <p>上级：{{x.parent}}</p>
+                                        <p>开始日期：{{x.date_from}} </p>
+                                        <p>结束日期：{{x.date_to}}</p>
+                                        <p>折扣：{{x.discount|discount}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--新增外部渠道-->
+                            <div class="col-lg-3 col-md-4 col-sm-5 col-xm-6">
+                                <div class="thumbnail" ng-click="addExternalChannel()">
+                                    <span class="label label-success">添加外部渠道</span>
+                                    <img class="img-responsive" src="/static/css/image/head.jpg" style="width: 96px;height: 96px">
+                                    <div class="caption">
+                                        <h4>渠道名称：无</h4>
+                                        <p>上级：无</p>
+                                        <p>开始日期：无</p>
+                                        <p>结束日期：无</p>
+                                        <p>折扣：无折扣</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!--Tab效果-->
-    <div class="tabbable">
-        <!--HabHost-->
-        <nav class="mb-2">
-            <ul class="nav nav-tabs" role="tablist">
-                <li class="nav-item p-2 active"><a data-target="#gcgl" role="tab" data-toggle="tab">高层管理</a></li>
-                <li class="nav-item p-2"><a data-target="#ydyhyb" role="tab" data-toggle="tab">预订员和迎宾</a></li>
-                <li class="nav-item p-2"><a data-target="#khjl" role="tab" data-toggle="tab">客户经理</a></li>
-                <li class="nav-item p-2"><a data-target="#wbqd" role="tab" data-toggle="tab">外部渠道</a></li>
-            </ul>
-        </nav>
-        <!--TabContent-->
-        <div class="tab-content">
-            <!--高层管理-->
-            <div class="tab-pane active" id="gcgl">
-                <div class="panel-body">
-                    <div class="row">
-                        <!--高层管理列表-->
-                        <div class="col-lg-2 col-sm-3 col-xm-4" ng-repeat="x in staff">
-                            <div class="thumbnail">
-                                <span class="badge badge-success">{{x.id}}. {{x.name}}</span>
-                                <img class="img-responsive" src="/static/css/image/head1.jpg" style="width: 96px;height: 96px">
-                                <div class="caption">
-                                    <h4>姓名：{{x.name}}</h4>
-                                    <!--<p>高层管理</p>-->
-                                    <p>2017年6月26日</p>
-                                </div>
-                            </div>
-                        </div>
-                        <!--添加高层管理-->
-                        <div class="col-lg-2 col-sm-3 col-xm-4">
-                            <div class="thumbnail" ng-click="add_manager()">
-                                <span class="badge badge-success">新增高层管理</span>
-                                <img class="img-responsive" src="/static/css/image/head.jpg" style="width: 96px;height: 96px">
-                                <div class="caption">
-                                    <h4>姓名：{{x.name}}</h4>
-                                    <!--<p>高层管理</p>-->
-                                    <p>2017年6月26日</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--预订员和迎宾-->
-            <div class="tab-pane" id="ydyhyb">
-                <div class="panel-body">
-                    <div class="row">
-                        <!--预订员和迎宾列表-->
-                        <div class="col-lg-2 col-sm-3 col-xm-4" ng-repeat="x in reserve">
-                            <div class="thumbnail">
-                                <span class="badge badge-success">{{x.id}}. {{x.name}}</span>
-                                <img class="img-responsive" src="/static/css/image/head1.jpg" style="width: 96px;height: 96px">
-                                <div class="caption">
-                                    <h4>姓名：{{x.name}}</h4>
-                                    <!--<p>姓名：赵强</p>-->
-                                    <p>电话：999999999</p>
-                                    <p>2017年6月26日</p>
-                                </div>
-                            </div>
-                        </div>
-                        <!--添加预订员和迎宾-->
-                        <div class="col-lg-2 col-sm-3 col-xm-4">
-                            <div class="thumbnail" ng-click="add_reserve()">
-                                <span class="badge badge-success">新增预订员和迎宾</span>
-                                <img class="img-responsive" src="/static/css/image/head.jpg" style="width: 96px;height: 96px">
-                                <div class="caption">
-                                    <h4>姓名：{{x.name}}</h4>
-                                    <p>电话：999999999</p>
-                                    <p>2017年6月26日</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--客户经理-->
-            <div class="tab-pane" id="khjl">
-                <div class="panel-body">
-                    <div class="row">
-                        <!--客户经理列表-->
-                        <div class="col-lg-2 col-sm-3 col-xm-4" ng-repeat="x in reserve">
-                            <div class="thumbnail">
-                                <span class="badge badge-success">{{x.id}}. {{x.name}}</span>
-                                <img class="img-responsive" src="/static/css/image/head1.jpg" style="width: 96px;height: 96px">
-                                <div class="caption">
-                                    <h4>姓名：赵强</h4>
-                                    <!--<p>职位：{{x.name}}</p>-->
-                                    <p>电话：999999999</p>
-                                    <p>日期：2017年6月26日</p>
-                                </div>
-                            </div>
-                        </div>
-                        <!--新增客户经理-->
-                        <div class="col-lg-2 col-sm-3 col-xm-4">
-                            <div class="thumbnail" ng-click="add_manager()">
-                                <span class="badge badge-success">新增客户经理</span>
-                                <img class="img-responsive" src="/static/css/image/head.jpg" style="width: 96px;height: 96px">
-                                <div class="caption">
-                                    <h4>姓名：无</h4>
-                                    <!--<p>职位：无</p>-->
-                                    <p>电话：无</p>
-                                    <p>日期：无</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--外部渠道-->
-            <div class="tab-pane" id="wbqd">
-                <div class="panel-body">
-                    <div class="row">
-                        <!--外部渠道列表-->
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xm-6" ng-repeat="x in channel.outer">
-                            <div class="thumbnail" ng-click="edit(x.id)">
-                                <span class="badge badge-success">{{x.id}}. {{x.channel}}</span>
-                                <img class="img-responsive" src="/static/css/image/head1.jpg" style="width: 96px;height: 96px">
-                                <div class="caption">
-                                    <h4>{{x.channel}}</h4>
-                                    <p>上级：{{x.parent}}</p>
-                                    <p>开始日期：{{x.date_from}} </p>
-                                    <p>结束日期：{{x.date_to}}</p>
-                                    <p>折扣：{{x.discount|discount}}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <!--新增外部渠道-->
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xm-6">
-                            <div class="thumbnail" ng-click="add_outer_channel()">
-                                <span class="badge badge-success">添加外部渠道</span>
-                                <img class="img-responsive" src="/static/css/image/head.jpg" style="width: 96px;height: 96px">
-                                <div class="caption">
-                                    <h4>渠道名称：无</h4>
-                                    <p>上级：无</p>
-                                    <p>开始日期：无</p>
-                                    <p>结束日期：无</p>
-                                    <p>折扣：无折扣</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="panel-footer">
+        This is footer
     </div>
 </div>

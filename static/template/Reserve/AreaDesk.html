@@ -1,25 +1,24 @@
 <!--主页/预订管理/桌位设置-->
-<!--操作栏-->
-<div class="py-1 bg-info">
-    <!--桌位导航栏-->
-    <nav class="nav nav-tabs bg-info">
-        <!--<a ng-if="index=0" class="nav-link active" href="#/Reserve/AreaDesk/Area/{{x.value}}">{{x.name}}</a>-->
-        <li ng-repeat="x in area"><a class="nav-link" ng-click="nav($index)">{{x.name}}</a></li>
-    </nav>
-    <!--操作栏-->
-    <div class="p-2 bg-success">
-        <a id="details">全部桌位，共{{seat.length}}个 注：序号数值越大，则优先推荐</a>
-        <input class="btn btn-sm btn-secondary ml-2 mr-1" type="button" ng-click="add_seat()" value="新增桌位"/>
-        <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" ng-click="save()" value="保存"/>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">
+            桌位设置
+        </div>
     </div>
-</div>
-<!--内容-->
-<div class="py-2 px-2 bg-info">
-    <!--表格-->
-    <form class="form-group">
+    <div class="panel-body">
+        <!--提示信息-->
+        <div class="well well-sm">
+            全部桌位，共{{seat.length}}个 注：序号数值越大，则优先推荐
+        </div>
+        <!--桌位导航栏-->
+        <nav>
+            <ul class="nav nav-tabs">
+                <li class="nav-item p-2" ng-repeat="x in area"><a ng-click="nav($index)">{{x.name}}</a></li>
+            </ul>
+        </nav>
         <!--表格-->
         <table class="table table-bordered table-hover small">
-            <thead class="bg-info">
+            <thead>
             <tr>
                 <td>桌位名称</td>
                 <td>就餐人数</td>
@@ -33,8 +32,8 @@
                 <td>网络预订</td>
             </tr>
             </thead>
-            <tbody class="align-content-center" id="seat-table">
-            <tr class="table-info" ng-repeat="x in seat">
+            <tbody id="seat-table">
+            <tr ng-repeat="x in seat">
                 <td><input type="text" name="order" ng-model="x.name" value="{{x.name}}"/></td>
                 <td>{{x.min}} 人 至 {{x.max}} 人</td>
                 <td>1000元</td>
@@ -79,5 +78,10 @@
                 </li>
             </ul>
         </nav>
-    </form>
+    </div>
+    <div class="panel-footer">
+
+        <input class="btn btn-sm btn-secondary ml-2 mr-1" type="button" ng-click="add_seat()" value="新增桌位"/>
+        <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" ng-click="save()" value="保存"/>
+    </div>
 </div>
