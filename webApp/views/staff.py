@@ -474,6 +474,10 @@ def get_guests(request, token, offset=0, limit=10, order=0, **kwargs):
             special_day: 特殊
             personal_need: 个性化需求
             status: 客户状态, 0: 活跃, 1: 沉睡, 2: 流失, 3: 无订单
+            desk_number: 消费总桌数
+            person_consumption: 人均消费
+            desk_per_month: 消费频度, 单/月
+            last_consumption: 上次消费日期
     """
 
     hotel = request.staff.hotel
@@ -535,7 +539,18 @@ def get_guests(request, token, offset=0, limit=10, order=0, **kwargs):
              'like': guest.like,
              'dislike': guest.dislike,
              'special_day': guest.special_day,
-             'personal_need': guest.personal_need}
+             'personal_need': guest.personal_need,
+             'desk_number': guest.desk_number,
+             'person_consumption': guest.person_consumption,
+             'desk_per_month': guest.desk_per_month,
+             'last_consumption': ''}
+
+        # 最后用餐时间
+        qs = Order.objects.filter(
+            contact=guest.phone, branch__hotel=hotel, status=2). \
+            order_by('-dinner_date')
+        if qs:
+            d['last_consumption'] = qs[0].dinner_date
 
         if status is None:
             if Order.objects.filter(

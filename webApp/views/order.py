@@ -9,8 +9,7 @@ from django.core.validators import RegexValidator
 
 from ..utils.decorator import validate_args, validate_staff_token
 from ..utils.response import corr_response, err_response
-from ..models import Desk, Order, Guest, HotelDayConsumption, \
-    HotelMonthConsumption
+from ..models import Desk, Order, Guest
 
 
 @validate_args({
