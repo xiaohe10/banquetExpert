@@ -31,9 +31,9 @@
     <div class="row">
         <!--左侧导航栏-->
         <div class="col-sm-2" ng-controller="drawerCtrl">
-            <div class="thumbnail">
+            <div class="thumbnail bg-warning">
                 <img class="img-rounded" src="css/image/head1.jpg" alt="IMAGE">
-                <div class="caption">
+                <div class="caption bg-warning">
                     <h3 class="text-center">北京宴总店</h3>
                 </div>
             </div>
@@ -57,22 +57,15 @@
         <!--内容页-->
         <div class="col-sm-10">
             <!--路径导航-->
-            <header ncy-breadcrumb>
-                <ol class="breadcrumb mb-2 bg-faded" id="breadcrumb">
+            <div ncy-breadcrumb>
+                <ol class="well well-sm mb-2 bg-faded" id="breadcrumb">
                     路径导航
                 </ol>
-            </header>
+            </div>
             <!--内容面板-->
             <main ng-view>
                 内容面板
             </main>
-            <!--页脚-->
-            <!--<footer class="">-->
-                <!--<p>Posted by: Hege Refsnes</p>-->
-                <!--<p>-->
-                    <!--<time pubdate datetime="2012-03-01"></time>-->
-                <!--</p>-->
-            <!--</footer>-->
         </div>
     </div>
 </div>

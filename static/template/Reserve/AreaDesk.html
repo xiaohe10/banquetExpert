@@ -6,16 +6,16 @@
         </div>
     </div>
     <div class="panel-body">
-        <!--提示信息-->
-        <div class="well well-sm">
-            全部桌位，共{{seat.length}}个 注：序号数值越大，则优先推荐
-        </div>
         <!--桌位导航栏-->
-        <nav>
+        <nav class="well well-sm">
             <ul class="nav nav-tabs">
                 <li class="nav-item p-2" ng-repeat="x in area"><a ng-click="nav($index)">{{x.name}}</a></li>
             </ul>
         </nav>
+        <!--提示信息-->
+        <div class="well well-sm">
+            全部桌位，共{{seat.length}}个 注：序号数值越大，则优先推荐
+        </div>
         <!--表格-->
         <table class="table table-bordered table-hover small">
             <thead>

@@ -54,7 +54,7 @@
                         <optgroup label="销售渠道业绩日报表下载">销售渠道业绩日报表下载</optgroup>
                         <option ng-repeat="x in daily_report" value="{{x.value}}">{{x.title}}</option>
                     </select>
-                    <input class="btn btn-primary btn-sm ml-1 mr-2" type="button" ng-click="export()" value="生成报表"/>
+                    <input class="btn btn-secondary btn-sm ml-1 mr-2" type="button" ng-click="export()" value="生成报表"/>
                     <select class="form-control form-control-sm" ng-model="option.print_size">
                         <option ng-repeat="(k,v) in print_size" value="{{v}}">{{v}}</option>
                     </select>

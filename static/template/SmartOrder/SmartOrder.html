@@ -11,19 +11,19 @@
                 <!--餐段日期选择-->
                 <div class="col-lg-12 py-2">
                     <div class="container">
-                        <div class="row">
-                            <div class="col-lg-1">
-                                <span><strong>6</strong>月</span>
-                                <span>2017</span>
+                        <div class="row  well well-sm">
+                            <div class="col-lg-2">
+                                <strong>2017</strong>年
+                                <strong>6</strong>月
                             </div>
-                            <div class="col-lg-5 input-group">
-                                <div class="btn-toolbar" role="toolbar">
+                            <div class="col-lg-10 input-group">
+                                <div class="form-inline" role="toolbar">
                                     <div class="btn-group btn-group-sm" role="group">
                                         <input type="button" value="午餐">
                                         <input type="button" value="晚餐">
                                     </div>
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <input type="button" value="{{x}}" ng-repeat="x in weekdays"/>
+                                        <input type="button" ng-repeat="x in weekdays" value="{{x}}"/>
                                     </div>
                                 </div>
                             </div>
@@ -31,7 +31,7 @@
                     </div>
                 </div>
                 <!--餐位列表-->
-                <div class="col-lg-4" style="height: 60%">
+                <div class="col-lg-3" style="height: 60%">
                     <!--折叠效果-->
                     <div class="panel-group" id="accordion" role="tablist">
                         <!--一楼-->
@@ -70,114 +70,120 @@
                 </div>
                 <!--电话/预约-->
                 <div class="col-lg-4" style="height: 60%">
-                    <!--TabHost-->
-                    <nav class="mb-2 bg-info">
-                        <ul class="nav nav-tabs">
-                            <li class="nav-item p-2">
-                                <a role="tab" data-toggle="tab" data-target="#phone">电话</a>
-                            </li>
-                            <li class="nav-item p-2 active">
-                                <a role="tab" data-toggle="tab" data-target="#reserve">预定</a>
-                            </li>
-                        </ul>
-                    </nav>
-                    <!--TabContent-->
-                    <div class="tab-content">
-                        <!--来电-->
-                        <div class="tab-pane" role="tabpanel" id="phone">
-                            <!--来电列表-->
-                            <ul class="list-group">
-                                <li class="list-group-item" ng-repeat="x in phone">
-                                    <div class="container">
-                                        <div class="row">
-                                            <!--头像-->
-                                            <div class="col-lg-3 col-sm-3">
-                                                <img class="img-responsive" src="/static/css/image/head1.jpg">
-                                                <span class="text-center">{{x.time}}</span>
-                                            </div>
-                                            <!--个人信息-->
-                                            <div class="col-lg-6 col-sm-6">
-                                                <p>{{x.name|surname}} {{x.gender|gender}}</p>
-                                                <p>{{x.phone}} {{x.type}}</p>
-                                            </div>
-                                            <!--操作-->
-                                            <div class="col-lg-3 col-sm-3">
-                                                <input class="btn btn-secondary btn-sm" type="button" ng-click="handlePhone($index)" value="处理"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                            <!--分页导航-->
-                            <nav aria-label="Page navigation">
-                                <ul class="pagination pagination-sm">
-                                    <li>
-                                        <a href="#" aria-label="Previous">
-                                            <span aria-hidden="true">&laquo;</span>
-                                        </a>
+                    <div class="panel panel-default">
+                        <!--TabHost-->
+                        <div class="panel-heading">
+                            <nav>
+                                <ul class="nav nav-tabs">
+                                    <li class="nav-item p-2">
+                                        <a role="tab" data-toggle="tab" data-target="#phone">电话</a>
                                     </li>
-                                    <li ng-repeat="(k, v) in pages"><a href="#{{v}}">{{v}}</a></li>
-                                    <li>
-                                        <a href="#" aria-label="Next">
-                                            <span aria-hidden="true">&raquo;</span>
-                                        </a>
+                                    <li class="nav-item p-2 active">
+                                        <a role="tab" data-toggle="tab" data-target="#reserve">预定</a>
                                     </li>
                                 </ul>
                             </nav>
                         </div>
-                        <!--预约-->
-                        <div class="tab-pane active" role="tabpanel" id="reserve">
-                            <!--预约列表-->
-                            <ul class="list-group">
-                                <li class="list-group-item" ng-repeat="x in reserve">
-                                    <div class="container">
-                                        <div class="row">
-                                            <!--头像-->
-                                            <div class="col-lg-3 col-sm-3">
-                                                <img class="img-responsive" src="/static/css/image/head1.jpg">
-                                                <span class="align-items-center">{{x.time}}</span>
+                        <div class="panel-collapse">
+                            <!--TabContent-->
+                            <div class="tab-content">
+                                <!--来电-->
+                                <div class="tab-pane" role="tabpanel" id="phone">
+                                    <!--来电列表-->
+                                    <ul class="list-group">
+                                        <li class="list-group-item" ng-repeat="x in phone">
+                                            <div class="container">
+                                                <div class="row">
+                                                    <!--头像-->
+                                                    <div class="col-lg-3 col-sm-3">
+                                                        <img class="img-responsive" src="/static/css/image/head1.jpg">
+                                                        <span class="text-center">{{x.time}}</span>
+                                                    </div>
+                                                    <!--个人信息-->
+                                                    <div class="col-lg-6 col-sm-6">
+                                                        <p>{{x.name|surname}} {{x.gender|gender}}</p>
+                                                        <p>{{x.phone}} {{x.type}}</p>
+                                                    </div>
+                                                    <!--操作-->
+                                                    <div class="col-lg-3 col-sm-3">
+                                                        <input class="btn btn-secondary btn-sm" type="button" ng-click="handlePhone($index)" value="处理"/>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <!--个人信息-->
-                                            <div class="col-lg-6 col-sm-6">
-                                                <p>{{x.name|surname}} {{x.gender|gender}}</p>
-                                                <p>{{x.phone}} {{x.type}}</p>
+                                        </li>
+                                    </ul>
+                                    <!--分页导航-->
+                                    <nav aria-label="Page navigation">
+                                        <ul class="pagination pagination-sm">
+                                            <li>
+                                                <a href="#" aria-label="Previous">
+                                                    <span aria-hidden="true">&laquo;</span>
+                                                </a>
+                                            </li>
+                                            <li ng-repeat="(k, v) in pages"><a href="#{{v}}">{{v}}</a></li>
+                                            <li>
+                                                <a href="#" aria-label="Next">
+                                                    <span aria-hidden="true">&raquo;</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                                <!--预约-->
+                                <div class="tab-pane active" role="tabpanel" id="reserve">
+                                    <!--预约列表-->
+                                    <ul class="list-group">
+                                        <li class="list-group-item" ng-repeat="x in reserve">
+                                            <div class="container">
+                                                <div class="row">
+                                                    <!--头像-->
+                                                    <div class="col-lg-3 col-sm-3">
+                                                        <img class="img-responsive" src="/static/css/image/head1.jpg">
+                                                        <span class="align-items-center">{{x.time}}</span>
+                                                    </div>
+                                                    <!--个人信息-->
+                                                    <div class="col-lg-6 col-sm-6">
+                                                        <p>{{x.name|surname}} {{x.gender|gender}}</p>
+                                                        <p>{{x.phone}} {{x.type}}</p>
+                                                    </div>
+                                                    <!--操作-->
+                                                    <div class="col-lg-3 col-sm-3">
+                                                        <input class="btn btn-secondary btn-sm" type="button" ng-click="handleReserve($index)" value="处理"/>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <!--操作-->
-                                            <div class="col-lg-3 col-sm-3">
-                                                <input class="btn btn-secondary btn-sm" type="button" ng-click="handleReserve($index)" value="处理"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                            <!--分页导航-->
-                            <nav aria-label="Page navigation">
-                                <ul class="pagination pagination-sm">
-                                    <li>
-                                        <a href="#" aria-label="Previous">
-                                            <span aria-hidden="true">&laquo;</span>
-                                        </a>
-                                    </li>
-                                    <li ng-repeat="(k, v) in pages"><a href="#{{v}}">{{v}}</a></li>
-                                    <li>
-                                        <a href="#" aria-label="Next">
-                                            <span aria-hidden="true">&raquo;</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
+                                        </li>
+                                    </ul>
+                                    <!--分页导航-->
+                                    <nav aria-label="Page navigation">
+                                        <ul class="pagination pagination-sm">
+                                            <li>
+                                                <a href="#" aria-label="Previous">
+                                                    <span aria-hidden="true">&laquo;</span>
+                                                </a>
+                                            </li>
+                                            <li ng-repeat="(k, v) in pages"><a href="#{{v}}">{{v}}</a></li>
+                                            <li>
+                                                <a href="#" aria-label="Next">
+                                                    <span aria-hidden="true">&raquo;</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!--订单列表-->
-                <div class="col-lg-4" style="height: 60%">
+                <div class="col-lg-5" style="height: 60%">
                     <div class="panel-group panel-primary">
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <div class="panel-title">
-                                    <div class="bg-danger">
-                                        <input class="input-sm" type="text" placeholder="手机号筛选"/>
-                                        <select class="input-sm">
+                                    <div class="well well-sm form-inline">
+                                        <input class="form-control form-control-sm" type="text" placeholder="手机号筛选"/>
+                                        <select class="form-control form-control-sm">
                                             <optgroup label="筛选方式"></optgroup>
                                             <option>by 桌号</option>
                                             <option>by 时间</option>
@@ -186,13 +192,14 @@
                                             <option>by 性别</option>
                                         </select>
                                     </div>
-                                    <div class="bg-info">
-                                        <span>晚餐 39桌</span>
-                                        <span>周一 262人</span>
-                                    </div>
                                 </div>
                             </div>
                             <div class="panel-collapse">
+                                <!--提示信息-->
+                                <div class="well well-sm">
+                                    <span>晚餐 39桌</span>
+                                    <span>周一 262人</span>
+                                </div>
                                 <!--订单列表-->
                                 <ul class="list-group">
                                     <li class="list-group-item" ng-repeat="x in orders">
