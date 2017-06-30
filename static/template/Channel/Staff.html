@@ -17,10 +17,10 @@
                     <!--待审核员工列表-->
                     <div class="row">
                         <div class="col-lg-2 col-md-3 col-sm-4 col-xs-5" ng-repeat="x in staff | filter:{status: 0}">
-                            <div class="thumbnail" ng-click="approve(x.id)">
-                                <span class="badge badge-warning">
+                            <div class="thumbnail" ng-click="approve(x)">
+                                <div class="label label-info">
                                     {{x.id + 1}}. {{x.name}}
-                                </span>
+                                </div>
                                 <img class="img-responsive" src="/static/css/image/head2.jpg" style="width: 96px;height: 96px">
                                 <div class="caption">
                                     <h4>{{x.username}}</h4>
@@ -47,10 +47,10 @@
                     <div class="row">
                         <!--已审核员工列表-->
                         <div class="col-lg-2 col-md-3 col-sm-4 col-xs-5" ng-repeat="x in staff | filter:{status: 1}">
-                            <div class="thumbnail" ng-click="edit(x.id)">
-                                <span class="badge badge-info">
+                            <div class="thumbnail" ng-click="edit(x)">
+                                <div class="label label-info">
                                     {{x.id + 1}}. {{x.name}}
-                                </span>
+                                </div>
                                 <img class="img-circle" src="/static/css/image/head2.jpg" style="width: 96px;height: 96px">
                                 <div class="caption">
                                     <h4>{{x.username}}</h4>
@@ -62,7 +62,7 @@
                         <!--添加员工-->
                         <div class="col-lg-2 col-md-3 col-sm-4 col-xs-5">
                             <div class="thumbnail" ng-click="add_staff()">
-                                <span class="badge badge-info">添加员工</span>
+                                <div class="label label-info">添加员工</div>
                                 <img class="img-circle" src="/static/css/image/head.jpg" style="width: 96px;height: 96px">
                                 <div class="caption">
                                     <h4>用户名：无</h4>

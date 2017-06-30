@@ -3,114 +3,151 @@
     <a>补录订单</a>
 </div>
 <div class="modal-body">
-
     <!--内容-->
     <div class="py-2 px-2 mt-2 bg-info">
         <!--表单-->
         <div class="p-2 mb-2 bg-faded">
             <form class="form-horizontal">
                 <fieldset>
+                    <!--补录订单-->
+                    <div class="col-form-legend">
+                        <legend>补录订单</legend>
+                    </div>
                     <!--姓名-->
+                    <div class="form-group">
+                        <div class="col-form-label">
+                            <span class="text-danger">*</span>姓名
+                        </div>
+                        <div class="form-control">
+                            <input type="text" ng-model="order.name">
+                        </div>
+                    </div>
                     <!--电话-->
+                    <div class="form-group">
+                        <div class="col-form-label">
+                            <span class="text-danger">*</span>电话
+                        </div>
+                        <div class="form-control">
+                            <input type="tel" ng-model="order.phone" maxlength="12">
+                        </div>
+                    </div>
                     <!--性别-->
+                    <div class="form-group">
+                        <div class="col-form-label">
+                            <span class="text-danger">*</span>性别
+                        </div>
+                        <div class="form-control">
+                            <label class="control-label inline">
+                                <input ng-model="order.gender" type="radio" value="male">先生
+                            </label>
+                            <label class="control-label inline">
+                                <input ng-model="order.gender" type="radio" value="female">女士
+                            </label>
+                        </div>
+                    </div>
                     <!--人数-->
+                    <div class="form-group">
+                        <div class="col-form-label">
+                            <span class="text-danger">*</span>人数
+                        </div>
+                        <div class="form-control">
+                            <input ng-model="order.people" type="text" size="8" onpaste="return false">
+                            <ul class="pagination pagination-sm">
+                                <li><a href="{{order.people = 4}}">4</a></li>
+                                <li><a href="{{order.people = 5}}">5</a></li>
+                                <li><a href="{{order.people = 6}}">6</a></li>
+                                <li><a href="{{order.people = 7}}">7</a></li>
+                                <li><a href="{{order.people = 8}}">8</a></li>
+                                <li><a href="{{order.people = 10}}">9</a></li>
+                                <li><a href="{{order.people = 11}}">10</a></li>
+                                <li><a href="{{order.people = 12}}">11</a></li>
+                                <li><a href="{{order.people = 13}}">12</a></li>
+                            </ul>
+                        </div>
+                    </div>
                     <!--单位-->
+                    <div class="form-group">
+                        <div class="col-form-label">
+                            单位
+                        </div>
+                        <div class="form-control">
+
+                        </div>
+                    </div>
                     <!--接单渠道-->
+                    <div class="form-group">
+                        <div class="col-form-label">
+                            <span class="text-danger">*</span>接单渠道
+                        </div>
+                        <div class="form-control">
+                            <select ng-model="order.channel">
+                                <option value="-1">全部接单渠道</option>
+                                <optgroup label="内部渠道">内部渠道</optgroup>
+                                <option ng-repeat="x in channel.inner" value="{{x.value}}">{{x.name}}</option>
+                                <optgroup label="内部渠道">内部渠道</optgroup>
+                                <option ng-repeat="x in channel.outer" value="{{x.value}}">{{x.name}}</option>
+                            </select>
+                        </div>
+                    </div>
                     <!--定金-->
+                    <div class="form-group">
+                        <div class="col-form-label">
+                            定金
+                        </div>
+                        <div class="form-control">
+                            <input type="text" size="8" ng-model="order.deposit" onpaste="return false">
+                        </div>
+                    </div>
                     <!--日期-->
+                    <div class="form-group">
+                        <div class="col-form-label">
+                            <span class="text-danger">*</span>日期
+                        </div>
+                        <div class="form-control">
+                            <select ng-model="order.date">
+                                <optgroup label="请选择就餐日期"></optgroup>
+                                <option ng-repeat="x in date" value="{{x|date:'yyyy/MM/dd'}}">{{x|date:'yyyy/MM/dd'}}</option>
+                            </select>
+                        </div>
+                    </div>
                     <!--餐段-->
+                    <div class="form-group">
+                        <div class="col-form-label">
+                            <span class="text-danger">*</span>餐段
+                        </div>
+                        <div class="form-control">
+                            <select type="text" data-period="">
+                                <optgroup label="请选择餐段"></optgroup>
+                                <option ng-repeat="(k, v) in meals_time" value="{{k}}">{{v}}</option>
+                            </select>
+                        </div>
+                    </div>
                     <!--区域-->
+                    <div class="form-group">
+                        <div class="col-form-label">
+                            <span class="text-danger">*</span>区域
+                        </div>
+                        <div class="form-control">
+                            <ul class="list-group">
+                                <li class="list-group-item" ng-repeat="seat in order.seats">
+                                    <select name="AreaID" ng-model="seat.area">
+                                        <optgroup label="请选择区域"></optgroup>
+                                        <option ng-repeat="x in areas" value="{{x.value}}">{{x.name}}</option>
+                                    </select>
+                                    <select name="DeskID" ng-model="seat.seat">
+                                        <optgroup label="请选择餐位"></optgroup>
+                                        <option ng-repeat="x in seats" value="{{x.value}}">{{x.name}}</option>
+                                    </select>
+                                    <input class="btn btn-primary btn-sm" type="button" ng-click="removeSeat(seat)" value="删除"/>
+                                </li>
+                            </ul>
+                            <input class="btn btn-link btn-primary" type="button" value="增加餐位" ng-click="addSeat()"/>
+                        </div>
+                    </div>
                 </fieldset>
             </form>
         </div>
     </div>
-    <table>
-        <tbody>
-        <tr>
-            <th align="right"><span class="error">*</span>电话</th>
-            <td><input type="tel" ng-model="order.phone" maxlength="12"></td>
-            <th align="right"><span class="error">*</span>姓名</th>
-            <td><input type="text" ng-model="order.name"></td>
-            <td colspan="2"><span class="error">*</span>
-                <label class="control-label inline"><input ng-model="order.gender" type="radio" value="male"> 先生 </label>
-                <label class="control-label inline"><input ng-model="order.gender" type="radio" value="female"> 女士</label>
-            </td>
-        </tr>
-        <tr>
-            <th><span class="error">*</span>人数</th>
-            <td colspan="5">
-                <input ng-model="order.people" type="text" size="8" onpaste="return false">
-                <ul class="pagination pagination-sm">
-                    <li><a href="{{order.people = 4}}">4</a></li>
-                    <li><a href="{{order.people = 5}}">5</a></li>
-                    <li><a href="{{order.people = 6}}">6</a></li>
-                    <li><a href="{{order.people = 7}}">7</a></li>
-                    <li><a href="{{order.people = 8}}">8</a></li>
-                    <li><a href="{{order.people = 10}}">9</a></li>
-                    <li><a href="{{order.people = 11}}">10</a></li>
-                    <li><a href="{{order.people = 12}}">11</a></li>
-                    <li><a href="{{order.people = 13}}">12</a></li>
-                </ul>
-            </td>
-        </tr>
-        <tr>
-            <th>单位</th>
-            <td>
-                <input name="CustomerUnit" type="text" ng-model="order.unit"></td>
-            <th><span>*</span>接单渠道</th>
-            <td>
-                <select ng-model="order.channel">
-                    <option value="-1">全部接单渠道</option>
-                    <optgroup label="内部渠道">内部渠道</optgroup>
-                    <option ng-repeat="x in channel.inner" value="{{x.value}}">{{x.name}}</option>
-                    <optgroup label="内部渠道">内部渠道</optgroup>
-                    <option ng-repeat="x in channel.outer" value="{{x.value}}">{{x.name}}</option>
-                </select>
-            </td>
-            <th>订金</th>
-            <td>
-                <input type="text" size="8" ng-model="order.deposit" onpaste="return false"></td>
-        </tr>
-        <tr>
-            <th><span>*</span>日期</th>
-            <td>
-                <div class="data">
-                    <select ng-model="order.date">
-                        <optgroup label="请选择就餐日期"></optgroup>
-                        <option ng-repeat="x in date" value="{{x|date:'yyyy/MM/dd'}}">{{x|date:'yyyy/MM/dd'}}</option>
-                    </select>
-                </div>
-            </td>
-            <th><span>*</span>餐段</th>
-            <td colspan="3">
-                <div class="meal_time_set">
-                    <select type="text" data-period="">
-                        <optgroup label="请选择餐段"></optgroup>
-                        <option ng-repeat="(k, v) in meals_time" value="{{k}}">{{v}}</option>
-                    </select>
-                </div>
-            </td>
-        </tr>
-        <tr ng-repeat="seat in order.seats">
-            <th><span>*</span>区域</th>
-            <td colspan="5">
-                <select ng-model="order.seat.area">
-                    <optgroup label="请选择区域"></optgroup>
-                    <option ng-repeat="x in area" value="{{x.value}}">{{x.name}}</option>
-                </select>
-                <select name="DeskID" ng-model="seat.seat">
-                    <optgroup label="请选择餐位"></optgroup>
-                    <option ng-repeat="x in seat" value="{{x.value}}">{{x.name}}</option>
-                </select>
-                <a data-type="table_remove" ng-click="remove($index)">删除</a>
-            </td>
-        </tr>
-        <tr>
-            <th></th>
-            <td colspan="5"><a class="btn btn-link btn-primary" ng-click="add_seat()">增加餐位</a></td>
-        </tr>
-        </tbody>
-    </table>
 </div>
 <div class="modal-footer">
     <input class="btn btn-primary" type="submit" value="提交" ng-click="submit()"/>
