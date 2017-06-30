@@ -53,6 +53,10 @@ def get_guests(request, token, offset=0, limit=10, order=0, **kwargs):
             special_day: 特殊
             personal_need: 个性化需求
             status: 客户状态, 0: 活跃, 1: 沉睡, 2: 流失, 3: 无订单
+            desk_number: 消费总桌数
+            person_consumption: 人均消费
+            desk_per_month: 消费频度, 单/月
+            last_consumption: 上次消费日期
     """
 
     hotel = request.staff.hotel
@@ -118,43 +122,52 @@ def get_guests(request, token, offset=0, limit=10, order=0, **kwargs):
     c = qs.count()
     guests = qs[offset:offset + limit]
 
-    sorted_guest_list = list()
-    # todo 查询结果排序
     # 按最近就餐时间先后排序
     guest_list = list()
     if order == 0:
         for g in guests:
-            orders = Order.objects.filter(
-                contact=g.phone, branch__hotel=hotel).order_by('-create_time')
-            if orders:
-                t = int(time.mktime(orders[0].create_time.timetuple()))
-            else:
-                t = 0
-            guest_list.append((g, t))
-        sorted_guest_list = sorted(guest_list, key=lambda x: x[1], reverse=True)
+            guest_list.append((g, g.last_consumption))
     # 总预定桌数
     elif order == 1:
-        pass
+        for g in guests:
+            guest_list.append((g, g.desk_number))
     # 人均消费
     elif order == 2:
-        pass
+        for g in guests:
+            guest_list.append((g, g.person_consumption))
     # 消费频度
     else:
-        pass
+        for g in guests:
+            guest_list.append((g, g.desk_per_month))
+
+    # 排序
+    sorted_guest_list = sorted(guest_list, key=lambda x: x[1], reverse=True)
 
     l = []
-    for guest in sorted_guest_list:
-        d = {'guest_id': guest[0].id,
-             'phone': guest[0].phone,
-             'name': guest[0].name,
-             'gender': guest[0].gender,
-             'birthday': guest[0].birthday,
-             'birthday_type': guest[0].birthday_type,
-             'guest_type': guest[0].type,
-             'like': guest[0].like,
-             'dislike': guest[0].dislike,
-             'special_day': guest[0].special_day,
-             'personal_need': guest[0].personal_need}
+    for guest_tuple in sorted_guest_list:
+        guest = guest_tuple[0]
+        d = {'guest_id': guest.id,
+             'phone': guest.phone,
+             'name': guest.name,
+             'gender': guest.gender,
+             'birthday': guest.birthday,
+             'birthday_type': guest.birthday_type,
+             'guest_type': guest.type,
+             'like': guest.like,
+             'dislike': guest.dislike,
+             'special_day': guest.special_day,
+             'personal_need': guest.personal_need,
+             'desk_number': guest.desk_number,
+             'person_consumption': guest.person_consumption,
+             'desk_per_month': guest.desk_per_month,
+             'last_consumption': ''}
+
+        # 最后用餐时间
+        qs = Order.objects.filter(
+            contact=guest.phone, branch__hotel=hotel, status=2). \
+            order_by('-dinner_date')
+        if qs:
+            d['last_consumption'] = qs[0].dinner_date
 
         if status is None:
             if Order.objects.filter(
@@ -329,6 +342,16 @@ def get_profile(request, token, guest_id=None, phone=None):
     orders = Order.objects.filter(
         branch__hotel=hotel, contact=guest.phone, status=2)
 
+    all_consumption, day60_consumption = 0, 0
+    qs = orders.values('contact').annotate(sum=Sum('consumption')). \
+        order_by('contact')
+    if qs:
+        all_consumption = qs[0]['sum']
+    qs = orders.filter(finish_time__gte=day60).values('contact').annotate(
+        sum=Sum('consumption')).order_by('contact')
+    if qs:
+        day60_consumption = qs[0]['sum']
+
     d = {'guest_id': guest.id,
          'name': guest.name,
          'phone': guest.phone,
@@ -342,11 +365,8 @@ def get_profile(request, token, guest_id=None, phone=None):
          'personal_need': guest.personal_need,
          'all_order_number': orders.count(),
          'day60_order_number': orders.filter(finish_time__gte=day60).count(),
-         'all_consumption': orders.values('contact').annotate(
-             sum=Sum('consumption')).order_by('-sum')[0]['sum'],
-         'day60_consumption': orders.filter(finish_time__gte=day60).values(
-             'contact').annotate(sum=Sum('consumption')).order_by(
-             '-sum')[0]['sum']}
+         'all_consumption': all_consumption,
+         'day60_consumption': day60_consumption}
 
     # 会员价值分类的最小区间
     min_day = timezone.now() - timedelta(days=hotel.min_vip_category)

@@ -1,8 +1,10 @@
 import json
+import time
 from datetime import timedelta
 
 from django.core.management import BaseCommand
 from django.utils import timezone
+from django.db import connection
 from django.db.models import Sum
 from webApp.models import Order, Hotel
 
@@ -12,6 +14,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.date = timezone.now().date() - timedelta(days=1)
         self.count_hotel_consumption()
+        self.count_hotel_guest_consumption()
 
     def count_hotel_consumption(self):
         """统计每个酒店昨天的消费情况"""
@@ -25,14 +28,14 @@ class Command(BaseCommand):
             order_number = orders.count()
             # 总人数
             qs = orders.values('dinner_date').annotate(
-                sum=Sum('guest_number')).order_by('-sum')
+                sum=Sum('guest_number')).order_by('dinner_date')
             if qs:
                 guest_number = qs[0]['sum']
             else:
                 guest_number = 0
             # 总消费
             qs = orders.values('dinner_date').annotate(
-                sum=Sum('consumption')).order_by('-sum')
+                sum=Sum('consumption')).order_by('dinner_date')
             if qs:
                 consumption = qs[0]['sum']
             else:
@@ -64,13 +67,58 @@ class Command(BaseCommand):
             daily_consumption.desk_consumption = desk_consumption
             daily_consumption.save()
 
-    """
-    def count_guest_consumption(self):
-        #统计酒店每个顾客的消费情况
+    def count_hotel_guest_consumption(self):
+        """统计每个酒店的所有顾客的消费情况"""
 
         hotels = Hotel.objects.all()
         for hotel in hotels:
-            # 获取酒店昨天的所有订单
-            orders = Order.objects.filter(
-                branch__hotel=hotel, dinner_date=self.date, status=2)
-    """
+            # 获取酒店所有的顾客
+            guests = hotel.guests.all()
+            for g in guests:
+                # 预定桌数(直接写sql查询语句统计)
+                sql = '''SELECT SUM(length(replace(desks, "%s", "%s"))
+                -length(desks)+1) as sum FROM webApp_order WHERE status = 2 and
+                contact = "%s"''' % (",", ",,", g.phone)
+                cursor = connection.cursor()
+                cursor.execute(sql)
+                desk_number = cursor.fetchone()[0]
+                if desk_number:
+                    desk_number = int(desk_number)
+                    g.desk_number = desk_number
+
+                # 人均消费
+                qs = Order.objects.filter(
+                    contact=g.phone, branch__hotel=hotel, status=2). \
+                    values('contact').annotate(sum=Sum('consumption')). \
+                    order_by('contact')
+                if qs:
+                    consumption = qs[0]['sum']
+                    g.consumption = consumption
+                    # 桌均消费
+                    if desk_number:
+                        desk_consumption = float(consumption) / desk_number
+                        g.desk_consumption = desk_consumption
+                    ps = Order.objects.filter(
+                        contact=g.phone, branch__hotel=hotel, status=2). \
+                        values('contact').annotate(sum=Sum('guest_number')). \
+                        order_by('contact')
+                    if ps:
+                        guest_number = ps[0]['sum']
+                        person_consumption = float(consumption) / guest_number
+                        g.person_consumption = person_consumption
+
+                # todo
+                # 消费频度(单/月)
+                desk_per_month = 0
+                g.desk_per_month = desk_per_month
+
+                # 最后消费时间戳
+                orders = Order.objects.filter(
+                    contact=g.phone, branch__hotel=hotel, status=2). \
+                    order_by('-dinner_date')
+                if orders:
+                    last_consumption = int(time.mktime(
+                        orders[0].dinner_date.timetuple()))
+                    g.last_consumption = last_consumption
+
+                g.save()

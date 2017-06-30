@@ -383,6 +383,19 @@ class Guest(models.Model):
     # 个性化需求
     personal_need = models.CharField(max_length=100, default='')
 
+    # 总预定桌数(通过每天定时任务来更新数据)
+    desk_number = models.IntegerField(default=0, db_index=True)
+    # 总消费(通过每天定时任务来更新数据)
+    consumption = models.IntegerField(default=0, db_index=True)
+    # 人均消费(通过每天定时任务来更新数据)
+    person_consumption = models.FloatField(default=0.0, db_index=True)
+    # 桌均消费(通过每天定时任务来更新数据)
+    desk_consumption = models.FloatField(default=0.0, db_index=True)
+    # 消费频度, 每月平均多少桌(通过每天定时任务来更新数据)
+    desk_per_month = models.FloatField(default=0.0, db_index=True)
+    # 最后消费时间戳, 排序用(通过每天定时任务来更新数据)
+    last_consumption = models.IntegerField(default=0, db_index=True)
+
     # 创建时间
     create_time = models.DateTimeField(default=timezone.now, db_index=True)
 
