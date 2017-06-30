@@ -11,4 +11,8 @@ urlpatterns = [
     url(r'^submit/$', submit_order, name='submit'),
     # 修改订单
     url(r'^update/$', modify_order, name='modify'),
+    # 获取月订单列表
+    url(r'^month_list/$', get_month_orders, name='month_list'),
+    # 获取日订单列表
+    url(r'^day_list/$', get_day_orders, name='day_list'),
 ]

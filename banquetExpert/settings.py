@@ -37,7 +37,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'webApp'
+    'webApp',
+    'django_crontab',
+]
+
+CRONJOBS = [
+    # 每天0点0分执行
+    ('00 00 * * *', 'django.core.management.call_command',
+     ['day_statistic'], {}, '>> /var/log/banquetExpert.log'),
+    # 每月1号0点0分执行
+    ('00 00 * 1 *', 'django.core.management.call_command',
+     ['month_statistic'], {}, '>> /var/log/banquetExpert.log'),
 ]
 
 MIDDLEWARE = [
