@@ -40,6 +40,8 @@ def login(request, username, password):
             return err_response('err_3', '密码错误')
         admin.update_token()
         admin.save()
+        # 将token放入session
+        request.session['token'] = admin.token
         return corr_response({'token': admin.token})
 
 

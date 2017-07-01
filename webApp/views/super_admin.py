@@ -142,7 +142,7 @@ def delete_admin(request, token, admin_id):
     'password': forms.CharField(min_length=1, max_length=128),
 })
 def login(request, token, username, password):
-    """更新并返回超级管理者令牌
+    """登录，更新并返回超级管理者令牌
 
     :param token: 令牌
     :param username: 用户名(必传)
@@ -163,6 +163,8 @@ def login(request, token, username, password):
             return err_response('err_3', '密码错误')
         admin.update_token()
         admin.save()
+        # 将token放入session
+        request.session['token'] = admin.token
         return corr_response({'token': admin.token})
 
 
