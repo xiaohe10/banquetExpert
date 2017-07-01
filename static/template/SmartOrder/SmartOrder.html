@@ -6,30 +6,26 @@
         </div>
     </div>
     <div class="panel-body">
+        <!--餐段日期选择-->
+        <!--<div class="col-lg-12 py-2">-->
+        <div class="navbar">
+            <div class="navbar-inner">
+                <a class="brand">
+                    <strong>2017</strong>年
+                    <strong>6</strong>月
+                </a>
+                <!--<div class="col-lg-10 input-group">-->
+                <div class="nav">
+                    <input type="button" value="午餐">
+                    <input type="button" value="晚餐">
+                    <input type="button" class="btn-group btn-group-sm" ng-repeat="x in weekdays" value="{{x}}"/>
+                </div>
+                <!--</div>-->
+            </div>
+        </div>
+        <!--</div>-->
         <div class="container">
             <div class="row">
-                <!--餐段日期选择-->
-                <div class="col-lg-12 py-2">
-                    <div class="container">
-                        <div class="row  well well-sm">
-                            <div class="col-lg-2">
-                                <strong>2017</strong>年
-                                <strong>6</strong>月
-                            </div>
-                            <div class="col-lg-10 input-group">
-                                <div class="form-inline" role="toolbar">
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        <input type="button" value="午餐">
-                                        <input type="button" value="晚餐">
-                                    </div>
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        <input type="button" ng-repeat="x in weekdays" value="{{x}}"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <!--餐位列表-->
                 <div class="col-lg-3" style="height: 60%">
                     <!--折叠效果-->

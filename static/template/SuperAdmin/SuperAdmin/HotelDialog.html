@@ -1,0 +1,44 @@
+<!--主页/酒店管理/酒店管理/酒店信息对话框-->
+<div class="modal-header">
+    {{option}}酒店信息
+</div>
+<div class="modal-body">
+    <!--表单-->
+    <form class="form-horizontal">
+        <!--酒店名称-->
+        <div class="form-group">
+            <label class="col-sm-2 control-label">
+                酒店名称
+            </label>
+            <div class="col-sm-10">
+                <input type="text" ng-model="form.name"/>
+            </div>
+        </div>
+        <!--酒店老板-->
+        <div class="form-group">
+            <label class="col-sm-2 control-label">
+                酒店老板
+            </label>
+            <div class="col-sm-10">
+                <input type="text" ng-model="form.owner_name"/>
+            </div>
+        </div>
+        <!--酒店大图-->
+        <div class="form-group">
+            <label class="col-sm-2 control-label">
+                酒店大图
+            </label>
+            <div class="col-sm-10">
+                <div class="thumbnail">
+                    <img src="{{form.icon}}" alt="ICON">
+                </div>
+                <input type="file" ng-model="form.icon"/>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <input type="button" ng-hide="option==='添加'" ng-click="edit()" value="编辑">
+    <input type="button" ng-click="save()" value="保存"/>
+    <input type="button" ng-click="cancel()" value="取消"/>
+</div>

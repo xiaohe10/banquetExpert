@@ -1,0 +1,63 @@
+<!--主页/后台用户管理/员工管理/[编辑/添加]员工-->
+<div class="modal-header">
+    <a>{{option}}员工</a>
+</div>
+<div class="modal-body">
+    <!--表单-->
+    <form class="container">
+        <fieldset>
+            <!--编辑员工-->
+            <div class="form-group">
+                <legend>{{option}}员工</legend>
+            </div>
+            <!--姓名 性别-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><a style="color: red;">*</a>姓名：</label>
+                <div class="col-sm-10">
+                    <input class="inline" type="text" ng-model="form.name"/>
+                    <label class="">
+                        <input type="radio" ng-model="form.gender" value="male"/>先生
+                    </label>
+                    <label class="">
+                        <input type="radio" ng-model="form.gender" value="female"/>女士
+                    </label>
+                </div>
+            </div>
+            <!--电话-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><a style="color: red;">*</a>电话：</label>
+                <div class="col-sm-10">
+                    <label class="text-warning inline">
+                        <input type="text" ng-model="form.phone" value="18800184976"/>请准确输入11位手机号码
+                    </label>
+                </div>
+            </div>
+            <!--职位-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label">职位：</label>
+                <div class="col-sm-10">
+                    <input type="text" ng-model="form.job"/>
+                </div>
+            </div>
+            <!--用户名-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label">用户名：</label>
+                <div class="col-sm-10">
+                    <input type="text" ng-model="form.username"/>
+                </div>
+            </div>
+            <!--密码-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label">密码：</label>
+                <div class="col-sm-10">
+                    <input type="text" ng-model="form.password"/>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<div class="modal-footer">
+    <input class="btn btn-primary btn-sm" type="button" ng-click="submit()" value="提交"/>
+    <input class="btn btn-primary btn-sm" type="button" ng-click="exit()" value="离岗"/>
+    <input class="btn btn-secondary btn-sm" type="button" ng-click="cancel()" value="取消"/>
+</div>

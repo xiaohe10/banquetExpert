@@ -1,0 +1,159 @@
+<!--主页/后台用户管理/渠道管理/新增客户经理-->
+<div class="modal-header">
+    <a>新增客户经理</a>
+</div>
+<div class="modal-body">
+    <!--表单-->
+    <form class="form-horizontal">
+        <fieldset>
+            <!--姓名-->
+            <div class="form-group">
+                <label class="col-lg-2 control-label"><a style="color: red;">*</a>姓名：</label>
+                <div class="col-lg-10">
+                    <input type="text" ng-model="form.name"/>
+                </div>
+            </div>
+            <!--性别-->
+            <div class="form-group">
+                <label class="col-lg-2 control-label"><a style="color: red;">*</a>性别：</label>
+                <div class="col-lg-10">
+                    <label class="radio"><input type="radio" ng-model="form.gender" value="male"/>先生</label>
+                    <label class="radio"><input type="radio" ng-model="form.gender" value="female"/>女士</label>
+                </div>
+            </div>
+            <!--电话-->
+            <div class="form-group">
+                <label class="col-lg-2 control-label"><a style="color: red;">*</a>电话：</label>
+                <div class="col-lg-10">
+                    <!--电话列表-->
+                    <ul class="inline">
+                        <li ng-repeat="x in form.phone"><label>
+                            <input type="text" ng-model="x"/>
+                        </label></li>
+                    </ul>
+                    <a class="btn btn-primary btn-link">+增加电话</a>
+                    <a class="text-warning">请准确输入11位手机号码</a>
+                </div>
+            </div>
+            <!--生日-->
+            <div class="form-group">
+                <label class="col-lg-2 control-label">生日：</label>
+                <div class="col-lg-10">
+                    <input type="date" ng-model="form.birthday"/>
+                    <label><input type="radio" ng-model="form.calendar" value="0"/>公历</label>
+                    <label><input type="radio" ng-model="form.calendar" value="1"/>农历</label>
+                </div>
+            </div>
+            <!--单位-->
+            <div class="form-group">
+                <label class="col-lg-2 control-label">单位：</label>
+                <div class="col-lg-10">
+                    <input type="text" ng-model="form.unit"/>
+                </div>
+            </div>
+            <!--现住址-->
+            <div class="form-group">
+                <label class="col-lg-2 control-label">现住址：</label>
+                <div class="col-lg-10">
+                    <!--省-->
+                    <select ng-model="form.address.province">
+                        <option>北京</option>
+                    </select>
+                    <!--市-->
+                    <select ng-model="form.address.city">
+                        <option>北京</option>
+                    </select>
+                    <!--县-->
+                    <select ng-model="form.address.county">
+                        <option>北京</option>
+                    </select>
+                    <!--小区-->
+                    <select ng-model="form.address.block">
+                        <option>北京</option>
+                    </select>
+                </div>
+            </div>
+            <!--籍贯-->
+            <div class="form-group">
+                <label class="col-lg-2 control-label">籍贯：</label>
+                <div class="col-lg-10">
+                    <!--省-->
+                    <select ng-model="form.native.province">
+                        <option>北京</option>
+                    </select>
+                    <!--市-->
+                    <select ng-model="form.native.city">
+                        <option>北京</option>
+                    </select>
+                </div>
+            </div>
+            <!--营销短信-->
+            <div class="form-group">
+                <label class="col-lg-2 control-label">营销短信：</label>
+                <div class="col-lg-10">
+                    <label><input type="radio" ng-model="form.sms_marketing" value="enabled"/>开</label>
+                    <label><input type="radio" ng-model="form.sms_marketing" value="disabled"/>关</label>
+                </div>
+            </div>
+            <!--分类方法-->
+            <div class="form-group">
+                <label class="col-lg-2 control-label">分类方法：</label>
+                <div class="col-lg-10">
+                    <select ng-model="form.classification_method">
+                        <option>北京</option>
+                    </select>
+                </div>
+            </div>
+            <!--病症-->
+            <div class="form-group">
+                <label class="col-lg-2 control-label">病症：</label>
+                <div class="col-lg-10">
+                    <!--病症列表-->
+                    <ul class="inline">
+                        <li ng-repeat="x in form.desease"><label>
+                            <input type="text" ng-model="x"/>
+                        </label></li>
+                    </ul>
+                    <a class="btn btn-primary btn-link">+添加标签</a>
+                </div>
+            </div>
+            <!--喜好-->
+            <div class="form-group">
+                <label class="col-lg-2 control-label">喜好：</label>
+                <div class="col-lg-10">
+                    <!--喜好列表-->
+                    <ul class="inline">
+                        <li ng-repeat="x in from.hobby"><label>
+                            <input type="text" ng-model="x"/>
+                        </label></li>
+                    </ul>
+                    <a class="btn btn-primary btn-link">+添加标签</a>
+                </div>
+            </div>
+            <!--忌口-->
+            <div class="form-group">
+                <label class="col-lg-2 control-label">忌口：</label>
+                <div class="col-lg-10">
+                    <!--忌口列表-->
+                    <ul class="inline">
+                        <li ng-repeat="x in form.dieting"><label>
+                            <input type="text" ng-model="x"/>
+                        </label></li>
+                    </ul>
+                    <a class="btn btn-primary btn-link">+添加标签</a>
+                </div>
+            </div>
+            <!--不良记录-->
+            <div class="form-group">
+                <label class="col-lg-2 control-label">不良记录：</label>
+                <div class="col-lg-10">
+                    <textarea ng-model="form.bad_records"></textarea>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<div class="modal-footer">
+    <input class="btn btn-primary btn-sm" type="button" ng-click="submit()" value="提交"/>
+    <input class="btn btn-secondary btn-sm" type="button" ng-click="cancel()" value="取消"/>
+</div>

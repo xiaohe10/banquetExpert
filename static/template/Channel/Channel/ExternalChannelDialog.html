@@ -1,0 +1,88 @@
+<!--主页/后台用户管理/渠道管理/[新增/编辑]外部渠道-->
+<div class="modal-header">
+    <a>{{option}}外部渠道</a>
+</div>
+<div class="modal-body">
+    <!--表单-->
+    <form class="form-horizontal">
+        <fieldset>
+            <!--渠道名称-->
+            <div class="form-group">
+                <label class="col-lg-3 control-label"><a style="color: red;">*</a>渠道名称：</label>
+                <div class="col-lg-9">
+                    <input class="form-control-sm" type="text" ng-model="form.channel" placeholder=""/>
+                </div>
+            </div>
+            <!--直属上级-->
+            <div class="form-group">
+                <label class="col-lg-3 control-label"><a style="color: red;">*</a>直属上级：</label>
+                <div class="col-lg-9">
+                    <select ng-model="form.parent">
+                        <optgroup label="直属上级"></optgroup>
+                        <option>A1</option>
+                        <option>A2</option>
+                        <option>A3</option>
+                        <option>A4</option>
+                    </select>
+                </div>
+            </div>
+            <!--签约折扣标准-->
+            <div class="form-group">
+                <label class="col-lg-3 control-label"><a style="color: red;">*</a>签约折扣标准：</label>
+                <div class="col-lg-9">
+                    <select ng-model="form.discount">
+                        <optgroup label="签约折扣标准"></optgroup>
+                        <option ng-repeat="x in discount" value="{{$index}}">{{x}}</option>
+                    </select>
+                </div>
+            </div>
+            <!--合作周期-->
+            <div class="form-group">
+                <label class="col-lg-3 control-label">合作周期：</label>
+                <div class="col-lg-9">
+                    <input type="date" ng-model="form.date_from"/>
+                    ~
+                    <input type="date" name="form.date_to"/>
+                    <span style="color: red" ng-show="form.date_from >= form.date_to"></span>
+                </div>
+            </div>
+            <!--佣金核算方式-->
+            <div class="form-group">
+                <label class="col-lg-3 control-label">佣金核算方式：</label>
+                <div class="col-lg-9">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <label class="">
+                                <input type="radio" ng-model="form.bonus.method" value="0"/>按消费额百分比
+                            </label>
+                            <label class="">
+                                消费金额 * <input type="number" ng-model="form.bonus.value">元/桌
+                            </label>
+                        </li>
+                        <li class="list-group-item">
+                            <label class="">
+                                <input type="radio" ng-model="form.bonus.method" value="1"/>按订单数量
+                            </label>
+                            <label class="">
+                                <input type="number" ng-model="form.bonus.value">元/桌
+                            </label>
+                        </li>
+                        <li class="list-group-item">
+                            <label class="">
+                                <input type="radio" ng-model="form.bonus.method" value="2"/>按消费人数
+                            </label>
+                            <label class="">
+                                <input type="number" ng-model="form.bonus.value">元/人
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<div class="modal-footer">
+    <input class="btn btn-primary btn-sm" type="button" ng-click="submit()" value="提交"/>
+    <input class="btn btn-secondary btn-sm" type="button" ng-click="save()" value="保存"/>
+    <input class="btn btn-secondary btn-sm" type="button" ng-click="cancel()" value="取消"/>
+</div>
