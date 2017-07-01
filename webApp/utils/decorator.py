@@ -112,6 +112,10 @@ def validate_args(dic):
             except ValueError:
                 return err_response(
                     'err_1', '参数不正确（缺少参数或者不符合格式）')
+            # 从session 中获取 token(如果存在)
+            token = request.session.get('token', None)
+            if 'token' not in data:
+                data['token'] = token
             for k, v in dic.items():
                 try:
                     kwargs[k] = v.clean(data[k])
