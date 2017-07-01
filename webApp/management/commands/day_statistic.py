@@ -51,9 +51,11 @@ class Command(BaseCommand):
                     desk_list = json.loads(order.desks)
                     desk_number += len(desk_list)
             if guest_number > 0:
+                # 结果保留2位小数
                 guest_consumption = '%.2f' % (float(consumption) /
                                               guest_number)
             if desk_number > 0:
+                # 结果保留2位小数
                 desk_consumption = '%.2f' % (float(consumption) /
                                              desk_number)
             daily_consumption = hotel.day_consumptions.get_or_create(
@@ -107,18 +109,23 @@ class Command(BaseCommand):
                         person_consumption = float(consumption) / guest_number
                         g.person_consumption = person_consumption
 
-                # todo
                 # 消费频度(单/月)
-                desk_per_month = 0
-                g.desk_per_month = desk_per_month
-
-                # 最后消费时间戳
                 orders = Order.objects.filter(
                     contact=g.phone, branch__hotel=hotel, status=2). \
-                    order_by('-dinner_date')
+                    order_by('dinner_date')
                 if orders:
-                    last_consumption = int(time.mktime(
-                        orders[0].dinner_date.timetuple()))
+                    count = orders.count()
+                    first_date = orders[0].dinner_date
+                    last_date = orders[count-1].dinner_date
+                    # 计算第一次消费到今天的时间间隔
+                    date_interval = 12 * (self.date.year - first_date.year) + \
+                        self.date.month - first_date.month + 1
+                    # 结果保留2位小数
+                    order_per_month = '%.2f' % (float(count) / date_interval)
+                    g.order_per_month = order_per_month
+
+                    # 最后消费时间戳
+                    last_consumption = int(time.mktime(last_date.timetuple()))
                     g.last_consumption = last_consumption
 
                 g.save()

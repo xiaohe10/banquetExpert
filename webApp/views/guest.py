@@ -55,7 +55,7 @@ def get_guests(request, token, offset=0, limit=10, order=0, **kwargs):
             status: 客户状态, 0: 活跃, 1: 沉睡, 2: 流失, 3: 无订单
             desk_number: 消费总桌数
             person_consumption: 人均消费
-            desk_per_month: 消费频度, 单/月
+            order_per_month: 消费频度, 单/月
             last_consumption: 上次消费日期
     """
 
@@ -138,7 +138,7 @@ def get_guests(request, token, offset=0, limit=10, order=0, **kwargs):
     # 消费频度
     else:
         for g in guests:
-            guest_list.append((g, g.desk_per_month))
+            guest_list.append((g, g.order_per_month))
 
     # 排序
     sorted_guest_list = sorted(guest_list, key=lambda x: x[1], reverse=True)
@@ -159,7 +159,7 @@ def get_guests(request, token, offset=0, limit=10, order=0, **kwargs):
              'personal_need': guest.personal_need,
              'desk_number': guest.desk_number,
              'person_consumption': guest.person_consumption,
-             'desk_per_month': guest.desk_per_month,
+             'order_per_month': guest.order_per_month,
              'last_consumption': ''}
 
         # 最后用餐时间

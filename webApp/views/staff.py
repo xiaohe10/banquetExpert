@@ -97,7 +97,7 @@ def register(request, phone, password, validation_code, hotel_id, **kwargs):
     'password': forms.CharField(min_length=1, max_length=32),
 })
 def login(request, phone, password):
-    """更新并返回员工令牌
+    """登录，更新并返回员工令牌
 
     :param phone: 手机号(11位, 必传)
     :param password: 密码(md5加密结果, 32位, 必传)
@@ -117,6 +117,8 @@ def login(request, phone, password):
             return err_response('err_3', '密码错误')
         staff.update_token()
         staff.save()
+        # 将token放入session
+        request.session['token'] = staff.token
         return corr_response({'token': staff.token})
 
 
@@ -476,7 +478,7 @@ def get_guests(request, token, offset=0, limit=10, order=0, **kwargs):
             status: 客户状态, 0: 活跃, 1: 沉睡, 2: 流失, 3: 无订单
             desk_number: 消费总桌数
             person_consumption: 人均消费
-            desk_per_month: 消费频度, 单/月
+            order_per_month: 消费频度, 单/月
             last_consumption: 上次消费日期
     """
 
@@ -542,7 +544,7 @@ def get_guests(request, token, offset=0, limit=10, order=0, **kwargs):
              'personal_need': guest.personal_need,
              'desk_number': guest.desk_number,
              'person_consumption': guest.person_consumption,
-             'desk_per_month': guest.desk_per_month,
+             'order_per_month': guest.order_per_month,
              'last_consumption': ''}
 
         # 最后用餐时间
