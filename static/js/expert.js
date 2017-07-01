@@ -87,6 +87,13 @@ BanquetExpert = {
     },
     menus: [
         {
+            title: "超级管理后台",
+            menu_id: "SuperAdmin",
+            item: [
+                {title: "超级管理后台", item_id: "SuperAdmin"}
+            ]
+        },
+        {
             title: "后台用户管理",
             menu_id: "Channel",
             item: [
@@ -149,7 +156,7 @@ BanquetExpert = {
             title: "酒店管理",
             menu_id: "Hotel",
             item: [
-                {title: "酒店管理", item_id: "Hotel"},
+                {title: "酒店基本信息", item_id: "Hotel"},
                 {title: "门店管理", item_id: "Branch"}
             ]
         },
@@ -186,7 +193,7 @@ for (var i = 0; i < 36; i++) {
 $.get({
     url: "/webApp/admin/hotel/profile/",
     data: {
-        token: window.Login.token
+        // token: window.Login.token
     },
     success: function (data) {
         console.log(window.Login.token);
@@ -196,7 +203,12 @@ $.get({
 
 // 子页面模板
 Templates = {
-    Breadcrumb: "Drawer/Breadcrumb.html", // 路径导航
+    // 路径导航
+    Breadcrumb: "Drawer/Breadcrumb.html",
+    // 超级管理后台
+    SuperAdmin: {
+        SuperAdmin: "SuperAdmin/SuperAdmin.html" // 超级管理后台
+    },
     // 后台用户管理
     Channel: {
         Channel: "Channel/Channel.html", // 获客渠道*** AddManager AddOuterChannel AddReserve
@@ -252,16 +264,20 @@ Templates = {
 
 // 对话框模板
 Dialog = {
+    SuperAdmin: {
+        SuperAdmin: {
+            HotelDialog: "SuperAdmin/SuperAdmin/HotelDialog.html"
+        }
+    },
     Channel: {
         Channel: {
-            AddExternalChannel: "Channel/Channel/AddExternalChannel.html",
-            AddManager: "Channel/Channel/AddManager.html",
-            AddReserve: "Channel/Channel/AddReserve.html",
-            EditReserve: "Channel/Channel/EditReserve"
+            ExternalChannelDialog: "Channel/Channel/ExternalChannelDialog.html",
+            ManagerDialog: "Channel/Channel/ManagerDialog.html",
+            ReserveDialog: "Channel/Channel/ReserveDialog.html",
         },
         Staff: {
-            EditStaff: "Channel/Staff/EditStaff.html",
-            Approve: "Channel/Staff/Approve.html"
+            StaffDialog: "Channel/Staff/StaffDialog.html",
+            ApproveDialog: "Channel/Staff/ApproveDialog.html"
         }
     },
     Customer: {
@@ -269,6 +285,11 @@ Dialog = {
             AddCustomerProfiles: "Customer/CustomerProfiles/AddCustomerProfiles.html",
             BatchExport: "Customer/CustomerProfiles/BatchExport.html",
             BatchImport: "Customer/CustomerProfiles/BatchImport.html"
+        }
+    },
+    Hotel: {
+        Branch: {
+            BranchDialog: "Hotel/Branch/BranchDialog.html"
         }
     },
     Order: {
@@ -305,7 +326,7 @@ var BanquetExpertApp = angular.module('BanquetExpertApp', [
 // 过滤器定义
 BanquetExpertApp.filter('gender', function () {
     return function (gender) {
-        var TAG = {"male": "先生", "female": "女士"};
+        var TAG = ["保密", "先生", "女士"];
         return TAG[gender];
     }
 });
@@ -314,10 +335,22 @@ BanquetExpertApp.filter('surname', function () {
         return name.charAt(0);
     }
 });
+BanquetExpertApp.filter('birthday_type', function () {
+    return function (birthday_type) {
+        var TAG = ["阳历", "农历"];
+        return TAG[birthday_type];
+    }
+});
 BanquetExpertApp.filter('discount', function () {
     return function (discount) {
         var TAG = ["无折扣", "9.5折", "9.0折", "8.5折", "8.0折"];
         return TAG[discount];
+    }
+});
+BanquetExpertApp.filter('status', function () {
+    return function (status) {
+        var TAG = ["活跃", "沉睡", "流失", "无订单"];
+        return TAG[status];
     }
 });
 // 侧边导航栏控制器
@@ -369,28 +402,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
         .when('/Account/SMSDetails', {templateUrl: "./template/" + Templates.Account.SMSDetails})
         .when('/Account/Restaurant', {
             templateUrl: "./template/" + Templates.Account.Restaurant, controller: function ($scope) {
-                $scope.hotel = {
-                    // 餐厅名称
-                    name: "北京宴总店",
-                    // 所在城市
-                    // 详细地址
-                    address: "丰台区靛厂路3号(永辉超市东侧)",
-                    // 预订电话
-                    phone: "01088177777",
-                    // 餐厅面积
-                    space: "1700",
-                    // 人均消费
-                    min_cost: 1200,
-                    max_cost: 1700,
-                    // 餐厅设施
-                    facility: [],
-                    // 可以刷卡
-                    VISA: false,
-                    UnionPay: false,
-                    // Logo
-                    logo: "",
-                    image: ""
-                }
+
             }
         });
 
@@ -543,9 +555,9 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                     Log.i(TAG, "新增预订员和迎宾");
                     var dlg = $modal.open({
                         size: 'lg',
-                        templateUrl: "./template/" + Dialog.Channel.Channel.AddReserve,
+                        templateUrl: "./template/" + Dialog.Channel.Channel.ReserveDialog,
                         controller: function ($scope) {
-                            var TAG = Dialog.Channel.Channel.AddReserve;
+                            var TAG = Dialog.Channel.Channel.ReserveDialog;
                             Log.i(TAG, "对话框控制器");
                             $scope.form = {
                                 // 操作
@@ -645,14 +657,14 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 $scope.editReserve = function (reserve) {
                     Log.i(TAG, "编辑预订员和迎宾");
                     var dlg = $modal.open({
-                        templateUrl: "./template/" + Dialog.Channel.Channel.AddReserve,
+                        templateUrl: "./template/" + Dialog.Channel.Channel.ReserveDialog,
                         resolve: {
                             form: function () {
                                 return reserve;
                             }
                         },
                         controller: function ($scope, form) {
-                            var TAG = Dialog.Channel.Channel.AddReserve;
+                            var TAG = Dialog.Channel.Channel.ReserveDialog;
                             Log.i(TAG, "对话框控制器");
                             $scope.form = form;
                             $scope.area = BanquetExpert.area;
@@ -679,9 +691,9 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 $scope.addManager = function () {
                     Log.i(TAG, "新增客户经理");
                     $modal.open({
-                        templateUrl: "./template/" + Dialog.Channel.Channel.AddManager,
+                        templateUrl: "./template/" + Dialog.Channel.Channel.ManagerDialog,
                         controller: function ($scope) {
-                            var TAG = Dialog.Channel.Channel.AddManager;
+                            var TAG = Dialog.Channel.Channel.ManagerDialog;
                             Log.i(TAG, "对话框控制器");
                             $scope.form = {
                                 // 姓名
@@ -730,14 +742,14 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 $scope.editManager = function (manager) {
                     Log.i(TAG, "编辑客户经理");
                     $modal.open({
-                        templateUrl: "./template/" + Dialog.Channel.Channel.AddManager,
+                        templateUrl: "./template/" + Dialog.Channel.Channel.ManagerDialog,
                         resolve: {
                             form: function () {
                                 return manager;
                             }
                         },
                         controller: function ($scope, form) {
-                            var TAG = Dialog.Channel.Channel.AddManager;
+                            var TAG = Dialog.Channel.Channel.ManagerDialog;
                             Log.i(TAG, "对话框控制器");
                             $scope.form = form;
                             $scope.submit = function () {
@@ -753,9 +765,9 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 $scope.addExternalChannel = function () {
                     Log.i(TAG, "新增外部渠道");
                     var dlg = $modal.open({
-                        templateUrl: "./template/" + Dialog.Channel.Channel.AddExternalChannel,
+                        templateUrl: "./template/" + Dialog.Channel.Channel.ExternalChannelDialog,
                         controller: function ($scope) {
-                            var TAG = Dialog.Channel.Channel.AddOuterChannel;
+                            var TAG = Dialog.Channel.Channel.ExternalChannelDialog;
                             Log.i(TAG, "对话框控制器");
                             $scope.option = "新增";
                             $scope.form = {
@@ -797,14 +809,14 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 $scope.editExternalChannel = function (channel) {
                     Log.i(TAG, "编辑外部渠道");
                     var dlg = $modal.open({
-                        templateUrl: "./template/" + Dialog.Channel.Channel.AddExternalChannel,
+                        templateUrl: "./template/" + Dialog.Channel.Channel.ExternalChannelDialog,
                         resolve: {
                             form: function () {
                                 return channel;
                             }
                         },
                         controller: function ($scope, form) {
-                            var TAG = Dialog.Channel.Channel.AddOuterChannel;
+                            var TAG = Dialog.Channel.Channel.ExternalChannelDialog;
                             Log.i(TAG, "对话框控制器");
                             $scope.option = "编辑";
                             $scope.form = form;
@@ -839,7 +851,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 $scope.approve = function (staff) {
                     Log.i(TAG, "审核员工：" + JSON.stringify(staff));
                     $modal.open({
-                        templateUrl: "./template/" + Dialog.Channel.Staff.Approve,
+                        templateUrl: "./template/" + Dialog.Channel.Staff.StaffDialog,
                         controller: function ($scope, form) {
                             $scope.form = form;
                             $scope.admit = function () {
@@ -863,7 +875,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 $scope.edit = function (staff) {
                     Log.i(TAG, "编辑员工信息：" + JSON.stringify(staff));
                     var dlg = $modal.open({
-                        templateUrl: "./template/" + Dialog.Channel.Staff.EditStaff,
+                        templateUrl: "./template/" + Dialog.Channel.Staff.StaffDialog,
                         controller: function ($scope, form) {
                             var TAG = Dialog.Channel.Staff.EditStaff;
                             Log.i(TAG, "编辑员工控制器");
@@ -899,7 +911,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 $scope.add_staff = function () {
                     Log.i(TAG, "添加员工");
                     var dlg = $modal.open({
-                        templateUrl: "./template/" + Dialog.Channel.Staff.EditStaff,
+                        templateUrl: "./template/" + Dialog.Channel.Staff.StaffDialog,
                         controller: function ($scope) {
                             var TAG = Dialog.Channel.Staff.EditStaff;
                             Log.i(TAG, "添加员工控制器");
@@ -1059,16 +1071,31 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                     selected_count: 0
                 };
                 $scope.channel = BanquetExpert.channel;
-                $scope.type = ["VVIP", "VIP", "常旅客", "董事", "流失"];
+                $scope.type = ["VVIP", "vip", "常旅客", "董事", "流失"];
                 // 表格数据
-                $scope.table = [];
-                for (var i = 0; i < 7; i++) {
-                    $scope.table.push({
-                        name: "南", gender: "先生", phone: "15811111881", unit: "无", cancel_rate: "53.51%",
-                        credit: "1.2", order_count: "867", consumption: "2387457.00", last_meal_date: "2017年04月08日",
-                        type: 0, rfm_type: "沉睡", channel: "王唯唯", marketing_sms: false, selected: false
-                    });
-                }
+                $scope.data = {
+                    count: 100,
+                    list: [
+                        {
+                            guest_id: 1,
+                            phone: "13111111111",
+                            name: "习某某",
+                            gender: 1,
+                            guest_type: "vip",
+                            birthday: "1992-02-15",
+                            birthday_type: 0,
+                            like: "吃辣",
+                            dislike: "不吃香菜",
+                            special_day: "",
+                            personal_need: "",
+                            status: 0,
+                            desk_number: 10,
+                            person_consumption: 400,
+                            desk_per_month: 3.11,
+                            last_consumption: "1993-02-25"
+                        }
+                    ]
+                };
                 // 事件处理
                 $scope.query = function () {
                     Log.i(TAG, JSON.stringify($scope.option));
@@ -1082,30 +1109,33 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 };
                 $scope.select = function () {
                     var count = 0;
-                    $scope.table.forEach(function (item) {
+                    $scope.data.forEach(function (item) {
                         if (item.selected) {
                             count++;
                         }
                     });
                     $scope.detail.selected_count = count;
-                    $scope.option.select_all = count === $scope.table.length;
+                    $scope.option.select_all = count === $scope.data.list.length;
                     Log.i(TAG, JSON.stringify($scope.detail));
                 };
                 $scope.select_all = function () {
                     Log.i(TAG, JSON.stringify($scope.option));
-                    $scope.table.forEach(function (item) {
+                    $scope.data.forEach(function (item) {
                         item.selected = $scope.option.select_all;
                     });
                     Log.i(TAG, JSON.stringify($scope.table));
                 };
                 $scope.move = function () {
                     Log.i(TAG, JSON.stringify($scope.option));
-                    $scope.table.forEach(function (item) {
+                    $scope.data.forEach(function (item) {
                         if (item.selected) {
                             item.type = $scope.option.to_type;
                         }
                     });
                     Log.i(TAG, JSON.stringify($scope.table));
+                };
+                $scope.edit = function (guest) {
+                    Log.i(TAG, JSON.stringify(guest));
                 };
                 // 对话框
                 $scope.profiles_add = function () {
@@ -1115,39 +1145,17 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                         controller: function ($scope) {
                             Log.i(TAG, "对话框控制器");
                             $scope.form = {
-                                // 姓名
-                                name: "赵强",
-                                // 性别
-                                gender: "female",
-                                // 电话
-                                phone: [18800184976, 10000000000],
-                                // 生日
-                                birthday: "2017-6-22",
-                                // 单位
-                                unit: "创业谷",
-                                // 现住址
-                                address: {
-                                    province: "北京",
-                                    city: "北京",
-                                    county: "朝阳"
-                                },
-                                // 籍贯
-                                native: {
-                                    province: "北京",
-                                    city: "朝阳"
-                                },
-                                // 营销短信
-                                sms_marketing: "enabled",
-                                // 分类方法
-                                classification_method: 0,
-                                // 病症
-                                desease: ["A", "B", "C"],
-                                // 喜好
-                                hobby: ["A", "B", "C"],
-                                // 忌口
-                                dieting: ["A", "B", "C"],
-                                // 不良记录
-                                bad_records: "This is bad records"
+                                token: "129ASDFIOJIO3RN23U12934INASDF",
+                                phone: "18813101211",
+                                name: "习某某",
+                                gender: 1,
+                                guest_type: "vip",
+                                birthday: "1992-02-15",
+                                birthday_type: 0,
+                                like: "吃辣",
+                                dislike: "不吃香菜",
+                                special_day: "10-25",
+                                personal_need: "生日宴"
                             };
                             $scope.submit = function () {
                                 Log.i(TAG, JSON.stringify($scope.form));
@@ -1242,10 +1250,11 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
             }
         });
 
-    // 酒店管理
+// 酒店管理
     $routeProvider
         .when('/Hotel/Branch', {
-            templateUrl: "./template/" + Templates.Hotel.Branch, controller: function ($scope) {
+            templateUrl: "./template/" + Templates.Hotel.Branch, controller: function ($scope, $modal) {
+                var TAG = Templates.Hotel.Branch;
                 $scope.data = {
                     count: 20,
                     list: [{
@@ -1267,39 +1276,134 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                     }]
                 };
                 $scope.addBranch = function () {
-
+                    Log.i(TAG, "添加门店");
+                    var dlg = $modal.open({
+                        templateUrl: "./template/" + Dialog.Hotel.Branch.BranchDialog,
+                        controller: function ($scope, form) {
+                            var TAG = Dialog.Hotel.Branch.BranchDialog;
+                            Log.i(TAG, "添加门店");
+                            $scope.option = "添加";
+                            $scope.form = form;
+                            $scope.edit = function () {
+                                Log.i(TAG, "编辑门店信息");
+                            };
+                            $scope.save = function () {
+                                Log.i(TAG, "保存门店信息");
+                                dlg.close(id);
+                            };
+                            $scope.cancel = function () {
+                                Log.i(TAG, "取消保存");
+                            }
+                        },
+                        resolve: {
+                            form: function () {
+                                var branch = {
+                                    name: "北京宴总店",
+                                    icon: "http://oss.aliyun/banquet/avatar/1.jpg",
+                                    pictures: "[picture1, picture2, ...]",
+                                    province: "北京市",
+                                    city: "北京市",
+                                    county: "丰台区",
+                                    address: "北京市丰台区靛厂路333号",
+                                    meal_period: {
+                                        Monday: {
+                                            lunch: {from: "8:30", to: "12:00"},
+                                            dinner: {from: "12:00", to: "18:00"},
+                                            supper: {from: "18:00", to: "24:00"}
+                                        },
+                                        TuesDay: {
+                                            lunch: {from: "8:30", to: "12:00"},
+                                            dinner: {from: "12:00", to: "18:00"},
+                                            supper: {from: "18:00", to: "24:00"}
+                                        }
+                                    },
+                                    facility: ["停车场", "吸烟区"],
+                                    pay_card: ["银联", "支付宝"],
+                                    phone: ["13011111111", "13100000000"],
+                                    cuisine: {
+                                        "北京菜": ["烤鸭", "京酱肉丝"],
+                                        "浙江菜": ["鸡"]
+                                    },
+                                    hotel_name: "北京宴",
+                                    manager_name: "陈奎义",
+                                    create_time: "创建时间"
+                                };
+                                return branch;
+                            }
+                        }
+                    });
+                    dlg.opened.then(function () {
+                        Log.i(TAG, "对话框已经打开");
+                    });
+                    dlg.result.then(function (result) {
+                        Log.i(TAG, JSON.stringify(result));
+                    }, function (reason) {
+                        Log.i(TAG, reason);
+                    });
                 };
-                $scope.editBranch = function (branch_id) {
-
+                $scope.editBranch = function (branch) {
+                    Log.i(TAG, "编辑门店：" + branch.name);
+                    var dlg = $modal.open({
+                        templateUrl: "./template/" + Dialog.Hotel.Branch.BranchDialog,
+                        controller: function ($scope, form) {
+                            var TAG = Dialog.Channel.Staff.EditStaff;
+                            Log.i(TAG, "编辑门店：" + branch.name);
+                            $scope.option = "编辑";
+                            $scope.form = form;
+                            $scope.edit = function () {
+                                Log.i(TAG, "编辑门店信息：" + $scope.form);
+                            };
+                            $scope.save = function () {
+                                Log.i(TAG, "保存门店信息");
+                                dlg.close(id);
+                            };
+                            $scope.cancel = function () {
+                                Log.i(TAG, "取消保存");
+                            }
+                        },
+                        resolve: {
+                            form: function () {
+                                return branch;
+                            }
+                        }
+                    });
+                    dlg.opened.then(function () {
+                        Log.i(TAG, "对话框已经打开");
+                    });
+                    dlg.result.then(function (result) {
+                        Log.i(TAG, JSON.stringify(result));
+                    }, function (reason) {
+                        Log.i(TAG, reason);
+                    });
                 }
             }
         })
         .when('/Hotel/Hotel', {
-            templateUrl: "./template/" + Templates.Hotel.Hotel, controller: function ($scope) {
-                $scope.data = {
-                    count: 20,
-                    list: [
-                        {
-                            hotel_id: 1,
-                            name: "北京宴",
-                            icon: "/static/css/image/head2.jpg",
-                            branches_count: 10,
-                            owner_name: "杨秀荣",
-                            is_enabled: true,
-                            create_time: "创建时间"
-                        }
-                    ]
+            templateUrl: "./template/" + Templates.Hotel.Hotel, controller: function ($scope, $modal) {
+                var TAG = Templates.Hotel.Hotel;
+                $scope.form = {
+                    // 餐厅名称
+                    name: "北京宴总店",
+                    // 详细地址
+                    address: "丰台区靛厂路3号(永辉超市东侧)",
+                    // 预订电话
+                    phone: "01088177777",
+                    // 餐厅设施
+                    facility: [],
+                    // 可以刷卡
+                    VISA: false,
+                    UnionPay: false,
+                    // Logo
+                    logo: "/static/css/image/head1.jpg",
+                    image: "/static/css/image/head2.jpg"
                 };
-                $scope.addHotel = function () {
-
-                };
-                $scope.editHotel = function (hotel_id) {
-
+                $scope.submit = function () {
+                    Log.i(TAG, "提交酒店信息：" + JSON.stringify($scope.form))
                 }
             }
         });
 
-    // 订单管理
+// 订单管理
     $routeProvider
         .when('/Order/InsertOrder', {
             templateUrl: "./template/" + Templates.Order.InsertOrder, controller: function ($scope) {
@@ -1646,7 +1750,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
             }
         });
 
-    // 预订管理
+// 预订管理
     $routeProvider
         .when('/Reserve/AreaDesk', {
             templateUrl: "./template/" + Templates.Reserve.AreaDesk, controller: function ($scope, $http) {
@@ -1692,6 +1796,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                     hasDinner: false,
                     hasSupper: true,
                     Week: ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期天"],
+                    EnWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
                     Table: [
                         {
                             lunch: {from: "08:30", to: "11:30"},
@@ -1786,7 +1891,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
             }
         });
 
-    // 评分审阅
+// 评分审阅
     $routeProvider
         .when('/Review/Rank', {
             templateUrl: "./template/" + Templates.Review.Rank, controller: function ($scope) {
@@ -1824,7 +1929,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
         })
         .when('/Review/Tutorial', {templateUrl: "./template/" + Templates.Review.Tutorial});
 
-    // 智能订餐台
+// 智能订餐台
     $routeProvider
         .when('/SmartOrder/SmartOrder', {
             templateUrl: "./template/" + Templates.SmartOrder.SmartOrder, controller: function ($scope) {
@@ -1864,6 +1969,107 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 };
             }
         });
+
+    // 超级管理员
+    $routeProvider
+        .when('/SuperAdmin/SuperAdmin', {
+            templateUrl: "./template/" + Templates.SuperAdmin.SuperAdmin, controller: function ($scope, $modal) {
+                var TAG = Templates.SuperAdmin.SuperAdmin;
+                $scope.data = {
+                    count: 20,
+                    list: [
+                        {
+                            hotel_id: 1,
+                            name: "北京宴",
+                            icon: "/static/css/image/head2.jpg",
+                            branches_count: 10,
+                            owner_name: "杨秀荣",
+                            is_enabled: true,
+                            create_time: "创建时间"
+                        }
+                    ]
+                };
+                $scope.addHotel = function () {
+                    Log.i(TAG, "添加酒店");
+                    var dlg = $modal.open({
+                        templateUrl: "./template/" + Dialog.SuperAdmin.SuperAdmin.HotelDialog,
+                        controller: function ($scope, form) {
+                            var TAG = Dialog.SuperAdmin.SuperAdmin.HotelDialog;
+                            Log.i(TAG, "添加酒店");
+                            $scope.option = "添加";
+                            $scope.form = form;
+                            $scope.edit = function () {
+                                Log.i(TAG, "编辑酒店信息：" + $scope.form);
+                            };
+                            $scope.save = function () {
+                                Log.i(TAG, "保存酒店信息");
+                                dlg.close(form);
+                            };
+                            $scope.cancel = function () {
+                                Log.i(TAG, "取消");
+                            }
+                        },
+                        resolve: {
+                            form: function () {
+                                var hotel = {
+                                    hotel_id: 1,
+                                    name: "北京宴",
+                                    icon: "/static/css/image/head2.jpg",
+                                    branches_count: 10,
+                                    owner_name: "杨秀荣",
+                                    is_enabled: true,
+                                    create_time: "创建时间"
+                                };
+                                return hotel;
+                            }
+                        }
+                    });
+                    dlg.opened.then(function () {
+                        Log.i(TAG, "对话框已经打开");
+                    });
+                    dlg.result.then(function (result) {
+                        Log.i(TAG, JSON.stringify(result));
+                    }, function (reason) {
+                        Log.i(TAG, reason);
+                    });
+                };
+                $scope.editHotel = function (hotel) {
+                    Log.i(TAG, "编辑酒店：" + hotel.name);
+                    var dlg = $modal.open({
+                        templateUrl: "./template/" + Dialog.SuperAdmin.SuperAdmin.HotelDialog,
+                        controller: function ($scope, form) {
+                            var TAG = Dialog.Channel.Staff.EditStaff;
+                            Log.i(TAG, "编辑酒店控制器");
+                            $scope.option = "编辑";
+                            $scope.form = form;
+                            $scope.edit = function () {
+                                Log.i(TAG, "编辑酒店信息：" + $scope.form);
+                            };
+                            $scope.save = function () {
+                                Log.i(TAG, "保存酒店信息");
+                                dlg.close(form);
+                            };
+                            $scope.cancel = function () {
+                                Log.i(TAG, "取消");
+                            }
+                        },
+                        resolve: {
+                            form: function () {
+                                return hotel;
+                            }
+                        }
+                    });
+                    dlg.opened.then(function () {
+                        Log.i(TAG, "对话框已经打开");
+                    });
+                    dlg.result.then(function (result) {
+                        Log.i(TAG, JSON.stringify(result));
+                    }, function (reason) {
+                        Log.i(TAG, reason);
+                    });
+                }
+            }
+        })
 
     $routeProvider
         .otherwise({redirectTo: "/SmartOrder/SmartOrder"});

@@ -27,66 +27,74 @@
         <!--导航栏-->
         <div class="well well-sm">
             <ul class="nav nav-tabs">
-                <li class="nav-item" ng-repeat="(k,v) in type"><a ng-click="filter(k)">{{v}}</a></li>
+                <li ng-repeat="(k,v) in type"><a ng-click="filter(v)">{{v}}</a></li>
             </ul>
         </div>
         <!--详细信息-->
         <div class="well well-sm form-inline">
-            <label class="form-check-label mx-1 inline" for="we_chat">
+            <label for="we_chat">
                 <input class="form-check mx-1" type="checkbox" ng-model="option.we_chat" id="we_chat"/>绑定微信
             </label>
-            <label class="form-check-label mx-1 inline" for="no_phone_number">
+            <label for="no_phone_number">
                 <input class="form-check mx-1" type="checkbox" ng-model="option.no_phone_number" id="no_phone_number"/>非手机号码
             </label>
-            <label class="form-check-label mx-1 inline" for="no_marketing">
+            <label for="no_marketing">
                 <input class="form-check mx-1" type="checkbox" ng-model="option.no_marketing" id="no_marketing"/>不接受营销
             </label>
-            全部客户共{{table.length}}条记录，已经选择{{detail.selected_count}} | 移动到
-            <select class="form-control form-control-sm" ng-model="option.to_type">
-                <option ng-repeat="(k, v) in type" value="{{$index}}">{{v}}</option>
-            </select>
+            <label for="to_type">
+                全部客户共{{table.length}}条记录，已经选择{{detail.selected_count}} / {{data.count}} | 移动到
+                <select class="form-control form-control-sm" ng-model="option.to_type" id="to_type">
+                    <option ng-repeat="(k, v) in type" value="{{$index}}">{{v}}</option>
+                </select>
+            </label>
             <input class="btn btn-primary btn-sm" type="button" ng-click="move()" value="移动"/>
         </div>
         <!--表格-->
         <table class="table table-bordered table-hover table-responsive small">
-            <thead class="">
+            <thead>
             <tr>
                 <th><label><input type="checkbox" ng-click="select_all()" ng-model="option.select_all">全选</label></th>
+                <th>电话</th>
                 <th>姓名</th>
                 <th>性别</th>
-                <th>手机</th>
-                <th>单位</th>
-                <th>撤单率</th>
-                <th>网订信誉</th>
-                <th>总订单数<a class="icon-print" href=""></a></th>
-                <th>总消费额<a class="icon-book" href=""></a></th>
-                <th>最后就餐时间</th>
-                <th>分类</th>
-                <th>维护渠道</th>
+                <th>生日</th>
+                <th>生日类型</th>
+                <th>顾客类别</th>
+                <th>喜好</th>
+                <th>忌讳</th>
+                <th>纪念日</th>
+                <th>个性化需求</th>
+                <th>客户状态</th>
+                <th>消费总桌数</th>
+                <th>人均消费</th>
+                <th>消费频度</th>
+                <th>上次消费日期</th>
                 <th>操作</th>
-                <th>接收营销短信</th>
             </tr>
             </thead>
             <tbody>
-            <tr class="" ng-repeat="x in table|filter:{type:option.selected_type}">
+            <tr ng-repeat="x in data.list|filter:{guest_type:option.selected_type}">
                 <td>
                     <label>
-                        <input type="checkbox" ng-model="x.selected" ng-click="select()" value="{{x.selected}}">{{$index + 1}}
+                        <input type="checkbox" ng-model="x.selected" ng-click="select()" value="{{x.selected}}">{{x.guest_id}}
                     </label>
                 </td>
-                <td>{{x.name}}</td>
-                <td>{{x.gender}}</td>
                 <td>{{x.phone}}</td>
-                <td>{{x.unit}}</td>
-                <td>{{x.cancel_rate|number:2}}</td>
-                <td>{{x.credit|number:2}}</td>
-                <td>{{x.order_count|number}}</td>
-                <td>{{x.consumption|currency:"￥"}}</td>
-                <td>{{x.last_meal_date|date:"yyyy/MM/dd"}}</td>
-                <td style="cursor: pointer">{{type[x.type]}};({{x.rfm_type}})</td>
-                <td>{{x.channel}}</td>
-                <td><a ng-click="edit($index)">编辑</a></td>
-                <td><label><input type="checkbox" ng-model="marketing_sms"/>开</label></td>
+                <td>{{x.name}}</td>
+                <td>{{x.gender|gender}}</td>
+                <td>{{x.birthday|date:"yyyy/MM/dd"}}</td>
+                <td>{{x.birthday_type|birthday_type}}</td>
+                <td>{{x.guest_type}}</td>
+                <td>{{x.like}}</td>
+                <td>{{x.dislike}}</td>
+                <td>{{x.special_day}}</td>
+                <td>{{x.personal_need}}</td>
+                <td>{{x.status|status}}</td>
+                <td>{{x.desk_number}} 桌</td>
+                <td>{{x.person_consumption}} 元/单</td>
+                <td>{{x.desk_per_month}} 桌/月</td>
+                <td>{{x.last_consumption|date:"yyyy/MM/dd"}}</td>
+                <td><a ng-click="edit(x)">编辑</a></td>
             </tr>
             </tbody>
         </table>

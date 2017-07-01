@@ -10,8 +10,8 @@
             <!--HabHost-->
             <nav class="panel-heading">
                 <ul class="nav nav-tabs">
-                    <li class="nav-item p-2 active"><a data-target="#jbxx" role="tab" data-toggle="tab">基本信息</a></li>
-                    <li class="nav-item p-2"><a data-target="#cxxx" role="tab" data-toggle="tab">菜系信息</a></li>
+                    <!--<li class="nav-item p-2 active"><a data-target="#jbxx" role="tab" data-toggle="tab">基本信息</a></li>-->
+                    <!--<li class="nav-item p-2"><a data-target="#cxxx" role="tab" data-toggle="tab">菜系信息</a></li>-->
                     <li class="nav-item p-2"><a data-target="#jtxx" role="tab" data-toggle="tab">交通信息</a></li>
                     <li class="nav-item p-2"><a data-target="#sz" role="tab" data-toggle="tab">设置</a></li>
                 </ul>
@@ -19,135 +19,6 @@
             <!--TabContent-->
             <div class="panel-body">
                 <div class="tab-content">
-                    <!--基本信息-->
-                    <div class="tab-pane active" role="tabpanel" id="jbxx">
-                        <!--表单-->
-                        <form class="form-horizontal" role="form">
-                            <!--餐厅名称-->
-                            <div class="form-group">
-                                <label class="col-lg-2 text-right">餐厅名称：</label>
-                                <div class="col-lg-8">
-                                    {{hotel.name}}
-                                </div>
-                            </div>
-                            <!--所在城市-->
-                            <div class="form-group">
-                                <label class="col-lg-2 text-right">所在城市：</label>
-                                <div class="col-lg-8">
-                                    <!--省-->
-                                    <select class="inline">
-                                        <option>北京</option>
-                                    </select>
-                                    <!--市-->
-                                    <select class="inline">
-                                        <option>北京</option>
-                                    </select>
-                                    <!--县-->
-                                    <select class="inline">
-                                        <option>北京</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <!--详细地址-->
-                            <div class="form-group">
-                                <label class="col-lg-2 text-right">详细地址：</label>
-                                <div class="col-lg-8">
-                                    <input type="text" ng-model="hotel.address" value=""/>
-                                </div>
-                            </div>
-                            <!--预订电话-->
-                            <div class="form-group">
-                                <label class="col-lg-2 text-right">预订电话：</label>
-                                <div class="col-lg-8">
-                                    <label>
-                                        <input type="text" ng-model="phone" value=""/>多个电话号码请用','分隔
-                                    </label>
-                                </div>
-                            </div>
-                            <!--餐厅面积-->
-                            <div class="form-group">
-                                <label class="col-lg-2 text-right">餐厅面积：</label>
-                                <div class="col-lg-8">
-                                    <input type="text" ng-model="hotel.space" value="1700"/> 平米
-                                </div>
-                            </div>
-                            <!--人均消费-->
-                            <div class="form-group">
-                                <label class="col-lg-2 text-right">人均消费：</label>
-                                <div class="col-lg-8">
-                                    <input class="mr-1" type="text" ng-model="min_cost" value="1200"/> 元/人 ~
-                                    <input class="mx-1" type="text" ng-model="max_cost" value="1700"/> 元/人
-                                </div>
-                            </div>
-                            <!--餐厅设施-->
-                            <div class="form-group">
-                                <label class="col-lg-2 text-right">餐厅设施：</label>
-                                <div class="col-lg-8">
-                                    <div class="controls">
-                                        <label class=""><input type="checkbox" name="facility" value="1">万事达(Master)</label>
-                                        <label class=""><input type="checkbox" name="facility" value="2">可以刷卡</label>
-                                        <label class=""><input type="checkbox" name="facility" value="3">有停车位</label>
-                                        <label class=""><input type="checkbox" name="facility" value="4">全场禁烟</label>
-                                    </div>
-                                    <div class="controls">
-                                        <label class=""><input type="checkbox" name="facility" value="5">区分烟区</label>
-                                        <label class=""><input type="checkbox" name="facility" value="6">无线上网</label>
-                                        <label class=""><input type="checkbox" name="facility" value="7">露天位</label>
-                                        <label class=""><input type="checkbox" name="facility" value="8">有舞台</label>
-                                        <label class=""><input type="checkbox" name="facility" value="9">有表演</label>
-                                    </div>
-                                    <div class="controls">
-                                        <label class=""><input type="checkbox" name="facility" value="10">下午茶</label>
-                                        <label class=""><input type="checkbox" name="facility" value="11">夜宵</label>
-                                        <label class=""><input type="checkbox" name="facility" value="12">四合院</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--可以刷卡-->
-                            <div class="form-group">
-                                <label class="col-lg-2 text-right">可以刷卡：</label>
-                                <div class="col-lg-8">
-                                    <label class=""><input type="checkbox" ng-model="VISA" value="2">VISA</label>
-                                    <label class=""><input type="checkbox" ng-model="UnionPay" value="3">银联卡</label>
-                                </div>
-                            </div>
-                            <!--上传Logo-->
-                            <div class="form-group">
-                                <label class="col-lg-2 text-right">上传Logo：</label>
-                                <div class="col-lg-8">
-                                    <div class="py-2">
-                                        <img src="/static/css/image/head1.jpg">
-                                    </div>
-                                    <div class="py-2">
-                                        <input class="btn btn-primary btn-sm" type="file" ng-model="logo" value="上传Logo"/>
-                                        <input class="btn btn-primary btn-sm" type="button" value="清除Logo"/>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--上传大图-->
-                            <div class="form-group">
-                                <label class="col-lg-2 text-right">上传大图：</label>
-                                <div class="col-lg-8">
-                                    <div class="py-2">
-                                        <img src="/static/css/image/head1.jpg">
-                                    </div>
-                                    <div class="py-2">
-                                        <input class="btn btn-primary btn-sm" type="file" ng-model="image" value="上传图片"/>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--提交-->
-                            <div class="form-group">
-                                <label class="col-lg-2 text-right"></label>
-                                <div class="col-lg-8">
-                                    <div class="py-2">
-                                        <button class="btn btn-primary btn-sm">提交</button>
-                                    </div>
-                                </div>
-                            </div>
-                            </fieldset>
-                        </form>
-                    </div>
                     <!--菜系信息-->
                     <div class="tab-pane" role="tabpanel" id="cxxx">
                         <div class="row">

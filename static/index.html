@@ -30,7 +30,7 @@
 <div class="container-fluid" ng-app="BanquetExpertApp" id="main">
     <div class="row">
         <!--左侧导航栏-->
-        <div class="col-sm-2" ng-controller="drawerCtrl">
+        <div class="col-2 affix" ng-controller="drawerCtrl">
             <div class="thumbnail bg-warning">
                 <img class="img-rounded" src="css/image/head1.jpg" alt="IMAGE">
                 <div class="caption bg-warning">
@@ -44,18 +44,21 @@
                     </div>
                     <div class="panel-collapse collapse" id="{{menu.menu_id}}">
                         <!--<div class="panel-body">-->
-                        <div class="list-group">
-                            <div class="list-group-item" ng-repeat="x in menu.item">
-                                <a href="#/{{menu.menu_id}}/{{x.item_id}}">{{x.title}}</a>
-                            </div>
-                        </div>
+                            <ul class="nav nav-tabs nav-stacked">
+                                <li class="" ng-repeat="x in menu.item">
+                                    <a href="#/{{menu.menu_id}}/{{x.item_id}}">
+                                        <i class="glyphicon-chevron-right"></i>
+                                        {{x.title}}
+                                    </a>
+                                </li>
+                            </ul>
                         <!--</div>-->
                     </div>
                 </div>
             </div>
         </div>
         <!--内容页-->
-        <div class="col-sm-10">
+        <div class="col-10">
             <!--路径导航-->
             <div ncy-breadcrumb>
                 <ol class="well well-sm mb-2 bg-faded" id="breadcrumb">

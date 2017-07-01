@@ -1,38 +1,121 @@
-<!--主页/酒店管理/酒店管理-->
+<!--主页/酒店管理/酒店基本信息-->
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="panel-title">
-            酒店列表
-            <small>(共{{data.count}}家酒店)</small>
+            酒店基本信息
         </div>
     </div>
     <div class="panel-body">
-        <!--已添加酒店列表-->
-        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5" ng-repeat="x in data.list">
-            <div class="thumbnail" ng-click="editHotel(x.hotel_id)">
-                <div class="label label-info">
-                    {{x.id + 1}}. {{x.name}} <span ng-hide="x.is_enabled">失效</span>
+        <!--表单-->
+        <form class="form-horizontal" role="form">
+            <fieldset>
+                <!--餐厅名称-->
+                <div class="form-group">
+                    <label class="col-lg-2 text-right">餐厅名称：</label>
+                    <div class="col-lg-8">
+                        {{form.name}}
+                    </div>
                 </div>
-                <img class="img-circle" src="{{x.icon}}" style="width: 96px;height: 96px">
-                <div class="caption">
-                    <p>门店数：{{x.branches_count}}</p>
-                    <p>法人：{{x.owner_name}}</p>
-                    <p>电话：{{x.create_time}}</p>
+                <!--所在城市-->
+                <div class="form-group">
+                    <label class="col-lg-2 text-right">所在城市：</label>
+                    <div class="col-lg-8">
+                        <!--省-->
+                        <select class="inline">
+                            <option>北京</option>
+                        </select>
+                        <!--市-->
+                        <select class="inline">
+                            <option>北京</option>
+                        </select>
+                        <!--县-->
+                        <select class="inline">
+                            <option>北京</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <!--添加门店-->
-        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5">
-            <div class="thumbnail" ng-click="addHotel()">
-                <div class="label label-info">添加酒店</div>
-                <img class="img-circle" src="/static/css/image/head.jpg" style="width: 96px;height: 96px">
-                <div class="caption">
-                    <p>门店数：无</p>
-                    <p>法人：无</p>
-                    <p>电话：无</p>
+                <!--详细地址-->
+                <div class="form-group">
+                    <label class="col-lg-2 text-right">详细地址：</label>
+                    <div class="col-lg-8">
+                        <input type="text" ng-model="form.address" value=""/>
+                    </div>
                 </div>
-            </div>
-        </div>
+                <!--预订电话-->
+                <div class="form-group">
+                    <label class="col-lg-2 text-right">预订电话：</label>
+                    <div class="col-lg-8">
+                        <label>
+                            <input type="text" ng-model="phone" value=""/>多个电话号码请用','分隔
+                        </label>
+                    </div>
+                </div>
+                <!--餐厅设施-->
+                <div class="form-group">
+                    <label class="col-lg-2 text-right">餐厅设施：</label>
+                    <div class="col-lg-8">
+                        <div class="controls">
+                            <label><input type="checkbox" name="facility" value="1">万事达(Master)</label>
+                            <label><input type="checkbox" name="facility" value="2">可以刷卡</label>
+                            <label><input type="checkbox" name="facility" value="3">有停车位</label>
+                            <label><input type="checkbox" name="facility" value="4">全场禁烟</label>
+                        </div>
+                        <div class="controls">
+                            <label><input type="checkbox" name="facility" value="5">区分烟区</label>
+                            <label><input type="checkbox" name="facility" value="6">无线上网</label>
+                            <label><input type="checkbox" name="facility" value="7">露天位</label>
+                            <label><input type="checkbox" name="facility" value="8">有舞台</label>
+                            <label><input type="checkbox" name="facility" value="9">有表演</label>
+                        </div>
+                        <div class="controls">
+                            <label><input type="checkbox" name="facility" value="10">下午茶</label>
+                            <label><input type="checkbox" name="facility" value="11">夜宵</label>
+                            <label><input type="checkbox" name="facility" value="12">四合院</label>
+                        </div>
+                    </div>
+                </div>
+                <!--可以刷卡-->
+                <div class="form-group">
+                    <label class="col-lg-2 text-right">可以刷卡：</label>
+                    <div class="col-lg-8">
+                        <label><input type="checkbox" ng-model="form.VISA" value="2">VISA</label>
+                        <label><input type="checkbox" ng-model="form.UnionPay" value="3">银联卡</label>
+                    </div>
+                </div>
+                <!--上传Logo-->
+                <div class="form-group">
+                    <label class="col-lg-2 text-right">上传Logo：</label>
+                    <div class="col-lg-8">
+                        <div class="py-2">
+                            <img ng-src="form.logo" alt="LOGO">
+                            <input type="file" ng-model="form.logo" value="上传Logo"/>
+                            <input class="btn btn-secondary btn-sm" type="button" value="清除Logo"/>
+                        </div>
+                    </div>
+                </div>
+                <!--上传大图-->
+                <div class="form-group">
+                    <label class="col-lg-2 text-right">上传大图：</label>
+                    <div class="col-lg-8">
+                        <div class="py-2">
+                            <img ng-src="form.image" alt="IMAGE">
+                        </div>
+                        <div class="py-2">
+                            <input type="file" ng-model="image" value="上传图片"/>
+                        </div>
+                    </div>
+                </div>
+                <!--提交-->
+                <div class="form-group">
+                    <label class="col-lg-2 text-right"></label>
+                    <div class="col-lg-8">
+                        <div class="py-2">
+                            <button class="btn btn-primary btn-sm" ng-click="submit()">提交</button>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
     </div>
     <div class="panel-footer">
         This is footer.
