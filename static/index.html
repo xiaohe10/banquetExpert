@@ -32,9 +32,9 @@
         <!--左侧导航栏-->
         <div class="col-2 affix" ng-controller="drawerCtrl">
             <div class="thumbnail bg-warning">
-                <img class="img-rounded" src="css/image/head1.jpg" alt="IMAGE">
+                <img class="img-rounded" ng-src="{{hotel.icon}}" alt="IMAGE">
                 <div class="caption bg-warning">
-                    <h3 class="text-center">北京宴总店</h3>
+                    <h3 class="text-center">{{hotel.name}}</h3>
                 </div>
             </div>
             <div class="panel-group" id="drawer">

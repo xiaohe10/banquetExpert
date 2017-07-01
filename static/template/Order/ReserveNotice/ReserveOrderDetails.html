@@ -24,7 +24,11 @@
                         <div class="row m-2">
                             <div class="col-12 text-info">
                                 <p><strong>{{order.area}} {{order.seat}} </strong></p>
-                                <p><strong>{{order.name}} {{order.gender}} {{order.phone}} {{order.count}} 人 {{order.type}}客户</strong></p>
+                                <p>
+                                    <strong>
+                                        {{order.name}} {{order.gender}} {{order.phone}} {{order.count}} 人 {{order.type}}客户
+                                    </strong>
+                                </p>
                                 <p><strong>用餐时间：{{order.meal_time}}</strong></p>
                                 <p><strong>创建时间：{{order.create_time}} 操作：{{order.operator}} </strong></p>
                             </div>
@@ -45,7 +49,7 @@
                             <div class="col-12 form-group" style="float: right">
                                 <label>已选0
                                     <div class="btn-group btn-group-sm">
-                                        <input class="btn btn-secondary btn-sm px-2 mx-1" type="button" ng-click="delete()" value="删除"/>
+                                        <input class="btn btn-warning btn-sm px-2 mx-1" type="button" ng-click="delete()" value="删除"/>
                                         <input class="btn btn-primary btn-sm px-2 mx-1" type="button" ng-click="download()" value="下载"/>
                                     </div>
                                 </label>
@@ -66,5 +70,5 @@
     </div>
 </div>
 <div class="modal-footer">
-    <input class="btn btn-secondary" type="button" value="关闭" ng-click="cancel()"/>
+    <input class="btn btn-warning" type="button" value="关闭" ng-click="cancel()"/>
 </div>

@@ -10,15 +10,19 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label"><a style="color: red;">*</a>姓名：</label>
                 <div class="col-sm-10">
-                    <input class="form-control-sm" type="text" ng-model="form.name"/>
+                    <input type="text" ng-model="form.name"/>
                 </div>
             </div>
             <!--性别-->
             <div class="form-group">
                 <label class="col-sm-2 control-label"><a style="color: red;">*</a>性别：</label>
                 <div class="col-sm-10">
-                    <label><input class="form-control-sm" type="radio" ng-model="form.gender" value="male"/>先生</label>
-                    <label><input class="form-control-sm" type="radio" ng-model="form.gender" value="female"/>女士</label>
+                    <label class="radio-inline">
+                        <input type="radio" ng-model="form.gender" value="male"/>先生
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" ng-model="form.gender" value="female"/>女士
+                    </label>
                 </div>
             </div>
             <!--电话-->
@@ -31,7 +35,7 @@
                             <input type="text" ng-model="x"/>
                         </label></li>
                     </ul>
-                    <a class="btn btn-primary btn-link">+增加电话</a>
+                    <a class="btn btn-link btn-sm">+增加电话</a>
                     <a class="text-warning">请准确输入11位手机号码</a>
                 </div>
             </div>
@@ -40,8 +44,12 @@
                 <label class="col-sm-2 control-label">生日：</label>
                 <div class="col-sm-10">
                     <input type="date" ng-model="form.birthday"/>
-                    <label><input type="radio" ng-model="form.calendar" value="0"/>公历</label>
-                    <label><input type="radio" ng-model="form.calendar" value="1"/>农历</label>
+                    <label class="radio-inline">
+                        <input type="radio" ng-model="form.calendar" value="0"/>公历
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" ng-model="form.calendar" value="1"/>农历
+                    </label>
                 </div>
             </div>
             <!--单位-->
@@ -56,19 +64,19 @@
                 <label class="col-sm-2 control-label">现住址：</label>
                 <div class="col-sm-10">
                     <!--省-->
-                    <select class="form-control-sm inline" ng-model="form.address.province">
+                    <select class=" inline" ng-model="form.address.province">
                         <option>北京</option>
                     </select>
                     <!--市-->
-                    <select class="form-control-sm inline" ng-model="form.address.city">
+                    <select class=" inline" ng-model="form.address.city">
                         <option>北京</option>
                     </select>
                     <!--县-->
-                    <select class="form-control-sm inline" ng-model="form.address.county">
+                    <select class=" inline" ng-model="form.address.county">
                         <option>北京</option>
                     </select>
                     <!--小区-->
-                    <select class="form-control-sm inline" ng-model="form.address.block">
+                    <select class=" inline" ng-model="form.address.block">
                         <option>北京</option>
                     </select>
                 </div>
@@ -78,11 +86,11 @@
                 <label class="col-sm-2 control-label">籍贯：</label>
                 <div class="col-sm-10">
                     <!--省-->
-                    <select class="form-control-sm inline" ng-model="form.native.province">
+                    <select class=" inline" ng-model="form.native.province">
                         <option>北京</option>
                     </select>
                     <!--市-->
-                    <select class="form-control-sm inline" ng-model="form.native.city">
+                    <select class=" inline" ng-model="form.native.city">
                         <option>北京</option>
                     </select>
                 </div>
@@ -91,15 +99,19 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">营销短信：</label>
                 <div class="col-sm-10">
-                    <label><input type="radio" ng-model="form.sms_marketing" value="enabled"/>开</label>
-                    <label><input type="radio" ng-model="form.sms_marketing" value="disabled"/>关</label>
+                    <label class="radio-inline">
+                        <input type="radio" ng-model="form.sms_marketing" value="enabled"/>开
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" ng-model="form.sms_marketing" value="disabled"/>关
+                    </label>
                 </div>
             </div>
             <!--分类方法-->
             <div class="form-group">
                 <label class="col-sm-2 control-label">分类方法：</label>
                 <div class="col-sm-10">
-                    <select class="form-control-sm inline" ng-model="form.classification_method">
+                    <select ng-model="form.classification_method">
                         <option>北京</option>
                     </select>
                 </div>
@@ -110,11 +122,11 @@
                 <div class="col-sm-10">
                     <!--病症列表-->
                     <ul class="inline">
-                        <li ng-repeat="x in form.desease"><label>
+                        <li ng-repeat="x in form.desease"><label class="badge badge-info">
                             <input type="text" ng-model="x"/>
                         </label></li>
                     </ul>
-                    <a class="btn btn-primary btn-link">+添加标签</a>
+                    <a class="btn btn-link btn-sm">+添加标签</a>
                 </div>
             </div>
             <!--喜好-->
@@ -123,11 +135,11 @@
                 <div class="col-sm-10">
                     <!--喜好列表-->
                     <ul class="inline">
-                        <li ng-repeat="x in from.hobby"><label>
+                        <li ng-repeat="x in form.hobby"><label>
                             <input type="text" ng-model="x"/>
                         </label></li>
                     </ul>
-                    <a class="btn btn-primary btn-link">+添加标签</a>
+                    <a class="btn btn-link btn-sm">+添加标签</a>
                 </div>
             </div>
             <!--忌口-->
@@ -137,10 +149,10 @@
                     <!--忌口列表-->
                     <ul class="inline">
                         <li ng-repeat="x in form.dieting"><label>
-                            <input class="form-control-sm" type="text" ng-model="x"/>
+                            <input type="text" ng-model="x"/>
                         </label></li>
                     </ul>
-                    <a class="btn btn-primary btn-link">+添加标签</a>
+                    <a class="btn btn-link btn-sm">+添加标签</a>
                 </div>
             </div>
             <!--不良记录-->
@@ -154,6 +166,6 @@
     </form>
 </div>
 <div class="modal-footer">
-    <input class="btn btn-primary btn-sm" ng-click="submit()" value="提交"/>
-    <input class="btn btn-secondary btn-sm" ng-click="cancel()" value="取消"/>
+    <input class="btn btn-success btn-sm" type="button" ng-click="submit()" value="提交"/>
+    <input class="btn btn-warning btn-sm" type="button" ng-click="cancel()" value="取消"/>
 </div>

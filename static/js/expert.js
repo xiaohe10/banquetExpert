@@ -1,11 +1,8 @@
 /**
  * Created by 本山 on 2017/5/31.
  */
-/**
- *
- * 全局变量：记录所有固定的内容
- *
- */
+
+// 全局变量：记录所有固定的内容
 BanquetExpert = {
     keu: "宴专家",
     en: {
@@ -13,6 +10,10 @@ BanquetExpert = {
     },
     zh_ch: {
         display: "Display"
+    },
+    hotel: {
+        name: "未登录",
+        icon: "/static/css/image/head1.jpg"
     },
     branch: ["门店1", "门店2", "门店3", "门店4", "门店5", "门店6"],
     selected_branch: 1,
@@ -190,17 +191,6 @@ for (var i = 0; i < 36; i++) {
     });
 }
 
-$.get({
-    url: "/webApp/admin/hotel/profile/",
-    data: {
-        // token: window.Login.token
-    },
-    success: function (data) {
-        console.log(window.Login.token);
-        BanquetExpert.data = eval(data);
-    }
-});
-
 // 子页面模板
 Templates = {
     // 路径导航
@@ -261,7 +251,6 @@ Templates = {
         Tutorial: "Review/Tutorial.html"// 中国服务私人订制标准视频教程
     }
 };
-
 // 对话框模板
 Dialog = {
     SuperAdmin: {
@@ -319,10 +308,27 @@ var Log = {
     }
 };
 
+$.post({
+    url: "/webApp/admin/hotel/profile/get/",
+    data: JSON.stringify({}),
+    success: function (data) {
+        Log.i("expert.js", JSON.stringify(data));
+        // var data = eval(data);
+        // if (data.status === true) {
+        BanquetExpert.hotel = data.data;
+        // }
+    },
+    fail: function (error) {
+        Log.i("expert.js", JSON.stringify(error));
+        location.href = "login.html";
+    }
+});
+
 var BanquetExpertApp = angular.module('BanquetExpertApp', [
     'ngRoute',
     'ui.bootstrap'
 ]);
+
 // 过滤器定义
 BanquetExpertApp.filter('gender', function () {
     return function (gender) {
@@ -353,10 +359,13 @@ BanquetExpertApp.filter('status', function () {
         return TAG[status];
     }
 });
+
 // 侧边导航栏控制器
 BanquetExpertApp.controller('drawerCtrl', function ($scope) {
+    $scope.hotel = BanquetExpert.hotel;
     $scope.menus = BanquetExpert.menus;
 });
+
 // Angular路由配置
 BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
 
@@ -1219,6 +1228,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                                     gender: "lunch"
                                 }
                             };
+                            $scope.channel = BanquetExpert.channel;
                             // 导出客户档案
                             $scope.export = function () {
                                 Log.i(TAG, JSON.stringify($scope.form));
@@ -1250,7 +1260,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
             }
         });
 
-// 酒店管理
+    // 酒店管理
     $routeProvider
         .when('/Hotel/Branch', {
             templateUrl: "./template/" + Templates.Hotel.Branch, controller: function ($scope, $modal) {
@@ -1403,7 +1413,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
             }
         });
 
-// 订单管理
+    // 订单管理
     $routeProvider
         .when('/Order/InsertOrder', {
             templateUrl: "./template/" + Templates.Order.InsertOrder, controller: function ($scope) {
@@ -1750,7 +1760,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
             }
         });
 
-// 预订管理
+    // 预订管理
     $routeProvider
         .when('/Reserve/AreaDesk', {
             templateUrl: "./template/" + Templates.Reserve.AreaDesk, controller: function ($scope, $http) {
@@ -1891,7 +1901,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
             }
         });
 
-// 评分审阅
+    // 评分审阅
     $routeProvider
         .when('/Review/Rank', {
             templateUrl: "./template/" + Templates.Review.Rank, controller: function ($scope) {
@@ -1929,7 +1939,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
         })
         .when('/Review/Tutorial', {templateUrl: "./template/" + Templates.Review.Tutorial});
 
-// 智能订餐台
+    // 智能订餐台
     $routeProvider
         .when('/SmartOrder/SmartOrder', {
             templateUrl: "./template/" + Templates.SmartOrder.SmartOrder, controller: function ($scope) {
