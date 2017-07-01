@@ -391,8 +391,8 @@ class Guest(models.Model):
     person_consumption = models.FloatField(default=0.0, db_index=True)
     # 桌均消费(通过每天定时任务来更新数据)
     desk_consumption = models.FloatField(default=0.0, db_index=True)
-    # 消费频度, 每月平均多少桌(通过每天定时任务来更新数据)
-    desk_per_month = models.FloatField(default=0.0, db_index=True)
+    # 消费频度, 每月平均多少单(通过每天定时任务来更新数据)
+    order_per_month = models.FloatField(default=0.0, db_index=True)
     # 最后消费时间戳, 排序用(通过每天定时任务来更新数据)
     last_consumption = models.IntegerField(default=0, db_index=True)
 

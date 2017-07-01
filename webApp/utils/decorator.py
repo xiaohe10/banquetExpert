@@ -102,20 +102,20 @@ def validate_args(dic):
     def decorator(function):
         @wraps(function)
         def returned_wrapper(request, *args, **kwargs):
+            # 从session 中获取 token(如果存在)
+            token = request.session.get('token', None)
             try:
                 if request.method == "GET":
                     data = request.GET
                 elif request.method == "POST":
                     data = json.loads(request.body)
+                    if 'token' not in data:
+                        data['token'] = token
                 else:
                     data = QueryDict(request.body)
             except ValueError:
                 return err_response(
                     'err_1', '参数不正确（缺少参数或者不符合格式）')
-            # 从session 中获取 token(如果存在)
-            token = request.session.get('token', None)
-            if 'token' not in data:
-                data['token'] = token
             for k, v in dic.items():
                 try:
                     kwargs[k] = v.clean(data[k])

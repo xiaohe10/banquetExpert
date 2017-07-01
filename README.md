@@ -1438,7 +1438,7 @@ URL：webApp/staff/guest/list/ <br>
 | status | 客户状态：0：活跃，1：沉睡，2：流失，3：无订单 |
 | desk_number   | 消费总桌数 |
 | person_consumption    | 人均消费  |
-| desk_per_month    | 消费频度, 单/月 |
+| order_per_month    | 消费频度, 单/月 |
 | last_consumption  | 上次消费日期    |
 
 
@@ -1466,7 +1466,7 @@ URL：webApp/staff/guest/list/ <br>
 			"status":0,
 			"desk_number":10,
 			"person_consumption":400,
-			"desk_per_month":3.11,
+			"order_per_month":3.11,
 			"last_consumption":"1993-02-25"
 		},
 		...
@@ -1686,7 +1686,7 @@ URL：webApp/guest/list/ <br>
 | status | 客户状态：0：活跃，1：沉睡，2：流失，3：无订单 |
 | desk_number   | 消费总桌数 |
 | person_consumption    | 人均消费  |
-| desk_per_month    | 消费频度, 单/月 |
+| order_per_month    | 消费频度, 单/月 |
 | last_consumption  | 上次消费日期    |
 
 
@@ -1714,7 +1714,7 @@ URL：webApp/guest/list/ <br>
 			"status":0,
 			"desk_number":10,
 			"person_consumption":400,
-			"desk_per_month":3.11,
+			"order_per_month":3.11,
 			"last_consumption":"1993-02-25"
 		},
 		...
