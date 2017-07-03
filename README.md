@@ -4132,8 +4132,6 @@ URL：webApp/admin/hotel/staff/list/ <br>
 |:------------- |:---------------| :-------------:|
 | token         | 令牌          |         yes    |
 | hotel_id  | 酒店 ID | yes   |
-| offset | 起始值（默认0） | no |
-| limit | 偏移量（默认10） | no |
 | order | 排序方式（0: 注册时间升序，1: 注册时间降序，2: 昵称升序，3: 昵称降序，默认1） | no |
 
 请求示例：
@@ -4149,18 +4147,20 @@ URL：webApp/admin/hotel/staff/list/ <br>
 
 | 参数名称       | 含义             |
 |:------------- |:---------------|
-| count | 桌位数  |
-| list | 桌位列表 |
+| count | 员工数  |
+| list | 员工列表 |
 | 以下为list中的数据    |
 | staff_id  | 员工 ID    |
 | staff_number    | 员工编号    |
 | name  | 员工姓名  |
 | icon  | 员工头像  |
+| status    | 员工状态，0：待审核，1：审核通过 |
 | gender    | 性别，0:保密，1:男，2:女    |
 | hotel_name    | 员工所属酒店    |
 | position  | 职位    |
 | guest_channel | 所属获客渠道, 0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理 |
 | authority | 权限    |
+| is_enabled    | 是否有效  |
 | create_time   | 创建时间  |
 
 返回示例：
@@ -4175,11 +4175,13 @@ URL：webApp/admin/hotel/staff/list/ <br>
 		    "staff_number":"12345",
 		    "name":"张三",
 		    "icon":"头像地址",
+		    "status":1,
 		    "gender":0,
 		    "hotel_name":"北京宴",
 		    "position":"经理",
 		    "guest_channel":1,
 		    "authority":"权限",
+		    "is_enabled":True,
 		    "create_time":"创建时间"
 		    ],
 		    ...

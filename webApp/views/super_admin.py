@@ -18,12 +18,15 @@ from ..models import Admin, Hotel
     'offset': forms.IntegerField(min_value=0, required=False),
     'limit': forms.IntegerField(min_value=0, required=False),
     'order': forms.IntegerField(min_value=0, max_value=3, required=False),
+    'hotel_id': forms.IntegerField(required=False),
 })
 @validate_super_admin_token()
-def get_admins(request, token, is_enabled=True, offset=0, limit=10, order=1):
+def get_admins(request, token, hotel_id=None, is_enabled=True, offset=0,
+               limit=10, order=1):
     """获取管理者列表
 
     :param token: 令牌(必传)
+    :param hotel_id: 酒店ID
     :param is_enabled: 是否有效(默认有)
     :param offset: 起始值
     :param limit: 偏移量
@@ -45,9 +48,12 @@ def get_admins(request, token, is_enabled=True, offset=0, limit=10, order=1):
     """
     ORDERS = ('create_time', '-create_time', 'username', '-username')
 
-    c = Admin.objects.filter(is_enabled=is_enabled).count()
-    admins = Admin.objects.filter(is_enabled=is_enabled).order_by(
-        ORDERS[order])[offset:offset + limit]
+    admins = Admin.objects.filter(is_enabled=is_enabled)
+    if hotel_id:
+        admins = admins.filter(hotel__id=hotel_id)
+
+    c = admins.count()
+    admins = admins.order_by(ORDERS[order])[offset:offset + limit]
     l = [{'admin_id': a.id,
           'username': a.username,
           'type': a.type,
