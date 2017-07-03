@@ -12,8 +12,12 @@ BanquetExpert = {
         display: "Display"
     },
     hotel: {
-        name: "未登录",
-        icon: "/static/css/image/head1.jpg"
+        "hotel_id": 1,
+        "name": "未登录",
+        "icon": "/static/css/image/head1.jpg",
+        "branches_count": 10,
+        "owner_name": "杨秀荣",
+        "create_time": "创建时间"
     },
     branch: ["门店1", "门店2", "门店3", "门店4", "门店5", "门店6"],
     selected_branch: 1,
@@ -95,12 +99,12 @@ BanquetExpert = {
             ]
         },
         {
-            title: "后台用户管理",
+            title: "员工管理",
             menu_id: "Channel",
             item: [
-                {title: "员工管理", item_id: "Staff"},
+                {title: "员工账户", item_id: "Staff"},
                 {title: "获客渠道", item_id: "Channel"},
-                {title: "用户权限管理", item_id: "Privilege"}
+                {title: "员工权限管理", item_id: "Privilege"}
             ]
         },
         {
@@ -312,11 +316,10 @@ $.post({
     url: "/webApp/admin/hotel/profile/get/",
     data: JSON.stringify({}),
     success: function (data) {
-        Log.i("expert.js", JSON.stringify(data));
-        // var data = eval(data);
-        // if (data.status === true) {
+        var obj = eval(data);
+        // Log.i("expert.js", data);
+        // Log.i("expert.js", JSON.stringify(data));
         BanquetExpert.hotel = data.data;
-        // }
     },
     fail: function (error) {
         Log.i("expert.js", JSON.stringify(error));
@@ -1285,6 +1288,15 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                         create_time: "创建时间"
                     }]
                 };
+                var url = "webApp/admin/hotel_branch/list/";
+                $http.post(url, JSON.stringify(data)).success(function (data) {
+                    var obj = eval(data);
+                    if (obj.status === "true") {
+                        $scope.data = obj.data;
+                    } else {
+                        alert(obj.description);
+                    }
+                });
                 $scope.addBranch = function () {
                     Log.i(TAG, "添加门店");
                     var dlg = $modal.open({
@@ -1983,22 +1995,20 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
     // 超级管理员
     $routeProvider
         .when('/SuperAdmin/SuperAdmin', {
-            templateUrl: "./template/" + Templates.SuperAdmin.SuperAdmin, controller: function ($scope, $modal) {
+            templateUrl: "./template/" + Templates.SuperAdmin.SuperAdmin, controller: function ($scope, $modal, $http) {
                 var TAG = Templates.SuperAdmin.SuperAdmin;
-                $scope.data = {
-                    count: 20,
-                    list: [
-                        {
-                            hotel_id: 1,
-                            name: "北京宴",
-                            icon: "/static/css/image/head2.jpg",
-                            branches_count: 10,
-                            owner_name: "杨秀荣",
-                            is_enabled: true,
-                            create_time: "创建时间"
-                        }
-                    ]
-                };
+                // 酒店列表
+                $scope.data = {count: 0, list: []};
+                // 获取酒店列表
+                var url = "/webApp/super_admin/hotel/list/";
+                $http.post(url, JSON.stringify({})).success(function (obj) {
+                    if (obj.status === "true") {
+                        $scope.data = obj.data;
+                    } else {
+                        alert(obj.description);
+                    }
+                });
+                // 添加酒店
                 $scope.addHotel = function () {
                     Log.i(TAG, "添加酒店");
                     var dlg = $modal.open({
@@ -2017,18 +2027,15 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                             };
                             $scope.cancel = function () {
                                 Log.i(TAG, "取消");
+                                dlg.dismiss();
                             }
                         },
                         resolve: {
                             form: function () {
                                 var hotel = {
-                                    hotel_id: 1,
-                                    name: "北京宴",
-                                    icon: "/static/css/image/head2.jpg",
-                                    branches_count: 10,
-                                    owner_name: "杨秀荣",
-                                    is_enabled: true,
-                                    create_time: "创建时间"
+                                    // token: "129ASDFIOJIO3RN23U12934INASDF",
+                                    name: "珍珠大酒店",
+                                    owner_name: "赵强"
                                 };
                                 return hotel;
                             }
@@ -2039,10 +2046,19 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                     });
                     dlg.result.then(function (result) {
                         Log.i(TAG, JSON.stringify(result));
+                        var url = "/webApp/super_admin/hotel/register/";
+                        $http.post(url, JSON.stringify(result)).success(function (obj) {
+                            if (obj.status === "true") {
+                                alert("添加酒店成功");
+                            } else {
+                                alert(obj.description);
+                            }
+                        });
                     }, function (reason) {
                         Log.i(TAG, reason);
                     });
                 };
+                // 编辑酒店信息
                 $scope.editHotel = function (hotel) {
                     Log.i(TAG, "编辑酒店：" + hotel.name);
                     var dlg = $modal.open({
@@ -2079,7 +2095,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                     });
                 }
             }
-        })
+        });
 
     $routeProvider
         .otherwise({redirectTo: "/SmartOrder/SmartOrder"});

@@ -141,10 +141,9 @@ def delete_admin(request, token, admin_id):
     'username': forms.CharField(min_length=1, max_length=20),
     'password': forms.CharField(min_length=1, max_length=128),
 })
-def login(request, token, username, password):
+def login(request, username, password):
     """登录，更新并返回超级管理者令牌
 
-    :param token: 令牌
     :param username: 用户名(必传)
     :param password: 密码(必传)
     :return token: 管理员token
