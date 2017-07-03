@@ -10,7 +10,7 @@
             <div class="form-group">
                 <label class="col-lg-3 control-label"><a style="color: red;">*</a>渠道名称：</label>
                 <div class="col-lg-9">
-                    <input class="form-control-sm" type="text" ng-model="form.channel" placeholder=""/>
+                    <input type="text" ng-model="form.channel" placeholder=""/>
                 </div>
             </div>
             <!--直属上级-->
@@ -42,8 +42,8 @@
                 <div class="col-lg-9">
                     <input type="date" ng-model="form.date_from"/>
                     ~
-                    <input type="date" name="form.date_to"/>
-                    <span style="color: red" ng-show="form.date_from >= form.date_to"></span>
+                    <input type="date" ng-model="form.date_to"/>
+                    <span style="color: red" ng-show="form.date_from >= form.date_to">起始日期应大于结束日期</span>
                 </div>
             </div>
             <!--佣金核算方式-->

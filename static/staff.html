@@ -2,27 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>宴专家超级后台管理</title>
+    <title>宴专家超级后台</title>
     <!-- 新 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="bootstrap/3.3.7/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="bootstrap/3.3.7/dist/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="bootstrap/3.3.7/dist/css/bootstrap-responsive.min.css"/>
     <!--<link rel="stylesheet" href="bootstrap/4.0.0/dist/css/bootstrap.min.css"/>-->
     <link rel="stylesheet" href="bootstrap/4.0.0/dist/css/bootstrap-grid.min.css"/>
+    <!--<link rel="stylesheet" href="bootstrap/4.0.0/dist/css/bootstrap-reboot.min.css"/>-->
     <script src="js/jquery-1.12.3.min.js"></script>
     <script src="bootstrap/3.3.7/dist/js/bootstrap.min.js"></script>
-    <!--<script src="bootstrap/4.0.0/dist/js/bootstrap.min.js"></script>-->
-    <!--Angular-->
+    <!--AngularJS-->
     <script src="http://code.angularjs.org/1.2.7/angular.js"></script>
     <script src="http://code.angularjs.org/1.2.7/angular-route.js"></script>
-    <script src="https://cdn.bootcss.com/angular-breadcrumb/0.5.0/angular-breadcrumb.min.js"></script>
     <script src="bootstrap/3.3.7/dist/js/ui-bootstrap-tpls-0.9.0.js"></script>
     <script src="js/ngDialog.min.js"></script>
-    <!--Chart-->
-    <script src="js/highcharts.js"></script>
-    <!--Utils-->
+    <!--自定义-->
     <script src="js/md5.js"></script>
-    <!--Custom-->
     <script src="js/login.js"></script>
 </head>
 <body>
@@ -30,12 +24,9 @@
 <div class="container-fluid" ng-app="BanquetExpertApp" id="main">
     <div class="row">
         <!--左侧导航栏-->
-        <div class="col-2 affix" ng-controller="drawerCtrl">
-            <div class="thumbnail bg-warning">
-                <img class="img-rounded" ng-src="{{hotel.icon}}" alt="IMAGE">
-                <div class="caption bg-warning">
-                    <h3 class="text-center">{{hotel.name}}</h3>
-                </div>
+        <div class="col-sm-2" ng-controller="drawerCtrl">
+            <div>
+                <img class="img-responsive center-block img-thumbnail" src="css/image/head1.jpg" alt="IMAGE">
             </div>
             <div class="panel-group" id="drawer">
                 <div class="panel panel-default" ng-repeat="menu in menus">
@@ -44,24 +35,21 @@
                     </div>
                     <div class="panel-collapse collapse" id="{{menu.menu_id}}">
                         <!--<div class="panel-body">-->
-                            <ul class="nav nav-tabs nav-stacked">
-                                <li class="" ng-repeat="x in menu.item">
-                                    <a href="#/{{menu.menu_id}}/{{x.item_id}}">
-                                        <i class="glyphicon-chevron-right"></i>
-                                        {{x.title}}
-                                    </a>
-                                </li>
-                            </ul>
+                        <div class="list-group">
+                            <div class="list-group-item" ng-repeat="x in menu.item">
+                                <a href="#/{{menu.menu_id}}/{{x.item_id}}">{{x.title}}</a>
+                            </div>
+                        </div>
                         <!--</div>-->
                     </div>
                 </div>
             </div>
         </div>
         <!--内容页-->
-        <div class="col-10">
+        <div class="col-sm-10">
             <!--路径导航-->
-            <div ncy-breadcrumb>
-                <ol class="well well-sm mb-2 bg-faded" id="breadcrumb">
+            <div>
+                <ol class="breadcrumb mb-2 bg-faded" id="breadcrumb">
                     路径导航
                 </ol>
             </div>
@@ -73,7 +61,6 @@
     </div>
 </div>
 <!--python manage.py runserver localhost:8000-->
-<!--信息路26号-->
-<script src="js/expert.js"></script>
+<!--<script src="js/expert.js"></script>-->
 </body>
 </html>

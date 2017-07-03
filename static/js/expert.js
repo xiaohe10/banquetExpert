@@ -778,26 +778,32 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                     Log.i(TAG, "新增外部渠道");
                     var dlg = $modal.open({
                         templateUrl: "./template/" + Dialog.Channel.Channel.ExternalChannelDialog,
-                        controller: function ($scope) {
+                        resolve: {
+                            form: function () {
+                                var channel = {
+                                    // 渠道名称
+                                    channel: "118114",
+                                    // 直属上级
+                                    parent: 1,
+                                    // 签约折扣标准
+                                    discount: 2,
+                                    // 合作周期
+                                    date_from: "2017/06/27",
+                                    date_to: "2017/06/27",
+                                    // 佣金核算方式
+                                    bonus: {
+                                        method: 1,
+                                        value: 12
+                                    }
+                                };
+                                return channel;
+                            }
+                        },
+                        controller: function ($scope, form) {
                             var TAG = Dialog.Channel.Channel.ExternalChannelDialog;
                             Log.i(TAG, "对话框控制器");
                             $scope.option = "新增";
-                            $scope.form = {
-                                // 渠道名称
-                                channel: "118114",
-                                // 直属上级
-                                parent: 1,
-                                // 签约折扣标准
-                                discount: 2,
-                                // 合作周期
-                                date_from: "2017/06/27",
-                                date_to: "2017/06/27",
-                                // 佣金核算方式
-                                bonus: {
-                                    method: 1,
-                                    value: 12
-                                }
-                            };
+                            $scope.form = form;
                             $scope.discount = ["无折扣", "9.5折", "9.0折", "8.5折", "8.0折"];
                             $scope.submit = function () {
                                 dlg.close($scope.form);
@@ -855,16 +861,43 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
             }
         })
         .when('/Channel/Staff', {
-            templateUrl: "./template/" + Templates.Channel.Staff, controller: function ($scope, $modal) {
+            templateUrl: "./template/" + Templates.Channel.Staff, controller: function ($scope, $modal, $http) {
                 var TAG = Templates.Channel.Staff;
                 // 员工列表
-                $scope.staff = BanquetExpert.staff;
+                $scope.data = {
+                    "count": 20,
+                    "list": [{
+                        "staff_id": 1,
+                        "staff_number": "12345",
+                        "name": "张三",
+                        "icon": "头像地址",
+                        "gender": 0,
+                        "hotel_name": "北京宴",
+                        "position": "经理",
+                        "guest_channel": 1,
+                        "authority": "权限",
+                        "create_time": "创建时间"
+                    }]
+                };
+                var url = "/webApp/admin/hotel/staff/list/";
+                var param = {
+                    hotel_id: BanquetExpert.hotel.hotel_id,
+                    status: 1
+                };
+                $http.post(url, JSON.stringify(param)).success(function (obj) {
+                    if (obj.status === "true") {
+                        $scope.data = obj.data;
+                    } else {
+                        alert(obj.description);
+                    }
+                });
                 // 审核员工
                 $scope.approve = function (staff) {
                     Log.i(TAG, "审核员工：" + JSON.stringify(staff));
                     $modal.open({
                         templateUrl: "./template/" + Dialog.Channel.Staff.StaffDialog,
                         controller: function ($scope, form) {
+                            $scope.option = "审核";
                             $scope.form = form;
                             $scope.admit = function () {
 
@@ -1266,7 +1299,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
     // 酒店管理
     $routeProvider
         .when('/Hotel/Branch', {
-            templateUrl: "./template/" + Templates.Hotel.Branch, controller: function ($scope, $modal) {
+            templateUrl: "./template/" + Templates.Hotel.Branch, controller: function ($scope, $modal, $http) {
                 var TAG = Templates.Hotel.Branch;
                 $scope.data = {
                     count: 20,
@@ -1288,9 +1321,11 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                         create_time: "创建时间"
                     }]
                 };
-                var url = "webApp/admin/hotel_branch/list/";
-                $http.post(url, JSON.stringify(data)).success(function (data) {
-                    var obj = eval(data);
+                var url = "/webApp/admin/hotel_branch/list/";
+                var param = {
+                    hotel_id: BanquetExpert.hotel.hotel_id
+                };
+                $http.post(url, JSON.stringify(param)).success(function (obj) {
                     if (obj.status === "true") {
                         $scope.data = obj.data;
                     } else {
@@ -1404,8 +1439,11 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
             templateUrl: "./template/" + Templates.Hotel.Hotel, controller: function ($scope, $modal) {
                 var TAG = Templates.Hotel.Hotel;
                 $scope.form = {
+                    hotel_id: 1,
                     // 餐厅名称
                     name: "北京宴总店",
+                    // 餐厅标志
+                    icon: "/static/css/image/head1.jpg",
                     // 详细地址
                     address: "丰台区靛厂路3号(永辉超市东侧)",
                     // 预订电话
@@ -1416,9 +1454,10 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                     VISA: false,
                     UnionPay: false,
                     // Logo
-                    logo: "/static/css/image/head1.jpg",
                     image: "/static/css/image/head2.jpg"
                 };
+                var url = "webApp/super_admin/hotel/profile/get/";
+
                 $scope.submit = function () {
                     Log.i(TAG, "提交酒店信息：" + JSON.stringify($scope.form))
                 }

@@ -212,7 +212,7 @@ def get_branches(request, token, hotel_id, is_enabled=True, offset=0, limit=10,
           'facility': json.loads(b.facility) if b.facility else '',
           'pay_card': json.loads(b.pay_card) if b.pay_card else '',
           'phone': json.loads(b.phone) if b.phone else '',
-          'hotel_name': b.hotel.hotel.name,
+          'hotel_name': b.hotel.name,
           'manager_name': b.manager.name,
           'create_time': b.create_time} for b in branches]
     return corr_response({'count': c, 'list': l})
