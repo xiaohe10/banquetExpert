@@ -45,7 +45,10 @@ urlpatterns = [
     # 修改门店桌位
     url(r'^hotel_branch/desk/modify/$', modify_desk, name='modify_desk'),
     # 获取获客渠道
-    url(r'^channel/list/$', get_channels, name='get_channel_list'),
+    url(r'^hotel/channel/list/$', get_channels, name='get_channel_list'),
+    # 获取外部获客渠道信息
+    url(r'^hotel/external_channel/profile/$', get_channel_profile,
+        name='get_channel_profile'),
     # 获取酒店员工列表
     url(r'^hotel/staff/list/$', get_staffs, name='staff_list'),
     # 注册新的员工
