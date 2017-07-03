@@ -11,11 +11,20 @@
                 <label class="col-sm-2 control-label"><a style="color: red;">*</a>姓名：</label>
                 <div class="col-sm-10">
                     <input type="text" ng-model="form.name"/>
+                </div>
+            </div>
+            <!--性别-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><a style="color: red;">*</a>性别：</label>
+                <div class="col-sm-10">
                     <label class="radio-inline">
-                        <input type="radio" ng-model="form.gender" value="male"/>先生
+                        <input type="radio" ng-model="form.gender" value="0"/>保密
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" ng-model="form.gender" value="female"/>女士
+                        <input type="radio" ng-model="form.gender" value="1"/>先生
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" ng-model="form.gender" value="2"/>女士
                     </label>
                 </div>
             </div>
@@ -32,14 +41,14 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">职位：</label>
                 <div class="col-sm-10">
-                    <input type="text" ng-model="form.job"/>
+                    <input type="text" ng-model="form.position"/>
                 </div>
             </div>
             <!--用户名-->
             <div class="form-group">
                 <label class="col-sm-2 control-label">用户名：</label>
                 <div class="col-sm-10">
-                    <input type="text" ng-model="form.username"/>
+                    <input type="text" ng-model="form.name"/>
                 </div>
             </div>
             <!--密码-->
@@ -54,6 +63,6 @@
 </div>
 <div class="modal-footer">
     <input class="btn btn-success btn-sm" type="button" ng-click="submit()" value="提交"/>
-    <input class="btn btn-warning btn-sm" type="button" ng-click="exit()" value="离岗"/>
+    <input class="btn btn-warning btn-sm" type="button" ng-hide="option==='离岗'" ng-click="exit()" value="离岗"/>
     <input class="btn btn-secondary btn-sm" type="button" ng-click="cancel()" value="取消"/>
 </div>

@@ -362,6 +362,12 @@ BanquetExpertApp.filter('status', function () {
         return TAG[status];
     }
 });
+BanquetExpertApp.filter("channel", function () {
+    return function (channel) {
+        var TAG = ["无", "高层管理", "预定员和迎宾", "客户经理"];
+        return TAG[channel];
+    }
+});
 
 // 侧边导航栏控制器
 BanquetExpertApp.controller('drawerCtrl', function ($scope) {
@@ -879,7 +885,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                         "create_time": "创建时间"
                     }]
                 };
-                var url = "/webApp/admin/hotel/staff/list/";
+                var url = "/webApp/admin/hotel/channel/list/";
                 var param = {
                     hotel_id: BanquetExpert.hotel.hotel_id,
                     status: 1
@@ -962,12 +968,13 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                             Log.i(TAG, "添加员工控制器");
                             $scope.option = "添加";
                             $scope.form = {
+                                hotel_id: BanquetExpert.hotel.hotel_id,
+                                phone: "18800184976",
+                                password: "sunny",
                                 name: "赵强",
+                                id_number: "00000",
+                                position: "经理",
                                 gender: "female",
-                                phone: "1000000000",
-                                job: "无业游民",
-                                username: "赵XX",
-                                password: "",
                                 status: 1
                             };
                             $scope.submit = function () {
@@ -2133,6 +2140,11 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                         Log.i(TAG, reason);
                     });
                 }
+                // ,
+                //     service: {
+                //         "customer_analysis": true,
+                //         "order_statistics": true
+                //     }
             }
         });
 

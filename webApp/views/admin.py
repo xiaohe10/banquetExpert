@@ -1066,6 +1066,7 @@ def get_staffs(request, token, hotel_id, order=1):
     staffs = hotel.staffs.order_by(ORDERS[order])
 
     l = [{'staff_id': s.id,
+          'phone': s.phone,
           'name': s.name,
           'staff_number': s.staff_number,
           'icon': s.icon,
