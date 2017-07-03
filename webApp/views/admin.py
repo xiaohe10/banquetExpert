@@ -1018,24 +1018,17 @@ def get_channels(request, token):
 
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
-    'status': forms.IntegerField(min_value=0, max_value=1, required=False),
-    'is_enabled': forms.BooleanField(required=False),
     'offset': forms.IntegerField(min_value=0, required=False),
     'limit': forms.IntegerField(min_value=0, required=False),
     'order': forms.IntegerField(min_value=0, max_value=3, required=False),
     'hotel_id': forms.IntegerField(),
 })
 @validate_admin_token()
-def get_staffs(request, token, hotel_id, status=1, is_enabled=True, offset=0,
-               limit=10, order=1):
+def get_staffs(request, token, hotel_id, order=1):
     """获取酒店员工列表
 
     :param token: 令牌(必传)
-    :param status: 员工状态, 0: 待审核, 1: 审核通过, 默认1
-    :param is_enabled: 是否有效, 默认:是
     :param hotel_id: 酒店ID(必传)
-    :param offset: 起始值
-    :param limit: 偏移量
     :param order: 排序方式
         0: 注册时间升序
         1: 注册时间降序（默认值）
@@ -1048,11 +1041,13 @@ def get_staffs(request, token, hotel_id, status=1, is_enabled=True, offset=0,
             staff_number: 员工编号
             name: 员工姓名
             icon: 员工头像
+            status: 状态,0:待审核,1:审核通过
             gender: 性别
             hotel_name: 员工所属酒店
             position: 职位
             guest_channel: 所属获客渠道
                 0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理
+            is_enabled: 是否有效
             authority: 权限
             create_time: 创建时间
     """
@@ -1067,21 +1062,20 @@ def get_staffs(request, token, hotel_id, status=1, is_enabled=True, offset=0,
     if hotel != request.admin.hotel:
         return err_response('err_2', '权限错误')
 
-    c = Staff.objects.filter(hotel=hotel, status=status,
-                             is_enabled=is_enabled).count()
-    staffs = Staff.objects.filter(
-        hotel=hotel, status=status, is_enabled=is_enabled).order_by(
-        ORDERS[order])[offset:offset + limit]
+    c = hotel.staffs.count()
+    staffs = hotel.staffs.order_by(ORDERS[order])
 
     l = [{'staff_id': s.id,
           'name': s.name,
           'staff_number': s.staff_number,
           'icon': s.icon,
+          'status': s.status,
           'gender': s.gender,
           'hotel_name': s.hotel.name,
           'position': s.position,
           'guest_channel': s.guest_channel,
           'authority': s.authority,
+          'is_enabled': s.is_enabled,
           'create_time': s.create_time} for s in staffs]
     return corr_response({'count': c, 'list': l})
 
