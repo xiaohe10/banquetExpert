@@ -22,7 +22,7 @@
             <div class="col-sm-10">
                 <select ng-model="form.staff_id">
                     <optgroup label="职工列表"></optgroup>
-                    <option ng-repeat="x in data.list" value={{x.staff_id}}>{{x.name}}</option>
+                    <option ng-repeat="x in staff.list" value={{x.staff_id}}>{{x.name}}</option>
                 </select>
             </div>
         </div>
@@ -71,7 +71,7 @@
                 </div>
                 <!--添加手机号【限制最多添加3个手机号】-->
                 <div class="input-group" ng-hide="form.phone.length===3">
-                    <input type="text" ng-model="phone" value="18800184976"/>
+                    <input type="text" ng-model="phone" placeholder="请输入手机号"/>
                     <input type="button" ng-click="form.phone.push(phone)" value="添加手机号"/>
                 </div>
             </div>

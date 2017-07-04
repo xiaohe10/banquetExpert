@@ -15,13 +15,15 @@
                 </div>
                 <img class="img-circle" src="{{x.icon}}" alt="ICON" style="width: 96px;height: 96px">
                 <div class="caption">
-                    <p>地址：{{x.province}} {{x.city}} {{x.county}} {{x.address}}</p>
-                    <p>
-                        电话：<span class="label label-info" style="display: inline-block" ng-repeat="y in x.phone">{{y}}</span>
+                    <!--<p>地址：{{x.province}} {{x.city}} {{x.county}} </p>-->
+                    <p>详细地址：{{x.address}}</p>
+                    <p class="hidden">
+                        电话：
+                        <span class="label label-info" style="display: inline-block" ng-repeat="y in x.phone">{{y}}</span>
                         <!--提示未添加手机号-->
                         <span class="label label-warning" style="display: inline-block" ng-show="x.phone.length===0">
-                        未添加手机号<span class="glyphicon glyphicon-alert"></span>
-                    </span>
+                            未添加手机号<span class="glyphicon glyphicon-alert"></span>
+                        </span>
                     </p>
                     <p>经理：{{x.manager_name}}</p>
                 </div>
@@ -34,6 +36,7 @@
                 <img class="img-circle" src="/static/css/image/head.jpg" style="width: 96px;height: 96px">
                 <div class="caption">
                     <p>地址：无</p>
+                    <p class="hidden">详细地址：无</p>
                     <p>电话：无</p>
                     <p>经理：无</p>
                 </div>

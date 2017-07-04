@@ -19,8 +19,9 @@ BanquetExpert = {
         "owner_name": "杨秀荣",
         "create_time": "创建时间"
     },
-    branch: ["门店1", "门店2", "门店3", "门店4", "门店5", "门店6"],
-    selected_branch: 1,
+    branch: {},
+    staff: {},
+    channel: {},
     meals: {
         lunch: [
             "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "11:45",
@@ -75,21 +76,6 @@ BanquetExpert = {
             ]
         }
     ],
-    staff: [],
-    channel: {
-        inner: [
-            {value: 1, name: 'A'},
-            {value: 2, name: 'B'},
-            {value: 3, name: 'C'},
-            {value: 4, name: 'D'}
-        ],
-        outer: [
-            {value: 5, name: 'E'},
-            {value: 6, name: 'F'},
-            {value: 7, name: 'G'},
-            {value: 8, name: 'H'}
-        ]
-    },
     menus: [
         {
             title: "超级管理后台",
@@ -243,6 +229,7 @@ Templates = {
         Tutorial: "Review/Tutorial.html"// 中国服务私人订制标准视频教程
     }
 };
+
 // 对话框模板
 Dialog = {
     SuperAdmin: {
@@ -350,13 +337,15 @@ BanquetExpertApp.controller('drawerCtrl', function ($scope, $http) {
     $scope.hotel = BanquetExpert.hotel;
     $scope.menus = [];
 
-    // 获取酒店信息
+    // 【酒店】获取酒店信息
     var url = "/webApp/admin/hotel/profile/get/";
     var param = {};
     $http.post(url, JSON.stringify(param)).success(function (obj) {
         if (obj.status === "true") {
-            Log.i(TAG, JSON.stringify(obj));
-            $scope.hotel = obj.data;
+            // BanquetExpert.hotel = obj.data;
+            $scope.hotel = obj.data;// BanquetExpert.hotel;
+            Log.i(TAG, JSON.stringify(BanquetExpert.hotel));
+            // 初始化菜单
             $scope.menus = BanquetExpert.menus;
             Log.i(TAG, "获取酒店信息成功")
         } else {
@@ -366,12 +355,39 @@ BanquetExpertApp.controller('drawerCtrl', function ($scope, $http) {
         }
     });
 
-    // 获取员工列表
+    // 【酒店】获取员工列表
     url = "/webApp/admin/hotel/staff/list/";
     param = {hotel_id: $scope.hotel.hotel_id};
     $http.post(url, JSON.stringify(param)).success(function (obj) {
         if (obj.status === "true") {
             BanquetExpert.staff = obj.data;
+            Log.i(TAG, JSON.stringify(BanquetExpert.staff));
+        } else {
+            alert(obj.description);
+        }
+    });
+
+    // 【酒店】获取渠道列表
+    url = "/webApp/admin/hotel/channel/list/";
+    param = {
+        hotel_id: BanquetExpert.hotel.hotel_id
+    };
+    $http.post(url, JSON.stringify(param)).success(function (obj) {
+        if (obj.status === "true") {
+            BanquetExpert.channel = obj.data;
+            Log.i(TAG, JSON.stringify(BanquetExpert.channel));
+        } else {
+            alert(obj.description);
+        }
+    });
+
+    // 【门店】获取门店信息
+    url = "/webApp/admin/hotel_branch/profile/get/";
+    param = {branch_id: 1};
+    $http.post(url, JSON.stringify(param)).success(function (obj) {
+        if (obj.status === "true") {
+            BanquetExpert.branch = obj.data;
+            Log.i(TAG, JSON.stringify(BanquetExpert.branch));
         } else {
             alert(obj.description);
         }
@@ -432,23 +448,8 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
         .when('/Channel/Channel', {
             templateUrl: "./template/" + Templates.Channel.Channel, controller: function ($scope, $modal, $http) {
                 var TAG = Templates.Channel.Channel;
-                // 内部和外部渠道列表
-                $scope.data = {
-                    internal_channel: [],
-                    external_channel: []
-                };
-                // 获取渠道列表
-                var url = "/webApp/admin/hotel/channel/list/";
-                var param = {
-                    hotel_id: BanquetExpert.hotel.hotel_id
-                };
-                $http.post(url, JSON.stringify(param)).success(function (obj) {
-                    if (obj.status === "true") {
-                        $scope.data = obj.data;
-                    } else {
-                        alert(obj.description);
-                    }
-                });
+                // 初始化渠道列表
+                $scope.data = BanquetExpert.channel;
                 // 添加/编辑预订员和迎宾
                 $scope.addReserve = function () {
                     Log.i(TAG, "新增预订员和迎宾");
@@ -767,34 +768,8 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
         .when('/Channel/Staff', {
             templateUrl: "./template/" + Templates.Channel.Staff, controller: function ($scope, $modal, $http) {
                 var TAG = Templates.Channel.Staff;
-                // 员工列表
-                $scope.data = {
-                    "count": 20,
-                    "list": [{
-                        "staff_id": 1,
-                        "staff_number": "12345",
-                        "name": "张三",
-                        "icon": "头像地址",
-                        "gender": 0,
-                        "hotel_name": "北京宴",
-                        "position": "经理",
-                        "guest_channel": 1,
-                        "authority": "权限",
-                        "create_time": "创建时间"
-                    }]
-                };
-                // 获取员工列表
-                var url = "/webApp/admin/hotel/staff/list/";
-                var param = {
-                    hotel_id: BanquetExpert.hotel.hotel_id,
-                };
-                $http.post(url, JSON.stringify(param)).success(function (obj) {
-                    if (obj.status === "true") {
-                        $scope.data = obj.data;
-                    } else {
-                        alert(obj.description);
-                    }
-                });
+                // 初始化员工列表
+                $scope.data = BanquetExpert.staff;
                 // 审核员工
                 $scope.approve = function (staff) {
                     Log.i(TAG, "审核员工：" + JSON.stringify(staff));
@@ -1227,23 +1202,23 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
             templateUrl: "./template/" + Templates.Hotel.Branch, controller: function ($scope, $modal, $http) {
                 var TAG = Templates.Hotel.Branch;
                 $scope.data = {count: 0, list: []};
-                var branch = {
-                    branch_id: 1,
-                    name: "北京宴总店",
-                    icon: "/static/css/image/head1.jpg",
-                    pictures: ["picture1", "picture2"],
-                    province: "北京市",
-                    city: "北京市",
-                    county: "丰台区",
-                    address: "靛厂路333号",
-                    facility: ["停车场", "吸烟区"],
-                    pay_card: ["支付宝", "微信"],
-                    phone: ["13051391335", "13188888888"],
-                    cuisine: {},
-                    hotel_name: "北京宴",
-                    manager_name: "陈总",
-                    create_time: "创建时间"
-                };
+                // var branch = {
+                //     branch_id: 1,
+                //     name: "北京宴总店",
+                //     icon: "/static/css/image/head1.jpg",
+                //     pictures: ["/static/css/image/head1.jpg", "/static/css/image/head1.jpg"],
+                //     province: "北京市",
+                //     city: "北京市",
+                //     county: "丰台区",
+                //     address: "靛厂路333号",
+                //     facility: [],
+                //     pay_card: [],
+                //     phone: [],
+                //     cuisine: {},
+                //     hotel_name: "北京宴",
+                //     manager_name: "陈总",
+                //     create_time: "2017/07/04"
+                // };
                 var url = "/webApp/admin/hotel_branch/list/";
                 var param = {
                     hotel_id: BanquetExpert.hotel.hotel_id
@@ -1264,6 +1239,8 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                             Log.i(TAG, "添加门店");
                             // 初始化员工列表
                             $scope.staff = BanquetExpert.staff;
+                            // 初始化手机号
+                            $scope.phone = "";
                             // 初始化酒店设施
                             $scope.facility = "";
                             $scope.facilities = [
@@ -1276,20 +1253,6 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                             $scope.pay_cards = [
                                 "支付宝", "微信", "VISA", "银联"
                             ];
-                            // 初始化员工列表
-                            $scope.data = {"count": 0, "list": []};
-                            // 获取员工列表
-                            var url = "/webApp/admin/hotel/staff/list/";
-                            var param = {
-                                hotel_id: BanquetExpert.hotel.hotel_id
-                            };
-                            $http.post(url, JSON.stringify(param)).success(function (obj) {
-                                if (obj.status === "true") {
-                                    $scope.data = obj.data;
-                                } else {
-                                    alert(obj.description);
-                                }
-                            });
                             // 初始化表单
                             $scope.option = "添加";
                             $scope.form = form;
@@ -1322,7 +1285,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                                     // 详细地址
                                     address: "北京市丰台区靛厂路333号",
                                     // 电话
-                                    phone: ["13011111111", "13100000000"],
+                                    phone: [],
                                     // 设施
                                     facility: [],
                                     // 支付方式
@@ -1362,6 +1325,8 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                             Log.i(TAG, "编辑门店：" + branch.name);
                             // 初始化员工列表
                             $scope.staff = BanquetExpert.staff;
+                            // 初始化手机号
+                            $scope.phone = "";
                             // 初始化酒店设施
                             $scope.facility = "";
                             $scope.facilities = [
@@ -1377,7 +1342,6 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                             // 初始化表单
                             $scope.option = "编辑";
                             $scope.form = form;
-                            $scope.phone = "";
                             $scope.edit = function () {
                                 Log.i(TAG, "编辑门店信息：" + $scope.form);
                             };
@@ -1387,10 +1351,14 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                             };
                             $scope.cancel = function () {
                                 Log.i(TAG, "取消保存");
+                                dlg.dismiss({tag: "取消保存"});
                             }
                         },
                         resolve: {
                             form: function () {
+                                // branch.phone = [];
+                                // branch.facility = [];
+                                // branch.pay_card = [];
                                 return branch;
                             }
                         }
@@ -1948,9 +1916,22 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
         .when('/Reserve/PersonalTailor', {
             templateUrl: "./template/" + Templates.Reserve.PersonalTailor, controller: function ($scope, $http) {
                 var TAG = Templates.Reserve.PersonalTailor;
-                $scope.data = {personal_tailor: []};
+                $scope.data = BanquetExpert.branch.personal_tailor;
                 $scope.save = function () {
                     Log.i(TAG, JSON.stringify($scope.data));
+                    // 【门店】保存私人订制列表
+                    var url = "/webApp/admin/hotel_branch/personal_tailor/modify/";
+                    var param = {
+                        branch_id: 1,
+                        personal_tailor: $scope.data
+                    };
+                    $http.post(url, JSON.stringify(param)).success(function (obj) {
+                        if (obj.status === "true") {
+                            alert("保存成功");
+                        } else {
+                            alert(obj.description);
+                        }
+                    });
                 }
             }
         });
