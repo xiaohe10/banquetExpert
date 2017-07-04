@@ -29,14 +29,24 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label"><a style="color: red;">*</a>电话：</label>
                 <div class="col-sm-10">
-                    <!--电话列表-->
-                    <ul class="inline">
-                        <li ng-repeat="x in form.phone"><label>
-                            <input type="text" ng-model="x"/>
-                        </label></li>
-                    </ul>
-                    <a class="btn btn-link btn-sm">+增加电话</a>
-                    <a class="text-warning">请准确输入11位手机号码</a>
+                    <!--手机号列表-->
+                    <div class="well well-sm">
+                        <!--已添加手机号-->
+                        <span class="label label-success" style="display: inline-block"
+                              ng-click="form.phone.splice($index, 1)" ng-repeat="x in form.phone">
+                        {{x}}<span class="glyphicon glyphicon-remove"></span>
+                    </span>
+                        <!--提示未添加手机号-->
+                        <span class="label label-warning" style="display: inline-block" ng-show="form.phone.length===0">
+                        未添加手机号<span class="glyphicon glyphicon-alert"></span>
+                    </span>
+                    </div>
+                    <!--添加手机号【限制最多添加3个手机号】-->
+                    <div class="input-group" ng-hide="form.phone.length===3">
+                        <input type="text" ng-model="phone" placeholder="在此填写手机号"/>
+                        <!--<span ng-show="form.name.$error.invalid" class="text-warning">请准确输入11位手机号码</span>-->
+                        <input type="button" ng-click="form.phone.push(phone)" value="添加手机号"/>
+                    </div>
                 </div>
             </div>
             <!--生日-->
@@ -121,12 +131,22 @@
                 <label class="col-sm-2 control-label">病症：</label>
                 <div class="col-sm-10">
                     <!--病症列表-->
-                    <ul class="inline">
-                        <li ng-repeat="x in form.desease"><label class="badge badge-info">
-                            <input type="text" ng-model="x"/>
-                        </label></li>
-                    </ul>
-                    <a class="btn btn-link btn-sm">+添加标签</a>
+                    <div class="well well-sm">
+                        <!--已添加标签-->
+                        <span class="label label-success" style="display: inline-block"
+                              ng-click="form.disease.splice($index, 1)" ng-repeat="x in form.disease">
+                        {{x}}<span class="glyphicon glyphicon-remove"></span>
+                    </span>
+                        <!--提示未添加标签-->
+                        <span class="label label-warning" style="display: inline-block" ng-show="form.disease.length===0">
+                        无病症信息<span class="glyphicon glyphicon-alert"></span>
+                    </span>
+                    </div>
+                    <!--添加标签【限制最多添加6个标签】-->
+                    <div class="input-group" ng-hide="form.disease.length===6">
+                        <input type="text" ng-model="disease" placeholder="在此填写病症"/>
+                        <input type="button" ng-click="form.disease.push(disease)" value="添加"/>
+                    </div>
                 </div>
             </div>
             <!--喜好-->
@@ -134,12 +154,22 @@
                 <label class="col-sm-2 control-label">喜好：</label>
                 <div class="col-sm-10">
                     <!--喜好列表-->
-                    <ul class="inline">
-                        <li ng-repeat="x in form.hobby"><label>
-                            <input type="text" ng-model="x"/>
-                        </label></li>
-                    </ul>
-                    <a class="btn btn-link btn-sm">+添加标签</a>
+                    <div class="well well-sm">
+                        <!--已添加标签-->
+                        <span class="label label-success" style="display: inline-block"
+                              ng-click="form.like.splice($index, 1)" ng-repeat="x in form.like">
+                        {{x}}<span class="glyphicon glyphicon-remove"></span>
+                    </span>
+                        <!--提示未添加标签-->
+                        <span class="label label-warning" style="display: inline-block" ng-show="form.like.length===0">
+                        无喜好信息<span class="glyphicon glyphicon-alert"></span>
+                    </span>
+                    </div>
+                    <!--添加标签【限制最多添加6个标签】-->
+                    <div class="input-group" ng-hide="form.like.length===6">
+                        <input type="text" ng-model="like" placeholder="在此填写喜好"/>
+                        <input type="button" ng-click="form.like.push(like)" value="添加"/>
+                    </div>
                 </div>
             </div>
             <!--忌口-->
@@ -147,12 +177,22 @@
                 <label class="col-sm-2 control-label">忌口：</label>
                 <div class="col-sm-10">
                     <!--忌口列表-->
-                    <ul class="inline">
-                        <li ng-repeat="x in form.dieting"><label>
-                            <input type="text" ng-model="x"/>
-                        </label></li>
-                    </ul>
-                    <a class="btn btn-link btn-sm">+添加标签</a>
+                    <div class="well well-sm">
+                        <!--已添加标签-->
+                        <span class="label label-success" style="display: inline-block"
+                              ng-click="form.dislike.splice($index, 1)" ng-repeat="x in form.dislike">
+                        {{x}}<span class="glyphicon glyphicon-remove"></span>
+                    </span>
+                        <!--提示未添加标签-->
+                        <span class="label label-warning" style="display: inline-block" ng-show="form.dislike.length===0">
+                        无忌口信息<span class="glyphicon glyphicon-alert"></span>
+                    </span>
+                    </div>
+                    <!--添加标签【限制最多添加6个标签】-->
+                    <div class="input-group" ng-hide="form.dislike.length===6">
+                        <input type="text" ng-model="dislike" placeholder="在此填写忌口"/>
+                        <input type="button" ng-click="form.dislike.push(dislike)" value="添加"/>
+                    </div>
                 </div>
             </div>
             <!--不良记录-->

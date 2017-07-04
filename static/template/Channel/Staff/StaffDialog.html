@@ -33,7 +33,16 @@
                 <label class="col-sm-2 control-label"><a style="color: red;">*</a>电话：</label>
                 <div class="col-sm-10">
                     <label class="text-warning">
-                        <input type="text" ng-model="form.phone" value="18800184976"/>请准确输入11位手机号码
+                        <input type="text" ng-model="form.phone" ng-minlength="11"/>请准确输入11位手机号码
+                    </label>
+                </div>
+            </div>
+            <!--身份证-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><a style="color: red;">*</a>身份证：</label>
+                <div class="col-sm-10">
+                    <label class="text-warning">
+                        <input type="text" ng-model="form.id_number" ng-minlength="18"/>请准确输入18位身份证号码
                     </label>
                 </div>
             </div>
@@ -55,7 +64,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">密码：</label>
                 <div class="col-sm-10">
-                    <input type="text" ng-model="form.password"/>
+                    <input type="password" ng-model="form.password"/>
                 </div>
             </div>
             <!--审核操作【在option==='审核'时显示该操作】-->
