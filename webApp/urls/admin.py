@@ -26,6 +26,9 @@ urlpatterns = [
     # 修改门店餐段设置
     url(r'^hotel_branch/meal_period/modify/$', modify_meal_period,
         name='modify_meal_period'),
+    # 修改私人订制项设置
+    url(r'^hotel_branch/personal_tailor/modify/$', modify_personal_tailor,
+        name='modify_personal_tailor'),
     # 增加门店介绍图片
     url(r'^hotel_branch/picture/add/$', add_branch_picture,
         name='add_hotel_branch_picture'),

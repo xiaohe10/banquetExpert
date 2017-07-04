@@ -731,6 +731,7 @@ URL：webApp/hotel_branch/profile/ <br>
 | meal_period | 餐段设置（键值对） |
 | facility | 设施（数组） |
 | pay_card | 可以刷哪些卡（数组） |
+| personal_tailor   | 私人订制项(最多10个，数组) |
 | phone | 联系电话（最多3个，数组） |
 | cuisine | 菜系（键值对） |
 | hotel_name | 所属酒店名 |
@@ -765,6 +766,19 @@ URL：webApp/hotel_branch/profile/ <br>
         },
 		"facility":["停车场","吸烟区"],
 		"pay_card":["银联", "支付宝"],
+		"personal_tailor":[
+            {
+                "name": "门牌",
+                "labels": ["a", "b"],
+                "order":1
+            },
+            {
+                "name": "沙盘",
+                "labels": ["a", "b"],
+                "order":2
+            },
+            ...
+        ]
 		"phone":["13011111111", "13100000000"],
 		"cuisine":{
 		    "北京菜":["烤鸭","京酱肉丝"],
@@ -3521,6 +3535,7 @@ URL：webApp/admin/hotel_branch/profile/get/ <br>
 | facility  | 设施    |
 | meal_period   | 餐段    |
 | pay_card  | 可以哪些支付 |
+| personal_tailor   | 私人订制项设置   |
 | phone | 电话   |
 | cuisine   | 菜系    |
 | hotel_name    | 所属酒店名   |
@@ -3555,6 +3570,19 @@ URL：webApp/admin/hotel_branch/profile/get/ <br>
         },
         "facility":["停车场","吸烟区"],
         "pay_card":["支付宝","微信"],
+        "personal_tailor":[
+            {
+                "name": "门牌",
+                "labels": ["a", "b"],
+                "order":1
+            },
+            {
+                "name": "沙盘",
+                "labels": ["a", "b"],
+                "order":2
+            },
+            ...
+        ]
         "phone":["13051391335", "13188888888"],
         "cuisine":{},
         "hotel_name":"北京宴",
@@ -3652,7 +3680,7 @@ URL：webApp/admin/hotel_branch/meal_period/modify/ <br>
 |:------------- |:---------------| :-------------:|
 | token         | 令牌          |         yes    |
 | branch_id  | 门店 ID | yes   |
-| meal_period  | 餐段（键值对） | yes   |
+| meal_period  | 餐段 | yes   |
 
 请求示例：
 
@@ -3673,6 +3701,62 @@ URL：webApp/admin/hotel_branch/meal_period/modify/ <br>
             },
             ...
         },
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+
+返回示例：
+
+```
+{
+	"status":"true",
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 管理员不存在 |
+| err_4 | 酒店不存在 |
+
+
+## 修改门店私人订制项设置
+URL：webApp/admin/hotel_branch/personal_tailor/modify/ <br>
+请求方式：POST <br>
+请求参数：
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------:|
+| token         | 令牌          |         yes    |
+| branch_id  | 门店 ID | yes   |
+| personal_tailor  | 私人订制项 | yes   |
+
+请求示例：
+
+```
+{
+    "token":"129ASDFIOJIO3RN23U12934INASDF",
+    "branch_id":1,
+    "personal_tailor":[
+        {
+            "name": "门牌",
+            "labels": ["a", "b"],
+            "order":1
+        },
+        {
+            "name": "沙盘",
+            "labels": ["a", "b"],
+            "order":2
+        },
+        ...
+    ]
 }
 ```
 

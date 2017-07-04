@@ -106,13 +106,15 @@ class HotelBranch(models.Model):
     # 餐段
     meal_period = models.CharField(max_length=5000, default='')
     # 设施
-    facility = models.CharField(max_length=100, default='')
+    facility = models.CharField(max_length=200, default='')
     # 可以刷哪些卡
-    pay_card = models.CharField(max_length=20, default='')
+    pay_card = models.CharField(max_length=100, default='')
     # 电话(最多3个)
     phone = models.CharField(max_length=50, default='')
     # 菜系
-    cuisine = models.CharField(max_length=100, default='')
+    cuisine = models.CharField(max_length=1000, default='')
+    # 私人订制项
+    personal_tailor = models.CharField(max_length=2000, default='')
     # 是否有效
     is_enabled = models.BooleanField(default=True, db_index=True)
 

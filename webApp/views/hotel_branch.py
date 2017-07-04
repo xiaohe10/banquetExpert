@@ -29,6 +29,7 @@ def get_profile(request, token, branch_id):
         meal_period: 餐段设置(键值对)
         facility: 设施(数组)
         pay_card: 可以刷哪些卡(数组)
+        personal_tailor: 私人订制项(最多10个，数组)
         phone: 联系电话(数组)
         cuisine: 菜系(键值对)
         hotel_name: 所属酒店名
@@ -59,6 +60,8 @@ def get_profile(request, token, branch_id):
          'pay_card': json.loads(branch.pay_card) if branch.pay_card else '',
          'phone': json.loads(branch.phone) if branch.phone else '',
          'cuisine': json.loads(branch.cuisine) if branch.cuisine else '',
+         'personal_tailor': json.loads(branch.personal_tailor)
+         if branch.personal_tailor else '',
          'hotel_name': branch.hotel.name,
          'manager_name': branch.manager.name,
          'create_time': branch.create_time}
