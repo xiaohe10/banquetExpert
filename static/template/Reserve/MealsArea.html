@@ -3,7 +3,7 @@
     <div class="panel-heading">
         <div class="panel-title">
             餐位设置
-            <small>(共{{area.length}}个桌位)</small>
+            <small>(共{{data.list.length}}个桌位)</small>
         </div>
     </div>
     <div class="panel-body">
@@ -18,13 +18,13 @@
             </tr>
             </thead>
             <tbody id="area-info-table">
-            <tr ng-repeat="x in area">
+            <tr ng-repeat="x in data.list">
                 <td>应用</td>
                 <td><input type="text" ng-model="x.name" value="{{x.name}}"/></td>
                 <td><input type="text" ng-model="x.order" value="{{x.order}}"/></td>
                 <td>
-                    <a href="#/Reserve/MealsArea/SetSeat/{{x.value}}">桌位设置</a>
-                    <label> <input type="checkbox" ng-model="x.status" value="{{x.status}}"/>启用</label>
+                    <a href="#/Reserve/MealsArea/SetSeat/{{x.area_id}}">桌位设置</a>
+                    <label> <input type="checkbox" ng-model="x.is_enabled" value="{{x.is_enabled}}"/>启用</label>
                 </td>
             </tr>
             </tbody>
