@@ -869,7 +869,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                             }
                         },
                         controller: function ($scope, form) {
-                            var TAG = Dialog.Channel.Staff.EditStaff;
+                            var TAG = Dialog.Channel.Staff.StaffDialog;
                             Log.i(TAG, "添加员工控制器");
                             $scope.option = "添加";
                             $scope.form = form;
@@ -1217,25 +1217,23 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
         .when('/Hotel/Branch', {
             templateUrl: "./template/" + Templates.Hotel.Branch, controller: function ($scope, $modal, $http) {
                 var TAG = Templates.Hotel.Branch;
-                $scope.data = {
-                    count: 20,
-                    list: [{
-                        branch_id: 1,
-                        name: "北京宴总店",
-                        icon: "/static/css/image/head1.jpg",
-                        pictures: ["picture1", "picture2"],
-                        province: "北京市",
-                        city: "北京市",
-                        county: "丰台区",
-                        address: "靛厂路333号",
-                        facility: ["停车场", "吸烟区"],
-                        pay_card: ["支付宝", "微信"],
-                        phone: ["13051391335", "13188888888"],
-                        cuisine: {},
-                        hotel_name: "北京宴",
-                        manager_name: "陈总",
-                        create_time: "创建时间"
-                    }]
+                $scope.data = {count: 0, list: []};
+                var branch = {
+                    branch_id: 1,
+                    name: "北京宴总店",
+                    icon: "/static/css/image/head1.jpg",
+                    pictures: ["picture1", "picture2"],
+                    province: "北京市",
+                    city: "北京市",
+                    county: "丰台区",
+                    address: "靛厂路333号",
+                    facility: ["停车场", "吸烟区"],
+                    pay_card: ["支付宝", "微信"],
+                    phone: ["13051391335", "13188888888"],
+                    cuisine: {},
+                    hotel_name: "北京宴",
+                    manager_name: "陈总",
+                    create_time: "创建时间"
                 };
                 var url = "/webApp/admin/hotel_branch/list/";
                 var param = {
@@ -1255,6 +1253,21 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                         controller: function ($scope, form) {
                             var TAG = Dialog.Hotel.Branch.BranchDialog;
                             Log.i(TAG, "添加门店");
+                            // 员工列表
+                            $scope.data = {"count": 0, "list": []};
+                            // 获取员工列表
+                            var url = "/webApp/admin/hotel/staff/list/";
+                            var param = {
+                                hotel_id: BanquetExpert.hotel.hotel_id,
+                            };
+                            $http.post(url, JSON.stringify(param)).success(function (obj) {
+                                if (obj.status === "true") {
+                                    $scope.data = obj.data;
+                                } else {
+                                    alert(obj.description);
+                                }
+                            });
+                            // 表单
                             $scope.option = "添加";
                             $scope.form = form;
                             $scope.edit = function () {
@@ -1343,7 +1356,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                     var dlg = $modal.open({
                         templateUrl: "./template/" + Dialog.Hotel.Branch.BranchDialog,
                         controller: function ($scope, form) {
-                            var TAG = Dialog.Channel.Staff.EditStaff;
+                            var TAG = Dialog.Channel.Staff.BranchDialog;
                             Log.i(TAG, "编辑门店：" + branch.name);
                             $scope.option = "编辑";
                             $scope.form = form;
