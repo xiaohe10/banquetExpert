@@ -427,147 +427,25 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
     // 渠道管理
     $routeProvider
         .when('/Channel/Channel', {
-            templateUrl: "./template/" + Templates.Channel.Channel, controller: function ($scope, $modal) {
+            templateUrl: "./template/" + Templates.Channel.Channel, controller: function ($scope, $modal, $http) {
                 var TAG = Templates.Channel.Channel;
-                $scope.staffs = BanquetExpert.staff;
-                // 高层管理
-                $scope.manager = [];
-                for (var i = 0; i < 12; i++) {
-                    $scope.manager.push({
-                        // ID
-                        id: i,
-                        // 姓名
-                        name: "赵强",
-                        // 性别
-                        gender: "female",
-                        // 电话
-                        phone: [18800184976, 10000000000],
-                        // 生日
-                        birthday: "2017-6-22",
-                        // 单位
-                        unit: "创业谷",
-                        // 现住址
-                        address: {
-                            province: "北京",
-                            city: "北京",
-                            county: "朝阳"
-                        },
-                        // 籍贯
-                        native: {
-                            province: "北京",
-                            city: "朝阳"
-                        },
-                        // 营销短信
-                        sms_marketing: "enabled",
-                        // 分类方法
-                        classification_method: 0,
-                        // 病症
-                        desease: ["A", "B", "C"],
-                        // 喜好
-                        hobby: ["A", "B", "C"],
-                        // 忌口
-                        dieting: ["A", "B", "C"],
-                        // 不良记录
-                        bad_records: "This is bad records"
-                    });
-                }
-                // 预订员和迎宾
-                $scope.reserve = [];
-                for (i = 0; i < 12; i++) {
-                    $scope.reserve.push({
-                        // ID
-                        id: i,
-                        // 操作
-                        option: "edit",
-                        // 姓名
-                        name: "梅本山",
-                        // 性别
-                        gender: "male",
-                        // 电话
-                        phone: "18800184976",
-                        // 职位
-                        job: "董事长",
-                        // 用户名
-                        username: "mbs0221",
-                        // 密码
-                        password: "mbs0221",
-                        // 职能权限
-                        privilege: {
-                            // 管理职能
-                            manage: {}
-                            ,
-                            // 营销职能
-                            marketing: {}
-                            ,
-                            // 预定职能
-                            reserve: {}
-                            ,
-                            // 销售职能
-                            sale: {}
-                        },
-                        // 销售职能
-                        sale: true,
-                        // 订单短信
-                        order_sms: false,
-                        // 提成结算/接单提成
-                        order_bonus: {
-                            enabled: true,
-                            method: 1,
-                            value: 0.8
-                        },
-                        // 提成结算/开新客提成
-                        new_customer_bonus: {
-                            enabled: false,
-                            value: 0.8
-                        },
-                        // 管辖桌位
-                        desk_manage: {
-                            // 管辖全部桌位
-                            all_seat: false,
-                            // 桌位信息
-                            area: BanquetExpert.area
-                        },
-                        // 管辖区域
-                        select_area: [0, 2, 3],
-                        // 沟通渠道
-                        communicate: {
-                            // 沟通渠道
-                            channel: "tel_box",
-                            // 电话盒子
-                            tel_box: [
-                                "(来电盒子)线路1", "(来电盒子)线路2", "(来电盒子)线路3", "(来电盒子)线路4",
-                                "(来电盒子)线路5", "(来电盒子)线路6", "(来电盒子)线路7", "(来电盒子)线路8"
-                            ],
-                            // 智能电话
-                            smart_tel: [
-                                "(智能电话)线路1", "(智能电话)线路2", "(智能电话)线路3", "(智能电话)线路4",
-                                "(智能电话)线路5", "(智能电话)线路6", "(智能电话)线路7"
-                            ]
-                        }
-                    });
-                }
-                // 渠道
-                $scope.channel = BanquetExpert.channel;
-                for (i = 0; i < 12; i++) {
-                    $scope.channel.outer.push({
-                        // ID
-                        id: i,
-                        // 渠道名称
-                        channel: "118114",
-                        // 直属上级
-                        parent: 1,
-                        // 签约折扣标准
-                        discount: 2,
-                        // 合作周期
-                        date_from: "2017/06/27",
-                        date_to: "2017/06/27",
-                        // 佣金核算方式
-                        bonus: {
-                            method: 1,
-                            value: 12
-                        }
-                    });
-                }
+                // 内部和外部渠道列表
+                $scope.data = {
+                    internal_channel: [],
+                    external_channel: []
+                };
+                // 获取渠道列表
+                var url = "/webApp/admin/hotel/channel/list/";
+                var param = {
+                    hotel_id: BanquetExpert.hotel.hotel_id
+                };
+                $http.post(url, JSON.stringify(param)).success(function (obj) {
+                    if (obj.status === "true") {
+                        $scope.data = obj.data;
+                    } else {
+                        alert(obj.description);
+                    }
+                });
                 // 添加/编辑预订员和迎宾
                 $scope.addReserve = function () {
                     Log.i(TAG, "新增预订员和迎宾");
@@ -885,7 +763,8 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                         "create_time": "创建时间"
                     }]
                 };
-                var url = "/webApp/admin/hotel/channel/list/";
+                // 获取员工列表
+                var url = "/webApp/admin/hotel/staff/list/";
                 var param = {
                     hotel_id: BanquetExpert.hotel.hotel_id,
                     status: 1
@@ -974,7 +853,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                                 name: "赵强",
                                 id_number: "00000",
                                 position: "经理",
-                                gender: "female",
+                                gender: 0,
                                 status: 1
                             };
                             $scope.submit = function () {
@@ -1914,19 +1793,37 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
             }
         })
         .when('/Reserve/MealsArea', {
-            templateUrl: "./template/" + Templates.Reserve.MealsArea, controller: function ($scope) {
+            templateUrl: "./template/" + Templates.Reserve.MealsArea, controller: function ($scope, $http) {
                 var TAG = Templates.Reserve.MealsArea;
-                $scope.area = BanquetExpert.area;
+                // 门店区域列表
+                $scope.data = {count: 0, list: []};
+                // 获取门店区域列表
+                var url = "/webApp/admin/hotel_branch/area/list/";
+                var param = {
+                    branch_id: 1
+                };
+                $http.post(url, JSON.stringify(param)).success(function (obj) {
+                    if (obj.status === "true") {
+                        $scope.data = obj.data;
+                    } else {
+                        alert(obj.description);
+                    }
+                });
                 $scope.sync_area = function () {
                     Log.i(TAG, "同步区域列表");
                 };
                 $scope.add_area = function () {
-                    var obj = {value: 0, name: '区域' + $scope.area.length, order: $scope.area.length, status: 1, seat: []};
+                    var idx = $scope.data.list.length;
+                    var obj = {
+                        branch_id: 1,
+                        name: idx + "楼",
+                        order: idx
+                    };
                     Log.i(TAG, "添加区域：" + JSON.stringify(obj));
-                    BanquetExpert.area.push(obj);
+                    $scope.data.list.push(obj);
                 };
                 $scope.save = function () {
-                    Log.i(TAG, "保存：" + JSON.stringify(BanquetExpert.area));
+                    Log.i(TAG, "保存：" + JSON.stringify($scope.data));
                 };
             }
         })
