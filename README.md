@@ -4429,6 +4429,162 @@ URL：webApp/admin/hotel/staff/profile/modify/ <br>
 | err_5 | 图片为空或图片格式错误   |
 
 
+## 获取获客渠道列表
+URL：webApp/admin/hotel/channel/list/ <br>
+请求方式：POST <br>
+请求参数：
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------:|
+| token         | 登录口令          |         yes    |
+
+请求示例：
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF"
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| internal_channel  | 内部获客渠道    |
+| 以下为internal_channel中的数据    |
+| staff_id  | 员工账号ID |
+| name  | 员工姓名 |
+| staff_number  | 员工编号  |
+| icon  | 头像    |
+| gender    | 性别   |
+| position  | 职位   |
+| guest_channel | 所属获客渠道, 0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理 |
+| create_time   | 创建时间|
+| external_channel  | 外部获客渠道    |
+| 以下为external_channel中的数据    |
+| id    | ID    |
+| name  | 名称    |
+| discount  | 折扣    |
+| icon  | 头像    |
+| begin_cooperate_time | 合作起始时间 |
+| end_cooperate_time | 合作结束时间   |
+| staff_name | 直属上级名称   |
+| is_enabled | 是否有效  |
+| create_time | 创建时间 |
+
+返回示例：
+
+```
+{
+	"status":"true",
+	"data":{
+	    "internal_channel":[{
+            "staff_id":1,
+            "name":"小张",
+            "staff_number":"007",
+            "status":1,
+            "gender":1,
+            "position":"前台",
+            "guest_channel":0,
+            "icon":"http://oss.aliyun/banquet/avatar/1.jpg"
+            "create_time":"创建时间"
+            },
+            ...
+        ]
+        "external_channel"[{
+            "id":1,
+            "name":"美团",
+            "discount":4,
+            "icon":"头像",
+            "begin_cooperate_time":"1993-02-12",
+            "end_cooperate_time":"2020-02-12",
+            "staff_name":"张三",
+            "is_enabled":True,
+            "create_time":"创建时间"
+            },
+            ...
+        ]
+	}
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 管理员不存在 |
+
+
+## 获取获客渠道列表
+URL：webApp/admin/external_channel/profile/ <br>
+请求方式：POST <br>
+请求参数：
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------:|
+| token         | 登录口令          |         yes    |
+| channel_id    | 外部获客渠道ID  | yes   |
+
+请求示例：
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"channel_id":1
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| id    | ID    |
+| name  | 名称    |
+| discount  | 折扣    |
+| icon  | 头像    |
+| begin_cooperate_time | 合作起始时间 |
+| end_cooperate_time | 合作结束时间   |
+| commission_type   | 佣金核算方式, 0:无,1:按消费额百分百比, 2:按订单数量, 3:按消费人数    |
+| commission_value  | 佣金核算数值    |
+| staff_id | 直属上级ID  |
+| staff_name | 直属上级名称   |
+| is_enabled | 是否有效  |
+| create_time | 创建时间 |
+
+返回示例：
+
+```
+{
+	"status":"true",
+	"data":{
+            "id":1,
+            "name":"美团",
+            "discount":4,
+            "icon":"头像",
+            "begin_cooperate_time":"1993-02-12",
+            "end_cooperate_time":"2020-02-12",
+            "commission_type":0,
+            "commission_value":100,
+            "staff_id":1,
+            "staff_name":"张三",
+            "is_enabled":True,
+            "create_time":"创建时间"
+	}
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 管理员不存在 |
+| err_4 | 渠道不存在 |
+
+
 ## 搜索订单列表
 URL：webApp/admin/order/search/ <br>
 请求方式：POST <br>

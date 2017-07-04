@@ -257,7 +257,7 @@ class ExternalChannel(models.Model):
     # 名称
     name = models.CharField(max_length=20)
     # 折扣
-    discount = models.IntegerField(default=0)
+    discount = models.FloatField(default=0)
     # 头像
     icon = models.CharField(max_length=100, default='')
     # 合作起始时间

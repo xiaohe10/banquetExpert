@@ -997,23 +997,102 @@ def get_channels(request, token):
     :return:
         internal_channel: 内部销售
             id: ID
+            phone: 手机
             name: 名称
+            icon: 员工头像
+            gender: 性别
+            staff_number: 员工编号
+            position: 职位
+            guest_channel: 所属获客渠道
+                0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理
+            create_time: 创建时间
         external_channel: 外部销售
             id: ID
             name: 名称
+            discount: 折扣
+            icon: 头像
+            begin_cooperate_time: 合作起始时间
+            end_cooperate_time: 合作结束时间
+            staff_name: 直属上级名称
+            is_enabled: 是否有效
+            create_time: 创建时间
     """
 
     hotel = request.admin.hotel
 
-    in_channels = Staff.objects.exclude(hotel=hotel, guest_channel=0)
+    in_channels = Staff.enabled_objects.exclude(hotel=hotel, guest_channel=0). \
+        filter(status=1)
     list1 = [{'id': channel.id,
-              'name': channel.name} for channel in in_channels]
+              'name': channel.name,
+              'phone': channel.phone,
+              'staff_number': channel.staff_number,
+              'icon': channel.icon,
+              'gender': channel.gender,
+              'position': channel.position,
+              'guest_channel': channel.guest_channel,
+              'create_time': channel.create_time
+              } for channel in in_channels]
 
     ex_channels = ExternalChannel.objects.all()
     list2 = [{'id': channel.id,
-              'name': channel.name} for channel in ex_channels]
+              'name': channel.name,
+              'discount': channel.discount,
+              'icon': channel.icon,
+              'begin_cooperate_time': channel.begin_cooperate_time,
+              'end_cooperate_time': channel.end_cooperate_time,
+              'staff_name': channel.staff.name,
+              'is_enabled': channel.is_enabled,
+              'create_time': channel.name} for channel in ex_channels]
 
     return corr_response({'internal_channel': list1, 'external_channel': list2})
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+    'channel_id': forms.IntegerField()
+})
+@validate_admin_token()
+def get_channel_profile(request, token, channel_id):
+    """获取外部渠道详情
+
+    :param token: 令牌(必传)
+    :param channel_id: 渠道ID(必传)
+    :return:
+        id: ID
+        name: 名称
+        discount: 折扣
+        icon: 头像
+        begin_cooperate_time: 合作起始时间
+        end_cooperate_time: 合作结束时间
+        commission_type: 佣金核算方式, 0:无,1:按消费额百分百比, 2:按订单数量, 3:按消费人数
+        commission_value: 佣金核算数值
+        staff_id: 直属上级ID
+        staff_name: 直属上级名称
+        is_enabled: 是否有效
+        create_time: 创建时间
+    """
+
+    hotel = request.admin.hotel
+
+    try:
+        channel = ExternalChannel.objects.get(id=channel_id)
+    except ObjectDoesNotExist:
+        return err_response('err_4', '渠道不存在')
+
+    d = {'id': channel.id,
+         'name': channel.name,
+         'discount': channel.discount,
+         'icon': channel.icon,
+         'begin_cooperate_time': channel.begin_cooperate_time,
+         'end_cooperate_time': channel.end_cooperate_time,
+         'commission_type': channel.commission_type,
+         'commission_value': channel.commission_value,
+         'staff_id': channel.staff.id,
+         'staff_name': channel.staff.name,
+         'is_enabled': channel.is_enabled,
+         'create_time': channel.name}
+
+    return corr_response(d)
 
 
 @validate_args({
