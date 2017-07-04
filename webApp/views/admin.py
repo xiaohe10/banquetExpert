@@ -335,6 +335,7 @@ def get_branch_profile(request, token, branch_id, **kwargs):
         pay_card: 可以刷哪些卡(数组)
         phone: 联系电话(最多3个，数组)
         cuisine: 菜系(键值对)
+        personal_tailor: 私人订制项(最多10个，数组)
         hotel_name: 所属酒店名
         manager_name: 店长名字
         is_enabled: 是否有效
@@ -364,6 +365,8 @@ def get_branch_profile(request, token, branch_id, **kwargs):
          'pay_card': json.loads(branch.pay_card) if branch.pay_card else '',
          'phone': json.loads(branch.phone) if branch.phone else '',
          'cuisine': json.loads(branch.cuisine) if branch.cuisine else '',
+         'personal_tailor': json.loads(branch.personal_tailor)
+         if branch.personal_tailor else '',
          'hotel_name': branch.hotel.name,
          'manager_name': branch.manager.name,
          'is_enabled': branch.is_enabled,
@@ -534,6 +537,56 @@ def modify_meal_period(request, token, branch_id):
                 result[day]['supper'] = \
                     supper[supper.index(begin): supper.index(end) + 1]
         branch.meal_period = json.dumps(result)
+        branch.save()
+        return corr_response()
+    except KeyError or ValueError:
+        return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+    'branch_id': forms.IntegerField(),
+})
+@validate_admin_token()
+def modify_personal_tailor(request, token, branch_id):
+    """修改门店的私人订制项
+
+    :param token: 令牌(必传)
+    :param branch_id: 酒店门店ID(必传)
+    :param personal_tailor: 私人订制项设置, 格式如下
+        [
+            {
+                "name": "门牌",
+                "labels": ["a", "b"],
+                "order":1
+            },
+            {
+                "name": "沙盘",
+                "labels": ["a", "b"],
+                "order":2
+            },
+            ...
+        }
+    :return:
+    """
+
+    try:
+        branch = HotelBranch.objects.get(id=branch_id)
+    except ObjectDoesNotExist:
+        return err_response('err_4', '酒店不存在')
+
+    # 解析私人订制项
+    try:
+        personal_tailor = json.loads(request.body)['personal_tailor']
+        # 格式验证
+        for p in personal_tailor:
+            a = isinstance(p['name'], str)
+            b = isinstance(p['labels'], list)
+            c = isinstance(p['order'], int)
+            if not (a and b and c):
+                return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+
+        branch.personal_tailor = json.dumps(personal_tailor)
         branch.save()
         return corr_response()
     except KeyError or ValueError:
