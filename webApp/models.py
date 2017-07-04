@@ -68,6 +68,10 @@ class Hotel(models.Model):
     min_vip_category = models.IntegerField(default=60)
     # 会员价值分类的最大区间值
     max_vip_category = models.IntegerField(default=120)
+    # 门店数量上限
+    branch_number = models.IntegerField(default=10)
+    # 开通的服务
+    service = models.CharField(max_length=50, default='')
     # 是否有效
     is_enabled = models.BooleanField(default=True, db_index=True)
 
@@ -261,9 +265,9 @@ class ExternalChannel(models.Model):
     # 头像
     icon = models.CharField(max_length=100, default='')
     # 合作起始时间
-    begin_cooperate_time = models.DateField()
+    begin_cooperate_time = models.DateField(default=None, null=True)
     # 合作结束时间
-    end_cooperate_time = models.DateField()
+    end_cooperate_time = models.DateField(default=None, null=True)
     # 佣金核算方式
     commission_type = models.IntegerField(
         choices=((0, '无'),
@@ -272,7 +276,7 @@ class ExternalChannel(models.Model):
                  (3, '按消费人数')),
         default=0)
     # 佣金核算数值
-    commission_value = models.IntegerField()
+    commission_value = models.IntegerField(default=0)
     # 是否有效
     is_enabled = models.BooleanField(default=True, db_index=True)
 

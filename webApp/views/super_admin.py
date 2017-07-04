@@ -1,4 +1,5 @@
 import os
+import json
 
 from PIL import Image
 
@@ -67,7 +68,7 @@ def get_admins(request, token, hotel_id=None, is_enabled=True, offset=0,
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
     'username': forms.CharField(min_length=1, max_length=20),
-    'password': forms.CharField(min_length=1, max_length=128),
+    'password': forms.CharField(min_length=1, max_length=32),
     'type': forms.IntegerField(min_value=0, max_value=1, required=False),
     'hotel_id': forms.IntegerField(required=False),
 })
@@ -145,7 +146,7 @@ def delete_admin(request, token, admin_id):
 
 @validate_args({
     'username': forms.CharField(min_length=1, max_length=20),
-    'password': forms.CharField(min_length=1, max_length=128),
+    'password': forms.CharField(min_length=1, max_length=32),
 })
 def login(request, username, password):
     """登录，更新并返回超级管理者令牌
@@ -201,6 +202,8 @@ def get_hotels(request, token, is_enabled=True, offset=0, limit=10, order=1):
             icon: 头像
             branches_count: 门店数
             owner_name: 法人代表
+            branch_number: 门店数量上限
+            service: 开通的服务
             is_enabled: 是否有效
             create_time: 创建时间
     """
@@ -215,6 +218,8 @@ def get_hotels(request, token, is_enabled=True, offset=0, limit=10, order=1):
           'branches_count': h.branches.count(),
           'owner_name': h.owner_name,
           'is_enabled': h.is_enabled,
+          'branch_number': h.branch_number,
+          'service': json.loads(h.service) if h.service else '',
           'create_time': h.create_time} for h in hotels]
     return corr_response({'count': c, 'list': l})
 
@@ -223,14 +228,16 @@ def get_hotels(request, token, is_enabled=True, offset=0, limit=10, order=1):
     'token': forms.CharField(min_length=32, max_length=32),
     'name': forms.CharField(min_length=1, max_length=20),
     'owner_name': forms.CharField(min_length=1, max_length=20),
+    'branch_number': forms.IntegerField(min_value=1, required=False),
 })
 @validate_super_admin_token()
-def register_hotel(request, token, name, owner_name):
+def register_hotel(request, token, name, owner_name, branch_number=None):
     """注册新酒店
 
     :param token: 令牌(必传)
     :param name: 名称(必传)
     :param owner_name: 法人代表(必传)
+    :param branch_number: 门店数量上限
     :return 200
     """
 
@@ -238,6 +245,9 @@ def register_hotel(request, token, name, owner_name):
         return err_response('err_4', '酒店名已注册')
     try:
         hotel = Hotel.objects.create(name=name, owner_name=owner_name)
+        if branch_number:
+            hotel.branch_number = branch_number
+            hotel.save()
         return corr_response({'hotel_id': hotel.id})
     except IntegrityError:
         return err_response('err_5', '服务器创建酒店失败')
@@ -282,6 +292,8 @@ def get_hotel_profile(request, token, hotel_id):
         icon: 头像
         branches_count: 门店数
         owner_name: 法人代表
+        branch_number: 门店数量上限
+        service: 开通的服务
         is_enabled: 是否有效
         create_time: 创建时间
     """
@@ -296,6 +308,8 @@ def get_hotel_profile(request, token, hotel_id):
              'icon': hotel.icon,
              'branches_count': hotel.branches.count(),
              'owner_name': hotel.owner_name,
+             'branch_number': hotel.branch_number,
+             'service': json.loads(hotel.service) if hotel.service else '',
              'is_enabled': hotel.is_enabled,
              'create_time': hotel.create_time}
         return corr_response(d)
@@ -306,6 +320,7 @@ def get_hotel_profile(request, token, hotel_id):
     'name': forms.CharField(min_length=1, max_length=20, required=False),
     'owner_name': forms.CharField(min_length=1, max_length=20,
                                   required=False),
+    'branch_number': forms.IntegerField(min_value=1, required=False),
     'hotel_id': forms.IntegerField(),
 })
 @validate_super_admin_token()
@@ -317,6 +332,8 @@ def modify_hotel_profile(request, token, hotel_id, **kwargs):
     :param kwargs:
         name: 名称
         owner_name: 法人代表
+        branch_number: 门店数量上限
+        service: 开通的服务, 例, {"order_analyze":True, "source_statistic":True}
         icon: 头像[file]
     :return: 200/400/403/404
     """
@@ -354,10 +371,26 @@ def modify_hotel_profile(request, token, hotel_id, **kwargs):
                 pass
         hotel.icon = file_name
 
-    hotel_keys = ('owner_name', 'is_enabled')
+    hotel_keys = ('owner_name', 'branch_number', 'is_enabled')
     for k in hotel_keys:
         if k in kwargs:
             setattr(hotel, k, kwargs[k])
+
+    # 修改开通的服务
+    data = json.loads(request.body)
+    if 'service' in data:
+        try:
+            order_analyze = data['service']['order_analyze']
+            source_statistic = data['service']['source_statistic']
+            if isinstance(order_analyze, bool) and \
+                    isinstance(order_analyze, bool):
+                hotel.service = json.dumps({
+                    'order_analyze': order_analyze,
+                    'source_statistic': source_statistic})
+            else:
+                return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+        except KeyError:
+            return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
 
     hotel.save()
     return corr_response()

@@ -34,9 +34,9 @@ urlpatterns = [
         name='delete_hotel_branch_picture'),
     # 获取门店的餐厅区域
     url(r'^hotel_branch/area/list/$', get_areas, name='get_area_list'),
-    # 增加门店的餐厅区域
+    # 批量增加门店的餐厅区域
     url(r'^hotel_branch/area/add/$', add_area, name='add_area'),
-    # 修改门店的餐厅区域
+    # 批量修改门店的餐厅区域
     url(r'^hotel_branch/area/modify/$', modify_area, name='modify_area'),
     # 获取门店桌位列表
     url(r'^hotel_branch/desk/list/$', get_desks, name='get_desk_list'),
@@ -46,9 +46,15 @@ urlpatterns = [
     url(r'^hotel_branch/desk/modify/$', modify_desk, name='modify_desk'),
     # 获取获客渠道
     url(r'^hotel/channel/list/$', get_channels, name='get_channel_list'),
+    # 增加外部获客渠道
+    url(r'^hotel/external_channel/add/$', add_external_channel,
+        name='add_external_channel'),
+    # 修改外部获客渠道信息
+    url(r'^hotel/external_channel/modify/$', modify_external_channel,
+        name='modify_external_channel'),
     # 获取外部获客渠道信息
-    url(r'^hotel/external_channel/profile/$', get_channel_profile,
-        name='get_channel_profile'),
+    url(r'^hotel/external_channel/profile/$', get_external_channel_profile,
+        name='get_external_channel_profile'),
     # 获取酒店员工列表
     url(r'^hotel/staff/list/$', get_staffs, name='staff_list'),
     # 注册新的员工
