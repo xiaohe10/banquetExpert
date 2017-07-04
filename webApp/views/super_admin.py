@@ -68,7 +68,7 @@ def get_admins(request, token, hotel_id=None, is_enabled=True, offset=0,
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
     'username': forms.CharField(min_length=1, max_length=20),
-    'password': forms.CharField(min_length=1, max_length=128),
+    'password': forms.CharField(min_length=1, max_length=32),
     'type': forms.IntegerField(min_value=0, max_value=1, required=False),
     'hotel_id': forms.IntegerField(required=False),
 })
@@ -146,7 +146,7 @@ def delete_admin(request, token, admin_id):
 
 @validate_args({
     'username': forms.CharField(min_length=1, max_length=20),
-    'password': forms.CharField(min_length=1, max_length=128),
+    'password': forms.CharField(min_length=1, max_length=32),
 })
 def login(request, username, password):
     """登录，更新并返回超级管理者令牌

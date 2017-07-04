@@ -8,6 +8,7 @@ from django import forms
 from django.db import IntegrityError, transaction
 from django.db.models import Q
 from django.utils import timezone
+from django.core.validators import RegexValidator
 from django.core.exceptions import ObjectDoesNotExist
 
 from ..utils.response import corr_response, err_response
@@ -19,7 +20,7 @@ from ..models import Admin, Hotel, HotelBranch, Area, Desk, Staff, Live, Order,\
 
 @validate_args({
     'username': forms.CharField(min_length=1, max_length=20),
-    'password': forms.CharField(min_length=1, max_length=128),
+    'password': forms.CharField(min_length=1, max_length=32),
 })
 def login(request, username, password):
     """更新并返回管理者令牌
@@ -1339,8 +1340,8 @@ def get_staffs(request, token, hotel_id, order=1):
 
 
 @validate_args({
-    'phone': forms.RegexField(r'[0-9]{11}'),
-    'password': forms.CharField(min_length=1, max_length=128),
+    'phone': forms.CharField(validators=[RegexValidator(regex=r'^[0-9]{11}$')]),
+    'password': forms.CharField(min_length=1, max_length=32),
     'staff_number': forms.CharField(
         min_length=1, max_length=20, required=False),
     'name': forms.CharField(min_length=1, max_length=20),
