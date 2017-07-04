@@ -17,8 +17,9 @@
             <div class="form-group">
                 <label class="col-lg-2 control-label"><a style="color: red;">*</a>性别：</label>
                 <div class="col-lg-10">
-                    <label class="radio-inline"><input type="radio" ng-model="form.gender" value="male"/>先生</label>
-                    <label class="radio-inline"><input type="radio" ng-model="form.gender" value="female"/>女士</label>
+                    <label class="radio-inline"><input type="radio" ng-model="form.gender" value="0"/>保密</label>
+                    <label class="radio-inline"><input type="radio" ng-model="form.gender" value="1"/>先生</label>
+                    <label class="radio-inline"><input type="radio" ng-model="form.gender" value="2"/>女士</label>
                 </div>
             </div>
             <!--电话-->
@@ -36,7 +37,7 @@
                 </div>
             </div>
             <!--生日-->
-            <div class="form-group">
+            <div class="form-group hidden">
                 <label class="col-lg-2 control-label">生日：</label>
                 <div class="col-lg-10">
                     <input type="date" ng-model="form.birthday"/>
@@ -45,14 +46,14 @@
                 </div>
             </div>
             <!--单位-->
-            <div class="form-group">
+            <div class="form-group hidden">
                 <label class="col-lg-2 control-label">单位：</label>
                 <div class="col-lg-10">
                     <input type="text" ng-model="form.unit"/>
                 </div>
             </div>
             <!--现住址-->
-            <div class="form-group">
+            <div class="form-group hidden">
                 <label class="col-lg-2 control-label">现住址：</label>
                 <div class="col-lg-10">
                     <!--省-->
@@ -74,7 +75,7 @@
                 </div>
             </div>
             <!--籍贯-->
-            <div class="form-group">
+            <div class="form-group hidden">
                 <label class="col-lg-2 control-label">籍贯：</label>
                 <div class="col-lg-10">
                     <!--省-->
@@ -88,7 +89,7 @@
                 </div>
             </div>
             <!--营销短信-->
-            <div class="form-group">
+            <div class="form-group hidden">
                 <label class="col-lg-2 control-label">营销短信：</label>
                 <div class="col-lg-10">
                     <label class="radio-inline"><input type="radio" ng-model="form.sms_marketing" value="enabled"/>开</label>
@@ -96,7 +97,7 @@
                 </div>
             </div>
             <!--分类方法-->
-            <div class="form-group">
+            <div class="form-group hidden">
                 <label class="col-lg-2 control-label">分类方法：</label>
                 <div class="col-lg-10">
                     <select ng-model="form.classification_method">
@@ -105,7 +106,7 @@
                 </div>
             </div>
             <!--病症-->
-            <div class="form-group">
+            <div class="form-group hidden">
                 <label class="col-lg-2 control-label">病症：</label>
                 <div class="col-lg-10">
                     <!--病症列表-->
@@ -118,7 +119,7 @@
                 </div>
             </div>
             <!--喜好-->
-            <div class="form-group">
+            <div class="form-group hidden">
                 <label class="col-lg-2 control-label">喜好：</label>
                 <div class="col-lg-10">
                     <!--喜好列表-->
@@ -131,7 +132,7 @@
                 </div>
             </div>
             <!--忌口-->
-            <div class="form-group">
+            <div class="form-group hidden">
                 <label class="col-lg-2 control-label">忌口：</label>
                 <div class="col-lg-10">
                     <!--忌口列表-->
@@ -144,7 +145,7 @@
                 </div>
             </div>
             <!--不良记录-->
-            <div class="form-group">
+            <div class="form-group hidden">
                 <label class="col-lg-2 control-label">不良记录：</label>
                 <div class="col-lg-10">
                     <textarea ng-model="form.bad_records"></textarea>
