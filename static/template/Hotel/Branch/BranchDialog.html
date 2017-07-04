@@ -20,7 +20,10 @@
                 门店老板：
             </label>
             <div class="col-sm-10">
-                <input type="text" ng-model="form.manager_name"/>
+                <select ng-model="form.staff_id">
+                    <optgroup label="职工列表"></optgroup>
+                    <option ng-repeat="x in data.list" value="{{x.staff_id}}">{{x.name}}</option>
+                </select>
             </div>
         </div>
         <!--所在城市-->
@@ -48,6 +51,10 @@
                 <input type="text" ng-model="form.address" value=""/>
             </div>
         </div>
+        <!--电话【多个】-->
+        <!--设施【多个】-->
+        <!--支付方式【多个】-->
+        <!--菜系-->
         <!--门店大图-->
         <div class="form-group">
             <label class="col-sm-2 control-label">
