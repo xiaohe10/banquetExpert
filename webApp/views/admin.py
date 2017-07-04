@@ -59,6 +59,8 @@ def get_hotel_profile(request, token):
         icon: 头像
         branches_count: 门店数
         owner_name: 法人代表
+        branch_number: 门店数量上限
+        service: 开通的服务
         create_time: 创建时间
     """
 
@@ -74,6 +76,8 @@ def get_hotel_profile(request, token):
          'icon': hotel.icon,
          'branches_count': hotel.branches.count(),
          'owner_name': hotel.owner_name,
+         'branch_number': hotel.branch_number,
+         'service': json.loads(hotel.service) if hotel.service else '',
          'create_time': hotel.create_time}
     return corr_response(d)
 
@@ -256,6 +260,9 @@ def register_branch(request, token, hotel_id, staff_id, **kwargs):
     except Staff.DoesNotExist:
         return err_response('err_5', '员工不存在')
 
+    if hotel.branches.count() >= hotel.branch_number:
+        return err_response('err_6', '门店数量已达上限')
+
     branch_keys = ('name', 'province', 'city', 'county', 'address')
     branch_other_keys = ('phone', 'facility', 'pay_card', 'cuisine')
 
@@ -278,7 +285,7 @@ def register_branch(request, token, hotel_id, staff_id, **kwargs):
             branch.save()
             return corr_response({'branch_id': branch.id})
         except IntegrityError:
-            return err_response('error_6', '服务器创建门店失败')
+            return err_response('error_7', '服务器创建门店失败')
 
 
 @validate_args({
@@ -673,18 +680,17 @@ def get_areas(request, token, branch_id, order=1):
 
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
-    'branch_id': forms.IntegerField(),
-    'name': forms.CharField(min_length=1, max_length=10),
-    'order': forms.IntegerField(min_value=0),
+    'branch_id': forms.IntegerField()
 })
 @validate_admin_token()
-def add_area(request, token, branch_id, name, order):
-    """增加餐厅区域
+def add_area(request, token, branch_id):
+    """批量增加餐厅区域
 
     :param token: 令牌(必传)
     :param branch_id: 门店ID(必传)
-    :param name: 名称(必传)
-    :param order: 排序(必传)
+    :param list(必传)
+        name: 名称(必传)
+        order: 排序(必传)
     :return: 200
     """
 
@@ -693,63 +699,75 @@ def add_area(request, token, branch_id, name, order):
     except ObjectDoesNotExist:
         return err_response('err_4', '酒店不存在')
 
-    # 管理员只能查看自己酒店的门店
+    # 管理员只能管理自己酒店的门店
     if branch.hotel != request.admin.hotel:
         return err_response('err_2', '权限错误')
 
-    if branch.areas.filter(name=name).count() > 0:
-        return err_response('err_5', '区域名已存在')
+    # 检查区域名是否已存在
+    try:
+        l = json.loads(request.body)['list']
+        for a in l:
+            name = a['name']
+            order = a['order']
+            if branch.areas.filter(name=name).count() > 0:
+                return err_response('err_5', '区域名已存在')
+    except KeyError or ValueError:
+        return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
 
+    # 批量添加区域
     with transaction.atomic():
-        try:
-            area = Area(name=name, order=order, branch=branch)
-            area.save()
-            return corr_response()
-        except IntegrityError:
-            return err_response('err_5', '服务器添加餐厅区域失败')
+        for a in l:
+            name = a['name']
+            order = a['order']
+            try:
+                area = Area(name=name, order=order, branch=branch)
+                area.save()
+                return corr_response()
+            except IntegrityError:
+                return err_response('err_5', '服务器添加餐厅区域失败')
 
 
 @validate_args({
-    'token': forms.CharField(min_length=32, max_length=32),
-    'area_id': forms.IntegerField(),
-    'name': forms.CharField(min_length=1, max_length=10, required=False),
-    'order': forms.IntegerField(min_value=0, required=False),
-    'is_enabled': forms.BooleanField(required=False),
+    'token': forms.CharField(min_length=32, max_length=32)
 })
 @validate_admin_token()
-def modify_area(request, token, area_id, **kwargs):
-    """修改餐厅区域信息
+def modify_area(request, token):
+    """批量修改餐厅区域信息
 
     :param token: 令牌(必传)
-    :param area_id: 门店ID(必传)
-    :param kwargs:
+    :param list:
         name: 名称
         order: 排序
         is_enabled: 是否有效
     :return: 200
     """
 
+    # 检查区域名是否已存在
     try:
-        area = Area.objects.get(id=area_id)
+        l = json.loads(request.body)['list']
+        for a in l:
+            area_id = a['area_id']
+            name = a['name']
+            order = a['order']
+            is_enabled = a['is_enabled']
+            area = Area.objects.get(id=area_id)
+
+            if area.branch.hotel != request.admin.hotel:
+                return err_response('err_2', '权限错误')
+
+            if area.branch.areas.filter(name=name).exclude(
+                    id=area_id).count() > 0:
+                return err_response('err_5', '区域名重复')
+
+            area.name = name
+            area.order = order
+            area.is_enabled = is_enabled
+            area.save()
+            return corr_response()
+    except KeyError or ValueError:
+        return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
     except ObjectDoesNotExist:
         return err_response('err_4', '酒店不存在')
-
-    # 管理员只能查看自己酒店的门店
-    if area.branch.hotel != request.admin.hotel:
-        return err_response('err_2', '权限错误')
-
-    if 'name' in kwargs:
-        if area.branch.areas.filter(name=kwargs['name']).count() > 0:
-            return err_response('err_5', '区域名已存在')
-
-    area_keys = ('name', 'order', 'is_enabled')
-
-    for k in kwargs:
-        if k in area_keys:
-            setattr(area, k, kwargs[k])
-
-    area.save()
-    return corr_response()
 
 
 @validate_args({
@@ -1049,10 +1067,172 @@ def get_channels(request, token):
 
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
+    'name': forms.CharField(max_length=20),
+    'discount': forms.FloatField(required=False),
+    'begin_cooperate_time': forms.DateField(required=False),
+    'end_cooperate_time': forms.DateField(required=False),
+    'commission_type': forms.IntegerField(required=False),
+    'commission_value': forms.IntegerField(required=False),
+    'staff_id': forms.IntegerField()
+})
+@validate_admin_token()
+def add_external_channel(request, token, staff_id, name, **kwargs):
+    """添加外部渠道
+
+    :param token: 令牌(必传)
+    :param staff_id: 直属上级ID(必传)
+    :param name: 名称
+    :param kwargs
+        discount: 折扣
+        begin_cooperate_time: 合作起始时间
+        end_cooperate_time: 合作结束时间
+        commission_type: 佣金核算方式, 0:无, 1:按消费额百分百比, 2:按订单数量, 3:按消费人数
+        commission_value: 佣金核算数值
+        icon: 头像[file]格式
+    :return channel_id: 渠道ID
+    """
+
+    hotel = request.admin.hotel
+    try:
+        staff = hotel.staffs.filter(id=staff_id)
+    except ObjectDoesNotExist:
+        return err_response('err_4', '员工不存在')
+
+    channel_keys = ('discount', 'begin_cooperate_time', 'end_cooperate_time',
+                    'commission_type', 'commission_value')
+
+    with transaction.atomic():
+        try:
+            channel = ExternalChannel(staff=staff, name=name)
+            for k in channel_keys:
+                if k in kwargs:
+                    setattr(channel, k, kwargs[k])
+
+            # 添加头像
+            if 'icon' in request.FILES:
+                icon = request.FILES['icon']
+
+                icon_time = timezone.now().strftime('%H%M%S%f')
+                icon_tail = str(icon).split('.')[-1]
+                dir_name = 'uploaded/icon/external_channel/%d/' % channel.id
+                os.makedirs(dir_name, exist_ok=True)
+                file_name = dir_name + '%s.%s' % (icon_time, icon_tail)
+                try:
+                    img = Image.open(icon)
+                    img.save(file_name, quality=90)
+                except OSError:
+                    return err_response('err_5', '图片为空或图片格式错误')
+
+                # 删除旧文件, 保存新的文件路径
+                if channel.icon:
+                    try:
+                        os.remove(channel.icon)
+                    except OSError:
+                        pass
+                channel.icon = file_name
+
+            channel.save()
+            return corr_response({'channel_id': channel.id})
+        except IntegrityError:
+            return err_response('err_6', '服务器创建外部渠道失败')
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+    'channel_id': forms.IntegerField(),
+    'name': forms.CharField(max_length=20, required=False),
+    'discount': forms.FloatField(required=False),
+    'begin_cooperate_time': forms.DateField(required=False),
+    'end_cooperate_time': forms.DateField(required=False),
+    'commission_type': forms.IntegerField(required=False),
+    'commission_value': forms.IntegerField(required=False),
+    'staff_id': forms.IntegerField(required=False)
+})
+@validate_admin_token()
+def modify_external_channel(request, token, channel_id, **kwargs):
+    """修改外部渠道
+
+    :param token: 令牌(必传)
+    :param channel_id: 外部渠道ID(必传)
+    :param kwargs
+        staff_id: 直属上级ID
+        name: 名称
+        discount: 折扣
+        icon: 头像[file]格式
+        begin_cooperate_time: 合作起始时间
+        end_cooperate_time: 合作结束时间
+        commission_type: 佣金核算方式, 0:无, 1:按消费额百分百比, 2:按订单数量, 3:按消费人数
+        commission_value: 佣金核算数值
+        is_enabled: 是否有效
+    :return channel_id: 渠道ID
+    """
+
+    hotel = request.admin.hotel
+
+    try:
+        channel = ExternalChannel.objects.get(id=channel_id)
+    except ObjectDoesNotExist:
+        return err_response('err_4', '外部渠道不存在')
+
+    if channel.staff.hotel != hotel:
+        return err_response('err_2', '权限错误')
+
+    name = kwargs['name'] if 'name' in kwargs else ''
+    if name:
+        if ExternalChannel.objects.filter(staff__hotel=hotel, name=name). \
+                exclude(id=channel_id).count() > 0:
+            return err_response('err_5', '外部渠道名称已存在')
+
+    staff_id = kwargs.pop('staff_id') if 'staff_id' in kwargs else None
+    if staff_id:
+        try:
+            staff = Staff.enabled_objects.get(id=staff_id)
+            if staff.hotel != hotel:
+                return err_response('err_6', '员工不存在')
+            channel.staff = staff
+        except ObjectDoesNotExist:
+            return err_response('err_6', '员工不存在')
+
+    channel_keys = ('discount', 'begin_cooperate_time', 'end_cooperate_time',
+                    'commission_type', 'commission_value', 'is_enabled')
+
+    for k in channel_keys:
+        if k in kwargs:
+            setattr(channel, k, kwargs[k])
+
+    # 修改头像
+    if 'icon' in request.FILES:
+        icon = request.FILES['icon']
+
+        icon_time = timezone.now().strftime('%H%M%S%f')
+        icon_tail = str(icon).split('.')[-1]
+        dir_name = 'uploaded/icon/external_channel/%d/' % channel.id
+        os.makedirs(dir_name, exist_ok=True)
+        file_name = dir_name + '%s.%s' % (icon_time, icon_tail)
+        try:
+            img = Image.open(icon)
+            img.save(file_name, quality=90)
+        except OSError:
+            return err_response('err_7', '图片为空或图片格式错误')
+
+        # 删除旧文件, 保存新的文件路径
+        if channel.icon:
+            try:
+                os.remove(channel.icon)
+            except OSError:
+                pass
+        channel.icon = file_name
+
+    channel.save()
+    return corr_response()
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
     'channel_id': forms.IntegerField()
 })
 @validate_admin_token()
-def get_channel_profile(request, token, channel_id):
+def get_external_channel_profile(request, token, channel_id):
     """获取外部渠道详情
 
     :param token: 令牌(必传)
@@ -1064,15 +1244,13 @@ def get_channel_profile(request, token, channel_id):
         icon: 头像
         begin_cooperate_time: 合作起始时间
         end_cooperate_time: 合作结束时间
-        commission_type: 佣金核算方式, 0:无,1:按消费额百分百比, 2:按订单数量, 3:按消费人数
+        commission_type: 佣金核算方式, 0:无, 1:按消费额百分百比, 2:按订单数量, 3:按消费人数
         commission_value: 佣金核算数值
         staff_id: 直属上级ID
         staff_name: 直属上级名称
         is_enabled: 是否有效
         create_time: 创建时间
     """
-
-    hotel = request.admin.hotel
 
     try:
         channel = ExternalChannel.objects.get(id=channel_id)

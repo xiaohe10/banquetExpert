@@ -2837,6 +2837,8 @@ URL：webApp/super_admin/hotel/list/ <br>
 | icon  | 头像  |
 | branches_count  | 门店数   |
 | owner_name    | 法人代表   |
+| branch_number | 门店数量上限    |
+| service   | 开通的服务 |
 | is_enabled    | 是否有效  |
 | create_time   | 创建时间  |
 
@@ -2853,6 +2855,11 @@ URL：webApp/super_admin/hotel/list/ <br>
 		    "icon":"头像地址",
 		    "branches_count":10,
 		    "owner_name":"杨秀荣",
+		    "branch_number":3,
+            "service":{
+                "order_analyze":True,
+                "source_statistic":True
+            },
 		    "is_enabled":"True",
 		    "create_time":"创建时间"
 		    ],
@@ -2881,6 +2888,7 @@ URL：webApp/super_admin/hotel/register/ <br>
 | token         | 令牌          |         yes    |
 | name  | 用户名，最多20位          |         yes    |
 | owner_name      | 公司法人  |         yes    |
+| branch_number | 门店数量上限    | no    |
 
 请求示例：
 
@@ -2990,6 +2998,8 @@ URL：webApp/super_admin/hotel/profile/get/ <br>
 | icon  | 头像    |
 | branches_count    | 门店数   |
 | owner_name    | 法人    |
+| branch_number | 门店数量上限    |
+| service   | 开通的服务 |
 | is_enabled    | 是否有效  |
 | create_time   | 创建时间  |
 
@@ -3004,6 +3014,11 @@ URL：webApp/super_admin/hotel/profile/get/ <br>
 	    "icon":"头像地址",
 	    "branches_count":10,
 	    "owner_name":"杨秀荣",
+	    "branch_number":10,
+	    "service":{
+	        "order_analyze":True,
+	        "source_statistic":True
+	    },
 	    "is_enabled":"True",
 	    "create_time":"创建时间"
 	}
@@ -3073,6 +3088,8 @@ URL：webApp/super_admin/hotel/profile/modify/ <br>
 | hotel_id      | 酒店ID          |         yes    |
 | name  | 酒店名   | no  |
 | owner_name    | 法人    | no    |
+| branch_number | 门店数量上限    | no    |
+| service   | 开通的服务 |   no  |
 | icon  | 头像，file格式    | no    |
 
 请求示例：
@@ -3083,6 +3100,11 @@ URL：webApp/super_admin/hotel/profile/modify/ <br>
 	"hotel_id":1,
 	"name":"珍珠大饭店",
 	"owner":"梅本山",
+	"branch_number":10,
+	"service":{
+	        "order_analyze":True,
+	        "source_statistic":True
+	    },
 	"icon":"[file]"
 }
 ```
@@ -3185,6 +3207,8 @@ URL：webApp/admin/hotel/profile/get/ <br>
 | icon  | 头像    |
 | branches_count    | 门店数   |
 | owner_name    | 法人    |
+| branch_number | 门店数量上限    |
+| service   | 开通的服务 |
 | create_time   | 创建时间  |
 
 返回示例：
@@ -3198,6 +3222,11 @@ URL：webApp/admin/hotel/profile/get/ <br>
 	    "icon":"头像地址",
 	    "branches_count":10,
 	    "owner_name":"杨秀荣",
+	    "branch_number":3,
+	    "service":{
+	        "order_analyze":True,
+	        "source_statistic":True
+	    },
 	    "create_time":"创建时间"
 	}
 }
@@ -3413,10 +3442,11 @@ URL：webApp/admin/hotel_branch/register/ <br>
 | err_3 | 管理员不存在 |
 | err_4 | 酒店不存在 |
 | err_5 | 员工不存在 |
-| err_6 | 服务器创建门店失败 |
+| err_6 | 门店数量已达上限  |
+| err_7 | 服务器创建门店失败 |
 
 
-## 删除门店
+## 停用门店
 URL：webApp/admin/hotel_branch/delete/ <br>
 请求方式：POST <br>
 请求参数：
@@ -3823,7 +3853,7 @@ URL：webApp/admin/hotel_branch/area/list/ <br>
 | err_4 | 门店不存在 |
 
 
-## 增加门店的餐厅区域
+## 批量增加门店的餐厅区域
 URL：webApp/admin/hotel_branch/area/add/ <br>
 请求方式：POST <br>
 请求参数：
@@ -3832,6 +3862,8 @@ URL：webApp/admin/hotel_branch/area/add/ <br>
 |:------------- |:---------------| :-------------:|
 | token         | 令牌          |         yes    |
 | branch_id  | 门店 ID | yes   |
+| list  | 门店数组  | yes   |
+| 以下为list中的数据  |
 | name  | 名称    |   yes |
 | order | 排序 | yes |
 
@@ -3841,8 +3873,13 @@ URL：webApp/admin/hotel_branch/area/add/ <br>
 {
     "token":"129ASDFIOJIO3RN23U12934INASDF",
     "branch_id":1,
-    "name":"一楼",
-    "order":1
+    "list":[
+        {
+            "name":"一楼",
+            "order":1
+        },
+        ...
+    ]
 }
 ```
 
@@ -3872,14 +3909,16 @@ URL：webApp/admin/hotel_branch/area/add/ <br>
 | err_6 | 服务器添加餐厅区域失败   |
 
 
-## 修改门店的餐厅区域（包括删除）
-URL：webApp/admin/hotel_branch/area/delete/ <br>
+## 批量修改门店的餐厅区域（包括删除）
+URL：webApp/admin/hotel_branch/area/modify/ <br>
 请求方式：POST <br>
 请求参数：
 
 | 参数名称       | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------:|
 | token         | 令牌          |         yes    |
+| list  | 门店数组  | yes   |
+| 以下为list中的数据  |
 | area_id  | 区域 ID | yes   |
 | name  | 名称    |   no |
 | order | 排序 | no |
@@ -3890,9 +3929,14 @@ URL：webApp/admin/hotel_branch/area/delete/ <br>
 ```
 {
     "token":"129ASDFIOJIO3RN23U12934INASDF",
-    "area_id":1,
-    "name":"一楼",
-    "order":1
+    "list":[
+        {
+            "area_id":1,
+            "name":"一楼",
+            "order":1
+        },
+    ...
+    ]
 }
 ```
 
@@ -4517,7 +4561,130 @@ URL：webApp/admin/hotel/channel/list/ <br>
 | err_3 | 管理员不存在 |
 
 
-## 获取获客渠道列表
+## 添加外部获客渠道
+URL：webApp/admin/external_channel/add/ <br>
+请求方式：POST <br>
+请求参数：
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------:|
+| token         | 登录口令          |         yes    |
+| name    | 名称  | yes   |
+| discount | 折扣 | no    |
+| begin_cooperate_time | 合作起始时间 | no    |
+| end_cooperate_time | 合作结束时间   | no    |
+| commission_type | 佣金核算方式, 0:无, 1:按消费额百分百比, 2:按订单数量, 3:按消费人数   | no    |
+| commission_value | 佣金核算数值 | no    |
+| icon | 头像[file]格式 | no    |
+
+请求示例：
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"name":"美团",
+	"discount":3.8,
+	"begin_cooperate_time":"1993-02-12",
+	"end_cooperate_time":"2020-02-12",
+	"commission_type":1,
+	"commission_value":100,
+	"icon":[file]
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| channel_id    | 外部获客渠道ID    |
+
+返回示例：
+
+```
+{
+	"status":"true",
+	"data":{
+            "channel_id":1
+	}
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 管理员不存在 |
+| err_4 | 员工不存在 |
+| err_5 | 图片为空或图片格式错误   |
+| err_6 | 服务器创建外部渠道失败   |
+
+
+## 修改外部获客渠道
+URL：webApp/admin/external_channel/modify/ <br>
+请求方式：POST <br>
+请求参数：
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------:|
+| token         | 登录口令          |         yes    |
+| channel_id    | 外部获客渠道ID  | yes   |
+| name    | 名称  | no   |
+| discount | 折扣 | no    |
+| begin_cooperate_time | 合作起始时间 | no    |
+| end_cooperate_time | 合作结束时间   | no    |
+| commission_type | 佣金核算方式, 0:无, 1:按消费额百分百比, 2:按订单数量, 3:按消费人数   | no    |
+| commission_value | 佣金核算数值 | no    |
+| is_enabled    | 是否有效  | no    |
+| icon | 头像[file]格式 | no    |
+
+请求示例：
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"channel_id":1,
+	"name":"美团",
+	"discount":3.8,
+	"begin_cooperate_time":"1993-02-12",
+	"end_cooperate_time":"2020-02-12",
+	"commission_type":1,
+	"commission_value":100,
+	"is_enabled":True,
+	"icon":[file]
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+
+返回示例：
+
+```
+{
+	"status":"true",
+	"data":{
+	}
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 管理员不存在 |
+| err_4 | 外部渠道不存在 |
+| err_5 | 外部渠道名称已存在 |
+| err_6 | 员工不存在 |
+| err_7 | 图片为空或图片格式错误   |
+
+
+## 获取外部获客渠道详情
 URL：webApp/admin/external_channel/profile/ <br>
 请求方式：POST <br>
 请求参数：
