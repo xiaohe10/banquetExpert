@@ -21,8 +21,7 @@ LoginApp.controller('LoginCtrl', function ($scope, $http) {
             password: hex_md5($scope.form.password)
         };
         var key = $scope.form.option_selected;
-        $http.post($scope.groups[key], JSON.stringify(data)).success(function (data) {
-            var obj = eval(data);
+        $http.post($scope.groups[key], JSON.stringify(data)).success(function (obj) {
             if (obj.status === "true") {
                 location.href = $scope.hrefs[key];
             } else {

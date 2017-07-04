@@ -30,8 +30,7 @@
                                     <img class="img-responsive" src="/static/css/image/head1.jpg" style="width: 96px;height: 96px">
                                     <div class="caption">
                                         <h4>姓名：{{x.name}}</h4>
-                                        <!--<p>高层管理</p>-->
-                                        <p>2017年6月26日</p>
+                                        <p>日期：{{x.create_time}}</p>
                                     </div>
                                 </div>
                             </div>
@@ -41,9 +40,8 @@
                                     <span class="label label-success">新增高层管理</span>
                                     <img class="img-responsive" src="/static/css/image/head.jpg" style="width: 96px;height: 96px">
                                     <div class="caption">
-                                        <h4>姓名：{{x.name}}</h4>
-                                        <!--<p>高层管理</p>-->
-                                        <p>2017年6月26日</p>
+                                        <h4>姓名：无</h4>
+                                        <p>日期：无</p>
                                     </div>
                                 </div>
                             </div>
@@ -62,11 +60,11 @@
                                     <div class="caption">
                                         <h4>姓名：{{x.name}}</h4>
                                         <p>电话：{{x.phone}}</p>
-                                        <p>职位：{{x.job}}</p>
+                                        <p>职位：{{x.position}}</p>
                                     </div>
                                 </div>
                             </div>
-                            <!--添加预订员和迎宾-->
+                            <!--新增预订员和迎宾-->
                             <div class="col-lg-2 col-sm-3 col-xm-4">
                                 <div class="thumbnail" ng-click="addReserve()">
                                     <span class="label label-success">新增预订员和迎宾</span>
@@ -86,26 +84,26 @@
                     <div class="panel-body">
                         <div class="row">
                             <!--客户经理列表-->
-                            <div class="col-lg-2 col-sm-3 col-xm-4" ng-repeat="x in data.internal_channel|filter:{guest_channel:3}">
+                            <div class="col-lg-3 col-md-3 col-sm-3 col-xm-4" ng-repeat="x in data.internal_channel|filter:{guest_channel:3}">
                                 <div class="thumbnail" ng-click="editManager(x)">
-                                    <span class="label label-success">{{x.id}}. {{x.name}}</span>
-                                    <img class="img-responsive" src="/static/css/image/head1.jpg" style="width: 96px;height: 96px">
+                                    <span class="label label-success">{{x.staff_number}}. {{x.name}}</span>
+                                    <img class="img-responsive" src="{{x.icon}}" alt="ICON" style="width: 96px;height: 96px">
                                     <div class="caption">
-                                        <h4>姓名：赵强</h4>
-                                        <!--<p>职位：{{x.name}}</p>-->
-                                        <p>电话：999999999</p>
-                                        <p>日期：2017年6月26日</p>
+                                        <h4>姓名：{{x.name}}</h4>
+                                        <p>职位：{{x.position}}</p>
+                                        <p>电话：{{x.phone}}</p>
+                                        <p>日期：{{x.create_time|date:'yyyy/MM/dd'}}</p>
                                     </div>
                                 </div>
                             </div>
                             <!--新增客户经理-->
-                            <div class="col-lg-2 col-sm-3 col-xm-4">
+                            <div class="col-lg-3 col-md-3 col-sm-3 col-xm-4">
                                 <div class="thumbnail" ng-click="addManager()">
                                     <span class="label label-success">新增客户经理</span>
                                     <img class="img-responsive" src="/static/css/image/head.jpg" style="width: 96px;height: 96px">
                                     <div class="caption">
                                         <h4>姓名：无</h4>
-                                        <!--<p>职位：无</p>-->
+                                        <p>职位：无</p>
                                         <p>电话：无</p>
                                         <p>日期：无</p>
                                     </div>
@@ -121,13 +119,13 @@
                             <!--外部渠道列表-->
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xm-6" ng-repeat="x in data.external_channel">
                                 <div class="thumbnail" ng-click="editExternalChannel(x)">
-                                    <span class="label label-success">{{x.id}}. {{x.channel}}</span>
-                                    <img class="img-responsive" src="/static/css/image/head1.jpg" style="width: 96px;height: 96px">
+                                    <span class="label label-success">{{x.id}}. {{x.name}}</span>
+                                    <img class="img-responsive" src="{{x.icon}}" alt="ICON" style="width: 96px;height: 96px">
                                     <div class="caption">
-                                        <h4>{{x.channel}}</h4>
-                                        <p>上级：{{x.parent}}</p>
-                                        <p>开始日期：{{x.date_from}} </p>
-                                        <p>结束日期：{{x.date_to}}</p>
+                                        <h4>{{x.name}}</h4>
+                                        <p>上级：{{x.staff_name}}</p>
+                                        <p>开始日期：{{x.begin_cooperate_time|date:'yyyy/MM/dd'}} </p>
+                                        <p>结束日期：{{x.end_cooperate_time|date:'yyyy/MM/dd'}}</p>
                                         <p>折扣：{{x.discount|discount}}</p>
                                     </div>
                                 </div>
@@ -136,7 +134,7 @@
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xm-6">
                                 <div class="thumbnail" ng-click="addExternalChannel()">
                                     <span class="label label-success">添加外部渠道</span>
-                                    <img class="img-responsive" src="/static/css/image/head.jpg" style="width: 96px;height: 96px">
+                                    <img class="img-responsive" src="/static/css/image/head.jpg" alt="ICON" style="width: 96px;height: 96px">
                                     <div class="caption">
                                         <h4>渠道名称：无</h4>
                                         <p>上级：无</p>
