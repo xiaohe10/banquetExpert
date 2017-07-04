@@ -1340,6 +1340,7 @@ def get_staffs(request, token, hotel_id, order=1):
 
 
 @validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
     'phone': forms.CharField(validators=[RegexValidator(regex=r'^[0-9]{11}$')]),
     'password': forms.CharField(min_length=1, max_length=32),
     'staff_number': forms.CharField(
