@@ -174,7 +174,7 @@ BanquetExpertApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
     var TAG = 'drawerCtrl';
 
     // 酒店信息
-    $rootScope.hotel = {
+    $rootScope.Hotel = {
         hotel_id: 1,
         name: "未登录",
         icon: "/static/css/image/head1.jpg",
@@ -183,8 +183,12 @@ BanquetExpertApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
         owner_name: "杨秀荣",
         create_time: "创建时间"
     };
+    $rootScope.DeskType = [
+        '普通包间', '豪华包间', '大厅卡座', '大厅散台',
+        '宴会大厅', '多功能厅', '多桌包间', '隔断', '会场'
+    ];
     // 餐段信息
-    $rootScope.meals = {
+    $rootScope.MealsTime = {
         lunch: [
             "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "11:45",
             "12:00", "12:15", "12:30", "12:45", "13:00", "13:15", "13:30", "13:45",
@@ -200,6 +204,7 @@ BanquetExpertApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
             "02:00", "02:30", "03:00", "03:30", "04:00"
         ]
     };
+    $scope.hotel = $rootScope.Hotel;
     $scope.menus = [
         {
             title: "登录",
@@ -219,7 +224,8 @@ BanquetExpertApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
     $http.post(url, JSON.stringify(param)).success(function (obj) {
         if (obj.status === "true") {
             Log.i(TAG, "获取酒店信息成功");
-            $rootScope.hotel = obj.data;
+            $rootScope.Hotel = obj.data;
+            $scope.hotel = $rootScope.Hotel;
             $scope.menus = [
                 {
                     title: "超级管理后台",
@@ -324,10 +330,10 @@ BanquetExpertApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
 
     // 【酒店】获取渠道列表
     url = "/webApp/admin/hotel/channel/list/";
-    param = {hotel_id: BanquetExpert.hotel.hotel_id};
+    param = {hotel_id: $scope.hotel.hotel_id};
     $http.post(url, JSON.stringify(param)).success(function (obj) {
         if (obj.status === "true") {
-            $rootScope.channel = obj.channel;
+            $rootScope.channel = obj.data;
         } else {
             alert(obj.description);
         }
@@ -359,8 +365,8 @@ BanquetExpertApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
     // url = "/data/meal_period.json";
     // $http.post(url, JSON.stringify(param)).success(function (obj) {
     //     if (obj.status === "true") {
-    //         BanquetExpert.meals = obj;
-    //         Log.i(TAG, JSON.stringify(BanquetExpert.meals));
+    //         $rootScope.MealsTime = obj;
+    //         Log.i(TAG, JSON.stringify($rootScope.MealsTime));
     //     } else {
     //         alert(obj.description);
     //     }
@@ -809,7 +815,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                         resolve: {
                             form: function () {
                                 var staff = {
-                                    hotel_id: $rootScope.hotel.hotel_id,
+                                    hotel_id: $rootScope.Hotel.hotel_id,
                                     phone: "18800184976",
                                     name: "赵强",
                                     id_number: "100124100124100124",
@@ -1191,7 +1197,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 // };
                 var url = "/webApp/admin/hotel_branch/list/";
                 var param = {
-                    hotel_id: $rootScope.hotel.hotel_id
+                    hotel_id: $rootScope.Hotel.hotel_id
                 };
                 $http.post(url, JSON.stringify(param)).success(function (obj) {
                     if (obj.status === "true") {
@@ -1241,7 +1247,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                             form: function () {
                                 var branch = {
                                     // 酒店ID
-                                    hotel_id: $rootScope.hotel.hotel_id,
+                                    hotel_id: $rootScope.Hotel.hotel_id,
                                     // 店长ID
                                     staff_id: 0,
                                     // 名称
@@ -1750,10 +1756,10 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                                 '普通包间', '豪华包间', '大厅卡座', '大厅散台',
                                 '宴会大厅', '多功能厅', '多桌包间', '隔断', '会场'
                             ];
-                            $scope.facilities = [
-                                '靠窗', '会客区', '独立卫生间', '小型厨房',
-                                '卡拉ok', '可棋牌', '海景房', '液晶电视'
-                            ];
+                            // $scope.facilities = [
+                            //     '靠窗', '会客区', '独立卫生间', '小型厨房',
+                            //     '卡拉ok', '可棋牌', '海景房', '液晶电视'
+                            // ];
                             $scope.edit = function () {
                                 Log.i(TAG, "编辑桌位信息：" + $scope.form);
                             };
@@ -1820,16 +1826,16 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                                 '普通包间', '豪华包间', '大厅卡座', '大厅散台',
                                 '宴会大厅', '多功能厅', '多桌包间', '隔断', '会场'
                             ];
-                            $scope.facilities = [
-                                '靠窗', '会客区', '独立卫生间', '小型厨房',
-                                '卡拉ok', '可棋牌', '海景房', '液晶电视'
-                            ];
+                            // $scope.facilities = [
+                            //     '靠窗', '会客区', '独立卫生间', '小型厨房',
+                            //     '卡拉ok', '可棋牌', '海景房', '液晶电视'
+                            // ];
                             $scope.edit = function () {
                                 Log.i(TAG, "编辑桌位信息：" + $scope.form);
                             };
-                            $scope.save = function () {
+                            $scope.save = function (form) {
                                 Log.i(TAG, "保存桌位信息");
-                                dlg.close(form);
+                                dlg.close(angular.copy(form));
                             };
                             $scope.cancel = function () {
                                 Log.i(TAG, "取消");
@@ -1838,18 +1844,18 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                         },
                         resolve: {
                             form: function () {
-                                if (desk.facility === "") {
-                                    desk.facility = [];
-                                }
-                                if (desk.expense === "") {
-                                    desk.expense = [
-                                        {name: "最低消费", checked: false, value: 10.0},
-                                        {name: "服务费", checked: false, value: 10.0},
-                                        {name: "最低人均", checked: false, value: 10.0},
-                                        {name: "场地费", checked: false, value: 10.0},
-                                        {name: "包间费", checked: false, value: 10.0}
-                                    ];
-                                }
+                                // if (desk.facility === "") {
+                                //     desk.facility = [];
+                                // }
+                                // if (desk.expense === "") {
+                                //     desk.expense = [
+                                //         {name: "最低消费", checked: false, value: 10.0},
+                                //         {name: "服务费", checked: false, value: 10.0},
+                                //         {name: "最低人均", checked: false, value: 10.0},
+                                //         {name: "场地费", checked: false, value: 10.0},
+                                //         {name: "包间费", checked: false, value: 10.0}
+                                //     ];
+                                // }
                                 return desk;
                             }
                         }
@@ -1882,6 +1888,22 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                         if (obj.status === "true") {
                             $scope.area_id = area_id;
                             $scope.desk = obj.data;
+                            $scope.desk.list.forEach(function (obj) {
+                                if (obj.facility === "") {
+                                    obj.facility = [];
+                                }
+                                if (obj.expense === "") {
+                                    obj.expense = [
+                                        {name: "最低消费", checked: false, value: 10.0},
+                                        {name: "服务费", checked: false, value: 10.0},
+                                        {name: "最低人均", checked: false, value: 10.0},
+                                        {name: "场地费", checked: false, value: 10.0},
+                                        {name: "包间费", checked: false, value: 10.0}
+                                    ];
+                                } else {
+                                    obj.expense = eval(obj.expense);
+                                }
+                            });
                         } else {
                             $scope.desk = {};
                         }
@@ -1892,10 +1914,10 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
         .when('/Reserve/MealsTime', {
             templateUrl: "./template/" + Templates.Reserve.MealsTime, controller: function ($rootScope, $scope, $http) {
                 var TAG = Templates.Reserve.MealsTime;
-                $scope.Meals = $rootScope.meals;
+                $scope.MealsTime = $rootScope.MealsTime;
                 $scope.Week = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期天"];
                 $scope.EnWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-                $scope.MealsTime = {
+                $scope.Meals = {
                     hasLunch: false,
                     hasSupper: false,
                     hasDinner: false

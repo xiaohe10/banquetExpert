@@ -77,7 +77,7 @@
                     <div class="input-group" ng-hide="form.facility.length===12">
                         <input type="text" ng-model="facility" placeholder="请填写设施名称"/>
                         <!--添加设施到未选择列表-->
-                        <input type="button" ng-click="form.facility.push(facility)" value="添加设施"/>
+                        <input type="button" ng-click="form.facility.concat(facility.split(','))" value="添加设施"/>
                     </div>
                 </div>
             </div>
@@ -124,6 +124,6 @@
 </div>
 <div class="modal-footer">
     <input class="btn btn-success btn-sm" type="button" ng-hide="option==='添加'" ng-click="edit()" value="编辑">
-    <input class="btn btn-primary btn-sm" type="button" ng-click="save()" value="保存"/>
+    <input class="btn btn-primary btn-sm" type="button" ng-click="save(form)" value="保存"/>
     <input class="btn btn-warning btn-sm" type="button" ng-click="cancel()" value="取消"/>
 </div>
