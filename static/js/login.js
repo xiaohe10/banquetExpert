@@ -25,7 +25,7 @@ LoginApp.controller('LoginCtrl', function ($scope, $http) {
             if (obj.status === "true") {
                 location.href = $scope.hrefs[key];
             } else {
-                alert("登录失败");
+                alert("登录失败：" + obj.description);
             }
         });
     }

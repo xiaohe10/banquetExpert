@@ -40,8 +40,14 @@
             <tr ng-repeat="x in desk.list">
                 <td><input type="text" ng-model="x.number" value="{{x.number}}"/></td>
                 <td>{{x.min_guest_num}} 人 至 {{x.max_guest_num}} 人</td>
-                <td>{{x.expense}}</td>
-                <td><input type="text" ng-model="x.order" value="{{x.order}}"/></td>
+                <td>
+                    <span class="label label-info" style="display: inline-block" ng-repeat="y in x.expense">
+                        {{y.name}}:{{y.value}}
+                    </span>
+                </td>
+                <td>
+                    <input type="text" ng-model="x.order" value="{{x.order}}"/>
+                </td>
                 <td>
                     <label class="control-label">
                         <input type="checkbox" name="window" ng-model="x.is_beside_window">靠窗
