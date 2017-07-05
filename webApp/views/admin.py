@@ -359,8 +359,7 @@ def get_branch_profile(request, token, branch_id, **kwargs):
          'city': branch.city,
          'county': branch.county,
          'address': branch.address,
-         'meal_period': json.loads(branch.meal_period)
-         if branch.meal_period else '',
+         'meal_period': '',
          'facility': json.loads(branch.facility) if branch.facility else '',
          'pay_card': json.loads(branch.pay_card) if branch.pay_card else '',
          'phone': json.loads(branch.phone) if branch.phone else '',
@@ -371,6 +370,28 @@ def get_branch_profile(request, token, branch_id, **kwargs):
          'manager_name': branch.manager.name,
          'is_enabled': branch.is_enabled,
          'create_time': branch.create_time}
+
+    if branch.meal_period:
+        try:
+            d['meal_period'] = []
+            meal_period = json.loads(branch.meal_period)
+            days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
+                    'Saturday', 'Sunday']
+            for day in days:
+                d['meal_period'].append({
+                    'lunch': {
+                        'from': meal_period[day]['lunch'][0],
+                        'to': meal_period[day]['lunch'][-1]},
+                    'dinner': {
+                        'from': meal_period[day]['dinner'][0],
+                        'to': meal_period[day]['dinner'][-1]},
+                    'supper': {
+                        'from': meal_period[day]['supper'][0],
+                        'to': meal_period[day]['supper'][-1]}
+                    })
+        except KeyError or ValueError:
+            pass
+
     return corr_response(d)
 
 
@@ -473,8 +494,8 @@ def modify_meal_period(request, token, branch_id):
     :param token: 令牌(必传)
     :param branch_id: 酒店门店ID(必传)
     :param meal_period: 餐段设置, 格式如下
-        {
-            "Monday": {
+        [
+            {
                 "lunch": {
                     "from": "8:30",
                     "to": "12:00"
@@ -484,7 +505,7 @@ def modify_meal_period(request, token, branch_id):
                     "to": "18:00"
                 }
             },
-            "TuesDay": {
+            {
                 "lunch": {
                     "from": "8:30",
                     "to": "12:00"
@@ -495,7 +516,7 @@ def modify_meal_period(request, token, branch_id):
                 }
             },
             ...
-        }
+        ]
     :return:
     """
 
@@ -513,27 +534,28 @@ def modify_meal_period(request, token, branch_id):
         with open('data/meal_period.json') as json_file:
             data = json.load(json_file)
         result = {}
-        for day in days:
+        for i in range(7):
+            day = days[i]
             result[day] = {}
             # 午餐
             lunch = data['lunch']
-            if 'lunch' in meal_period[day]:
-                begin = meal_period[day]['lunch']['from']
-                end = meal_period[day]['lunch']['to']
+            if 'lunch' in meal_period[i]:
+                begin = meal_period[i]['lunch']['from']
+                end = meal_period[i]['lunch']['to']
                 result[day]['lunch'] = \
                     lunch[lunch.index(begin): lunch.index(end) + 1]
             # 晚餐
             dinner = data['dinner']
-            if 'dinner' in meal_period[day]:
-                begin = meal_period[day]['dinner']['from']
-                end = meal_period[day]['dinner']['to']
+            if 'dinner' in meal_period[i]:
+                begin = meal_period[i]['dinner']['from']
+                end = meal_period[i]['dinner']['to']
                 result[day]['dinner'] = \
                     dinner[dinner.index(begin): dinner.index(end) + 1]
             # 夜宵
             supper = data['supper']
-            if 'supper' in meal_period[day]:
-                begin = meal_period[day]['supper']['from']
-                end = meal_period[day]['supper']['to']
+            if 'supper' in meal_period[i]:
+                begin = meal_period[i]['supper']['from']
+                end = meal_period[i]['supper']['to']
                 result[day]['supper'] = \
                     supper[supper.index(begin): supper.index(end) + 1]
         branch.meal_period = json.dumps(result)
