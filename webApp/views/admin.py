@@ -1148,7 +1148,7 @@ def add_external_channel(request, token, staff_id, name, **kwargs):
 
     hotel = request.admin.hotel
     try:
-        staff = hotel.staffs.filter(id=staff_id)
+        staff = hotel.staffs.get(id=staff_id)
     except ObjectDoesNotExist:
         return err_response('err_4', '员工不存在')
 

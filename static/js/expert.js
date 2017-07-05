@@ -12,12 +12,13 @@ BanquetExpert = {
         display: "Display"
     },
     hotel: {
-        "hotel_id": 1,
-        "name": "未登录",
-        "icon": "/static/css/image/head1.jpg",
-        "branches_count": 10,
-        "owner_name": "杨秀荣",
-        "create_time": "创建时间"
+        hotel_id: 1,
+        name: "未登录",
+        icon: "/static/css/image/head1.jpg",
+        mage: "http://fs.kebide.com/2016/07/12/eed874b7ac2b4f04b6d6d735f49dc373.jpg",
+        branches_count: 10,
+        owner_name: "杨秀荣",
+        create_time: "创建时间"
     },
     branch: {},
     staff: {},
@@ -94,7 +95,7 @@ BanquetExpert = {
             ]
         },
         {
-            "title": "智能订餐台",
+            title: "智能订餐台",
             menu_id: "SmartOrder",
             item: [
                 {title: "智能订餐台", item_id: "SmartOrder"}
@@ -392,6 +393,17 @@ BanquetExpertApp.controller('drawerCtrl', function ($scope, $http) {
             alert(obj.description);
         }
     });
+
+    // 获取餐段列表
+    // url = "/data/meal_period.json";
+    // $http.post(url, JSON.stringify(param)).success(function (obj) {
+    //     if (obj.status === "true") {
+    //         BanquetExpert.meals = obj;
+    //         Log.i(TAG, JSON.stringify(BanquetExpert.meals));
+    //     } else {
+    //         alert(obj.description);
+    //     }
+    // });
 });
 
 // Angular路由配置
@@ -669,26 +681,22 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                             resolve: {
                                 form: function () {
                                     var channel = {
-                                            // 渠道名称
+                                            // 名称
                                             name: "118114",
-                                            // 签约折扣标准
+                                            // 折扣
                                             discount: 2,
-                                            // 头像
-                                            icon: "/static/css/image/head1.jpg",
                                             // 合作起始时间
-                                            begin_cooperate_time: "2017/06/27",
+                                            begin_cooperate_time: "2017-07-01",
                                             // 合作结束时间
-                                            end_cooperate_time: "2017/06/27",
+                                            end_cooperate_time: "2017-07-05",
                                             // 佣金核算方式
                                             commission_type: 0,
                                             // 佣金核算数值
                                             commission_value: 1,
+                                            // 头像
+                                            icon: "/static/css/image/head1.jpg",
                                             // 直属上级id
-                                            staff_id: 0,
-                                            // 直属上级名称
-                                            staff_name: 1,
-                                            // 是否有效
-                                            is_enabled: false
+                                            staff_id: 1
                                         }
                                     ;
                                     return channel;
@@ -699,6 +707,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                                 Log.i(TAG, "对话框控制器");
                                 $scope.option = "新增";
                                 $scope.form = form;
+                                $scope.staff = BanquetExpert.staff;
                                 $scope.discount = ["无折扣", "9.5折", "9.0折", "8.5折", "8.0折"];
                                 $scope.submit = function () {
                                     dlg.close($scope.form);
@@ -1356,9 +1365,9 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                         },
                         resolve: {
                             form: function () {
-                                // branch.phone = [];
-                                // branch.facility = [];
-                                // branch.pay_card = [];
+                                branch.phone = [];
+                                branch.facility = [];
+                                branch.pay_card = [];
                                 return branch;
                             }
                         }
@@ -1791,62 +1800,68 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
             }
         })
         .when('/Reserve/MealsTime', {
-            templateUrl: "./template/" + Templates.Reserve.MealsTime, controller: function ($scope) {
+            templateUrl: "./template/" + Templates.Reserve.MealsTime, controller: function ($scope, $http) {
                 var TAG = Templates.Reserve.MealsTime;
+                $scope.Meals = BanquetExpert.meals;
+                $scope.Week = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期天"];
+                $scope.EnWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
                 $scope.MealsTime = {
-                    Lunch: BanquetExpert.meals.lunch,
-                    Dinner: BanquetExpert.meals.dinner,
-                    Supper: BanquetExpert.meals.supper,
                     hasLunch: false,
-                    hasDinner: false,
-                    hasSupper: true,
-                    Week: ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期天"],
-                    EnWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-                    Table: [
-                        {
-                            lunch: {from: "08:30", to: "11:30"},
-                            dinner: {from: "15:00", to: "23:45"},
-                            supper: {from: "22:00", to: "04:00"}
-                        },
-                        {
-                            lunch: {from: "08:30", to: "11:30"},
-                            dinner: {from: "15:00", to: "23:45"},
-                            supper: {from: "22:00", to: "04:00"}
-                        },
-                        {
-                            lunch: {from: "08:30", to: "11:30"},
-                            dinner: {from: "15:00", to: "23:45"},
-                            supper: {from: "22:00", to: "04:00"}
-                        },
-                        {
-                            lunch: {from: "08:30", to: "11:30"},
-                            dinner: {from: "15:00", to: "23:45"},
-                            supper: {from: "22:00", to: "04:00"}
-                        },
-                        {
-                            lunch: {from: "08:30", to: "11:30"},
-                            dinner: {from: "15:00", to: "23:45"},
-                            supper: {from: "22:00", to: "04:00"}
-                        },
-                        {
-                            lunch: {from: "08:30", to: "11:30"},
-                            dinner: {from: "15:00", to: "23:45"},
-                            supper: {from: "22:00", to: "04:00"}
-                        },
-                        {
-                            lunch: {from: "08:30", to: "11:30"},
-                            dinner: {from: "15:00", to: "23:45"},
-                            supper: {from: "22:00", to: "04:00"}
-                        }
-                    ]
+                    hasSupper: false,
+                    hasDinner: false
                 };
+                $scope.MealPeriod = [
+                    {
+                        lunch: {from: "08:30", to: "09:30"},
+                        dinner: {from: "15:00", to: "15:30"},
+                        supper: {from: "22:30", to: "23:30"}
+                    },
+                    {
+                        lunch: {from: "08:30", to: "09:30"},
+                        dinner: {from: "15:00", to: "15:30"},
+                        supper: {from: "22:30", to: "23:30"}
+                    },
+                    {
+                        lunch: {from: "08:30", to: "09:30"},
+                        dinner: {from: "15:00", to: "15:30"},
+                        supper: {from: "22:30", to: "23:30"}
+                    },
+                    {
+                        lunch: {from: "08:30", to: "09:30"},
+                        dinner: {from: "15:00", to: "15:30"},
+                        supper: {from: "22:30", to: "23:30"}
+                    },
+                    {
+                        lunch: {from: "08:30", to: "09:30"},
+                        dinner: {from: "15:00", to: "15:30"},
+                        supper: {from: "22:30", to: "23:30"}
+                    },
+                    {
+                        lunch: {from: "08:30", to: "09:30"},
+                        dinner: {from: "15:00", to: "15:30"},
+                        supper: {from: "22:30", to: "23:30"}
+                    },
+                    {
+                        lunch: {from: "08:30", to: "09:30"},
+                        dinner: {from: "15:00", to: "15:30"},
+                        supper: {from: "22:30", to: "23:30"}
+                    }
+                ];
                 $scope.save = function () {
-                    Log.i(TAG, JSON.stringify({
-                        hasLunch: $scope.MealsTime.hasLunch,
-                        hasDinner: $scope.MealsTime.hasDinner,
-                        hasSupper: $scope.MealsTime.hasSupper,
-                        Table: $scope.MealsTime.Table
-                    }));
+                    // 修改餐段信息
+                    var url = "/webApp/admin/hotel_branch/meal_period/modify/";
+                    var param = {
+                        branch_id: 1,
+                        meal_period: $scope.MealPeriod
+                    };
+                    Log.i(TAG, JSON.stringify(param));
+                    $http.post(url, JSON.stringify(param)).success(function (obj) {
+                        if (obj.status === "true") {
+                            $scope.data = obj.data;
+                        } else {
+                            alert(obj.description);
+                        }
+                    });
                 };
             }
         })
@@ -1985,32 +2000,53 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 // 区域列表
                 $scope.area = BanquetExpert.area;
                 // 来电列表
-                $scope.phone = [];
+                $scope.Phone = [];
                 // 预约列表
-                $scope.reserve = [];
+                $scope.Reserve = [];
                 // 订单列表
-                $scope.orders = [];
+                $scope.Orders = [];
                 // 分页导航、
                 $scope.pages = [1, 2, 3, 4, 5, 6, 7, 8, 9];
                 // 构造列表
                 for (var i = 0; i < 5; i++) {
-                    $scope.phone.push({
+                    $scope.Phone.push({
                         id: i, time: "14:39", name: "赵强", gender: "male", phone: "18800184976", type: "活跃"
                     });
-                    $scope.reserve.push({
+                    $scope.Reserve.push({
                         id: i, time: "14:39", name: "姜璐", gender: "female", phone: "18800184976", type: "流失"
                     });
-                    $scope.orders.push({
+                    $scope.Orders.push({
                         id: i, name: "赵强", gender: "male", phone: "18050082265", order_time: "2017/6/23 19:04:48",
                         meal_time: "06月08日晚餐18:00", order_channel: "预订台", area: "二楼", seat: "525", people: "6",
                         amount: "4135.00", order_status: "消费成功", operator: "张欢欢"
                     });
                 }
+                // 订单
+                $scope.form = {
+                    // 预定日期
+                    dinner_date: "",
+                    dinner_time: "",
+                    dinner_period: "",
+                    name: "",
+                    contact: "",
+                    guest_number: "",
+                    desks: "",
+                    banquet: "",
+                    staff_description: ""
+                };
+                $scope.reserve = function () {
+                    Log.i(TAG, "预定：" + JSON.stringify($scope.form));
+                    var url = "/webApp/admin/order/submit/";
+                    var param = $scope.form;
+                };
+                $scope.cancel = function () {
+
+                };
                 $scope.handlePhone = function (index) {
-                    Log.i(TAG, JSON.stringify($scope.phone[index]));
+                    Log.i(TAG, JSON.stringify($scope.Phone[index]));
                 };
                 $scope.handleReserve = function (index) {
-                    Log.i(TAG, JSON.stringify($scope.reserve[index]));
+                    Log.i(TAG, JSON.stringify($scope.Reserve[index]));
                 };
             }
         });

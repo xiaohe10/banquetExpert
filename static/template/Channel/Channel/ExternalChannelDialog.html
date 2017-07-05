@@ -13,13 +13,21 @@
                     <input type="text" ng-model="form.name" placeholder=""/>
                 </div>
             </div>
+            <!--渠道ICON-->
+            <div class="form-group">
+                <label class="col-lg-3 control-label">渠道ICON：</label>
+                <div class="col-lg-9">
+                    <img src="/static/css/image/head1.jpg" alt="ICON">
+                    <input type="file" />
+                </div>
+            </div>
             <!--直属上级-->
             <div class="form-group">
                 <label class="col-lg-3 control-label"><a style="color: red;">*</a>直属上级：</label>
                 <div class="col-lg-9">
-                    <select ng-model="form.staff_name">
+                    <select ng-model="form.staff_id">
                         <optgroup label="直属上级"></optgroup>
-                        <option ng-init="{staff:['A','B','C','D']}" ng-repeat="x in this.staff" value="{{x}}">{{x}}</option>
+                        <option ng-repeat="x in staff.list" value={{x.staff_id}}>{{x.name}}</option>
                     </select>
                 </div>
             </div>
