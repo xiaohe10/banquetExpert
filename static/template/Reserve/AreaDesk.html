@@ -7,16 +7,18 @@
     </div>
     <div class="panel-body">
         <!--桌位导航栏-->
-        <div class="navbar ">
+        <div class="navbar">
             <div class="navbar-inner">
                 <ul class="nav nav-tabs">
-                    <li class="nav-item p-2" ng-repeat="x in area"><a ng-click="nav($index)">{{x.name}}</a></li>
+                    <li class="nav-item" ng-repeat="x in area.list|filter:{is_enabled:true}|orderBy:'order'">
+                        <a ng-click="nav(x.area_id)">{{x.name}}</a>
+                    </li>
                 </ul>
             </div>
         </div>
         <!--提示信息-->
         <div class="well well-sm">
-            全部桌位，共{{seat.length}}个 注：序号数值越大，则优先推荐
+            全部桌位，共{{desk.list.length}}个 注：序号数值越大，则优先推荐
         </div>
         <!--表格-->
         <table class="table table-bordered table-hover small">
@@ -30,33 +32,37 @@
                 <td>类型</td>
                 <td>设施</td>
                 <td>相关操作</td>
-                <td>营销APP</td>
-                <td>网络预订</td>
+                <td class="hidden">营销APP</td>
+                <td class="hidden">网络预订</td>
             </tr>
             </thead>
             <tbody id="seat-table">
-            <tr ng-repeat="x in seat">
-                <td><input type="text" name="order" ng-model="x.name" value="{{x.name}}"/></td>
-                <td>{{x.min}} 人 至 {{x.max}} 人</td>
-                <td>1000元</td>
-                <td><input type="text" name="order" ng-model="x.order" value="{{x.order}}"/></td>
+            <tr ng-repeat="x in desk.list">
+                <td><input type="text" ng-model="x.number" value="{{x.number}}"/></td>
+                <td>{{x.min_guest_num}} 人 至 {{x.max_guest_num}} 人</td>
+                <td>{{x.expense}}</td>
+                <td><input type="text" ng-model="x.order" value="{{x.order}}"/></td>
                 <td>
-                    <label>
-                        <input type="checkbox" name="window" data-link="window">靠窗
+                    <label class="control-label">
+                        <input type="checkbox" name="window" ng-model="x.is_beside_window">靠窗
                     </label>
                 </td>
                 <td>{{x.type}}</td>
-                <td>无</td>
                 <td>
-                    <a ng-click="edit(x.value)">修改</a>
-                    <label><input type="checkbox" ng-model="x.enable" value="{{x.enable}}"/>停用/开启</label>
+                    <span class="label label-success" style="display: inline-block;" ng-repeat="y in x.facility">{{y}}</span>
+                    <!--无设施提示-->
+                    <span class="label label-success" ng-show="x.facility.length===0">未添加设施</span>
                 </td>
                 <td>
+                    <a class="btn btn-link btn-sm" ng-click="editDesk(x)">编辑</a>
+                    <label><input type="checkbox" ng-model="x.is_enable"/>停用/开启</label>
+                </td>
+                <td class="hidden">
                     <label>
                         <input type="checkbox" ng-model="x.app" value="{{x.app}}"/>开启
                     </label>
                 </td>
-                <td>
+                <td class="hidden">
                     <label>
                         <input type="checkbox" ng-model="x.web" value="{{x.web}}"/>开启
                     </label>
@@ -82,7 +88,7 @@
         </nav>
         <!--操作栏-->
         <form class="navbar-form">
-            <input class="btn btn-sm btn-secondary ml-2 mr-1" type="button" ng-click="add_seat()" value="新增桌位"/>
+            <input class="btn btn-sm btn-secondary ml-2 mr-1" type="button" ng-click="addDesk()" value="新增桌位"/>
             <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" ng-click="save()" value="保存"/>
         </form>
     </div>

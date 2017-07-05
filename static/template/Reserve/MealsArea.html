@@ -20,19 +20,20 @@
             <tbody id="area-info-table">
             <tr ng-repeat="x in data.list">
                 <td>应用</td>
-                <td><input type="text" ng-model="x.name" value="{{x.name}}"/></td>
-                <td><input type="text" ng-model="x.order" value="{{x.order}}"/></td>
+                <td><input type="text" ng-model="x.name"/></td>
+                <td><input type="text" ng-model="x.order"/></td>
                 <td>
-                    <a href="#/Reserve/MealsArea/SetSeat/{{x.area_id}}">桌位设置</a>
-                    <label> <input type="checkbox" ng-model="x.is_enabled" value="{{x.is_enabled}}"/>启用</label>
+                    <label><input type="checkbox" ng-model="x.is_enabled"/>启用</label>
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
     <div class="panel-footer">
-        <input class="btn btn-sm btn-secondary ml-1 mr-2" type="button" ng-click="sync_area()" value="同步区域列表"/>
-        <input class="btn btn-sm btn-secondary ml-1 mr-2" type="button" ng-click="add_area()" value="新增区域"/>
+        <input class="btn btn-sm btn-secondary ml-1 mr-2" type="button" ng-click="data.list.push({
+                        name: data.list.length + '楼',
+                        order: data.list.length
+                    })" value="新增区域"/>
         <input class="btn btn-sm btn-primary ml-1 mr-2" type="button" ng-click="save()" value="保存"/>
     </div>
 </div>

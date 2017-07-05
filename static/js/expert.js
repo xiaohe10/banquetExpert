@@ -3,7 +3,7 @@
  */
 
 // 全局变量：记录所有固定的内容
-BanquetExpert = {
+var BanquetExpert = {
     keu: "宴专家",
     en: {
         display: "显示"
@@ -11,6 +11,7 @@ BanquetExpert = {
     zh_ch: {
         display: "Display"
     },
+    // 【酒店】酒店信息
     hotel: {
         hotel_id: 1,
         name: "未登录",
@@ -20,9 +21,15 @@ BanquetExpert = {
         owner_name: "杨秀荣",
         create_time: "创建时间"
     },
-    branch: {},
+    // 【酒店】员工信息
     staff: {},
+    // 【酒店】渠道信息
     channel: {},
+    // 【门店】门店信息
+    branch: {},
+    // 【门店】区域信息
+    area: {},
+    // 固定餐段信息
     meals: {
         lunch: [
             "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "11:45",
@@ -39,44 +46,6 @@ BanquetExpert = {
             "02:00", "02:30", "03:00", "03:30", "04:00"
         ]
     },
-    area: [
-        {
-            value: 0, name: '一楼', order: 0, status: 1,
-            seat: [
-                {value: 0, name: '101', min: 1, max: 16, type: "大厅散台", order: 1, enable: false},
-                {value: 1, name: '102', min: 1, max: 16, type: "豪华包间", order: 2, enable: true},
-                {value: 2, name: '111', min: 1, max: 16, type: "大厅散台", order: 3, enable: false},
-                {value: 3, name: '105', min: 1, max: 16, type: "豪华包间", order: 4, enable: true}
-            ]
-        },
-        {
-            value: 1, name: '二楼', order: 1, status: 0,
-            seat: [
-                {value: 0, name: '206', min: 5, max: 16, type: "大厅散台", order: 5, enable: true},
-                {value: 1, name: '207', min: 5, max: 16, type: "豪华包间", order: 6, enable: false},
-                {value: 2, name: '208', min: 5, max: 16, type: "大厅散台", order: 7, enable: true},
-                {value: 3, name: '209', min: 5, max: 16, type: "大厅散台", order: 8, enable: false}
-            ]
-        },
-        {
-            value: 2, name: '三楼', order: 2, status: 0,
-            seat: [
-                {value: 0, name: '306', min: 8, max: 16, type: "豪华包间", order: 9, enable: true},
-                {value: 1, name: '307', min: 8, max: 16, type: "大厅散台", order: 10, enable: false},
-                {value: 2, name: '308', min: 8, max: 16, type: "豪华包间", order: 11, enable: true},
-                {value: 3, name: '309', min: 8, max: 16, type: "大厅散台", order: 12, enable: false}
-            ]
-        },
-        {
-            value: 3, name: '五楼', order: 3, status: 1,
-            seat: [
-                {value: 0, name: '506', min: 12, max: 16, type: "豪华包间", order: 13, enable: true},
-                {value: 1, name: '507', min: 12, max: 16, type: "豪华包间", order: 14, enable: false},
-                {value: 2, name: '508', min: 12, max: 16, type: "豪华包间", order: 15, enable: false},
-                {value: 3, name: '509', min: 12, max: 16, type: "豪华包间", order: 16, enable: true}
-            ]
-        }
-    ],
     menus: [
         {
             title: "超级管理后台",
@@ -269,6 +238,11 @@ Dialog = {
         ReserveNotice: {
             ReserveOrderDetails: "Order/ReserveNotice/ReserveOrderDetails.html"
         }
+    },
+    Reserve: {
+        AreaDesk: {
+            DeskDialog: "Reserve/AreaDesk/DeskDialog.html"
+        }
     }
 };
 
@@ -343,14 +317,10 @@ BanquetExpertApp.controller('drawerCtrl', function ($scope, $http) {
     var param = {};
     $http.post(url, JSON.stringify(param)).success(function (obj) {
         if (obj.status === "true") {
-            // BanquetExpert.hotel = obj.data;
+            Log.i(TAG, "获取酒店信息成功");
             $scope.hotel = obj.data;// BanquetExpert.hotel;
-            Log.i(TAG, JSON.stringify(BanquetExpert.hotel));
-            // 初始化菜单
             $scope.menus = BanquetExpert.menus;
-            Log.i(TAG, "获取酒店信息成功")
         } else {
-            Log.i(TAG, JSON.stringify(obj));
             alert(obj.description);
             location.href = "login.html";
         }
@@ -362,7 +332,6 @@ BanquetExpertApp.controller('drawerCtrl', function ($scope, $http) {
     $http.post(url, JSON.stringify(param)).success(function (obj) {
         if (obj.status === "true") {
             BanquetExpert.staff = obj.data;
-            Log.i(TAG, JSON.stringify(BanquetExpert.staff));
         } else {
             alert(obj.description);
         }
@@ -370,13 +339,10 @@ BanquetExpertApp.controller('drawerCtrl', function ($scope, $http) {
 
     // 【酒店】获取渠道列表
     url = "/webApp/admin/hotel/channel/list/";
-    param = {
-        hotel_id: BanquetExpert.hotel.hotel_id
-    };
+    param = {hotel_id: BanquetExpert.hotel.hotel_id};
     $http.post(url, JSON.stringify(param)).success(function (obj) {
         if (obj.status === "true") {
             BanquetExpert.channel = obj.data;
-            Log.i(TAG, JSON.stringify(BanquetExpert.channel));
         } else {
             alert(obj.description);
         }
@@ -388,7 +354,17 @@ BanquetExpertApp.controller('drawerCtrl', function ($scope, $http) {
     $http.post(url, JSON.stringify(param)).success(function (obj) {
         if (obj.status === "true") {
             BanquetExpert.branch = obj.data;
-            Log.i(TAG, JSON.stringify(BanquetExpert.branch));
+        } else {
+            alert(obj.description);
+        }
+    });
+
+    // 【门店】获取门店区域列表
+    url = "/webApp/admin/hotel_branch/area/list/";
+    param = {branch_id: 1};
+    $http.post(url, JSON.stringify(param)).success(function (obj) {
+        if (obj.status === "true") {
+            BanquetExpert.area = obj.data;
         } else {
             alert(obj.description);
         }
@@ -1770,32 +1746,161 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
 // 预订管理
     $routeProvider
         .when('/Reserve/AreaDesk', {
-            templateUrl: "./template/" + Templates.Reserve.AreaDesk, controller: function ($scope, $http) {
+            templateUrl: "./template/" + Templates.Reserve.AreaDesk, controller: function ($scope, $modal, $http) {
                 var TAG = Templates.Reserve.AreaDesk;
                 var index = 0;
                 $scope.area = BanquetExpert.area;
-                $scope.seat = BanquetExpert.area[index].seat;
+                $scope.desk = {};
                 $scope.pages = [1, 2, 3, 4, 5, 6, 7];
-                // TODO: 添加桌位
-                $scope.add_seat = function () {
-                    var obj = {
-                        value: $scope.seat.length, name: '桌位' + $scope.seat.length,
-                        min: 12, max: 16, type: "大厅散台", order: $scope.seat.length, enable: true
-                    };
-                    Log.i(TAG, "添加桌位：" + JSON.stringify(obj));
-                    $scope.seat.push(obj);
+                $scope.addDesk = function () {
+                    Log.i(TAG, "添加桌位");
+                    var dlg = $modal.open({
+                        templateUrl: "./template/" + Dialog.Reserve.AreaDesk.DeskDialog,
+                        controller: function ($scope, form) {
+                            var TAG = Dialog.Reserve.AreaDesk.DeskDialog;
+                            Log.i(TAG, "添加桌位");
+                            $scope.option = "添加";
+                            $scope.form = form;
+                            $scope.type = [
+                                '普通包间', '豪华包间', '大厅卡座', '大厅散台',
+                                '宴会大厅', '多功能厅', '多桌包间', '隔断', '会场'
+                            ];
+                            $scope.facilities = [
+                                '靠窗', '会客区', '独立卫生间', '小型厨房',
+                                '卡拉ok', '可棋牌', '海景房', '液晶电视'
+                            ];
+                            $scope.edit = function () {
+                                Log.i(TAG, "编辑桌位信息：" + $scope.form);
+                            };
+                            $scope.save = function () {
+                                Log.i(TAG, "保存桌位信息");
+                                dlg.close(form);
+                            };
+                            $scope.cancel = function () {
+                                Log.i(TAG, "取消");
+                                dlg.dismiss();
+                            }
+                        },
+                        resolve: {
+                            form: function () {
+                                return {
+                                    area_id: $scope.area_id,
+                                    number: "201",
+                                    order: 1,
+                                    min_guest_num: 10,
+                                    max_guest_num: 15,
+                                    expense: [
+                                        {name: "最低消费", checked: false, value: 10.0},
+                                        {name: "服务费", checked: false, value: 10.0},
+                                        {name: "最低人均", checked: false, value: 10.0},
+                                        {name: "场地费", checked: false, value: 10.0},
+                                        {name: "包间费", checked: false, value: 10.0}
+                                    ],
+                                    type: 1,
+                                    facility: ["电脑", "吸烟区"],
+                                    picture: "/static/css/image/head.jpg",
+                                    is_beside_window: "True",
+                                    description: "无"
+                                };
+                            }
+                        }
+                    });
+                    dlg.opened.then(function () {
+                        Log.i(TAG, "对话框已经打开");
+                    });
+                    dlg.result.then(function (result) {
+                        Log.i(TAG, JSON.stringify(result));
+                        var url = "/webApp/admin/hotel_branch/desk/add/";
+                        $http.post(url, JSON.stringify(result)).success(function (obj) {
+                            if (obj.status === "true") {
+                                alert("添加桌位成功");
+                            } else {
+                                alert(obj.description);
+                            }
+                        });
+                    }, function (reason) {
+                        Log.i(TAG, reason);
+                    });
                 };
-                // TODO: 保存区域桌位信息
+                $scope.editDesk = function (desk) {
+                    Log.i(TAG, "编辑桌位");
+                    var dlg = $modal.open({
+                        templateUrl: "./template/" + Dialog.Reserve.AreaDesk.DeskDialog,
+                        controller: function ($scope, form) {
+                            var TAG = Dialog.Reserve.AreaDesk.DeskDialog;
+                            Log.i(TAG, "添加桌位");
+                            $scope.option = "添加";
+                            $scope.form = form;
+                            $scope.type = [
+                                '普通包间', '豪华包间', '大厅卡座', '大厅散台',
+                                '宴会大厅', '多功能厅', '多桌包间', '隔断', '会场'
+                            ];
+                            $scope.facilities = [
+                                '靠窗', '会客区', '独立卫生间', '小型厨房',
+                                '卡拉ok', '可棋牌', '海景房', '液晶电视'
+                            ];
+                            $scope.edit = function () {
+                                Log.i(TAG, "编辑桌位信息：" + $scope.form);
+                            };
+                            $scope.save = function () {
+                                Log.i(TAG, "保存桌位信息");
+                                dlg.close(form);
+                            };
+                            $scope.cancel = function () {
+                                Log.i(TAG, "取消");
+                                dlg.dismiss();
+                            }
+                        },
+                        resolve: {
+                            form: function () {
+                                if (desk.facility === "") {
+                                    desk.facility = [];
+                                }
+                                if (desk.expense === "") {
+                                    desk.expense = [
+                                        {name: "最低消费", checked: false, value: 10.0},
+                                        {name: "服务费", checked: false, value: 10.0},
+                                        {name: "最低人均", checked: false, value: 10.0},
+                                        {name: "场地费", checked: false, value: 10.0},
+                                        {name: "包间费", checked: false, value: 10.0}
+                                    ];
+                                }
+                                return desk;
+                            }
+                        }
+                    });
+                    dlg.opened.then(function () {
+                        Log.i(TAG, "对话框已经打开");
+                    });
+                    dlg.result.then(function (result) {
+                        Log.i(TAG, JSON.stringify(result));
+                        var url = "/webApp/admin/hotel_branch/area/modify/";
+                        $http.post(url, JSON.stringify(result)).success(function (obj) {
+                            if (obj.status === "true") {
+                                alert("编辑桌位成功");
+                            } else {
+                                alert(obj.description);
+                            }
+                        });
+                    }, function (reason) {
+                        Log.i(TAG, reason);
+                    });
+                };
                 $scope.save = function () {
                     Log.i(TAG, "保存区域桌位信息：" + JSON.stringify(BanquetExpert.area));
                 };
                 $scope.nav = function (area_id) {
-                    index = area_id;
                     Log.i(TAG, "选择区域：" + area_id);
-                    $scope.seat = BanquetExpert.area[area_id].seat;
-                };
-                $scope.edit = function (desk_id) {
-                    Log.i("修改桌位：" + desk_id);
+                    var url = "/webApp/admin/hotel_branch/desk/list/";
+                    var param = {area_id: area_id};
+                    $http.post(url, JSON.stringify(param)).success(function (obj) {
+                        if (obj.status === "true") {
+                            $scope.area_id = area_id;
+                            $scope.desk = obj.data;
+                        } else {
+                            $scope.desk = {};
+                        }
+                    });
                 };
             }
         })
@@ -1854,10 +1959,9 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                         branch_id: 1,
                         meal_period: $scope.MealPeriod
                     };
-                    Log.i(TAG, JSON.stringify(param));
                     $http.post(url, JSON.stringify(param)).success(function (obj) {
                         if (obj.status === "true") {
-                            $scope.data = obj.data;
+                            alert("修改餐段信息成功");
                         } else {
                             alert(obj.description);
                         }
@@ -1866,37 +1970,56 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
             }
         })
         .when('/Reserve/MealsArea', {
-            templateUrl: "./template/" + Templates.Reserve.MealsArea, controller: function ($scope, $http) {
+            templateUrl: "./template/" + Templates.Reserve.MealsArea, controller: function ($scope, $http, $q) {
                 var TAG = Templates.Reserve.MealsArea;
-                // 门店区域列表
-                $scope.data = {count: 0, list: []};
-                // 获取门店区域列表
-                var url = "/webApp/admin/hotel_branch/area/list/";
-                var param = {
-                    branch_id: 1
-                };
-                $http.post(url, JSON.stringify(param)).success(function (obj) {
-                    if (obj.status === "true") {
-                        $scope.data = obj.data;
-                    } else {
-                        alert(obj.description);
-                    }
-                });
-                $scope.sync_area = function () {
-                    Log.i(TAG, "同步区域列表");
-                };
-                $scope.add_area = function () {
-                    var idx = $scope.data.list.length;
-                    var obj = {
-                        branch_id: 1,
-                        name: idx + "楼",
-                        order: idx
-                    };
-                    Log.i(TAG, "添加区域：" + JSON.stringify(obj));
-                    $scope.data.list.push(obj);
-                };
+                // 初始化门店区域列表
+                $scope.data = BanquetExpert.area;
+                // 保存门店区域列表
                 $scope.save = function () {
-                    Log.i(TAG, "保存：" + JSON.stringify($scope.data));
+                    // 【添加】【修改】【删除】区域的请求
+                    var request = {
+                        // 批量增加门店的餐厅区域
+                        add: {
+                            url: "/webApp/admin/hotel_branch/area/add/",
+                            param: {
+                                branch_id: 1,
+                                list: $scope.data.list.filter(function (item) {
+                                    // 无id标记的是添加的数据
+                                    return item.hasOwnProperty('area_id') === false;
+                                })
+                            }
+                        },
+                        // 批量修改门店的餐厅区域（包括删除）
+                        modify: {
+                            url: "/webApp/admin/hotel_branch/area/modify/",
+                            param: {
+                                list: $scope.data.list.filter(function (item) {
+                                    // 有id标记的是原有的数据
+                                    return item.hasOwnProperty('area_id') === true;
+                                })
+                            }
+                        }
+                    };
+                    // 使用Angular的$q处理多个异步请求，在add和modify请求执行完毕时统一作出提示
+                    $q.all({
+                        add: $http.post(request.add.url, JSON.stringify(request.add.param)),
+                        modify: $http.post(request.modify.url, JSON.stringify(request.modify.param))
+                    }).then(function (array) {
+                        var status = true;
+                        // 输出执行结果
+                        angular.forEach(array, function (item) {
+                            if (item.status === "false") {
+                                status = false;
+                            }
+                        });
+                        if (status === true) {
+                            // 【添加】和【修改】【删除】区域成功
+                            alert("保存成功");
+                        } else {
+                            // 【添加】或【修改】【删除】区域失败
+                            alert("添加失败");
+                        }
+                    });
                 };
             }
         })

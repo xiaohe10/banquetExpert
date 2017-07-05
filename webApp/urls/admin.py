@@ -43,6 +43,9 @@ urlpatterns = [
     url(r'^hotel_branch/area/modify/$', modify_area, name='modify_area'),
     # 获取门店桌位列表
     url(r'^hotel_branch/desk/list/$', get_desks, name='get_desk_list'),
+    # 获取门店桌位详情
+    url(r'^hotel_branch/desk/profile/$', get_desk_profile,
+        name='get_desk_profile'),
     # 增加门店桌位
     url(r'^hotel_branch/desk/add/$', add_desk, name='add_desk'),
     # 修改门店桌位

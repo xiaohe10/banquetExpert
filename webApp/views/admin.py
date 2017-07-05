@@ -767,6 +767,7 @@ def add_area(request, token, branch_id):
     :param list(必传)
         name: 名称(必传)
         order: 排序(必传)
+        is_enabled: 是否有效(必传)
     :return: 200
     """
 
@@ -785,6 +786,9 @@ def add_area(request, token, branch_id):
         for a in l:
             name = a['name']
             order = a['order']
+            is_enabled = a['is_enabled']
+            if not (isinstance(name, str) and isinstance(order, int) and isinstance(is_enabled, bool)):
+                return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
             if branch.areas.filter(name=name).count() > 0:
                 return err_response('err_5', '区域名已存在')
     except KeyError or ValueError:
@@ -795,12 +799,14 @@ def add_area(request, token, branch_id):
         for a in l:
             name = a['name']
             order = a['order']
+            is_enabled = a['is_enabled']
             try:
-                area = Area(name=name, order=order, branch=branch)
+                area = Area(name=name, order=order, is_enabled=is_enabled, branch=branch)
                 area.save()
-                return corr_response()
             except IntegrityError:
                 return err_response('err_5', '服务器添加餐厅区域失败')
+
+    return corr_response()
 
 
 @validate_args({
@@ -819,31 +825,36 @@ def modify_area(request, token):
     """
 
     # 检查区域名是否已存在
-    try:
-        l = json.loads(request.body)['list']
-        for a in l:
-            area_id = a['area_id']
-            name = a['name']
-            order = a['order']
-            is_enabled = a['is_enabled']
-            area = Area.objects.get(id=area_id)
+    with transaction.atomic():
+        try:
+            l = json.loads(request.body)['list']
+            for a in l:
+                area_id = a['area_id']
+                name = a['name']
+                order = a['order']
+                is_enabled = a['is_enabled']
+                if not (isinstance(name, str) and isinstance(order, int) and isinstance(is_enabled, bool)):
+                    return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
 
-            if area.branch.hotel != request.admin.hotel:
-                return err_response('err_2', '权限错误')
+                area = Area.objects.get(id=area_id)
 
-            if area.branch.areas.filter(name=name).exclude(
-                    id=area_id).count() > 0:
-                return err_response('err_5', '区域名重复')
+                if area.branch.hotel != request.admin.hotel:
+                    return err_response('err_2', '权限错误')
 
-            area.name = name
-            area.order = order
-            area.is_enabled = is_enabled
-            area.save()
-            return corr_response()
-    except KeyError or ValueError:
-        return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
-    except ObjectDoesNotExist:
-        return err_response('err_4', '酒店不存在')
+                if area.branch.areas.filter(name=name).exclude(
+                        id=area_id).count() > 0:
+                    return err_response('err_5', '区域名重复')
+
+                area.name = name
+                area.order = order
+                area.is_enabled = is_enabled
+                area.save()
+        except KeyError or ValueError:
+            return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+        except ObjectDoesNotExist:
+            return err_response('err_4', '酒店不存在')
+
+    return corr_response()
 
 
 @validate_args({
@@ -880,6 +891,7 @@ def get_desks(request, token, area_id, offset=0, limit=10, order=2):
             picture: 图片
             is_beside_window: 是否靠窗
             description: 备注
+            is_enabled: 是否有效
             create_time: 创建时间
     """
 
@@ -906,6 +918,7 @@ def get_desks(request, token, area_id, offset=0, limit=10, order=2):
           'type': desk.type,
           'facility': json.loads(desk.facility) if desk.facility else '',
           'picture': desk.picture,
+          'is_enabled': desk.is_enabled,
           'is_beside_window': desk.is_beside_window,
           'description': desk.description,
           'create_time': desk.create_time} for desk in ds]
@@ -915,12 +928,61 @@ def get_desks(request, token, area_id, offset=0, limit=10, order=2):
 
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
+    'desk_id': forms.IntegerField()
+})
+@validate_admin_token()
+def get_desk_profile(request, token, desk_id):
+    """获取桌位的详情
+
+    :param token: 令牌(必传)
+    :param desk_id: 桌位ID(必传)
+    :return
+        number: 桌位号
+        order: 排序
+        min_guest_num: 最小人数限制
+        max_guest_num: 最大人数限制
+        expense: 花费说明
+        type: 桌位类型
+        facility: 设施（数组）
+        is_beside_window: 是否靠窗
+        description: 描述
+        is_enabled: 是否有效
+        picture: 桌位介绍图片
+    :return 200
+    """
+    try:
+        desk = Desk.objects.get(id=desk_id)
+    except ObjectDoesNotExist:
+        return err_response('err_4', '该桌位不存在')
+
+    # 只能查看自己酒店的桌位
+    if desk.area.branch.hotel != request.admin.hotel:
+        return err_response('err_2', '权限错误')
+
+    d = {'desk_id': desk.id,
+         'number': desk.number,
+         'order': desk.order,
+         'min_guest_num': desk.min_guest_num,
+         'max_guest_num': desk.max_guest_num,
+         'expense': desk.expense,
+         'type': desk.type,
+         'facility': json.loads(desk.facility) if desk.facility else '',
+         'picture': desk.picture,
+         'is_enabled': desk.is_enabled,
+         'is_beside_window': desk.is_beside_window,
+         'description': desk.description,
+         'create_time': desk.create_time}
+
+    return corr_response(d)
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
     'area_id': forms.IntegerField(),
     'number': forms.CharField(max_length=10),
     'order': forms.IntegerField(),
     'min_guest_num': forms.IntegerField(),
     'max_guest_num': forms.IntegerField(),
-    'expense': forms.CharField(max_length=100, required=False),
     'type': forms.CharField(max_length=10, required=False),
     'is_beside_window': forms.BooleanField(required=False),
     'description': forms.CharField(max_length=100, required=False),
@@ -956,19 +1018,28 @@ def add_desk(request, token, area_id, number, order, **kwargs):
     if area.desks.filter(number=number).count() > 0:
         return err_response('err_5', '桌位已存在')
 
-    desk_keys = ('min_guest_num', 'max_guest_num', 'expense',
+    desk_keys = ('min_guest_num', 'max_guest_num',
                  'type', 'facility', 'is_beside_window', 'description')
     with transaction.atomic():
         try:
             desk = Desk(number=number, order=order, area=area)
+
             for k in desk_keys:
                 if k in kwargs:
                     setattr(desk, k, kwargs[k])
 
-            data = json.loads(request.body)
-            if 'facility' in data:
-                v = json.dumps(data['facility'])
-                setattr(desk, 'facility', v)
+            try:
+                data = json.loads(request.body)
+                if 'facility' in data:
+                    v = json.dumps(data['facility'])
+                    setattr(desk, 'facility', v)
+
+                if 'expense' in data:
+                    v = json.dumps(data['expense'])
+                    setattr(desk, 'expense', v)
+
+            except KeyError or ValueError:
+                return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
 
             # 图片
             if 'picture' in request.FILES:
@@ -1000,10 +1071,10 @@ def add_desk(request, token, area_id, number, order, **kwargs):
     'order': forms.IntegerField(required=False),
     'min_guest_num': forms.IntegerField(required=False),
     'max_guest_num': forms.IntegerField(required=False),
-    'expense': forms.CharField(max_length=100, required=False),
     'type': forms.CharField(max_length=10, required=False),
     'is_beside_window': forms.BooleanField(required=False),
     'description': forms.CharField(max_length=100, required=False),
+    'is_enabled': forms.BooleanField(required=False)
 })
 @validate_admin_token()
 def modify_desk(request, token, desk_id, **kwargs):
@@ -1016,11 +1087,12 @@ def modify_desk(request, token, desk_id, **kwargs):
         order: 排序
         min_guest_num: 最小人数限制
         max_guest_num: 最大人数限制
-        expense: 花费说明
+        expense: 花费说明(数组)
         type: 桌位类型
         facility: 设施（数组）
         is_beside_window: 是否靠窗
         description: 描述
+        is_enabled: 是否有效
     :param picture: 桌位介绍图片,[file]文件
     :return 200
     """
@@ -1038,8 +1110,16 @@ def modify_desk(request, token, desk_id, **kwargs):
         if desk.area.desks.filter(number=kwargs['number']).count() > 0:
             return err_response('err_5', '桌位编号已存在')
 
-    desk_keys = ('number', 'order', 'min_guest_num', 'max_guest_num', 'expense',
-                 'type', 'is_beside_window', 'description')
+    desk_keys = ('number', 'order', 'min_guest_num', 'max_guest_num',
+                 'type', 'is_beside_window', 'description', 'is_enabled')
+
+    try:
+        data = json.loads(request.body)
+        if 'expense' in data:
+            v = json.dumps(data['expense'])
+            setattr(desk, 'expense', v)
+    except KeyError or ValueError:
+        return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
 
     for k in desk_keys:
         if k in kwargs:

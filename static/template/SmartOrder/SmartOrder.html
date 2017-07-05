@@ -30,7 +30,7 @@
                         <div class="panel-heading" role="tab">
                             <nav>
                                 <ul class="nav nav-tabs">
-                                    <li class="nav-item" ng-repeat="x in area">
+                                    <li class="nav-item" ng-repeat="x in area.list|filter:{is_enabled:true}">
                                         <a role="tab" data-toggle="tab" data-target="#area{{$index}}">
                                             {{x.name}}
                                         </a>
@@ -63,7 +63,8 @@
                                 <h5>已选择桌位：</h5>
                                 <p ng-repeat="x in area" ng-hide="(x.seat|filter:{selected:true}).length === 0">
                                     <small>{{x.name}}：</small>
-                                    <span class="label label-success" ng-repeat="y in x.seat|filter:{selected:true}" ng-click="y.selected=false;">
+                                    <span class="label label-success" ng-click="y.selected=false;"
+                                          ng-repeat="y in x.seat|filter:{selected:true}">
                                         <small>{{y.name}}</small>
                                         <span class="glyphicon glyphicon-remove"></span>
                                     </span>
@@ -259,6 +260,6 @@
     <div class="panel-footer">
         <label>短信提醒<input type="checkbox" ng-model="sms"/></label>
         <input class="btn btn-success btn-sm" type="button" ng-click="Reserve()" value="预定"/>
-        <input class="btn btn-secondary btn-sm" type="button" ng-click="Cancel()" value="取消" />
+        <input class="btn btn-secondary btn-sm" type="button" ng-click="Cancel()" value="取消"/>
     </div>
 </div>

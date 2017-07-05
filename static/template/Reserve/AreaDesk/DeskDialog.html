@@ -1,0 +1,129 @@
+<!--主页/预订管理/桌位设置/桌位对话框-->
+<div class="modal-header">
+    {{option}}桌位
+</div>
+<div class="modal-body">
+    <!--表单-->
+    <form class="form-horizontal">
+        <fieldset>
+            <!--桌位编号-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    桌位编号：
+                </label>
+                <div class="col-sm-10">
+                    <input type="text" ng-model="form.number"/>
+                </div>
+            </div>
+            <!--桌位人数-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    桌位人数：
+                </label>
+                <div class="col-sm-10">
+                    <input type="number" ng-model="form.min_guest_num" min='1'/>
+                    ~
+                    <input type="number" ng-model="form.max_guest_num" min='1'/>
+                </div>
+            </div>
+            <!--费用说明-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    费用说明：
+                </label>
+                <div class="col-sm-10">
+                    <ul class="list-group">
+                        <li class="list-group-item" ng-repeat="x in form.expense">
+                            <label class="control-label">
+                                <input type="checkbox" ng-model="x.checked">{{x.name}}
+                            </label>
+                            <input type="text" ng-show="x.checked" ng-model="x.value" value="{{x.value|currency:'¥'}}"/>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!--类型-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    桌位类型：
+                </label>
+                <div class="col-sm-10">
+                    <select ng-model="form.type">
+                        <optgroup label="请选择桌位类型"></optgroup>
+                        <option ng-repeat="x in type" value="{{$index}}">{{x}}</option>
+                    </select>
+                </div>
+            </div>
+            <!--设施【12个，可自定义标签】：靠窗 会客区 独立卫生间 小型厨房 卡拉ok 可棋牌 海景房 液晶电视-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    设施：
+                </label>
+                <div class="col-sm-10">
+                    <!--设施列表-->
+                    <div class="well well-sm">
+                        <!--已选择设施列表-->
+                        <span class="label label-success" style="display: inline-block"
+                              ng-repeat="x in form.facility" ng-click="form.facility.splice($index, 1)">{{x}}
+                            <!--取消选择-->
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </span>
+                        <!--提示未添加设施-->
+                        <span class="label label-warning" style="display: inline-block" ng-show="form.facility.length===0">
+                        未添加设施标签<span class="glyphicon glyphicon-alert"></span>
+                    </span>
+                    </div>
+                    <!--添加设施【限制最多添加12个设施】-->
+                    <div class="input-group" ng-hide="form.facility.length===12">
+                        <input type="text" ng-model="facility" placeholder="请填写设施名称"/>
+                        <!--添加设施到未选择列表-->
+                        <input type="button" ng-click="form.facility.push(facility)" value="添加设施"/>
+                    </div>
+                </div>
+            </div>
+            <!--房间介绍照片，[file]文件-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    桌位大图：
+                </label>
+                <div class="col-sm-10">
+                    <div class="thumbnail">
+                        <img src="{{form.picture}}" alt="ICON">
+                        <input type="file" ng-value=""/>
+                    </div>
+                </div>
+            </div>
+            <!--桌位是否靠窗-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    是否靠窗：
+                </label>
+                <div class="col-sm-10">
+                    <span class="label label-success" ng-show="form.is_beside_window" ng-click="form.is_beside_window=false;">
+                        是<span class="glyphicon glyphicon-remove"></span>
+                    </span>
+                    <span class="label label-warning" ng-hide="form.is_beside_window" ng-click="form.is_beside_window=true;">
+                        否<span class="glyphicon glyphicon-ok"></span>
+                    </span>
+                </div>
+            </div>
+            <!--备注-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    备注：
+                </label>
+                <div class="col-sm-10">
+                    <textarea cols="36" rows="4" ng-model="form.description"/>
+                </div>
+            </div>
+            <!--未添加属性：-->
+            <!--可联通区域-->
+            <!--费用类型【最低消费 服务费 最低人均 场地费 包间费】-->
+        </fieldset>
+    </form>
+</div>
+<div class="modal-footer">
+    <input class="btn btn-success btn-sm" type="button" ng-hide="option==='添加'" ng-click="edit()" value="编辑">
+    <input class="btn btn-primary btn-sm" type="button" ng-click="save()" value="保存"/>
+    <input class="btn btn-warning btn-sm" type="button" ng-click="cancel()" value="取消"/>
+</div>
