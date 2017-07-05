@@ -1,0 +1,64 @@
+<!--主页/预订管理/私人订制-->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">
+            私人订制
+            <small>(共{{data.length}}个分类)</small>
+        </div>
+    </div>
+    <div class="panel-body">
+        <!--表格-->
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <td>状态</td>
+                <td>分类名称</td>
+                <td>标签列表</td>
+                <td>排序</td>
+                <td>操作</td>
+            </tr>
+            </thead>
+            <tbody id="area-info-table">
+            <tr ng-repeat="x in data">
+                <td>应用</td>
+                <td>
+                    <input type="text" ng-model="x.name" value="{{x.name}}"/>
+                </td>
+                <td>
+                    <!--已添加标签列表-->
+                    <span class="label label-success" style="display: inline-block"
+                          ng-click="x.labels.splice($index, 1)" ng-repeat="y in x.labels">
+                        {{y}}<span class="glyphicon glyphicon-remove"></span>
+                    </span>
+                    <!--提示未添加标签-->
+                    <span class="label label-warning" style="display: inline-block" ng-show="x.labels.length===0">
+                        该分类未添加标签<span class="glyphicon glyphicon-alert"></span>
+                    </span>
+                    <!--添加标签【限制最多添加6个标签】-->
+                    <div class="input-group" ng-hide="x.labels.length===6">
+                        <!--限制标签最长8个字符-->
+                        <input type="text" ng-model="label" maxlength="8" placeholder="标签名称"/>
+                        <input type="button" ng-click="x.labels.push(label)" value="添加标签"/>
+                    </div>
+                <td>
+                    <input type="text" ng-model="x.order" value="{{x.order}}"/>
+                </td>
+                <td>
+                    <label><a class="btn btn-link btn-sm" ng-click="data.splice($index, 1)">删除</a></label>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        <!--新增分类【限制最多10个分类】-->
+        <input class="btn btn-primary btn-sm" type="button" ng-hide="data.length===10"
+               ng-click="data.push({
+                    name: '新分类' + data.length,
+                    order: data.length,
+                    labels: []
+               })" value="新增分类"/>
+        <!--保存分类信息-->
+        <input class="btn btn-success btn-sm" type="button" ng-click="save()" value="保存"/>
+    </div>
+</div>
