@@ -166,11 +166,11 @@ class Desk(models.Model):
     # 排序
     order = models.IntegerField(default=0, db_index=True)
     # 费用说明
-    expense = models.CharField(max_length=100, default='')
+    expense = models.CharField(max_length=500, default='')
     # 房间类型
     type = models.CharField(max_length=10, default='', db_index=True)
     # 设施
-    facility = models.CharField(max_length=100, default='')
+    facility = models.CharField(max_length=120, default='')
     # 照片
     picture = models.CharField(max_length=100, default='')
     # 是否靠窗
