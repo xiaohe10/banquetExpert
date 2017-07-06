@@ -47,7 +47,7 @@
                     <div class="col-sm-10">
                         <div class="form-inline">
                             <input ng-model="order.people" type="text" size="8" onpaste="return false">
-                            <ul class="list-group">
+                            <ul class="list-group hidden">
                                 <li class="list-group-item"><a href="{{order.people = 4}}">4</a></li>
                                 <li class="list-group-item"><a href="{{order.people = 5}}">5</a></li>
                                 <li class="list-group-item"><a href="{{order.people = 6}}">6</a></li>
@@ -125,19 +125,19 @@
                     </div>
                     <div class="col-sm-10">
                         <ul class="list-group">
-                            <li class="list-group-item" ng-repeat="seat in order.seats">
-                                <select name="AreaID" ng-model="seat.area">
+                            <li class="list-group-item" ng-repeat="desk in order.desks">
+                                <select name="AreaID" ng-model="desk.area">
                                     <optgroup label="请选择区域"></optgroup>
                                     <option ng-repeat="x in areas" value="{{x.value}}">{{x.name}}</option>
                                 </select>
-                                <select name="DeskID" ng-model="seat.seat">
+                                <select name="DeskID" ng-model="desk.desk">
                                     <optgroup label="请选择餐位"></optgroup>
-                                    <option ng-repeat="x in seats" value="{{x.value}}">{{x.name}}</option>
+                                    <option ng-repeat="x in desks" value="{{x.value}}">{{x.name}}</option>
                                 </select>
-                                <input class="btn btn-secondary btn-sm" type="button" ng-click="removeSeat(seat)" value="删除"/>
+                                <input class="btn btn-secondary btn-sm" type="button" ng-click="removeDesk(desk)" value="删除"/>
                             </li>
                         </ul>
-                        <input class="btn btn-primary btn-sm" type="button" value="增加餐位" ng-click="addSeat()"/>
+                        <input class="btn btn-primary btn-sm" type="button" value="增加餐位" ng-click="addDesk()"/>
                     </div>
                 </div>
             </fieldset>

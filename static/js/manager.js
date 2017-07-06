@@ -7,9 +7,9 @@ Templates = {
     // 路径导航
     Breadcrumb: "Drawer/Breadcrumb.html",
     // 超级管理后台
-    SuperAdmin: {
-        SuperAdmin: "SuperAdmin/SuperAdmin.html" // 超级管理后台
-    },
+    // SuperAdmin: {
+    //     SuperAdmin: "SuperAdmin/SuperAdmin.html" // 超级管理后台
+    // },
     // 后台用户管理
     Channel: {
         Channel: "Channel/Channel.html", // 获客渠道*** AddManager AddOuterChannel AddReserve
@@ -25,7 +25,7 @@ Templates = {
         AreaDesk: "Reserve/AreaDesk.html", // 桌位设置
         MealsTime: "Reserve/MealsTime.html", // 餐段管理
         MealsArea: "Reserve/MealsArea.html", // 餐位设置
-        SeatRecommend: "Reserve/SeatRecommend.html",// 自动推荐桌位
+        DeskRecommend: "Reserve/DeskRecommend.html",// 自动推荐桌位
         PersonalTailor: "Reserve/PersonalTailor.html"// 私人订制
     },
     // 订单管理
@@ -66,11 +66,11 @@ Templates = {
 
 // 对话框模板
 Dialog = {
-    SuperAdmin: {
-        SuperAdmin: {
-            HotelDialog: "SuperAdmin/SuperAdmin/HotelDialog.html"
-        }
-    },
+    // SuperAdmin: {
+    //     SuperAdmin: {
+    //         HotelDialog: "SuperAdmin/SuperAdmin/HotelDialog.html"
+    //     }
+    // },
     Channel: {
         Channel: {
             ExternalChannelDialog: "Channel/Channel/ExternalChannelDialog.html",
@@ -208,7 +208,7 @@ BanquetExpertApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
     $scope.menus = [
         {
             title: "登录",
-            menu_id: "login",
+            menu_id: "Login",
             item: []
         }
     ];
@@ -227,13 +227,6 @@ BanquetExpertApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
             $rootScope.Hotel = obj.data;
             $scope.hotel = $rootScope.Hotel;
             $scope.menus = [
-                {
-                    title: "超级管理后台",
-                    menu_id: "SuperAdmin",
-                    item: [
-                        {title: "超级管理后台", item_id: "SuperAdmin"}
-                    ]
-                },
                 {
                     title: "员工管理",
                     menu_id: "Channel",
@@ -257,7 +250,7 @@ BanquetExpertApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
                         {title: "餐段设置", item_id: "MealsTime"},
                         {title: "餐位设置", item_id: "MealsArea"},
                         {title: "桌位设置", item_id: "AreaDesk"},
-                        {title: "自动推荐桌位", item_id: "SeatRecommend"},
+                        {title: "自动推荐桌位", item_id: "DeskRecommend"},
                         {title: "私人订制", item_id: "PersonalTailor"}
                     ]
                 },
@@ -482,7 +475,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                                 // 管辖桌位
                                 desk_manage: {
                                     // 管辖全部桌位
-                                    all_seat: false,
+                                    all_desk: false,
                                     // 桌位信息
                                     area: $rootScope.area
                                 },
@@ -1405,7 +1398,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 $scope.table = [];
                 for (i = 0; i < 10; i++) {
                     $scope.table.push({
-                        id: i, name: "xxx", phone: "xxx", unit: "xxx", area: "xxx", seat: "xxx", count: 12,
+                        id: i, name: "xxx", phone: "xxx", unit: "xxx", area: "xxx", desk: "xxx", count: 12,
                         meal_time: "2017-6-17 19:09:15", money: 18, operator: "xxx", channel: "xxx", status: "xxx"
                     });
                 }
@@ -1424,13 +1417,13 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                     date_from: "2017/06/10",
                     date_to: "2017/06/09",
                     select_area: 1,
-                    select_seat: 0,
+                    select_desk: 0,
                     select_channel: 1,
                     keyword: ""
                 };
                 $scope.staff = ["A", "B", "C", "D", "E", "F", "G"];
                 $scope.area = $rootScope.area;
-                $scope.seat = $scope.area[0].seat;
+                $scope.desk = $scope.area[0].desk;
                 $scope.table = [];
                 for (var i = 0; i < 10; i++) {
                     $scope.table.push({
@@ -1441,8 +1434,8 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 }
                 $scope.on_area_change = function () {
                     var index = $scope.option.select_area;
-                    $scope.seat = $scope.area[index].seat;
-                    $scope.option.select_seat = 1;
+                    $scope.desk = $scope.area[index].desk;
+                    $scope.option.select_desk = 1;
                 };
                 $scope.search = function () {
                     Log.i(TAG, JSON.stringify($scope.option));
@@ -1457,7 +1450,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                     date_from: "2017/06/10",
                     date_to: "2017/06/09",
                     select_area: 0,
-                    select_seat: 0,
+                    select_desk: 0,
                     select_channel: 0,
                     keyword: ""
                 };
@@ -1469,24 +1462,33 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                     average: 4
                 };
                 $scope.area = $rootScope.area;
-                $scope.seat = [];
+                $scope.desk = [];
                 $scope.channel = $rootScope.channel;
                 $scope.nav = ["有效订单", "撤单", "红包", "散客", "全部订单"];
-                $scope.details = {order: 10, person: 12, total: 10, average: 10};
+                $scope.details = {order: 0, person: 0, total: 0, average: 0};
                 // 表格数据
                 $scope.table = [];
                 for (var i = 0; i < 10; i++) {
                     $scope.table.push({
                         id: i, name: "王", gender: "先生", phone: "18050082265", order_time: "2017/6/23 19:04:48	",
-                        meal_time: "06月08日晚餐18:00", order_channel: "预订台", area: "二楼", seat: "二楼", people: "6",
+                        meal_time: "06月08日晚餐18:00", order_channel: "预订台", area: "二楼", desk: "二楼", people: "6",
                         amount: "4135.00", order_status: "消费成功", operator: "张欢欢"
                     });
                 }
                 // 事件处理
                 $scope.on_area_change = function () {
-                    var index = $scope.option.select_area;
-                    $scope.seat = $scope.area[index].seat;
-                    $scope.option.select_seat = 1;
+                    Log.i(TAG, "选择区域：" + $scope.option.select_area);
+                    var url = "/webApp/admin/hotel_branch/desk/list/";
+                    var param = {area_id: $scope.option.select_area};
+                    $http.post(url, JSON.stringify(param)).success(function (obj) {
+                        if (obj.status === "true") {
+                            $scope.desk = obj.data;
+                            $scope.option.select_desk = 1;
+                        } else {
+                            $scope.desk = {};
+                            $scope.option.select_desk = 0;
+                        }
+                    });
                 };
                 $scope.query = function () {
                     Log.i(TAG, "查询订单数据：" + JSON.stringify($scope.option));
@@ -1532,11 +1534,11 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                                 // 餐段
                                 meal_time: 1,
                                 // 区域
-                                seats: [
-                                    {area: 0, seat: 2},
-                                    {area: 1, seat: 2},
-                                    {area: 2, seat: 2},
-                                    {area: 3, seat: 2}
+                                desks: [
+                                    {area: 0, desk: 2},
+                                    {area: 1, desk: 2},
+                                    {area: 2, desk: 2},
+                                    {area: 3, desk: 2}
                                 ]
                             };
                             // 接餐渠道
@@ -1547,16 +1549,16 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                             ];
                             $scope.meals_time = ["午餐", "晚餐", "夜宵"];
                             $scope.areas = $rootScope.area;
-                            $scope.seats = [];
-                            $scope.removeSeat = function (seat) {
+                            $scope.desks = [];
+                            $scope.removeDesk = function (desk) {
                                 Log.i(TAG, "remove:" + index);
-                                var index = $scope.order.seats.indexOf(seat);
-                                $scope.order.seats.splice(index, 1);
+                                var index = $scope.order.desks.indexOf(desk);
+                                $scope.order.desks.splice(index, 1);
                             };
-                            $scope.addSeat = function () {
-                                var item = {area: 1, seat: 1};
-                                $scope.order.seats.push(item);
-                                Log.i(TAG, "add seat:" + JSON.stringify(item));
+                            $scope.addDesk = function () {
+                                var item = {area: 1, desk: 1};
+                                $scope.order.desks.push(item);
+                                Log.i(TAG, "add desk:" + JSON.stringify(item));
                             };
                             $scope.submit = function () {
                                 Log.i(TAG, JSON.stringify($scope.order));
@@ -1576,7 +1578,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                             Log.i(TAG, "对话框控制器");
                             $scope.order = {
                                 area: "三楼",
-                                seat: "315",
+                                desk: "315",
                                 name: "赵",
                                 gender: "女士",
                                 phone: "18800184976",
@@ -1643,12 +1645,12 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                     keyword: "18800184976",
                     daily_report: 0,
                     phone_mask: false,
-                    seat_marge: true,
+                    desk_merge: true,
                     print_size: 0
                 };
                 $scope.detail = {
                     order_count: 0,
-                    seat_count: 0,
+                    desk_count: 0,
                     customer_count: 0
                 };
                 $scope.area = $rootScope.area;
@@ -1664,7 +1666,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 $scope.table = [];
                 for (var i = 0; i < 10; i++) {
                     $scope.table.push({
-                        id: i, meal_time: "06月08日晚餐18:00", area: "二楼", seat: "(CEIEC)215", name: "高", gender: "女士",
+                        id: i, meal_time: "06月08日晚餐18:00", area: "二楼", desk: "(CEIEC)215", name: "高", gender: "女士",
                         phone: "18510515888", count: "18", order_channel: "刘光艳", channel: "刘光艳",
                         order_time: "2017/6/8 10:57:33", type: "流失", unit: "单位", status: "已订", operator: "刘光艳"
                     });
@@ -1703,7 +1705,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                             Log.i(TAG, "对话框控制器");
                             $scope.order = {
                                 area: "三楼",
-                                seat: "315",
+                                desk: "315",
                                 name: "赵",
                                 gender: "女士",
                                 phone: "18800184976",
@@ -2030,17 +2032,17 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 };
             }
         })
-        .when('/Reserve/SeatRecommend', {
-            templateUrl: "./template/" + Templates.Reserve.SeatRecommend, controller: function ($rootScope, $scope, $http) {
-                var TAG = Templates.Reserve.SeatRecommend;
-                var seats = [];
+        .when('/Reserve/DeskRecommend', {
+            templateUrl: "./template/" + Templates.Reserve.DeskRecommend, controller: function ($rootScope, $scope, $http) {
+                var TAG = Templates.Reserve.DeskRecommend;
+                var desks = [];
                 $.each($rootScope.area, function (index, area) {
-                    $.each(area.seat, function (index, seat) {
-                        seat.area = area.name;
-                        seats.push(seat);
+                    $.each(area.desk, function (index, desk) {
+                        desk.area = area.name;
+                        desks.push(desk);
                     });
                 });
-                $scope.seats = seats;
+                $scope.desks = desks;
                 $scope.numbers = [];
                 for (var i = 0; i < 16; i++) {
                     $scope.numbers.push({value: i});
@@ -2049,12 +2051,12 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 $scope.pages = [1, 2, 3, 4, 5, 6, 7];
                 $scope.change = function (selectCount) {
                     Log.i(TAG, "选择了：" + selectCount);
-                    $scope.seats = seats.filter(function (item) {
+                    $scope.desks = desks.filter(function (item) {
                         return item.min <= $scope.selected_count && item.max >= $scope.selected_count;
                     });
                 };
                 $scope.save = function () {
-                    Log.i(TAG, JSON.stringify($scope.seats));
+                    Log.i(TAG, JSON.stringify($scope.desks));
                 }
             }
         })
@@ -2127,8 +2129,11 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                 $scope.weekdays = [
                     "周一", "周二", "周三", "周四", "周五", "周六"
                 ];
+                $scope.branch = $rootScope.branch;
                 // 区域列表
                 $scope.area = $rootScope.area;
+                // 私人订制列表
+                $scope.personal_tailor = angular.copy($rootScope.branch.personal_tailor);
                 // 来电列表
                 $scope.Phone = [];
                 // 预约列表
@@ -2147,7 +2152,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                     });
                     $scope.Orders.push({
                         id: i, name: "赵强", gender: "male", phone: "18050082265", order_time: "2017/6/23 19:04:48",
-                        meal_time: "06月08日晚餐18:00", order_channel: "预订台", area: "二楼", seat: "525", people: "6",
+                        meal_time: "06月08日晚餐18:00", order_channel: "预订台", area: "二楼", desk: "525", people: "6",
                         amount: "4135.00", order_status: "消费成功", operator: "张欢欢"
                     });
                 }
@@ -2181,115 +2186,6 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
             }
         });
 
-// 超级管理员
-    $routeProvider
-        .when('/SuperAdmin/SuperAdmin', {
-            templateUrl: "./template/" + Templates.SuperAdmin.SuperAdmin, controller: function ($scope, $modal, $http) {
-                var TAG = Templates.SuperAdmin.SuperAdmin;
-                // 酒店列表
-                $scope.data = {count: 0, list: []};
-                // 获取酒店列表
-                var url = "/webApp/super_admin/hotel/list/";
-                $http.post(url, JSON.stringify({})).success(function (obj) {
-                    if (obj.status === "true") {
-                        $scope.data = obj.data;
-                    } else {
-                        alert(obj.description);
-                    }
-                });
-                // 添加酒店
-                $scope.addHotel = function () {
-                    Log.i(TAG, "添加酒店");
-                    var dlg = $modal.open({
-                        templateUrl: "./template/" + Dialog.SuperAdmin.SuperAdmin.HotelDialog,
-                        controller: function ($scope, form) {
-                            var TAG = Dialog.SuperAdmin.SuperAdmin.HotelDialog;
-                            Log.i(TAG, "添加酒店");
-                            $scope.option = "添加";
-                            $scope.form = form;
-                            $scope.edit = function () {
-                                Log.i(TAG, "编辑酒店信息：" + $scope.form);
-                            };
-                            $scope.save = function () {
-                                Log.i(TAG, "保存酒店信息");
-                                dlg.close(form);
-                            };
-                            $scope.cancel = function () {
-                                Log.i(TAG, "取消");
-                                dlg.dismiss();
-                            }
-                        },
-                        resolve: {
-                            form: function () {
-                                var hotel = {
-                                    // token: "129ASDFIOJIO3RN23U12934INASDF",
-                                    name: "珍珠大酒店",
-                                    owner_name: "赵强"
-                                };
-                                return hotel;
-                            }
-                        }
-                    });
-                    dlg.opened.then(function () {
-                        Log.i(TAG, "对话框已经打开");
-                    });
-                    dlg.result.then(function (result) {
-                        Log.i(TAG, JSON.stringify(result));
-                        var url = "/webApp/super_admin/hotel/register/";
-                        $http.post(url, JSON.stringify(result)).success(function (obj) {
-                            if (obj.status === "true") {
-                                alert("添加酒店成功");
-                            } else {
-                                alert(obj.description);
-                            }
-                        });
-                    }, function (reason) {
-                        Log.i(TAG, reason);
-                    });
-                };
-                // 编辑酒店信息
-                $scope.editHotel = function (hotel) {
-                    Log.i(TAG, "编辑酒店：" + hotel.name);
-                    var dlg = $modal.open({
-                        templateUrl: "./template/" + Dialog.SuperAdmin.SuperAdmin.HotelDialog,
-                        controller: function ($scope, form) {
-                            var TAG = Dialog.Channel.Staff.EditStaff;
-                            Log.i(TAG, "编辑酒店控制器");
-                            $scope.option = "编辑";
-                            $scope.form = form;
-                            $scope.edit = function () {
-                                Log.i(TAG, "编辑酒店信息：" + $scope.form);
-                            };
-                            $scope.save = function () {
-                                Log.i(TAG, "保存酒店信息");
-                                dlg.close(form);
-                            };
-                            $scope.cancel = function () {
-                                Log.i(TAG, "取消");
-                            }
-                        },
-                        resolve: {
-                            form: function () {
-                                return hotel;
-                            }
-                        }
-                    });
-                    dlg.opened.then(function () {
-                        Log.i(TAG, "对话框已经打开");
-                    });
-                    dlg.result.then(function (result) {
-                        Log.i(TAG, JSON.stringify(result));
-                    }, function (reason) {
-                        Log.i(TAG, reason);
-                    });
-                }
-                // ,
-                //     service: {
-                //         "customer_analysis": true,
-                //         "order_statistics": true
-                //     }
-            }
-        });
 
     $routeProvider
         .otherwise({redirectTo: "/SmartOrder/SmartOrder"});

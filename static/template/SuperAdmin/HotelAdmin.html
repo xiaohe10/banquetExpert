@@ -1,37 +1,65 @@
-<!--超级管理后台-->
+<!--酒店管理-->
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="panel-title">
-            酒店管理员列表
-            <small>(共{{data.count}}家酒店)</small>
+            超级管理员
         </div>
     </div>
     <div class="panel-body">
-        <!--已添加管理员列表-->
-        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5" ng-repeat="x in data.list|orderBy:hotel_id">
-            <div class="thumbnail" ng-click="editManager(x)">
-                <div class="label label-info">
-                    {{x.hotel_id + 1}}. {{x.name}} <span ng-hide="x.is_enabled">失效</span>
+        <div class="panel-group">
+            <!--酒店列表-->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        酒店列表
+                        <small>(共{{data.count}}家酒店)</small>
+                    </div>
                 </div>
-                <img class="img-circle" src="{{x.icon}}" style="width: 96px;height: 96px">
-                <div class="caption">
-                    <p>门店数：{{x.branches_count}}</p>
-                    <p>法人：{{x.owner_name}}</p>
-                    <p>电话：{{x.create_time}}</p>
+                <div class="panel-body">
+                    <!--已添加酒店列表-->
+                    <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5" ng-repeat="x in data.list|orderBy:hotel_id">
+                        <div class="thumbnail" ng-click="editHotel(x)">
+                            <div class="label label-info">
+                                {{x.hotel_id + 1}}. {{x.name}} <span ng-hide="x.is_enabled">失效</span>
+                            </div>
+                            <img class="img-circle" src="{{x.icon}}" style="width: 96px;height: 96px">
+                            <div class="caption">
+                                <p>门店数：{{x.branches_count}}</p>
+                                <p>法人：{{x.owner_name}}</p>
+                                <p>电话：{{x.create_time|date:"yyyy/MM/dd"}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!--添加酒店-->
+                    <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5">
+                        <div class="thumbnail" ng-click="addHotel()">
+                            <div class="label label-info">添加酒店</div>
+                            <img class="img-circle" src="/static/css/image/head.jpg" style="width: 96px;height: 96px">
+                            <div class="caption">
+                                <p>门店数：无</p>
+                                <p>法人：无</p>
+                                <p>电话：无</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!---->
+            <!--+酒店权限管理-->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">酒店服务管理</div>
+                </div>
+                <div class="panel-body">
+                    <div class="alert alert-warning">暂未实现酒店服务管理</div>
+                </div>
+                <div class="panel-footer">
+                    This is footer.
                 </div>
             </div>
         </div>
-        <!--添加管理员-->
-        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5">
-            <div class="thumbnail" ng-click="addManager()">
-                <div class="label label-info">添加管理员</div>
-                <img class="img-circle" src="/static/css/image/head.jpg" style="width: 96px;height: 96px">
-                <div class="caption">
-                    <p>门店数：无</p>
-                    <p>法人：无</p>
-                    <p>电话：无</p>
-                </div>
-            </div>
-        </div>
+    </div>
+    <div class="panel-footer">
+        This is footer.
     </div>
 </div>

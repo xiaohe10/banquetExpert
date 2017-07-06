@@ -1,0 +1,67 @@
+<!--主页/超级管理员/管理员/管理员对话框-->
+<div class="modal-header">
+    {{option}}管理员信息
+</div>
+<div class="modal-body">
+    <!--表单-->
+    <form class="form-horizontal">
+        <!--用户名-->
+        <div class="form-group">
+            <label class="col-sm-2 control-label">
+                用户名
+            </label>
+            <div class="col-sm-10">
+                <input type="text" ng-model="form.username"/>
+            </div>
+        </div>
+        <!--密码-->
+        <div class="form-group">
+            <label class="col-sm-2 control-label">
+                密码
+            </label>
+            <div class="col-sm-10">
+                <input type="password" ng-model="form.password"/>
+            </div>
+        </div>
+        <!--确认密码-->
+        <div class="form-group">
+            <label class="col-sm-2 control-label">
+                确认密码
+            </label>
+            <div class="col-sm-10">
+                <input type="password" ng-model="form.ack_password"/>
+            </div>
+        </div>
+        <!--类型【未使用】-->
+        <div class="form-group hidden">
+            <label class="col-sm-2 control-label">
+                类型
+            </label>
+            <div class="col-sm-10">
+                <label class="control-label">
+                    <input type="radio" ng-model="form.type" value="0"/>管理员
+                </label>
+                <label class="control-label">
+                    <input type="radio" ng-model="form.type" value="1"/>超级管理员
+                </label>
+            </div>
+        </div>
+        <!--管理员大图【未使用】-->
+        <div class="form-group hidden">
+            <label class="col-sm-2 control-label">
+                管理员大图
+            </label>
+            <div class="col-sm-10">
+                <div class="thumbnail">
+                    <img src="/static/css/image/head1.jpg" alt="ICON">
+                </div>
+                <input type="file" ng-model="form.icon"/>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <input class="btn btn-success btn-sm" type="button" ng-hide="option==='添加'" ng-click="edit()" value="编辑">
+    <input class="btn btn-primary btn-sm" type="button" ng-click="save()" value="保存"/>
+    <input class="btn btn-warning btn-sm" type="button" ng-click="cancel()" value="取消"/>
+</div>
