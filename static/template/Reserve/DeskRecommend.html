@@ -13,7 +13,7 @@
                     <option ng-repeat="x in numbers" value="{{x.value}}">{{x.value}}</option>
                 </select>
             </label>
-            符合 {{selected_count}} 人桌位共{{seats.length}}个 注：序号数值越大，则优先推荐
+            符合 {{selected_count}} 人桌位共{{desk.list.length}}个 注：序号数值越大，则优先推荐
         </div>
         <!--表格-->
         <table class="table table-bordered table-hover">
@@ -30,7 +30,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="x in seats">
+            <tr ng-repeat="x in desk.list">
                 <td> {{x.name}}(图)</td>
                 <td> {{x.min}} 人 至 {{x.max}} 人</td>
                 <td>

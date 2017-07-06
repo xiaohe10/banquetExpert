@@ -54,7 +54,7 @@ BanquetExpertApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
     $rootScope.HotelList = [];
     // 获取管理员列表
     $rootScope.Managerlist = [];
-    // 侧边栏和路径导航
+    // 侧边栏
     $scope.menus = [
         {
             title: "超级管理后台",
@@ -65,6 +65,7 @@ BanquetExpertApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
             ]
         }
     ];
+    // 路径导航
     $scope.Breadcrumb = [
         {title: "主页"},
         {title: "预订管理"},
@@ -83,7 +84,7 @@ BanquetExpertApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
     });
 
     // 【超级管理员】获取管理员列表
-    url = "/webApp/super_admin/list/";
+    url = "/webApp/super_admin/manager/list/";
     param = {};
     $http.post(url, JSON.stringify(param)).success(function (obj) {
         if (obj.status === "true") {
@@ -296,5 +297,6 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                     });
                 }
             }
-        });
+        })
+        .otherwise({redirectTo: "/SuperAdmin/HotelAdmin"});
 }]);

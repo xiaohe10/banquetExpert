@@ -2034,29 +2034,38 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
         })
         .when('/Reserve/DeskRecommend', {
             templateUrl: "./template/" + Templates.Reserve.DeskRecommend, controller: function ($rootScope, $scope, $http) {
+
                 var TAG = Templates.Reserve.DeskRecommend;
-                var desks = [];
-                $.each($rootScope.area, function (index, area) {
-                    $.each(area.desk, function (index, desk) {
-                        desk.area = area.name;
-                        desks.push(desk);
-                    });
-                });
-                $scope.desks = desks;
-                $scope.numbers = [];
-                for (var i = 0; i < 16; i++) {
-                    $scope.numbers.push({value: i});
-                }
+
+                $scope.numbers = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21];
                 $scope.selected_count = 1;
+                $scope.desk = {count: 0, list: []};
                 $scope.pages = [1, 2, 3, 4, 5, 6, 7];
-                $scope.change = function (selectCount) {
-                    Log.i(TAG, "选择了：" + selectCount);
-                    $scope.desks = desks.filter(function (item) {
-                        return item.min <= $scope.selected_count && item.max >= $scope.selected_count;
+
+                // 【管理员】获取桌位列表
+                var getDeskList = function (selectCount) {
+                    var url = "/webApp/admin/hotel_branch/desk/recommend/";
+                    var param = {
+                        branch_id: $rootScope.branch.branch_id,
+                        guest_number: selectCount
+                    };
+                    $http.post(url, JSON.stringify(param)).success(function (obj) {
+                        if (obj.status === "true") {
+                            $scope.desk = obj.data;
+                        } else {
+                            alert(obj.description);
+                        }
                     });
                 };
+
+                getDeskList($scope.selected_count);
+
+                $scope.change = function (selectCount) {
+                    Log.i(TAG, "选择了：" + selectCount);
+                    getDeskList(selectCount);
+                };
                 $scope.save = function () {
-                    Log.i(TAG, JSON.stringify($scope.desks));
+                    Log.i(TAG, JSON.stringify($scope.desk));
                 }
             }
         })

@@ -13,50 +13,48 @@
     <script src="js/login.js"></script>
 </head>
 <body>
-<div class="container">
-    <div class="modal-dialog align-content-center" ng-app="LoginApp">
-        <div class="modal-content bg-warning">
-            <div class="modal-header">
-                宴专家后台登录
-            </div>
-            <div class="modal-body">
-                <form class="form-horizontal" ng-controller="LoginCtrl">
-                    <fieldset>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" for="username">用户名：</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" value="" id="username" ng-model="form.username">
+<div class="modal-dialog align-content-center" style="width: 560px" ng-app="LoginApp">
+    <div class="modal-content bg-warning">
+        <div class="modal-header">
+            宴专家后台登录
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal" ng-controller="LoginCtrl">
+                <fieldset>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="username">用户名：</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" value="" id="username" ng-model="form.username">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="password">密码：</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" value="" id="password" ng-model="form.password">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="group">选择组：</label>
+                        <div class="col-sm-10">
+                            <div class="input-group" id="group">
+                                <label class="control-label" ng-repeat="group in groups">
+                                    <input class="radio-inline" type="radio" ng-model="form.group_id" value="{{$index}}"/>
+                                    {{group.name}}
+                                </label>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" for="password">密码：</label>
-                            <div class="col-sm-10">
-                                <input type="password" class="form-control" value="" id="password" ng-model="form.password">
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"></label>
+                        <div class="col-sm-10">
+                            <input type="button" class="form-control btn-primary" value="登录" ng-click="login()"/>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" for="group">选择组：</label>
-                            <div class="col-sm-10">
-                                <div class="input-group" id="group">
-                                    <label class="control-label" ng-repeat="group in groups">
-                                        <input class="radio-inline" type="radio" ng-model="form.group_id" value="{{$index}}"/>
-                                        {{group.name}}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label"></label>
-                            <div class="col-sm-10">
-                                <input type="button" class="form-control btn-primary" value="登录" ng-click="login()"/>
-                            </div>
-                        </div>
-                    </fieldset>
-                </form>
-            </div>
-            <div class="modal-footer">
-                版权所有@Heng Ai
-            </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        <div class="modal-footer">
+            版权所有@Heng Ai
         </div>
     </div>
 </div>
