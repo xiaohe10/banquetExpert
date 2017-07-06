@@ -15,7 +15,7 @@ def validate_super_admin_token():
         @wraps(function)
         def returned_wrapper(request, *args, **kwargs):
             if 'token' not in kwargs:
-                return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+                return err_response('err_1', '缺少 token')
             try:
                 admin = Admin.objects.get(token=kwargs['token'])
             except ObjectDoesNotExist:
@@ -37,7 +37,7 @@ def validate_admin_token():
         @wraps(function)
         def returned_wrapper(request, *args, **kwargs):
             if 'token' not in kwargs:
-                return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+                return err_response('err_1', '缺少 token')
             try:
                 admin = Admin.objects.get(token=kwargs['token'])
             except ObjectDoesNotExist:
@@ -59,7 +59,7 @@ def validate_staff_token():
         @wraps(function)
         def returned_wrapper(request, *args, **kwargs):
             if 'token' not in kwargs:
-                return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+                return err_response('err_1', '缺少 token')
             try:
                 staff = Staff.objects.get(token=kwargs['token'])
             except ObjectDoesNotExist:
@@ -81,7 +81,7 @@ def validate_user_token():
         @wraps(function)
         def returned_wrapper(request, *args, **kwargs):
             if 'token' not in kwargs:
-                return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+                return err_response('err_1', '缺少 token')
             try:
                 user = User.objects.get(token=kwargs['token'])
             except ObjectDoesNotExist:
@@ -122,10 +122,10 @@ def validate_args(dic):
                 except KeyError:
                     if v.required:
                         return err_response(
-                            'err_1', '参数不正确（缺少参数或者不符合格式）')
+                            'err_1', '"%s" 参数不正确（缺少参数或者不符合格式）' % k)
                 except ValidationError:
                     return err_response(
-                        'err_1', '参数不正确（缺少参数或者不符合格式）')
+                        'err_1', '"%s" 参数不正确（缺少参数或者不符合格式）' % k)
             return function(request, *args, **kwargs)
         return returned_wrapper
     return decorator

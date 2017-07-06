@@ -118,13 +118,11 @@ def get_areas(request, token, branch_id, order=2):
     'token': forms.CharField(min_length=32, max_length=32),
     'branch_id': forms.IntegerField(),
     'area_id': forms.IntegerField(required=False),
-    'order': forms.IntegerField(min_value=0, max_value=3, required=False),
     'date': forms.DateField(),
     'dinner_period': forms.IntegerField(),
 })
 @validate_staff_token()
-def get_desks(request, token, branch_id, date, dinner_period, area_id=None,
-              order=2):
+def get_desks(request, token, branch_id, date, dinner_period, area_id=None):
     """获取门店某一天某餐段的桌位使用情况列表
 
     :param token: 令牌(必传)
@@ -132,11 +130,6 @@ def get_desks(request, token, branch_id, date, dinner_period, area_id=None,
     :param date: 日期, 例: 2017-05-12(必传)
     :param dinner_period: 餐段, 0:午餐, 1:晚餐, 2:夜宵(必传)
     :param area_id: 用餐区域ID
-    :param order: 排序方式
-        0: 注册时间升序
-        1: 注册时间降序
-        2: 房间号升序（默认值）
-        3: 房间号降序
     :return:
         count: 桌位数
         list:
@@ -148,7 +141,6 @@ def get_desks(request, token, branch_id, date, dinner_period, area_id=None,
             max_guest_num: 可容纳最大人数
             status: 桌位使用状态, 0: 空闲, 1: 预定中, 2: 用餐中
     """
-    ORDERS = ('create_time', '-create_time', 'number', '-number')
 
     try:
         branch = HotelBranch.enabled_objects.get(id=branch_id)
@@ -162,7 +154,7 @@ def get_desks(request, token, branch_id, date, dinner_period, area_id=None,
     if area_id is None:
         c = Desk.enabled_objects.filter(area__branch=branch).count()
         ds = Desk.enabled_objects.filter(
-            area__branch=branch).order_by(ORDERS[order])
+            area__branch=branch).order_by('order')
     else:
         try:
             area = Area.enabled_objects.get(id=area_id)
