@@ -1157,17 +1157,17 @@ def modify_desk(request, token, desk_id, **kwargs):
 
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
-    'area_id': forms.IntegerField(),
+    'branch_id': forms.IntegerField(),
     'guest_number': forms.IntegerField(),
     'offset': forms.IntegerField(min_value=0, required=False),
     'limit': forms.IntegerField(min_value=0, required=False),
 })
 @validate_admin_token()
-def recommend_desks(request, token, area_id, guest_number, offset=0, limit=10):
+def recommend_desks(request, token, branch_id, guest_number, offset=0, limit=10):
     """自动推荐桌位列表
 
     :param token: 令牌(必传)
-    :param area_id: 区域ID(必传)
+    :param branch_id: 门店ID(必传)
     :param guest_number: 顾客人数(必传)
     :param offset: 起始值
     :param limit: 偏移量
@@ -1190,16 +1190,17 @@ def recommend_desks(request, token, area_id, guest_number, offset=0, limit=10):
     """
 
     try:
-        area = Area.objects.get(id=area_id)
+        branch = HotelBranch.objects.get(id=branch_id)
     except ObjectDoesNotExist:
-        return err_response('err_4', '该区域不存在')
+        return err_response('err_4', '该门店不存在')
 
     # 只能查看自己酒店的门店区域
-    if area.branch.hotel != request.admin.hotel:
+    if branch.hotel != request.admin.hotel:
         return err_response('err_2', '权限错误')
 
-    qs = area.desks.filter(min_guest_num__lte=guest_number,
-                           max_guest_num__gte=guest_number)
+    qs = Desk.objects.filter(area__branch=branch,
+                             min_guest_num__lte=guest_number,
+                             max_guest_num__gte=guest_number)
     c = qs.count()
     ds = qs.order_by('-order')[offset:offset + limit]
 
