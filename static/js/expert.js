@@ -1865,7 +1865,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                     });
                     dlg.result.then(function (result) {
                         Log.i(TAG, JSON.stringify(result));
-                        var url = "/webApp/admin/hotel_branch/area/modify/";
+                        var url = "/webApp/admin/hotel_branch/desk/modify/";
                         $http.post(url, JSON.stringify(result)).success(function (obj) {
                             if (obj.status === "true") {
                                 alert("编辑桌位成功");

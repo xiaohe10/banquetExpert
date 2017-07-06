@@ -1107,7 +1107,8 @@ def modify_desk(request, token, desk_id, **kwargs):
         return err_response('err_2', '权限错误')
 
     if 'number' in kwargs:
-        if desk.area.desks.filter(number=kwargs['number']).count() > 0:
+        if desk.area.desks.filter(number=kwargs['number']).\
+                exclude(id=desk_id).count() > 0:
             return err_response('err_5', '桌位编号已存在')
 
     desk_keys = ('number', 'order', 'min_guest_num', 'max_guest_num',
@@ -1126,7 +1127,6 @@ def modify_desk(request, token, desk_id, **kwargs):
             setattr(desk, k, kwargs[k])
 
     try:
-        data = json.loads(request.body)
         if 'facility' in data:
             v = json.dumps(data['facility'])
             setattr(desk, 'facility', v)
