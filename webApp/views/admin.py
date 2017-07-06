@@ -736,7 +736,7 @@ def get_areas(request, token, branch_id):
         return err_response('err_2', '权限错误')
 
     c = branch.areas.count()
-    areas = branch.areas.order_by('order')
+    areas = branch.areas.order_by('-order')
 
     l = [{'area_id': area.id,
           'name': area.name,
@@ -892,7 +892,7 @@ def get_desks(request, token, area_id, offset=0, limit=10):
         return err_response('err_2', '权限错误')
 
     c = area.desks.count()
-    ds = area.desks.order_by('order')[offset:offset + limit]
+    ds = area.desks.order_by('-order')[offset:offset + limit]
 
     l = [{'desk_id': desk.id,
           'number': desk.number,
@@ -1191,7 +1191,7 @@ def recommend_desks(request, token, area_id, guest_number, offset=0, limit=10):
     qs = area.desks.filter(min_guest_num__lte=guest_number,
                            max_guest_num__gte=guest_number)
     c = qs.count()
-    ds = qs.order_by('order')[offset:offset + limit]
+    ds = qs.order_by('-order')[offset:offset + limit]
 
     l = [{'desk_id': desk.id,
           'number': desk.number,

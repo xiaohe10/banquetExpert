@@ -801,7 +801,7 @@ URL：webApp/hotel_branch/profile/ <br>
 | err_4 | 门店不存在 |
 
 
-## 获取门店的区域列表
+## 获取门店的区域列表（根据order逆序排列）
 URL：webApp/hotel_branch/area/list/ <br>
 请求方式：POST <br>
 
@@ -809,7 +809,6 @@ URL：webApp/hotel_branch/area/list/ <br>
 |:------------- |:---------------| :-------------:|
 | token         | 登录口令          |         yes  |
 | branch_id | 门店 ID | yes |
-| order | 排序方式（0: 注册时间升序，1: 注册时间降序，2: 名称升序，3: 名称降序，默认1） | no |
 
 请求示例:
 
@@ -843,7 +842,7 @@ URL：webApp/hotel_branch/area/list/ <br>
 	    "list":[
 	        "area_id":1,
 		    "name":"一楼",
-		    "order":1,
+		    "order":10,
 		    "create_time":"创建时间"
 		    ],
 		    ...
@@ -862,7 +861,7 @@ URL：webApp/hotel_branch/area/list/ <br>
 | err_5 | 餐厅区域不存在 |
 
 
-## 获取门店某一天某餐段的桌位使用情况列表
+## 获取门店某一天某餐段的桌位使用情况列表（根据order逆序排列）
 URL：webApp/hotel_branch/desk/list/ <br>
 请求方式：POST <br>
 
@@ -873,7 +872,6 @@ URL：webApp/hotel_branch/desk/list/ <br>
 | date  | 日期 | yes |
 | dinner_period | 餐段（0:午餐, 1:晚餐, 2:夜宵）  | yes   |
 | area_id   | 区域 ID | no    |
-| order | 排序方式（0: 注册时间升序，1: 注册时间降序，2: 名称升序，3: 名称降序，默认1） | no |
 
 请求示例:
 

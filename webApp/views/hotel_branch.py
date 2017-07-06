@@ -71,7 +71,6 @@ def get_profile(request, token, branch_id):
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
     'branch_id': forms.IntegerField(),
-    'order': forms.IntegerField(min_value=0, max_value=3, required=False),
 })
 @validate_staff_token()
 def get_areas(request, token, branch_id, order=2):
@@ -79,11 +78,6 @@ def get_areas(request, token, branch_id, order=2):
 
     :param token: 令牌(必传)
     :param branch_id: 门店ID(必传)
-    :param order: 排序方式
-        0: 注册时间升序
-        1: 注册时间降序（默认值）
-        2: 名称升序
-        3: 名称降序
     :return:
         count: 区域数
         list:
@@ -92,7 +86,6 @@ def get_areas(request, token, branch_id, order=2):
             order: 排序
             create_time: 创建时间
     """
-    ORDERS = ('create_time', '-create_time', 'name', '-name')
 
     try:
         branch = HotelBranch.enabled_objects.get(id=branch_id)
@@ -104,7 +97,7 @@ def get_areas(request, token, branch_id, order=2):
         return err_response('err_2', '权限错误')
 
     c = branch.areas.filter(is_enabled=True).count()
-    areas = branch.areas.filter(is_enabled=True).order_by(ORDERS[order])
+    areas = branch.areas.filter(is_enabled=True).order_by('-order')
 
     l = [{'area_id': area.id,
           'name': area.name,
@@ -162,7 +155,7 @@ def get_desks(request, token, branch_id, date, dinner_period, area_id=None):
             return err_response('err_5', '餐厅区域不存在')
 
         c = area.desks.filter(is_enabled=True).count()
-        ds = area.desks.filter(is_enabled=True).order_by(ORDERS[order])
+        ds = area.desks.filter(is_enabled=True).order_by('-order')
 
     l = []
     for desk in ds:
