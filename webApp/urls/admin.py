@@ -50,6 +50,11 @@ urlpatterns = [
     url(r'^hotel_branch/desk/add/$', add_desk, name='add_desk'),
     # 修改门店桌位
     url(r'^hotel_branch/desk/modify/$', modify_desk, name='modify_desk'),
+    # 自动推荐桌位
+    url(r'^hotel_branch/desk/recommend/$', recommend_desks,
+        name='recommend_desks'),
+    # 批量修改桌位
+    url(r'^hotel_branch/desks/modify/$', modify_desks, name='modify_desks'),
     # 获取获客渠道
     url(r'^hotel/channel/list/$', get_channels, name='get_channel_list'),
     # 增加外部获客渠道

@@ -122,13 +122,20 @@ def register(request, token, username, password, type=1, hotel_id=None):
 
 @validate_args({
     'admin_id': forms.IntegerField(required=False),
+    'username': forms.CharField(min_length=1, max_length=20, required=False),
+    'password': forms.CharField(min_length=1, max_length=32, required=False),
+    'is_enabled': forms.BooleanField(required=False)
 })
 @validate_super_admin_token()
-def delete_admin(request, token, admin_id):
-    """删除管理员
+def modify_admin(request, token, admin_id, **kwargs):
+    """修改管理员信息
 
     :param token: 令牌
     :param admin_id: 管理员ID(必传)
+    :param kwargs
+        username: 用户名
+        password: 密码
+        is_enabled: 是否有效
     :return: 200/404
     """
 
@@ -140,7 +147,12 @@ def delete_admin(request, token, admin_id):
     if admin == request.admin:
         return err_response('err_4', '操作错误')
 
-    admin.is_enabled = False
+    admin_keys = ('username', 'password', 'is_enabled')
+    for k in admin_keys:
+        if k in kwargs:
+            setattr(admin, k, kwargs[k])
+    admin.save()
+
     return corr_response()
 
 

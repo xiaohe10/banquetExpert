@@ -4,11 +4,11 @@ from webApp.views.super_admin import *
 
 urlpatterns = [
     # 获取管理者列表
-    url(r'^list/$', get_admins, name='list'),
+    url(r'^manager/list/$', get_admins, name='list_manager'),
     # 注册新的管理者
-    url(r'^register/$', register, name='register'),
-    # 删除管理者
-    url(r'^delete/$', delete_admin, name='delete'),
+    url(r'^manager/register/$', register, name='register_manager'),
+    # 修改管理者
+    url(r'^manager/modify/$', modify_admin, name='modify_manager'),
     # 登录
     url(r'^login/$', login, name='login'),
     # 获取酒店列表

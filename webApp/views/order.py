@@ -1,4 +1,6 @@
 import json
+import time
+import datetime
 
 from django import forms
 from django.db.models import Q
@@ -517,9 +519,18 @@ def get_day_orders(request, token, month):
         desk_consumption: 桌均消费
     """
 
+    # 日期处理
+    t = time.strptime(month, "%Y-%m")
+    y, m, d = t[0:3]
+    first_day = datetime.date(y, m, d)
+    if m >= 12:
+        last_day = datetime.date(y + 1, 1, d)
+    else:
+        last_day = datetime.date(y, m + 1, d)
+
     hotel = request.staff.hotel
     day_consumptions = hotel.day_consumptions.filter(
-        date__startswith=month).order_by('-date')
+        date__gte=first_day, date__lt=last_day).order_by('-date')
     l = [{'date': c.date,
           'order_number': c.order_number,
           'desk_number': c.desk_number,

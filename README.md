@@ -801,7 +801,7 @@ URL：webApp/hotel_branch/profile/ <br>
 | err_4 | 门店不存在 |
 
 
-## 获取门店的区域列表
+## 获取门店的区域列表（根据order逆序排列）
 URL：webApp/hotel_branch/area/list/ <br>
 请求方式：POST <br>
 
@@ -809,7 +809,6 @@ URL：webApp/hotel_branch/area/list/ <br>
 |:------------- |:---------------| :-------------:|
 | token         | 登录口令          |         yes  |
 | branch_id | 门店 ID | yes |
-| order | 排序方式（0: 注册时间升序，1: 注册时间降序，2: 名称升序，3: 名称降序，默认1） | no |
 
 请求示例:
 
@@ -843,7 +842,7 @@ URL：webApp/hotel_branch/area/list/ <br>
 	    "list":[
 	        "area_id":1,
 		    "name":"一楼",
-		    "order":1,
+		    "order":10,
 		    "create_time":"创建时间"
 		    ],
 		    ...
@@ -862,7 +861,7 @@ URL：webApp/hotel_branch/area/list/ <br>
 | err_5 | 餐厅区域不存在 |
 
 
-## 获取门店某一天某餐段的桌位使用情况列表
+## 获取门店某一天某餐段的桌位使用情况列表（根据order逆序排列）
 URL：webApp/hotel_branch/desk/list/ <br>
 请求方式：POST <br>
 
@@ -873,7 +872,6 @@ URL：webApp/hotel_branch/desk/list/ <br>
 | date  | 日期 | yes |
 | dinner_period | 餐段（0:午餐, 1:晚餐, 2:夜宵）  | yes   |
 | area_id   | 区域 ID | no    |
-| order | 排序方式（0: 注册时间升序，1: 注册时间降序，2: 名称升序，3: 名称降序，默认1） | no |
 
 请求示例:
 
@@ -3883,7 +3881,6 @@ URL：webApp/admin/hotel_branch/area/list/ <br>
 |:------------- |:---------------| :-------------:|
 | token         | 令牌          |         yes    |
 | branch_id  | 门店 ID | yes   |
-| order | 排序方式（0: 注册时间升序，1: 注册时间降序，2: 名称升序，3: 名称降序，默认1） | no |
 
 请求示例：
 
@@ -3993,7 +3990,7 @@ URL：webApp/admin/hotel_branch/area/add/ <br>
 | err_6 | 服务器添加餐厅区域失败   |
 
 
-## 批量修改门店的餐厅区域（包括删除）
+## 批量修改门店的餐厅区域
 URL：webApp/admin/hotel_branch/area/modify/ <br>
 请求方式：POST <br>
 请求参数：
@@ -4004,9 +4001,9 @@ URL：webApp/admin/hotel_branch/area/modify/ <br>
 | list  | 门店数组  | yes   |
 | 以下为list中的数据  |
 | area_id  | 区域 ID | yes   |
-| name  | 名称    |   no |
-| order | 排序 | no |
-| is_enabled    | 是否有效  | no    |
+| name  | 名称    |   yes |
+| order | 排序 | yes |
+| is_enabled    | 是否有效  | yes    |
 
 请求示例：
 
@@ -4060,7 +4057,6 @@ URL：webApp/admin/hotel_branch/desk/list/ <br>
 | area_id  | 区域 ID | yes   |
 | offset | 起始值（默认0） | no |
 | limit | 偏移量（默认10） | no |
-| order | 排序方式（0: 注册时间升序，1: 注册时间降序，2: 名称升序，3: 名称降序，默认1） | no |
 
 请求示例：
 
@@ -4158,7 +4154,7 @@ URL：webApp/admin/hotel_branch/desk/add/ <br>
     "order":1,
     "min_guest_num":10,
     "max_guest_num":15,
-    "expense":"收取15%服务费",
+    "expense":["收取15%服务费"],
     "type":"豪华包间",
     "facility":["电脑","吸烟区"],
     "picture":"图片地址",
@@ -4194,8 +4190,8 @@ URL：webApp/admin/hotel_branch/desk/add/ <br>
 | err_7 | 服务器创建桌位失败 |
 
 
-## 修改门店区域的桌位（包括删除）
-URL：webApp/admin/hotel_branch/area/delete/ <br>
+## 修改门店区域的桌位
+URL：webApp/admin/hotel_branch/area/modify/ <br>
 请求方式：POST <br>
 请求参数：
 
@@ -4207,7 +4203,7 @@ URL：webApp/admin/hotel_branch/area/delete/ <br>
 | order | 排序 | no |
 | min_guest_num | 最小容纳人数    | no   |
 | max_guest_num | 最大容纳人数    | no   |
-| expense  | 费用说明  | no |
+| expense  | 费用说明(数组)  | no |
 | type  | 类型    |   no  |
 | facility  | 设施（数组）    | no    |
 | picture   | 房间介绍照片，[file]文件    | no    |
@@ -4249,6 +4245,143 @@ URL：webApp/admin/hotel_branch/area/delete/ <br>
 | err_4 | 桌位不存在 |
 | err_5 | 桌位编号已存在   |
 | err_6 | 图片为空或图片格式错误   |
+
+
+## 自动推荐桌位列表
+URL：webApp/admin/hotel_branch/desk/recommend/ <br>
+请求方式：POST <br>
+请求参数：
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------:|
+| token         | 令牌          |         yes    |
+| area_id  | 区域 ID | yes   |
+| guest_number  | 顾客人数  | yes   |
+| offset | 起始值（默认0） | no |
+| limit | 偏移量（默认10） | no |
+
+请求示例：
+
+```
+{
+    "token":"129ASDFIOJIO3RN23U12934INASDF",
+    "area_id":1,
+    "guest_number":10
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| count | 桌位数  |
+| list | 桌位列表 |
+| 以下为list中的数据    |
+| desk_id  | 桌位 ID    |
+| number  | 编号   |
+| order  | 排序  |
+| min_guest_num | 最小容纳人数    |
+| max_guest_num | 最大容纳人数    |
+| expense  | 费用说明(数组)  |
+| type  | 类型    |
+| facility  | 设施（数组）    |
+| picture   | 照片    |
+| is_beside_window    | 是否靠窗  |
+| description   | 备注    |
+| create_time   | 创建时间  |
+
+返回示例：
+
+```
+{
+	"status":"true",
+	"data":{
+	    "count":20,
+	    "list":{[
+		    "desk_id":1,
+		    "number":"201",
+		    "order":1,
+		    "min_guest_num":10,
+		    "max_guest_num":15,
+		    "expense":["收取15%服务费"],
+		    "type":"豪华包间",
+		    "facility":["电脑","吸烟区"],
+		    "picture":"图片地址",
+		    "is_beside_window":"True",
+		    "description":"",
+		    "create_time":"创建时间"
+		    ],
+		    ...
+		}
+	}
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 管理员不存在 |
+| err_4 | 该区域不存在 |
+
+
+## 批量修改门店的桌位
+URL：webApp/admin/hotel_branch/desks/modify/ <br>
+请求方式：POST <br>
+请求参数：
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------:|
+| token         | 令牌          |         yes    |
+| list  | 门店数组  | yes   |
+| 以下为list中的数据  |
+| desk_id  | 桌位 ID | yes   |
+| number  | 桌位编号    |   yes |
+| order | 排序 | yes |
+| is_enabled    | 是否有效  | yes    |
+
+请求示例：
+
+```
+{
+    "token":"129ASDFIOJIO3RN23U12934INASDF",
+    "list":[
+        {
+            "area_id":1,
+            "number":"110",
+            "order":1,
+            "is_enabled":True
+        },
+    ...
+    ]
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+
+
+返回示例：
+
+```
+{
+	"status":"true",
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 管理员不存在 |
+| err_4 | 门店不存在 |
+| err_5 | 桌位名已存在    |
 
 
 ## 获取酒店的员工列表
