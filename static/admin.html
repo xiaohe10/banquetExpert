@@ -23,7 +23,7 @@
     <!--Utils-->
     <script src="js/md5.js"></script>
     <!--Custom-->
-    <script src="js/login.js"></script>
+    <!--<script src="js/login.js"></script>-->
 </head>
 <body>
 <!--主页面-->
@@ -32,9 +32,9 @@
         <!--左侧导航栏-->
         <div class="col-2 affix" ng-controller="drawerCtrl">
             <div class="thumbnail bg-warning">
-                <img class="img-rounded" ng-src="{{hotel.icon}}" alt="IMAGE">
+                <img class="img-rounded" src="/static/css/image/head1.jpg" alt="IMAGE">
                 <div class="caption bg-warning">
-                    <h3 class="text-center">{{hotel.name}}</h3>
+                    <h3 class="text-center">超级管理员</h3>
                 </div>
             </div>
             <div class="panel-group" id="drawer">
@@ -72,8 +72,6 @@
         </div>
     </div>
 </div>
-<!--python manage.py runserver localhost:8000-->
-<!--信息路26号-->
-<script src="js/expert.js"></script>
+<script src="js/admin.js"></script>
 </body>
 </html>

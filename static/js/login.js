@@ -1,29 +1,43 @@
 var LoginApp = angular.module('LoginApp', []);
 LoginApp.controller('LoginCtrl', function ($scope, $http) {
+
+    // 用户组
+    $scope.groups = [
+        {
+            name: "超级管理员",
+            url: "/webApp/super_admin/login/",
+            href: "admin.html"
+        },
+        {
+            name: "管理员",
+            url: "/webApp/admin/login/",
+            href: "manager.html"
+        },
+        {
+            name: "员工",
+            url: "/webApp/staff/login/",
+            href: "staff.html"
+        }
+    ];
+
+    // 登录表单
     $scope.form = {
         username: "admin",
         password: "admin",
-        option_selected: "超级管理员"
+        group_id: 0
     };
-    $scope.groups = {
-        "超级管理员": "/webApp/super_admin/login/",
-        "管理员": "/webApp/admin/login/",
-        "员工": "/webApp/staff/login/"
-    };
-    $scope.hrefs = {
-        "超级管理员": "admin.html",
-        "管理员": "admin.html",
-        "员工": "staff.html"
-    };
+
+    // 登录账号
     $scope.login = function () {
-        var data = {
+        var param = {
             username: $scope.form.username,
             password: hex_md5($scope.form.password)
         };
-        var key = $scope.form.option_selected;
-        $http.post($scope.groups[key], JSON.stringify(data)).success(function (obj) {
+        var group_id = $scope.form.group_id;
+        var group = $scope.groups[group_id];
+        $http.post(group.url, JSON.stringify(param)).success(function (obj) {
             if (obj.status === "true") {
-                location.href = $scope.hrefs[key];
+                location.href = group.href;
             } else {
                 alert("登录失败：" + obj.description);
             }
