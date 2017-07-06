@@ -196,7 +196,7 @@ def get_profile(request, token, order_id):
          'welcome_screen': order.welcome_screen,
          'welcome_fruit': order.welcome_fruit,
          'welcome_card': order.welcome_card,
-         'pictures': json.loads(order.pictures) if order.pictures else '',
+         'pictures': json.loads(order.pictures) if order.pictures else [],
          'group_photo': order.group_photo,
          'background_music': order.background_music,
          'has_candle': order.has_candle,

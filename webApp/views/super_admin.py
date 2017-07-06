@@ -219,7 +219,7 @@ def get_hotels(request, token, is_enabled=True, offset=0, limit=10, order=1):
           'owner_name': h.owner_name,
           'is_enabled': h.is_enabled,
           'branch_number': h.branch_number,
-          'service': json.loads(h.service) if h.service else '',
+          'service': json.loads(h.service) if h.service else {},
           'create_time': h.create_time} for h in hotels]
     return corr_response({'count': c, 'list': l})
 
@@ -309,7 +309,7 @@ def get_hotel_profile(request, token, hotel_id):
              'branches_count': hotel.branches.count(),
              'owner_name': hotel.owner_name,
              'branch_number': hotel.branch_number,
-             'service': json.loads(hotel.service) if hotel.service else '',
+             'service': json.loads(hotel.service) if hotel.service else {},
              'is_enabled': hotel.is_enabled,
              'create_time': hotel.create_time}
         return corr_response(d)
