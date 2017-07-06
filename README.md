@@ -2774,7 +2774,7 @@ URL：webApp/super_admin/list/ <br>
 | err_3 | 管理员不存在 |
 
 
-## 删除管理员
+## 修改管理员
 URL：webApp/super_admin/delete/ <br>
 请求方式：POST <br>
 请求参数：
@@ -2783,6 +2783,9 @@ URL：webApp/super_admin/delete/ <br>
 |:------------- |:---------------| :-------------:|
 | token         | 令牌          |         yes    |
 | admin_id      | 管理员ID          |         yes    |
+| username  | 用户名   | no    |
+| password  | 密码    | no    |
+| is_enabled    | 是否有效  | no    |
 
 请求示例：
 
@@ -4255,7 +4258,7 @@ URL：webApp/admin/hotel_branch/desk/recommend/ <br>
 | 参数名称       | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------:|
 | token         | 令牌          |         yes    |
-| area_id  | 区域 ID | yes   |
+| branch_id  | 门店 ID | yes   |
 | guest_number  | 顾客人数  | yes   |
 | offset | 起始值（默认0） | no |
 | limit | 偏移量（默认10） | no |
@@ -4265,7 +4268,7 @@ URL：webApp/admin/hotel_branch/desk/recommend/ <br>
 ```
 {
     "token":"129ASDFIOJIO3RN23U12934INASDF",
-    "area_id":1,
+    "branch_id":1,
     "guest_number":10
 }
 ```
