@@ -116,7 +116,7 @@ def modify_hotel_profile(request, token, hotel_id, **kwargs):
     owner_name = kwargs.pop('owner_name') if \
         'owner_name' in kwargs else None
     if name:
-        if Hotel.objects.filter(name=name).exists():
+        if Hotel.objects.filter(name=name).exclude(id=hotel.id).exists():
             return err_response('err_5', '酒店名已注册')
         hotel.name = name
 
@@ -264,12 +264,16 @@ def register_branch(request, token, hotel_id, staff_id, **kwargs):
     if hotel.branches.count() >= hotel.branch_number:
         return err_response('err_6', '门店数量已达上限')
 
-    branch_keys = ('name', 'province', 'city', 'county', 'address')
+    name = kwargs.pop('name')
+    if hotel.branches.filter(name=name).count() > 0:
+        return err_response('err_7', '门店名已存在')
+
+    branch_keys = ('province', 'city', 'county', 'address')
     branch_other_keys = ('phone', 'facility', 'pay_card', 'cuisine')
 
     with transaction.atomic():
         try:
-            branch = HotelBranch(hotel=hotel, manager=staff)
+            branch = HotelBranch(name=name, hotel=hotel, manager=staff)
             for k in branch_keys:
                 if k in kwargs:
                     setattr(branch, k, kwargs[k])
@@ -286,7 +290,7 @@ def register_branch(request, token, hotel_id, staff_id, **kwargs):
             branch.save()
             return corr_response({'branch_id': branch.id})
         except IntegrityError:
-            return err_response('error_7', '服务器创建门店失败')
+            return err_response('err_8', '服务器创建门店失败')
 
 
 @validate_args({
@@ -439,7 +443,13 @@ def modify_branch_profile(request, token, branch_id, staff_id=None, **kwargs):
             return err_response('err_5', '员工不存在')
         branch.manager = staff
 
-    branch_keys = ('name', 'province', 'city', 'county', 'address', 'is_enabled')
+    if 'name' in kwargs:
+        name = kwargs.pop('name')
+        if HotelBranch.objects.filter(hotel=branch.hotel, name=name).exclude(
+                id=branch_id).count() > 0:
+            return err_response('err_7', '门店名已存在')
+
+    branch_keys = ('province', 'city', 'county', 'address', 'is_enabled')
     branch_other_keys = ('phone', 'facility', 'pay_card', 'cuisine')
 
     for k in branch_keys:
