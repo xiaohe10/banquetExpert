@@ -447,12 +447,12 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
     'search_key': forms.CharField(max_length=11, required=False),
-    'status': forms.IntegerField(min_value=0, max_value=3, required=False),
+    'status': forms.IntegerField(min_value=0, max_value=4, required=False),
     'offset': forms.IntegerField(min_value=0, required=False),
     'limit': forms.IntegerField(min_value=0, required=False),
 })
 @validate_staff_token()
-def get_guests(request, token, offset=0, limit=10, order=0, **kwargs):
+def get_guests(request, token, offset=0, limit=10, **kwargs):
     """获取客户列表(搜索)
 
     :param token: 令牌(必传)
@@ -460,7 +460,7 @@ def get_guests(request, token, offset=0, limit=10, order=0, **kwargs):
     :param limit: 偏移量
     :param kwargs:
         search_key: 搜索关键字, 姓名或手机号
-        status: 客户类型, 0: 活跃, 1: 沉睡, 2: 流失, 3: 无订单
+        status: 客户类型, 0: 全部, 1: 活跃, 2: 沉睡, 3: 流失, 4: 无订单
     :return:
         count: 客户数量
         list:
@@ -475,7 +475,7 @@ def get_guests(request, token, offset=0, limit=10, order=0, **kwargs):
             dislike: 忌讳
             special_day: 特殊
             personal_need: 个性化需求
-            status: 客户状态, 0: 活跃, 1: 沉睡, 2: 流失, 3: 无订单
+            status: 客户状态, 1: 活跃, 2: 沉睡, 3: 流失, 4: 无订单
             desk_number: 消费总桌数
             person_consumption: 人均消费
             order_per_month: 消费频度, 单/月
@@ -501,26 +501,26 @@ def get_guests(request, token, offset=0, limit=10, order=0, **kwargs):
         status = kwargs['status']
 
         # 活跃客户
-        if status == 0:
+        if status == 1:
             phones = Order.objects.filter(
                 branch__hotel=hotel, status=2, finish_time__gte=min_day). \
                 values_list("contact", flat=True).distinct()
             qs = qs.filter(Q(phone__in=phones))
         # 沉睡客户
-        elif status == 1:
+        elif status == 2:
             phones = Order.objects.filter(
                 branch__hotel=hotel, status=2, finish_time__lt=min_day,
                 finish_time__gte=max_day).values_list(
                 "contact", flat=True).distinct()
             qs = qs.filter(Q(phone__in=phones))
         # 流失客户
-        elif status == 2:
+        elif status == 3:
             phones = Order.objects.filter(
                 branch__hotel=hotel, status=2, finish_time__lt=max_day). \
                 values_list("contact", flat=True).distinct()
             qs = qs.filter(Q(phone__in=phones))
         # 无订单客户
-        else:
+        elif status == 4:
             phones = Order.objects.filter(
                 branch__hotel=hotel, status=2).values_list(
                 "contact", flat=True).distinct()
@@ -554,21 +554,21 @@ def get_guests(request, token, offset=0, limit=10, order=0, **kwargs):
         if qs:
             d['last_consumption'] = qs[0].dinner_date
 
-        if status is None:
+        if (status is None) or (status == 0):
             if Order.objects.filter(
                     branch__hotel=hotel, contact=guest.phone, status=2).\
                     count() == 0:
-                d['status'] = 3
+                d['status'] = 4
             elif Order.objects.filter(
                     branch__hotel=hotel, contact=guest.phone, status=2,
                     finish_time__gte=min_day).count() > 0:
-                d['status'] = 0
+                d['status'] = 1
             elif Order.objects.filter(
                     branch__hotel=hotel, contact=guest.phone, status=2,
                     finish_time__gte=max_day).count() > 0:
-                d['status'] = 1
-            else:
                 d['status'] = 2
+            else:
+                d['status'] = 3
         else:
             d['status'] = status
 
