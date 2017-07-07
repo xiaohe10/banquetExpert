@@ -56,11 +56,11 @@
                     <td>酒店名称</td>
                     <td>门店名称</td>
                     <td>酒店经理</td>
-                    <td>地址</td>
-                    <td>设施</td>
-                    <td>支付方式</td>
+                    <td style="width: 160px;">地址</td>
+                    <td style="width: 320px;">设施</td>
+                    <td style="width: 112px;">支付方式</td>
                     <td>创建时间</td>
-                    <td>联系方式</td>
+                    <td style="width: 96px;">联系方式</td>
                     <td>操作</td>
                 </tr>
                 </thead>
@@ -99,8 +99,8 @@
                         </span>
                     </td>
                     <td>
-                        <a class="btn btn-link btn-sm" ng-click="editBranch(x)">编辑</a>
-                        <a class="btn btn-link btn-sm" href="/static/branch.html#/Reserve/Reserve/{{x.branch_id}}">门店管理</a>
+                        <a ng-click="editBranch(x)">编辑</a>
+                        <a href="/static/branch.html#/Reserve/Reserve/{{x.branch_id}}">门店管理</a>
                     </td>
                 </tr>
             </table>
