@@ -47,15 +47,49 @@ var BranchApp = angular.module('BranchApp', [
     'ui.bootstrap'
 ]);
 
+BranchApp.service('BranchService', function ($rootScope, $http) {
+
+    // 【门店】获取门店信息
+    this.getProfile = function ($scope, branch_id) {
+        var url = "/webApp/admin/hotel_branch/profile/get/";
+        var param = {branch_id: branch_id};
+        $http.post(url, JSON.stringify(param)).success(function (obj) {
+            if (obj.status === "true") {
+                $rootScope.$broadcast('branch-profile', obj.data);
+            } else {
+                alert(obj.description);
+                return {};
+            }
+        });
+    };
+
+    // 【门店】获取门店区域列表area/list/";
+    this.getAreaList = function ($rootScope, branch_id) {
+        var url = "/webApp/admin/hotel_branch/area/list/";
+        var param = {branch_id: branch_id};
+        $http.post(url, JSON.stringify(param)).success(function (obj) {
+            if (obj.status === "true") {
+                $rootScope.$broadcast('branch-area-list', obj.data);
+            } else {
+                alert(obj.description);
+                return {count: '', list: []};
+            }
+        });
+    }
+});
+
 // 侧边导航栏控制器
 BranchApp.controller('drawerCtrl', function ($routeParams, $rootScope, $location, $scope, $http) {
 
     var TAG = "drawerCtrl";
+    // 获取参数
+    $rootScope.branch_id = $routeParams.branch_id;
+    Log.i(TAG, $rootScope.branch_id);
 
     // 门店信息
     $rootScope.branch = {
         branch_id: -1,
-        name: "预订管理"
+        name: "未登录"
     };
     // 餐段列表
     $rootScope.MealsTime = {
@@ -74,6 +108,8 @@ BranchApp.controller('drawerCtrl', function ($routeParams, $rootScope, $location
             "02:00", "02:30", "03:00", "03:30", "04:00"
         ]
     };
+
+    $scope.branch = $rootScope.branch;
     // 侧边栏
     $scope.menus = [{
         title: "预订管理",
@@ -168,8 +204,8 @@ BranchApp.config(['$routeProvider', function ($routeProvider) {
                     var param = {branch_id: $rootScope.branch_id};
                     $http.post(url, JSON.stringify(param)).success(function (obj) {
                         if (obj.status === "true") {
+                            $scope.form = obj.data;
                             $rootScope.branch = obj.data;
-                            $scope.form = $rootScope.branch;
                             getStaffList($rootScope.branch.hotel_id);
                         } else {
                             alert(obj.description);
@@ -451,7 +487,7 @@ BranchApp.config(['$routeProvider', function ($routeProvider) {
             templateUrl: "./template/" + Templates.Reserve.MealsArea, controller: function ($rootScope, $scope, $http, $q) {
                 var TAG = Templates.Reserve.MealsArea;
                 // 初始化门店区域列表
-                $scope.data = {count: 0, list: []}; // $rootScope.area;
+                $scope.data = {count: 0, list: []};
                 // 【门店】获取门店区域列表area/list/";
                 var url = "/webApp/admin/hotel_branch/area/list/";
                 var param = {branch_id: $rootScope.branch_id};
@@ -557,7 +593,7 @@ BranchApp.config(['$routeProvider', function ($routeProvider) {
                     // 【门店】保存私人订制列表
                     var url = "/webApp/admin/hotel_branch/personal_tailor/modify/";
                     var param = {
-                        branch_id: 1,
+                        branch_id: $rootScope.branch_id,
                         personal_tailor: $scope.data
                     };
                     $http.post(url, JSON.stringify(param)).success(function (obj) {

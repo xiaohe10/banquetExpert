@@ -50,10 +50,6 @@ AdminApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
 
     var TAG = 'drawerCtrl';
 
-    // 获取酒店列表
-    $rootScope.HotelList = [];
-    // 获取管理员列表
-    $rootScope.Managerlist = [];
     // 侧边栏
     $scope.menus = [
         {
@@ -68,33 +64,10 @@ AdminApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
     // 路径导航
     $scope.Breadcrumb = [
         {title: "主页"},
-        {title: "预订管理"},
-        {title: "餐段设置"}
+        {title: "超级管理后台"},
+        {title: "酒店管理"}
     ];
-
-    // 【超级管理员】获取酒店列表
-    var url = "/webApp/super_admin/hotel/list/";
-    var param = {};
-    $http.post(url, JSON.stringify(param)).success(function (obj) {
-        if (obj.status === "true") {
-            $rootScope.HotelList = obj.data;
-        } else {
-            alert(obj.description);
-        }
-    });
-
-    // 【超级管理员】获取管理员列表
-    url = "/webApp/super_admin/manager/list/";
-    param = {};
-    $http.post(url, JSON.stringify(param)).success(function (obj) {
-        if (obj.status === "true") {
-            $rootScope.Managerlist = obj.data;
-        } else {
-            alert(obj.description);
-        }
-    });
 });
-
 
 // Angular路由配置
 AdminApp.config(['$routeProvider', function ($routeProvider) {
@@ -105,7 +78,17 @@ AdminApp.config(['$routeProvider', function ($routeProvider) {
             templateUrl: "./template/" + Templates.SuperAdmin.HotelAdmin, controller: function ($rootScope, $scope, $modal, $http) {
                 var TAG = Templates.SuperAdmin.HotelAdmin;
                 // 酒店列表
-                $scope.data = $rootScope.HotelList;
+                $scope.data = {count: 0, list: []};
+                // 【超级管理员】获取酒店列表
+                var url = "/webApp/super_admin/hotel/list/";
+                var param = {};
+                $http.post(url, JSON.stringify(param)).success(function (obj) {
+                    if (obj.status === "true") {
+                        $scope.data = obj.data;
+                    } else {
+                        alert(obj.description);
+                    }
+                });
                 // 添加酒店
                 $scope.addHotel = function () {
                     Log.i(TAG, "添加酒店");
@@ -187,22 +170,35 @@ AdminApp.config(['$routeProvider', function ($routeProvider) {
                     });
                     dlg.result.then(function (result) {
                         Log.i(TAG, JSON.stringify(result));
+                        var url = "/webApp/super_admin/hotel/modify/";
+                        $http.post(url, JSON.stringify(result)).success(function (obj) {
+                            if (obj.status === "true") {
+                                alert("添加酒店成功");
+                            } else {
+                                alert(obj.description);
+                            }
+                        });
                     }, function (reason) {
                         Log.i(TAG, reason);
                     });
                 }
-                // ,
-                //     service: {
-                //         "customer_analysis": true,
-                //         "order_statistics": true
-                //     }
             }
         })
         .when('/SuperAdmin/ManagerAdmin', {
             templateUrl: "./template/" + Templates.SuperAdmin.ManagerAdmin, controller: function ($rootScope, $scope, $modal, $http) {
                 var TAG = Templates.SuperAdmin.ManagerAdmin;
                 // 管理员列表
-                $scope.data = $rootScope.Managerlist;
+                $scope.data = {count: 0, list: []};
+                // 【超级管理员】获取管理员列表
+                var url = "/webApp/super_admin/manager/list/";
+                var param = {};
+                $http.post(url, JSON.stringify(param)).success(function (obj) {
+                    if (obj.status === "true") {
+                        $scope.data = obj.data;
+                    } else {
+                        alert(obj.description);
+                    }
+                });
                 // 添加管理员
                 $scope.addManager = function () {
                     Log.i(TAG, "添加管理员");
@@ -239,7 +235,7 @@ AdminApp.config(['$routeProvider', function ($routeProvider) {
                     });
                     dlg.result.then(function (result) {
                         Log.i(TAG, JSON.stringify(result));
-                        var url = "/webApp/super_admin/register/";
+                        var url = "/webApp/super_admin/manager/register/";
                         $http.post(url, JSON.stringify(result)).success(function (obj) {
                             if (obj.status === "true") {
                                 alert("注册管理员成功");
@@ -284,7 +280,7 @@ AdminApp.config(['$routeProvider', function ($routeProvider) {
                     });
                     dlg.result.then(function (result) {
                         Log.i(TAG, JSON.stringify(result));
-                        var url = "/webApp/super_admin/modify/";
+                        var url = "/webApp/super_admin/manager/modify/";
                         $http.post(url, JSON.stringify(result)).success(function (obj) {
                             if (obj.status === "true") {
                                 alert("修改管理员成功");

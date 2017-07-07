@@ -23,8 +23,11 @@
     <div class="row">
         <!--左侧导航栏-->
         <div class="col-sm-2" ng-controller="drawerCtrl">
-            <div>
-                <img class="img-responsive center-block img-thumbnail" src="css/image/head1.jpg" alt="IMAGE">
+            <div class="thumbnail bg-warning">
+                <img class="img-rounded" src="/static/css/image/head1.jpg" alt="IMAGE">
+                <div class="caption bg-warning">
+                    <h3 class="text-center">{{hotel.name}}</h3>
+                </div>
             </div>
             <div class="panel-group" id="drawer">
                 <div class="panel panel-default" ng-repeat="menu in menus">
@@ -58,6 +61,6 @@
         </div>
     </div>
 </div>
-<script src="js/staff.js"></script>
+<script src="app/staff.js"></script>
 </body>
 </html>

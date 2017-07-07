@@ -106,9 +106,9 @@ class HotelBranch(models.Model):
     # 餐段
     meal_period = models.CharField(max_length=5000, default='')
     # 设施
-    facility = models.CharField(max_length=200, default='')
+    facility = models.CharField(max_length=640, default='')
     # 可以刷哪些卡
-    pay_card = models.CharField(max_length=100, default='')
+    pay_card = models.CharField(max_length=120, default='')
     # 电话(最多3个)
     phone = models.CharField(max_length=50, default='')
     # 菜系
