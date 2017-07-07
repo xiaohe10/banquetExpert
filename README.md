@@ -1416,7 +1416,7 @@ URL：webApp/staff/guest/list/ <br>
 |:------------- |:---------------| :-------------|
 | token         | 登录口令          |         yes  |
 | search_key | 客户手机号或者姓名 | no |
-| status | 客户状态，0：活跃，1：沉睡，2：流失，3：无订单 | no |
+| status | 客户状态，0：全部，1：活跃，2：沉睡，3：流失，4：无订单，默认0 | no |
 | offset | 起始值（默认0） | no |
 | limit | 偏移量（默认10） | no |
 
@@ -1447,7 +1447,7 @@ URL：webApp/staff/guest/list/ <br>
 | dislike | 忌讳 |
 | special_day | 纪念日 |
 | personal_need | 个性化需求 |
-| status | 客户状态：0：活跃，1：沉睡，2：流失，3：无订单 |
+| status | 客户状态：1：活跃，2：沉睡，3：流失，4：无订单 |
 | desk_number   | 消费总桌数 |
 | person_consumption    | 人均消费  |
 | order_per_month    | 消费频度, 单/月 |
@@ -1475,7 +1475,7 @@ URL：webApp/staff/guest/list/ <br>
 			"dislike":"不吃香菜",
 			"special_day":"",
 			"personal_need":"",
-			"status":0,
+			"status":1,
 			"desk_number":10,
 			"person_consumption":400,
 			"order_per_month":3.11,
@@ -1659,7 +1659,7 @@ URL：webApp/guest/list/ <br>
 |:------------- |:---------------| :-------------|
 | token         | 登录口令          |         yes  |
 | search_key | 客户手机号或者姓名 | no |
-| status | 客户状态：0：活跃，1：沉睡，2：流失，3：无订单 | no |
+| status | 客户状态：0：全部，1：活跃，2：沉睡，3：流失，4：无订单，默认0 | no |
 | internal_channel | 内部销售ID | no |
 | external_channel | 外部销售ID | no |
 | offset | 起始值（默认0） | no |
@@ -1695,7 +1695,7 @@ URL：webApp/guest/list/ <br>
 | dislike | 忌讳 |
 | special_day | 纪念日 |
 | personal_need | 个性化需求 |
-| status | 客户状态：0：活跃，1：沉睡，2：流失，3：无订单 |
+| status | 客户状态：1：活跃，2：沉睡，3：流失，4：无订单 |
 | desk_number   | 消费总桌数 |
 | person_consumption    | 人均消费  |
 | order_per_month    | 消费频度, 单/月 |
@@ -1723,7 +1723,7 @@ URL：webApp/guest/list/ <br>
 			"dislike":"不吃香菜",
 			"special_day":"",
 			"personal_need":"",
-			"status":0,
+			"status":1,
 			"desk_number":10,
 			"person_consumption":400,
 			"order_per_month":3.11,
@@ -1780,6 +1780,7 @@ URL：webApp/guest/profile/ <br>
 | dislike | 忌讳 |
 | special_day | 纪念日 |
 | personal_need | 个性化需求 |
+| status    | 客户状态, 1: 活跃, 2: 沉睡, 3: 流失, 4: 无订单 |
 | all_order_number | 历史所有有效订单数 |
 | day60_order_number | 最近60天订单数 |
 | all_consumption | 所有有效消费 |
@@ -1802,6 +1803,7 @@ URL：webApp/guest/profile/ <br>
 		"dislike":"不吃香菜",
 		"special_day":"",
 		"personal_need":"",
+		"status":1,
 		"all_order_number":22,
 		"day60_order_number":9,
 		"all_consumption":10000,
