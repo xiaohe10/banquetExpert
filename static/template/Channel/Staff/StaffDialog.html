@@ -53,6 +53,15 @@
                     <input type="text" ng-model="form.position"/>
                 </div>
             </div>
+            <!--渠道-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><a style="color: red;">*</a>渠道：</label>
+                <div class="col-sm-10">
+                    <label class="radio-inline" ng-repeat="x in guest_channel">
+                        <input type="radio" ng-model="form.guest_channel" value='{{$index}}'/>{{x}}
+                    </label>
+                </div>
+            </div>
             <!--用户名-->
             <div class="form-group">
                 <label class="col-sm-2 control-label">用户名：</label>

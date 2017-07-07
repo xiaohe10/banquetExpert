@@ -512,12 +512,7 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                                         value: 0.8
                                     },
                                     // 管辖桌位
-                                    desk_manage: {
-                                        // 管辖全部桌位
-                                        all_desk: false,
-                                        // 桌位信息
-                                        manage_desks: []
-                                    },
+                                    manage_desks: [],
                                     // 管辖区域
                                     manage_areas: [0, 2, 3]
                                 };
@@ -564,6 +559,15 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                             $scope.area = $rootScope.area;
                             $scope.box = [];
                             $scope.phone = [];
+                            // 选择区域
+                            $scope.checkArea = function (area_id) {
+                                if ($scope.form.manage_areas.indexOf(area_id)) {
+                                    var index = $scope.form.manage_areas.indexOf(area_id);
+                                    $scope.form.manage_areas.splice(index, 1);
+                                } else {
+                                    $scope.form.manage_areas.push(x.area_id);
+                                }
+                            };
                             // 选择电话盒子
                             $scope.check_box = function (value) {
                                 $scope.form.communicate.box[value] = true;
@@ -619,6 +623,15 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                             $scope.staffs = $rootScope.staffs;
                             $scope.box = [];
                             $scope.phone = [];
+                            // 选择区域
+                            $scope.checkArea = function (area_id) {
+                                if ($scope.form.manage_areas.indexOf(area_id)) {
+                                    var index = $scope.form.manage_areas.indexOf(area_id);
+                                    $scope.form.manage_areas.splice(index, 1);
+                                } else {
+                                    $scope.form.manage_areas.push(x.area_id);
+                                }
+                            };
                             // 选择电话盒子
                             $scope.check_box = function (value) {
                                 $scope.form.communicate.box[value] = true;
@@ -769,19 +782,21 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                     var dlg = $modal.open({
                         templateUrl: "./template/" + Dialog.Channel.Staff.StaffDialog,
                         controller: function ($scope, form) {
-                            var TAG = Dialog.Channel.Staff.EditStaff;
+                            var TAG = Dialog.Channel.Staff.StaffDialog;
                             Log.i(TAG, "编辑员工控制器");
                             $scope.option = "编辑";
+                            $scope.guest_channel = ["无", "高层管理", "预定员和迎宾", "客户经理"];
                             $scope.form = form;
                             $scope.submit = function () {
                                 Log.i(TAG, "提交员工信息：" + $scope.form);
+                                dlg.close($scope.form);
                             };
                             $scope.exit = function () {
                                 Log.i(TAG, "员工离岗");
-                                dlg.close(id);
                             };
                             $scope.cancel = function () {
                                 Log.i(TAG, "取消员工信息");
+                                dlg.dismiss();
                             }
                         },
                         resolve: {
@@ -795,12 +810,12 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                     });
                     dlg.result.then(function (result) {
                         Log.i(TAG, JSON.stringify(result));
-                        var url = "/webApp/admin/hotel/staff/modify/";
+                        var url = "/webApp/admin/hotel/staff/profile/modify/";
                         var param = result;
                         param.password = hex_md5(param.password);
                         $http.post(url, JSON.stringify(param)).success(function (obj) {
                             if (obj.status === "true") {
-                                alert("添加员工成功");
+                                alert("编辑员工成功");
                                 $scope.data.list.push(result);
                             } else {
                                 alert(obj.description);
@@ -817,23 +832,24 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                         templateUrl: "./template/" + Dialog.Channel.Staff.StaffDialog,
                         resolve: {
                             form: function () {
-                                var staff = {
+                                return {
                                     hotel_id: $rootScope.Hotel.hotel_id,
                                     phone: "18800184976",
                                     name: "赵强",
                                     id_number: "100124100124100124",
                                     password: "sunny",
                                     position: "经理",
+                                    guest_channel: 0,
                                     gender: 1,
                                     status: 1
                                 };
-                                return staff;
                             }
                         },
                         controller: function ($scope, form) {
                             var TAG = Dialog.Channel.Staff.StaffDialog;
                             Log.i(TAG, "添加员工控制器");
                             $scope.option = "添加";
+                            $scope.guest_channel = ["无", "高层管理", "预定员和迎宾", "客户经理"];
                             $scope.form = form;
                             // 提交
                             $scope.submit = function () {
@@ -856,7 +872,7 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                     dlg.result.then(function (result) {
                         Log.i(TAG, JSON.stringify(result));
                         var url = "/webApp/admin/hotel/staff/add/";
-                        var param = result;
+                        var param = angular.copy(result);
                         param.password = hex_md5(param.password);
                         $http.post(url, JSON.stringify(param)).success(function (obj) {
                             if (obj.status === "true") {
@@ -1245,7 +1261,7 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                         },
                         resolve: {
                             form: function () {
-                                var branch = {
+                                return {
                                     // 酒店ID
                                     hotel_id: $rootScope.Hotel.hotel_id,
                                     // 店长ID
@@ -1269,7 +1285,6 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                                     // 其他可选项
                                     icon: "/static/css/image/head.jpg"
                                 };
-                                return branch;
                             }
                         }
                     });

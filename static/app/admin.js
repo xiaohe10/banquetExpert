@@ -113,11 +113,10 @@ AdminApp.config(['$routeProvider', function ($routeProvider) {
                         },
                         resolve: {
                             form: function () {
-                                var hotel = {
+                                return {
                                     name: "珍珠大酒店",
                                     owner_name: "赵强"
                                 };
-                                return hotel;
                             }
                         }
                     });
@@ -224,7 +223,7 @@ AdminApp.config(['$routeProvider', function ($routeProvider) {
                         resolve: {
                             form: function () {
                                 return {
-                                    name: "珍珠大管理员",
+                                    name: "珍珠大酒店",
                                     owner_name: "赵强"
                                 };
                             }
