@@ -2,7 +2,7 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="panel-title">
-            私人订制
+            私人订制（最多添加十个分类）
             <small>(共{{data.length}}个分类)</small>
         </div>
     </div>
@@ -22,7 +22,7 @@
             <tr ng-repeat="x in data">
                 <td>应用</td>
                 <td>
-                    <input type="text" ng-model="x.name" value="{{x.name}}"/>
+                    <input type="text" ng-model="x.name" value="{{x.name}}" maxlength="8"/>
                 </td>
                 <td>
                     <!--已添加标签列表-->

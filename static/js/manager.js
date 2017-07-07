@@ -6,27 +6,11 @@
 Templates = {
     // 路径导航
     Breadcrumb: "Drawer/Breadcrumb.html",
-    // 超级管理后台
-    // SuperAdmin: {
-    //     SuperAdmin: "SuperAdmin/SuperAdmin.html" // 超级管理后台
-    // },
     // 后台用户管理
     Channel: {
         Channel: "Channel/Channel.html", // 获客渠道*** AddManager AddOuterChannel AddReserve
         Staff: "Channel/Staff.html", // 员工管理
         Privilege: "Channel/Privilege.html"// 权限管理
-    },
-    // 智能订餐台
-    SmartOrder: {
-        SmartOrder: "SmartOrder/SmartOrder.html"// 智能订餐台
-    },
-    // 预定管理
-    Reserve: {
-        AreaDesk: "Reserve/AreaDesk.html", // 桌位设置
-        MealsTime: "Reserve/MealsTime.html", // 餐段管理
-        MealsArea: "Reserve/MealsArea.html", // 餐位设置
-        DeskRecommend: "Reserve/DeskRecommend.html",// 自动推荐桌位
-        PersonalTailor: "Reserve/PersonalTailor.html"// 私人订制
     },
     // 订单管理
     Order: {
@@ -49,8 +33,7 @@ Templates = {
     Account: {
         FinanceManage: "Account/FinanceManage.html", // 财务报表
         SMSDetails: "Account/SMSDetails.html", // 短信详单
-        Restaurant: "Account/Restaurant.html", // 餐厅基本信息
-        AccountManage: "Account/AccountManage.html"
+        AccountManage: "Account/AccountManage.html" // 修改密码
     },
     // 酒店管理
     Hotel: {
@@ -66,11 +49,6 @@ Templates = {
 
 // 对话框模板
 Dialog = {
-    // SuperAdmin: {
-    //     SuperAdmin: {
-    //         HotelDialog: "SuperAdmin/SuperAdmin/HotelDialog.html"
-    //     }
-    // },
     Channel: {
         Channel: {
             ExternalChannelDialog: "Channel/Channel/ExternalChannelDialog.html",
@@ -80,6 +58,15 @@ Dialog = {
         Staff: {
             StaffDialog: "Channel/Staff/StaffDialog.html",
             ApproveDialog: "Channel/Staff/ApproveDialog.html"
+        }
+    },
+    Order: {
+        OrderHistory: {
+            OrderAppend: "Order/OrderHistory/OrderAppend.html",
+            OrderDetails: "Order/OrderHistory/OrderDetails.html"
+        },
+        ReserveNotice: {
+            ReserveOrderDetails: "Order/ReserveNotice/ReserveOrderDetails.html"
         }
     },
     Customer: {
@@ -92,20 +79,6 @@ Dialog = {
     Hotel: {
         Branch: {
             BranchDialog: "Hotel/Branch/BranchDialog.html"
-        }
-    },
-    Order: {
-        OrderHistory: {
-            OrderAppend: "Order/OrderHistory/OrderAppend.html",
-            OrderDetails: "Order/OrderHistory/OrderDetails.html"
-        },
-        ReserveNotice: {
-            ReserveOrderDetails: "Order/ReserveNotice/ReserveOrderDetails.html"
-        }
-    },
-    Reserve: {
-        AreaDesk: {
-            DeskDialog: "Reserve/AreaDesk/DeskDialog.html"
         }
     }
 };
@@ -126,50 +99,62 @@ var Log = {
     }
 };
 
-var BanquetExpertApp = angular.module('BanquetExpertApp', [
+var ManagerApp = angular.module('ManagerApp', [
     'ngRoute',
     'ui.bootstrap'
 ]);
 
 // 过滤器定义
-BanquetExpertApp.filter('gender', function () {
+ManagerApp.filter('gender', function () {
     return function (gender) {
         var TAG = ["保密", "先生", "女士"];
         return TAG[gender];
     }
 });
-BanquetExpertApp.filter('surname', function () {
+ManagerApp.filter('surname', function () {
     return function (name) {
         return name.charAt(0);
     }
 });
-BanquetExpertApp.filter('birthday_type', function () {
+ManagerApp.filter('birthday_type', function () {
     return function (birthday_type) {
         var TAG = ["阳历", "农历"];
         return TAG[birthday_type];
     }
 });
-BanquetExpertApp.filter('discount', function () {
+ManagerApp.filter('discount', function () {
     return function (discount) {
         var TAG = ["无折扣", "9.5折", "9.0折", "8.5折", "8.0折"];
         return TAG[discount];
     }
 });
-BanquetExpertApp.filter('status', function () {
+ManagerApp.filter('status', function () {
     return function (status) {
         var TAG = ["活跃", "沉睡", "流失", "无订单"];
         return TAG[status];
     }
 });
-BanquetExpertApp.filter("channel", function () {
+ManagerApp.filter("channel", function () {
     return function (channel) {
         var TAG = ["无", "高层管理", "预定员和迎宾", "客户经理"];
         return TAG[channel];
     }
 });
+ManagerApp.filter("dinner_period", function () {
+    return function (dinner_period) {
+        var TAG = ['午餐', '晚餐', '夜宵'];
+        return TAG[dinner_period];
+    }
+});
+ManagerApp.filter("status", function () {
+    return function (order_status) {
+        var TAG = ["已订", "客到", "已完成", "已撤单"];
+        return TAG[order_status];
+    }
+});
 
 // 侧边导航栏控制器
-BanquetExpertApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
+ManagerApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
 
     var TAG = 'drawerCtrl';
 
@@ -244,17 +229,6 @@ BanquetExpertApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
                     ]
                 },
                 {
-                    title: "预订管理",
-                    menu_id: "Reserve",
-                    item: [
-                        {title: "餐段设置", item_id: "MealsTime"},
-                        {title: "餐位设置", item_id: "MealsArea"},
-                        {title: "桌位设置", item_id: "AreaDesk"},
-                        {title: "自动推荐桌位", item_id: "DeskRecommend"},
-                        {title: "私人订制", item_id: "PersonalTailor"}
-                    ]
-                },
-                {
                     title: "订单管理",
                     menu_id: "Order",
                     item: [
@@ -283,7 +257,6 @@ BanquetExpertApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
                     item: [
                         {title: "财务报表", item_id: "FinanceManage"},
                         {title: "短信详单", item_id: "SMSDetails"},
-                        {title: "酒店基本信息", item_id: "Restaurant"},
                         {title: "修改密码", item_id: "AccountManage"}
                     ]
                 },
@@ -343,7 +316,7 @@ BanquetExpertApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
         }
     });
 
-    // 【门店】获取门店区域列表
+    // 【门店】获取门店区域列表area/list/";
     url = "/webApp/admin/hotel_branch/area/list/";
     param = {branch_id: 1};
     $http.post(url, JSON.stringify(param)).success(function (obj) {
@@ -367,9 +340,9 @@ BanquetExpertApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
 });
 
 // Angular路由配置
-BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
+ManagerApp.config(['$routeProvider', function ($routeProvider) {
 
-    // 账户管理
+    // 【酒店】账户管理
     $routeProvider
         .when('/Account/AccountManage', {
             templateUrl: "./template/" + Templates.Account.AccountManage, controller: function ($scope) {
@@ -415,7 +388,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
             }
         });
 
-    // 渠道管理
+    // 【酒店】渠道管理
     $routeProvider
         .when('/Channel/Channel', {
             templateUrl: "./template/" + Templates.Channel.Channel, controller: function ($rootScope, $scope, $modal, $http) {
@@ -864,7 +837,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
         })
         .when('/Channel/Privilege', {templateUrl: "./template/" + Templates.Channel.Privilege});
 
-// 客户管理
+    // 【酒店】客户管理
     $routeProvider
         .when('/Customer/AnniversaryReport', {
             templateUrl: "./template/" + Templates.Customer.AnniversaryReport, controller: function ($scope) {
@@ -1165,29 +1138,15 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
             }
         });
 
-// 酒店管理
+    // 【酒店】酒店管理
     $routeProvider
         .when('/Hotel/Branch', {
             templateUrl: "./template/" + Templates.Hotel.Branch, controller: function ($rootScope, $scope, $modal, $http) {
                 var TAG = Templates.Hotel.Branch;
+                $scope.layouts = ["grid", "list"];
+                $scope.layout = "list";
                 $scope.data = {count: 0, list: []};
-                // var branch = {
-                //     branch_id: 1,
-                //     name: "北京宴总店",
-                //     icon: "/static/css/image/head1.jpg",
-                //     pictures: ["/static/css/image/head1.jpg", "/static/css/image/head1.jpg"],
-                //     province: "北京市",
-                //     city: "北京市",
-                //     county: "丰台区",
-                //     address: "靛厂路333号",
-                //     facility: [],
-                //     pay_card: [],
-                //     phone: [],
-                //     cuisine: {},
-                //     hotel_name: "北京宴",
-                //     manager_name: "陈总",
-                //     create_time: "2017/07/04"
-                // };
+                // 获取门店列表
                 var url = "/webApp/admin/hotel_branch/list/";
                 var param = {
                     hotel_id: $rootScope.Hotel.hotel_id
@@ -1199,6 +1158,17 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                         alert(obj.description);
                     }
                 });
+                // 切换布局
+                $scope.changeLayout = function () {
+                    if ($scope.layout === 'grid') {
+                        $scope.layout = 'list';
+                    } else if ($scope.layout === 'list') {
+                        $scope.layout = 'grid';
+                    } else {
+                        $scope.layout = 'list';
+                    }
+                };
+                // 添加门店
                 $scope.addBranch = function () {
                     Log.i(TAG, "添加门店");
                     var dlg = $modal.open({
@@ -1285,53 +1255,55 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
                         Log.i(TAG, reason);
                     });
                 };
+                // 编辑门店
                 $scope.editBranch = function (branch) {
                     Log.i(TAG, "编辑门店：" + branch.name);
                     var dlg = $modal.open({
-                        templateUrl: "./template/" + Dialog.Hotel.Branch.BranchDialog,
-                        controller: function ($scope, form) {
-                            var TAG = Dialog.Channel.Staff.BranchDialog;
-                            Log.i(TAG, "编辑门店：" + branch.name);
-                            // 初始化员工列表
-                            $scope.staff = $rootScope.staff;
-                            // 初始化手机号
-                            $scope.phone = "";
-                            // 初始化酒店设施
-                            $scope.facility = "";
-                            $scope.facilities = [
-                                "万事达(Master)", "可以刷卡", "有停车位", "全场禁烟",
-                                "区分烟区", "无线上网", "露天位", "有舞台",
-                                "有表演", "下午茶", "夜宵", "四合院"
-                            ];
-                            // 初始化支付方式
-                            $scope.pay_card = "";
-                            $scope.pay_cards = [
-                                "支付宝", "微信", "VISA", "银联"
-                            ];
-                            // 初始化表单
-                            $scope.option = "编辑";
-                            $scope.form = form;
-                            $scope.edit = function () {
-                                Log.i(TAG, "编辑门店信息：" + $scope.form);
-                            };
-                            $scope.save = function () {
-                                Log.i(TAG, "保存门店信息");
-                                dlg.close($scope.form);
-                            };
-                            $scope.cancel = function () {
-                                Log.i(TAG, "取消保存");
-                                dlg.dismiss({tag: "取消保存"});
+                            templateUrl: "./template/" + Dialog.Hotel.Branch.BranchDialog,
+                            controller: function ($scope, form) {
+                                var TAG = Dialog.Channel.Staff.BranchDialog;
+                                Log.i(TAG, "编辑门店：" + branch.name);
+                                // 初始化员工列表
+                                $scope.staff = $rootScope.staff;
+                                // 初始化手机号
+                                $scope.phone = "";
+                                // 初始化门店设施
+                                $scope.facility = "";
+                                $scope.facilities = [
+                                    "万事达(Master)", "可以刷卡", "有停车位", "全场禁烟",
+                                    "区分烟区", "无线上网", "露天位", "有舞台",
+                                    "有表演", "下午茶", "夜宵", "四合院"
+                                ];
+                                // 初始化支付方式
+                                $scope.pay_card = "";
+                                $scope.pay_cards = [
+                                    "支付宝", "微信", "VISA", "银联"
+                                ];
+                                // 初始化表单
+                                $scope.option = "编辑";
+                                $scope.form = form;
+                                $scope.edit = function () {
+                                    Log.i(TAG, "编辑门店信息：" + $scope.form);
+                                };
+                                $scope.save = function () {
+                                    Log.i(TAG, "保存门店信息");
+                                    dlg.close($scope.form);
+                                };
+                                $scope.cancel = function () {
+                                    Log.i(TAG, "取消保存");
+                                    dlg.dismiss({tag: "取消保存"});
+                                }
+                            },
+                            resolve: {
+                                form: function () {
+                                    // branch.phone = [];
+                                    // branch.facility = [];
+                                    // branch.pay_card = [];
+                                    return branch;
+                                }
                             }
-                        },
-                        resolve: {
-                            form: function () {
-                                branch.phone = [];
-                                branch.facility = [];
-                                branch.pay_card = [];
-                                return branch;
-                            }
-                        }
-                    });
+                        })
+                    ;
                     dlg.opened.then(function () {
                         Log.i(TAG, "对话框已经打开");
                     });
@@ -1380,7 +1352,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
             }
         });
 
-// 订单管理
+    // 【酒店】订单管理
     $routeProvider
         .when('/Order/InsertOrder', {
             templateUrl: "./template/" + Templates.Order.InsertOrder, controller: function ($rootScope, $scope) {
@@ -1736,363 +1708,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
             }
         });
 
-// 预订管理
-    $routeProvider
-        .when('/Reserve/AreaDesk', {
-            templateUrl: "./template/" + Templates.Reserve.AreaDesk, controller: function ($rootScope, $scope, $modal, $http) {
-                var TAG = Templates.Reserve.AreaDesk;
-                var index = 0;
-                $scope.area = $rootScope.area;
-                $scope.desk = {};
-                $scope.pages = [1, 2, 3, 4, 5, 6, 7];
-                $scope.addDesk = function () {
-                    Log.i(TAG, "添加桌位");
-                    var dlg = $modal.open({
-                        templateUrl: "./template/" + Dialog.Reserve.AreaDesk.DeskDialog,
-                        controller: function ($scope, form) {
-                            var TAG = Dialog.Reserve.AreaDesk.DeskDialog;
-                            Log.i(TAG, "添加桌位");
-                            $scope.option = "添加";
-                            $scope.form = form;
-                            $scope.type = [
-                                '普通包间', '豪华包间', '大厅卡座', '大厅散台',
-                                '宴会大厅', '多功能厅', '多桌包间', '隔断', '会场'
-                            ];
-                            // $scope.facilities = [
-                            //     '靠窗', '会客区', '独立卫生间', '小型厨房',
-                            //     '卡拉ok', '可棋牌', '海景房', '液晶电视'
-                            // ];
-                            $scope.edit = function () {
-                                Log.i(TAG, "编辑桌位信息：" + $scope.form);
-                            };
-                            $scope.save = function () {
-                                Log.i(TAG, "保存桌位信息");
-                                dlg.close(form);
-                            };
-                            $scope.cancel = function () {
-                                Log.i(TAG, "取消");
-                                dlg.dismiss();
-                            }
-                        },
-                        resolve: {
-                            form: function () {
-                                return {
-                                    area_id: $scope.area_id,
-                                    number: "110",
-                                    order: 1,
-                                    min_guest_num: 10,
-                                    max_guest_num: 15,
-                                    expense: [
-                                        {name: "最低消费", checked: false, value: 10.0},
-                                        {name: "服务费", checked: false, value: 10.0},
-                                        {name: "最低人均", checked: false, value: 10.0},
-                                        {name: "场地费", checked: false, value: 10.0},
-                                        {name: "包间费", checked: false, value: 10.0}
-                                    ],
-                                    type: 1,
-                                    facility: ["电脑", "吸烟区"],
-                                    picture: "/static/css/image/head.jpg",
-                                    is_beside_window: "True",
-                                    description: "赵总的小窝(⊙o⊙)哦"
-                                };
-                            }
-                        }
-                    });
-                    dlg.opened.then(function () {
-                        Log.i(TAG, "对话框已经打开");
-                    });
-                    dlg.result.then(function (result) {
-                        Log.i(TAG, JSON.stringify(result));
-                        var url = "/webApp/admin/hotel_branch/desk/add/";
-                        $http.post(url, JSON.stringify(result)).success(function (obj) {
-                            if (obj.status === "true") {
-                                alert("添加桌位成功");
-                            } else {
-                                alert(obj.description);
-                            }
-                        });
-                    }, function (reason) {
-                        Log.i(TAG, reason);
-                    });
-                };
-                $scope.editDesk = function (desk) {
-                    Log.i(TAG, "编辑桌位");
-                    var dlg = $modal.open({
-                        templateUrl: "./template/" + Dialog.Reserve.AreaDesk.DeskDialog,
-                        controller: function ($scope, form) {
-                            var TAG = Dialog.Reserve.AreaDesk.DeskDialog;
-                            Log.i(TAG, "添加桌位");
-                            $scope.option = "添加";
-                            $scope.form = form;
-                            $scope.type = [
-                                '普通包间', '豪华包间', '大厅卡座', '大厅散台',
-                                '宴会大厅', '多功能厅', '多桌包间', '隔断', '会场'
-                            ];
-                            // $scope.facilities = [
-                            //     '靠窗', '会客区', '独立卫生间', '小型厨房',
-                            //     '卡拉ok', '可棋牌', '海景房', '液晶电视'
-                            // ];
-                            $scope.edit = function () {
-                                Log.i(TAG, "编辑桌位信息：" + $scope.form);
-                            };
-                            $scope.save = function (form) {
-                                Log.i(TAG, "保存桌位信息");
-                                dlg.close(angular.copy(form));
-                            };
-                            $scope.cancel = function () {
-                                Log.i(TAG, "取消");
-                                dlg.dismiss();
-                            }
-                        },
-                        resolve: {
-                            form: function () {
-                                // if (desk.facility === "") {
-                                //     desk.facility = [];
-                                // }
-                                // if (desk.expense === "") {
-                                //     desk.expense = [
-                                //         {name: "最低消费", checked: false, value: 10.0},
-                                //         {name: "服务费", checked: false, value: 10.0},
-                                //         {name: "最低人均", checked: false, value: 10.0},
-                                //         {name: "场地费", checked: false, value: 10.0},
-                                //         {name: "包间费", checked: false, value: 10.0}
-                                //     ];
-                                // }
-                                return desk;
-                            }
-                        }
-                    });
-                    dlg.opened.then(function () {
-                        Log.i(TAG, "对话框已经打开");
-                    });
-                    dlg.result.then(function (result) {
-                        Log.i(TAG, JSON.stringify(result));
-                        var url = "/webApp/admin/hotel_branch/desk/modify/";
-                        $http.post(url, JSON.stringify(result)).success(function (obj) {
-                            if (obj.status === "true") {
-                                alert("编辑桌位成功");
-                            } else {
-                                alert(obj.description);
-                            }
-                        });
-                    }, function (reason) {
-                        Log.i(TAG, reason);
-                    });
-                };
-                $scope.save = function () {
-                    Log.i(TAG, "保存区域桌位信息：" + JSON.stringify($rootScope.area));
-                };
-                $scope.nav = function (area_id) {
-                    Log.i(TAG, "选择区域：" + area_id);
-                    var url = "/webApp/admin/hotel_branch/desk/list/";
-                    var param = {area_id: area_id};
-                    $http.post(url, JSON.stringify(param)).success(function (obj) {
-                        if (obj.status === "true") {
-                            $scope.area_id = area_id;
-                            $scope.desk = obj.data;
-                            $scope.desk.list.forEach(function (obj) {
-                                if (obj.facility === "") {
-                                    obj.facility = [];
-                                }
-                                if (obj.expense === "") {
-                                    obj.expense = [
-                                        {name: "最低消费", checked: false, value: 10.0},
-                                        {name: "服务费", checked: false, value: 10.0},
-                                        {name: "最低人均", checked: false, value: 10.0},
-                                        {name: "场地费", checked: false, value: 10.0},
-                                        {name: "包间费", checked: false, value: 10.0}
-                                    ];
-                                } else {
-                                    obj.expense = eval(obj.expense);
-                                }
-                            });
-                        } else {
-                            $scope.desk = {};
-                        }
-                    });
-                };
-            }
-        })
-        .when('/Reserve/MealsTime', {
-            templateUrl: "./template/" + Templates.Reserve.MealsTime, controller: function ($rootScope, $scope, $http) {
-                var TAG = Templates.Reserve.MealsTime;
-                $scope.MealsTime = $rootScope.MealsTime;
-                $scope.Week = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期天"];
-                $scope.EnWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-                $scope.Meals = {
-                    hasLunch: false,
-                    hasSupper: false,
-                    hasDinner: false
-                };
-                $scope.MealPeriod = [
-                    {
-                        lunch: {from: "08:30", to: "09:30"},
-                        dinner: {from: "15:00", to: "15:30"},
-                        supper: {from: "22:30", to: "23:30"}
-                    },
-                    {
-                        lunch: {from: "08:30", to: "09:30"},
-                        dinner: {from: "15:00", to: "15:30"},
-                        supper: {from: "22:30", to: "23:30"}
-                    },
-                    {
-                        lunch: {from: "08:30", to: "09:30"},
-                        dinner: {from: "15:00", to: "15:30"},
-                        supper: {from: "22:30", to: "23:30"}
-                    },
-                    {
-                        lunch: {from: "08:30", to: "09:30"},
-                        dinner: {from: "15:00", to: "15:30"},
-                        supper: {from: "22:30", to: "23:30"}
-                    },
-                    {
-                        lunch: {from: "08:30", to: "09:30"},
-                        dinner: {from: "15:00", to: "15:30"},
-                        supper: {from: "22:30", to: "23:30"}
-                    },
-                    {
-                        lunch: {from: "08:30", to: "09:30"},
-                        dinner: {from: "15:00", to: "15:30"},
-                        supper: {from: "22:30", to: "23:30"}
-                    },
-                    {
-                        lunch: {from: "08:30", to: "09:30"},
-                        dinner: {from: "15:00", to: "15:30"},
-                        supper: {from: "22:30", to: "23:30"}
-                    }
-                ];
-                $scope.save = function () {
-                    // 修改餐段信息
-                    var url = "/webApp/admin/hotel_branch/meal_period/modify/";
-                    var param = {
-                        branch_id: 1,
-                        meal_period: $scope.MealPeriod
-                    };
-                    $http.post(url, JSON.stringify(param)).success(function (obj) {
-                        if (obj.status === "true") {
-                            alert("修改餐段信息成功");
-                        } else {
-                            alert(obj.description);
-                        }
-                    });
-                };
-            }
-        })
-        .when('/Reserve/MealsArea', {
-            templateUrl: "./template/" + Templates.Reserve.MealsArea, controller: function ($rootScope, $scope, $http, $q) {
-                var TAG = Templates.Reserve.MealsArea;
-                // 初始化门店区域列表
-                $scope.data = $rootScope.area;
-                // 保存门店区域列表
-                $scope.save = function () {
-                    // 【添加】【修改】【删除】区域的请求
-                    var request = {
-                        // 批量增加门店的餐厅区域
-                        add: {
-                            url: "/webApp/admin/hotel_branch/area/add/",
-                            param: {
-                                branch_id: 1,
-                                list: $scope.data.list.filter(function (item) {
-                                    // 无id标记的是添加的数据
-                                    return item.hasOwnProperty('area_id') === false;
-                                })
-                            }
-                        },
-                        // 批量修改门店的餐厅区域（包括删除）
-                        modify: {
-                            url: "/webApp/admin/hotel_branch/area/modify/",
-                            param: {
-                                list: $scope.data.list.filter(function (item) {
-                                    // 有id标记的是原有的数据
-                                    return item.hasOwnProperty('area_id') === true;
-                                })
-                            }
-                        }
-                    };
-                    // 使用Angular的$q处理多个异步请求，在add和modify请求执行完毕时统一作出提示
-                    $q.all({
-                        add: $http.post(request.add.url, JSON.stringify(request.add.param)),
-                        modify: $http.post(request.modify.url, JSON.stringify(request.modify.param))
-                    }).then(function (array) {
-                        var status = true;
-                        // 输出执行结果
-                        angular.forEach(array, function (item) {
-                            if (item.status === "false") {
-                                status = false;
-                            }
-                        });
-                        if (status === true) {
-                            // 【添加】和【修改】【删除】区域成功
-                            alert("保存成功");
-                        } else {
-                            // 【添加】或【修改】【删除】区域失败
-                            alert("添加失败");
-                        }
-                    });
-                };
-            }
-        })
-        .when('/Reserve/DeskRecommend', {
-            templateUrl: "./template/" + Templates.Reserve.DeskRecommend, controller: function ($rootScope, $scope, $http) {
-
-                var TAG = Templates.Reserve.DeskRecommend;
-
-                $scope.numbers = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21];
-                $scope.selected_count = 1;
-                $scope.desk = {count: 0, list: []};
-                $scope.pages = [1, 2, 3, 4, 5, 6, 7];
-
-                // 【管理员】获取桌位列表
-                var getDeskList = function (selectCount) {
-                    var url = "/webApp/admin/hotel_branch/desk/recommend/";
-                    var param = {
-                        branch_id: $rootScope.branch.branch_id,
-                        guest_number: selectCount
-                    };
-                    $http.post(url, JSON.stringify(param)).success(function (obj) {
-                        if (obj.status === "true") {
-                            $scope.desk = obj.data;
-                        } else {
-                            alert(obj.description);
-                        }
-                    });
-                };
-
-                getDeskList($scope.selected_count);
-
-                $scope.change = function (selectCount) {
-                    Log.i(TAG, "选择了：" + selectCount);
-                    getDeskList(selectCount);
-                };
-                $scope.save = function () {
-                    Log.i(TAG, JSON.stringify($scope.desk));
-                }
-            }
-        })
-        .when('/Reserve/PersonalTailor', {
-            templateUrl: "./template/" + Templates.Reserve.PersonalTailor, controller: function ($rootScope, $scope, $http) {
-                var TAG = Templates.Reserve.PersonalTailor;
-                $scope.data = $rootScope.branch.personal_tailor;
-                $scope.save = function () {
-                    Log.i(TAG, JSON.stringify($scope.data));
-                    // 【门店】保存私人订制列表
-                    var url = "/webApp/admin/hotel_branch/personal_tailor/modify/";
-                    var param = {
-                        branch_id: 1,
-                        personal_tailor: $scope.data
-                    };
-                    $http.post(url, JSON.stringify(param)).success(function (obj) {
-                        if (obj.status === "true") {
-                            alert("保存成功");
-                        } else {
-                            alert(obj.description);
-                        }
-                    });
-                }
-            }
-        });
-
-// 评分审阅
+    // 【评分员】评分审阅
     $routeProvider
         .when('/Review/Rank', {
             templateUrl: "./template/" + Templates.Review.Rank, controller: function ($scope) {
@@ -2130,72 +1746,7 @@ BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
         })
         .when('/Review/Tutorial', {templateUrl: "./template/" + Templates.Review.Tutorial});
 
-// 智能订餐台
-    $routeProvider
-        .when('/SmartOrder/SmartOrder', {
-            templateUrl: "./template/" + Templates.SmartOrder.SmartOrder, controller: function ($rootScope, $scope) {
-                var TAG = Templates.SmartOrder.SmartOrder;
-                $scope.weekdays = [
-                    "周一", "周二", "周三", "周四", "周五", "周六"
-                ];
-                $scope.branch = $rootScope.branch;
-                // 区域列表
-                $scope.area = $rootScope.area;
-                // 私人订制列表
-                $scope.personal_tailor = angular.copy($rootScope.branch.personal_tailor);
-                // 来电列表
-                $scope.Phone = [];
-                // 预约列表
-                $scope.Reserve = [];
-                // 订单列表
-                $scope.Orders = [];
-                // 分页导航、
-                $scope.pages = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-                // 构造列表
-                for (var i = 0; i < 5; i++) {
-                    $scope.Phone.push({
-                        id: i, time: "14:39", name: "赵强", gender: "male", phone: "18800184976", type: "活跃"
-                    });
-                    $scope.Reserve.push({
-                        id: i, time: "14:39", name: "姜璐", gender: "female", phone: "18800184976", type: "流失"
-                    });
-                    $scope.Orders.push({
-                        id: i, name: "赵强", gender: "male", phone: "18050082265", order_time: "2017/6/23 19:04:48",
-                        meal_time: "06月08日晚餐18:00", order_channel: "预订台", area: "二楼", desk: "525", people: "6",
-                        amount: "4135.00", order_status: "消费成功", operator: "张欢欢"
-                    });
-                }
-                // 订单
-                $scope.form = {
-                    // 预定日期
-                    dinner_date: "",
-                    dinner_time: "",
-                    dinner_period: "",
-                    name: "",
-                    contact: "",
-                    guest_number: "",
-                    desks: "",
-                    banquet: "",
-                    staff_description: ""
-                };
-                $scope.reserve = function () {
-                    Log.i(TAG, "预定：" + JSON.stringify($scope.form));
-                    var url = "/webApp/admin/order/submit/";
-                    var param = $scope.form;
-                };
-                $scope.cancel = function () {
-
-                };
-                $scope.handlePhone = function (index) {
-                    Log.i(TAG, JSON.stringify($scope.Phone[index]));
-                };
-                $scope.handleReserve = function (index) {
-                    Log.i(TAG, JSON.stringify($scope.Reserve[index]));
-                };
-            }
-        });
-
-
+    // 【酒店】默认自动进入订餐台
     $routeProvider
         .otherwise({redirectTo: "/SmartOrder/SmartOrder"});
 }]);

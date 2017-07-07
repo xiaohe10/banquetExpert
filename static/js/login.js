@@ -29,12 +29,13 @@ LoginApp.controller('LoginCtrl', function ($scope, $http) {
 
     // 登录账号
     $scope.login = function () {
-        var param = {
-            username: $scope.form.username,
-            password: hex_md5($scope.form.password)
-        };
         var group_id = $scope.form.group_id;
         var group = $scope.groups[group_id];
+        var param = {
+            username: $scope.form.username,
+            phone: $scope.form.username,
+            password: hex_md5($scope.form.password)
+        };
         $http.post(group.url, JSON.stringify(param)).success(function (obj) {
             if (obj.status === "true") {
                 location.href = group.href;

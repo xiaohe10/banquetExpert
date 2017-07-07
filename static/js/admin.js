@@ -40,13 +40,13 @@ var Log = {
     }
 };
 
-var BanquetExpertApp = angular.module('BanquetExpertApp', [
+var AdminApp = angular.module('AdminApp', [
     'ngRoute',
     'ui.bootstrap'
 ]);
 
 // 侧边导航栏控制器
-BanquetExpertApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
+AdminApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
 
     var TAG = 'drawerCtrl';
 
@@ -97,7 +97,7 @@ BanquetExpertApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
 
 
 // Angular路由配置
-BanquetExpertApp.config(['$routeProvider', function ($routeProvider) {
+AdminApp.config(['$routeProvider', function ($routeProvider) {
 
     // 超级管理员
     $routeProvider

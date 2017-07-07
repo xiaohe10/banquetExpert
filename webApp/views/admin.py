@@ -327,6 +327,7 @@ def get_branch_profile(request, token, branch_id, **kwargs):
     :param token: 令牌(必传)
     :param branch_id: 门店ID(必传)
     :return
+        branch_id: 门店ID
         name: 名称
         icon: 头像
         pictures: 图片(最多5张，数组)
@@ -340,6 +341,7 @@ def get_branch_profile(request, token, branch_id, **kwargs):
         phone: 联系电话(最多3个，数组)
         cuisine: 菜系(键值对)
         personal_tailor: 私人订制项(最多10个，数组)
+        hotel_id: 酒店ID
         hotel_name: 所属酒店名
         manager_name: 店长名字
         is_enabled: 是否有效
@@ -370,6 +372,7 @@ def get_branch_profile(request, token, branch_id, **kwargs):
          'cuisine': json.loads(branch.cuisine) if branch.cuisine else [],
          'personal_tailor': json.loads(branch.personal_tailor)
          if branch.personal_tailor else [],
+         'hotel_id': branch.hotel.id,
          'hotel_name': branch.hotel.name,
          'manager_name': branch.manager.name,
          'is_enabled': branch.is_enabled,

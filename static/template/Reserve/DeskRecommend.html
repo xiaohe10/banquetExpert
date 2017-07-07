@@ -10,10 +10,10 @@
         <div class="well well-sm form-inline">
             <label for="count">选择就餐人数
                 <select class="form-control form-control-sm" id="count" ng-change="change(selected_count)" ng-model="selected_count">
-                    <option ng-repeat="x in numbers" value="{{x.value}}">{{x.value}}</option>
+                    <option ng-repeat="x in numbers" value="{{x}}">{{x}}</option>
                 </select>
             </label>
-            符合 {{selected_count}} 人桌位共{{desk.list.length}}个 注：序号数值越大，则优先推荐
+            符合 {{selected_count}} 人桌位共{{desk.count}}个 注：序号数值越大，则优先推荐
         </div>
         <!--表格-->
         <table class="table table-bordered table-hover">
@@ -23,7 +23,7 @@
                 <td>就餐人数</td>
                 <td>费用</td>
                 <td>排序</td>
-                <td>区域名称</td>
+                <td>描述</td>
                 <td>类型</td>
                 <td>设施</td>
                 <td>预定推荐</td>
@@ -31,20 +31,28 @@
             </thead>
             <tbody>
             <tr ng-repeat="x in desk.list">
-                <td> {{x.name}}(图)</td>
-                <td> {{x.min}} 人 至 {{x.max}} 人</td>
-                <td>
-                    <input class="text-center" type="text" ng-model="x.value" value="{{x.value}}"/>
+                <td> {{x.number}} (图)</td>
+                <td> {{x.min_guest_num}} 人 至 {{x.max_guest_num}} 人</td>
+                <td style="width: 320px">
+                    <!--费用列表-->
+                    <span class="label label-info" style="display: inline-block" ng-repeat="y in x.expense">
+                        {{y.name}}:{{y.value|currency:'¥'}}
+                    </span>
                 </td>
                 <td>
                     <input class="text-center" type="text" ng-model="x.order" value="{{x.order}}"/>
                 </td>
-                <td>{{x.area}}</td>
-                <td>{{x.type}}</td>
+                <td>{{x.description}}</td>
                 <td>{{x.type}}</td>
                 <td>
+                    <!--设施列表-->
+                    <span class="label label-success" style="display: inline-block;" ng-repeat="y in x.facility">{{y}}</span>
+                    <!--无设施提示-->
+                    <span class="label label-success" ng-show="x.facility.length===0">未添加设施</span>
+                </td>
+                <td>
                     <span class="form-check-label">
-                        <input type="checkbox" ng-model="x.enable" value="{{x.enable}}"/>开启
+                        <input type="checkbox" ng-model="x.is_enabled"/>开启
                     </span>
                 </td>
             </tr>

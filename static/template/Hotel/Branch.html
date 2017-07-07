@@ -4,43 +4,106 @@
         <div class="panel-title">
             门店列表
             <small>(共{{data.count}}家门店)</small>
+            <span class="glyphicon"
+                  ng-class="{'glyphicon-th':layout==='list','glyphicon-th-list':layout==='grid'}"
+                  ng-click="changeLayout()"></span>
         </div>
     </div>
     <div class="panel-body">
-        <!--已添加门店列表-->
-        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5" ng-repeat="x in data.list">
-            <div class="thumbnail" ng-class="{'bg-warnning':x.is_enabled}" ng-click="editBranch(x)">
-                <div class="label label-info">
-                    {{x.id + 1}}. {{x.name}}
+        <!--大图展示-->
+        <div ng-show="layout==='grid'" class="row">
+            <!--已添加门店列表-->
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5" ng-repeat="x in data.list">
+                <div class="thumbnail" ng-class="{'bg-warnning':x.is_enabled}" ng-click="editBranch(x)">
+                    <div class="label label-info">
+                        {{x.branch_id}}. {{x.name}}
+                    </div>
+                    <img class="img-circle" src="{{x.icon}}" alt="ICON" style="width: 96px;height: 96px">
+                    <div class="caption">
+                        <!--<p>地址：{{x.province}} {{x.city}} {{x.county}} </p>-->
+                        <p>详细地址：{{x.address}}</p>
+                        <p class="hidden">
+                            电话：
+                            <span class="label label-info" style="display: inline-block" ng-repeat="y in x.phone">{{y}}</span>
+                            <!--提示未添加手机号-->
+                            <span class="label label-warning" style="display: inline-block" ng-show="x.phone.length===0">
+                            未添加手机号<span class="glyphicon glyphicon-alert"></span>
+                        </span>
+                        </p>
+                        <p>经理：{{x.manager_name}}</p>
+                    </div>
                 </div>
-                <img class="img-circle" src="{{x.icon}}" alt="ICON" style="width: 96px;height: 96px">
-                <div class="caption">
-                    <!--<p>地址：{{x.province}} {{x.city}} {{x.county}} </p>-->
-                    <p>详细地址：{{x.address}}</p>
-                    <p class="hidden">
-                        电话：
-                        <span class="label label-info" style="display: inline-block" ng-repeat="y in x.phone">{{y}}</span>
+            </div>
+            <!--添加门店-->
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5">
+                <div class="thumbnail" ng-click="addBranch()">
+                    <div class="label label-info">添加门店</div>
+                    <img class="img-circle" src="/static/css/image/head.jpg" style="width: 96px;height: 96px">
+                    <div class="caption">
+                        <p>地址：无</p>
+                        <p class="hidden">详细地址：无</p>
+                        <p>电话：无</p>
+                        <p>经理：无</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--表格展示-->
+        <div ng-show="layout==='list'" class="form-horizontal">
+            <table class="table table-hover table-responsive">
+                <thead>
+                <tr class="table-info">
+                    <td>酒店名称</td>
+                    <td>门店名称</td>
+                    <td>酒店经理</td>
+                    <td>地址</td>
+                    <td>设施</td>
+                    <td>支付方式</td>
+                    <td>创建时间</td>
+                    <td>联系方式</td>
+                    <td>操作</td>
+                </tr>
+                </thead>
+                <tr ng-repeat="x in data.list">
+                    <td>{{x.hotel_name}}</td>
+                    <td>{{x.name}}</td>
+                    <td>{{x.manager_name}}</td>
+                    <td>{{x.address}}</td>
+                    <td>
+                        <!--设施列表-->
+                        <span class="label label-success" style="display: inline-block" ng-repeat="y in x.facility">{{y}}</span>
+                        <!--提示未添加设施-->
+                        <span class="label label-warning" style="display: inline-block" ng-show="x.facility.length===0">
+                            未添加设施<span class="glyphicon glyphicon-alert"></span>
+                        </span>
+                    </td>
+                    <td>
+                        <!--支付方式列表-->
+                        <span class="label label-success" style="display: inline-block" ng-repeat="y in x.pay_card">
+                            {{y}}
+                        </span>
+                        <!--提示未添加支付方式-->
+                        <span class="label label-warning" style="display: inline-block" ng-show="x.pay_card.length===0">
+                            未添加支付方式<span class="glyphicon glyphicon-alert"></span>
+                        </span>
+                    </td>
+                    <td>{{x.create_time|date:'yyyy-MM-dd'}}</td>
+                    <td>
+                        <!--手机号列表-->
+                        <span class="label label-success" style="display: inline-block" ng-repeat="y in x.phone">
+                            {{y}}
+                        </span>
                         <!--提示未添加手机号-->
                         <span class="label label-warning" style="display: inline-block" ng-show="x.phone.length===0">
                             未添加手机号<span class="glyphicon glyphicon-alert"></span>
                         </span>
-                    </p>
-                    <p>经理：{{x.manager_name}}</p>
-                </div>
-            </div>
-        </div>
-        <!--添加门店-->
-        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5">
-            <div class="thumbnail" ng-click="addBranch()">
-                <div class="label label-info">添加门店</div>
-                <img class="img-circle" src="/static/css/image/head.jpg" style="width: 96px;height: 96px">
-                <div class="caption">
-                    <p>地址：无</p>
-                    <p class="hidden">详细地址：无</p>
-                    <p>电话：无</p>
-                    <p>经理：无</p>
-                </div>
-            </div>
+                    </td>
+                    <td>
+                        <a class="btn btn-link btn-sm" ng-click="editBranch(x)">编辑</a>
+                        <a class="btn btn-link btn-sm" href="/static/branch.html#/Reserve/Reserve/{{x.branch_id}}">门店管理</a>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
     <div class="panel-footer">

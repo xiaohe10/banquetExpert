@@ -41,6 +41,7 @@
                 <td style="width: 80px"><input type="text" ng-model="x.number" value="{{x.number}}"/></td>
                 <td>{{x.min_guest_num}} 人 至 {{x.max_guest_num}} 人</td>
                 <td style="width: 320px">
+                    <!--费用列表-->
                     <span class="label label-info" style="display: inline-block" ng-repeat="y in x.expense">
                         {{y.name}}:{{y.value|currency:'¥'}}
                     </span>
@@ -55,6 +56,7 @@
                 </td>
                 <td>{{x.type}}</td>
                 <td style="width: 120px">
+                    <!--设施列表-->
                     <span class="label label-success" style="display: inline-block;" ng-repeat="y in x.facility">{{y}}</span>
                     <!--无设施提示-->
                     <span class="label label-success" ng-show="x.facility.length===0">未添加设施</span>
