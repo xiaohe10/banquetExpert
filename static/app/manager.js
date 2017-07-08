@@ -51,9 +51,8 @@ Templates = {
 Dialog = {
     Channel: {
         Channel: {
-            ExternalChannelDialog: "Channel/Channel/ExternalChannelDialog.html",
-            ManagerDialog: "Channel/Channel/ManagerDialog.html",
-            ReserveDialog: "Channel/Channel/ReserveDialog.html",
+            InternalChannelDialog: "Channel/Channel/InternalChannelDialog.html",
+            ExternalChannelDialog: "Channel/Channel/ExternalChannelDialog.html"
         },
         Staff: {
             StaffDialog: "Channel/Staff/StaffDialog.html",
@@ -250,6 +249,42 @@ ManagerApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
             "02:00", "02:30", "03:00", "03:30", "04:00"
         ]
     };
+    // 权限信息
+    $rootScope.Authority = [
+        {
+            name: "管理职能",
+            item: [
+                {
+                    name: "账户管理",
+                    item: [
+                        "购买服务及续费",
+                        "获客渠道管理",
+                        "自定义Logo"
+                    ]
+                }
+            ]
+        },
+        {
+            name: "营销职能",
+            item: []
+        }
+        ,
+        {
+            name: "预订职能",
+            item: []
+        }
+        ,
+        {
+            name: "销售职能",
+            item: []
+        }
+        ,
+        {
+            name: "移动端管理",
+            item: []
+        }
+    ]
+    ;
     $scope.hotel = $rootScope.Hotel;
     $scope.menus = [
         {
@@ -438,84 +473,101 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                 var TAG = Templates.Channel.Channel;
                 // 初始化渠道列表
                 $scope.data = $rootScope.channel;
-                // 添加/编辑预订员和迎宾
-                $scope.addReserve = function () {
-                    Log.i(TAG, "新增预订员和迎宾");
+                /**
+                 * 添加/编辑内部渠道
+                 * @guest_channel 客户渠道：0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理
+                 */
+                $scope.addInternalChannel = function (guest_channel) {
+                    Log.i(TAG, "新增内部渠道");
                     var dlg = $modal.open({
-                        size: 'lg',
-                        templateUrl: "./template/" + Dialog.Channel.Channel.ReserveDialog,
-                        controller: function ($scope) {
-                            var TAG = Dialog.Channel.Channel.ReserveDialog;
-                            Log.i(TAG, "对话框控制器");
-                            $scope.form = {
-                                // 操作
-                                option: "edit",
-                                // 姓名
-                                name: "mbs",
-                                // 性别
-                                gender: "male",
-                                // 电话
-                                phone: "18800184976",
-                                // 职位
-                                job: "学生",
-                                // 用户名
-                                username: "mbs0221",
-                                // 密码
-                                password: "mbs0221",
-                                // 职能权限
-                                privilege: {
-                                    // 管理职能
-                                    manage: {},
-                                    // 营销职能
-                                    marketing: {},
-                                    // 预定职能
-                                    reserve: {},
+                        templateUrl: "./template/" + Dialog.Channel.Channel.InternalChannelDialog,
+                        resolve: {
+                            form: function () {
+                                var channel = {
+                                    // 员工ID
+                                    staff_id: -1,
+                                    // 客户渠道
+                                    guest_channel: guest_channel,
+                                    // 职位
+                                    position: "经理",
+                                    // 电话隐私
+                                    phone_private: true,
+                                    // 职能权限
+                                    privilege: [1, 3, 4, 6],
                                     // 销售职能
-                                    sale: {}
-                                },
-                                // 销售职能
-                                sale: true,
-                                // 订单短信
-                                order_sms: false,
-                                // 提成结算/接单提成
-                                order_bonus: {
-                                    enabled: true,
-                                    method: 1,
-                                    value: 0.8
-                                },
-                                // 提成结算/开新客提成
-                                new_customer_bonus: {
-                                    enabled: false,
-                                    value: 0.8
-                                },
-                                // 管辖桌位
-                                desk_manage: {
-                                    // 管辖全部桌位
-                                    all_desk: false,
-                                    // 桌位信息
-                                    area: $rootScope.area
-                                },
-                                // 管辖区域
-                                select_area: [0, 2, 3],
-                                // 沟通渠道
-                                communicate: {
-                                    // 沟通渠道
-                                    channel: "tel_box",
-                                    // 电话盒子
-                                    tel_box: [
-                                        "(来电盒子)线路1", "(来电盒子)线路2", "(来电盒子)线路3", "(来电盒子)线路4",
-                                        "(来电盒子)线路5", "(来电盒子)线路6", "(来电盒子)线路7", "(来电盒子)线路8"
-                                    ],
-                                    // 智能电话
-                                    smart_tel: [
-                                        "(智能电话)线路1", "(智能电话)线路2", "(智能电话)线路3", "(智能电话)线路4",
-                                        "(智能电话)线路5", "(智能电话)线路6", "(智能电话)线路7"
-                                    ]
+                                    sale_enabled: true,
+                                    // 订单短信
+                                    order_sms_inform: false,
+                                    // 短信附加
+                                    order_sms_attach: false,
+                                    // 提成结算/接单提成
+                                    order_bonus: {
+                                        enabled: true,
+                                        method: 1,
+                                        value: 0.8
+                                    },
+                                    // 提成结算/开新客提成
+                                    new_customer_bonus: {
+                                        enabled: false,
+                                        value: 0.8
+                                    },
+                                    // 管辖桌位
+                                    manage_desks: [],
+                                    // 管辖区域
+                                    manage_areas: [0, 2, 3]
+                                };
+                                // 根据渠道类型不同，添加不同附加信息
+                                switch (guest_channel) {
+                                    case 0:
+                                        break;
+                                    case 1:
+                                        // 【高层管理】 +管理渠道客户
+                                        channel.manage_channel = [1, 2, 3];
+                                        break;
+                                    case 2:
+                                        // 【预订员】 +沟通渠道
+                                        channel.communicate = {
+                                            // 沟通渠道
+                                            channel: "tel_box",
+                                            // 电话盒子
+                                            tel_box: [
+                                                "(来电盒子)线路1", "(来电盒子)线路2", "(来电盒子)线路3", "(来电盒子)线路4",
+                                                "(来电盒子)线路5", "(来电盒子)线路6", "(来电盒子)线路7", "(来电盒子)线路8"
+                                            ],
+                                            // 智能电话
+                                            smart_tel: [
+                                                "(智能电话)线路1", "(智能电话)线路2", "(智能电话)线路3", "(智能电话)线路4",
+                                                "(智能电话)线路5", "(智能电话)线路6", "(智能电话)线路7"
+                                            ]
+                                        };
+                                        break;
+                                    case 3:
+                                        // 【客户经理】
+                                        break;
+                                    default:
+                                        break;
                                 }
-                            };
+                                return channel;
+                            }
+                        },
+                        controller: function ($scope, form) {
+                            var TAG = Dialog.Channel.Channel.InternalChannelDialog;
+                            Log.i(TAG, "对话框控制器");
+                            $scope.option = "新增";
+                            $scope.form = form;
+                            $scope.staffs = $rootScope.staff;
                             $scope.area = $rootScope.area;
                             $scope.box = [];
                             $scope.phone = [];
+                            // 选择区域
+                            $scope.checkArea = function (area_id) {
+                                if ($scope.form.manage_areas.indexOf(area_id)) {
+                                    var index = $scope.form.manage_areas.indexOf(area_id);
+                                    $scope.form.manage_areas.splice(index, 1);
+                                } else {
+                                    $scope.form.manage_areas.push(x.area_id);
+                                }
+                            };
                             // 选择电话盒子
                             $scope.check_box = function (value) {
                                 $scope.form.communicate.box[value] = true;
@@ -524,8 +576,11 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                             $scope.check_phone = function (value) {
                                 $scope.form.communicate.phone[value] = true;
                             };
-                            $scope.submit = function () {
+                            $scope.save = function () {
                                 dlg.close($scope.form);
+                            };
+                            $scope.fire = function () {
+
                             };
                             $scope.cancel = function () {
                                 dlg.dismiss('取消操作');
@@ -537,27 +592,46 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                     });
                     dlg.result.then(function (result) {
                         Log.i(TAG, JSON.stringify(result));
-                        $scope.reserve.push(result);
+                        var url = "/webApp/admin/hotel/internal_channel/add/";
+                        $http.post(url, JSON.stringify(result)).success(function (obj) {
+                            if (obj.status === "true") {
+                                $scope.data.internal_channel.push(result);
+                                alert("添加渠道成功");
+                            } else {
+                                alert(obj.description);
+                            }
+                        });
                     }, function (reason) {
                         Log.i(TAG, reason);
                     });
                 };
-                $scope.editReserve = function (reserve) {
-                    Log.i(TAG, "编辑预订员和迎宾");
+                $scope.editInternalChannel = function (channel) {
+                    Log.i(TAG, "编辑内部渠道");
                     var dlg = $modal.open({
-                        templateUrl: "./template/" + Dialog.Channel.Channel.ReserveDialog,
+                        templateUrl: "./template/" + Dialog.Channel.Channel.InternalChannelDialog,
                         resolve: {
                             form: function () {
-                                return reserve;
+                                return channel;
                             }
                         },
                         controller: function ($scope, form) {
-                            var TAG = Dialog.Channel.Channel.ReserveDialog;
+                            var TAG = Dialog.Channel.Channel.InternalChannelDialog;
                             Log.i(TAG, "对话框控制器");
+                            $scope.option = "编辑";
                             $scope.form = form;
                             $scope.area = $rootScope.area;
+                            $scope.staffs = $rootScope.staffs;
                             $scope.box = [];
                             $scope.phone = [];
+                            // 选择区域
+                            $scope.checkArea = function (area_id) {
+                                if ($scope.form.manage_areas.indexOf(area_id)) {
+                                    var index = $scope.form.manage_areas.indexOf(area_id);
+                                    $scope.form.manage_areas.splice(index, 1);
+                                } else {
+                                    $scope.form.manage_areas.push(x.area_id);
+                                }
+                            };
                             // 选择电话盒子
                             $scope.check_box = function (value) {
                                 $scope.form.communicate.box[value] = true;
@@ -571,80 +645,6 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                             };
                             $scope.cancel = function () {
                                 dlg.dismiss('取消操作');
-                            }
-                        }
-                    });
-                };
-                // 添加/编辑高层管理
-                $scope.addManager = function () {
-                    Log.i(TAG, "新增客户经理");
-                    $modal.open({
-                        templateUrl: "./template/" + Dialog.Channel.Channel.ManagerDialog,
-                        controller: function ($scope) {
-                            var TAG = Dialog.Channel.Channel.ManagerDialog;
-                            Log.i(TAG, "对话框控制器");
-                            $scope.form = {
-                                // 姓名
-                                name: "赵强",
-                                // 性别
-                                gender: "female",
-                                // 电话
-                                phone: [18800184976, 10000000000],
-                                // 生日
-                                birthday: "2017-6-22",
-                                // 单位
-                                unit: "创业谷",
-                                // 现住址
-                                address: {
-                                    province: "北京",
-                                    city: "北京",
-                                    county: "朝阳"
-                                },
-                                // 籍贯
-                                native: {
-                                    province: "北京",
-                                    city: "朝阳"
-                                },
-                                // 营销短信
-                                sms_marketing: "enabled",
-                                // 分类方法
-                                classification_method: 0,
-                                // 病症
-                                desease: ["A", "B", "C"],
-                                // 喜好
-                                hobby: ["A", "B", "C"],
-                                // 忌口
-                                dieting: ["A", "B", "C"],
-                                // 不良记录
-                                bad_records: "This is bad records"
-                            };
-                            $scope.submit = function () {
-                                Log.i(TAG, JSON.stringify($scope.form));
-                            };
-                            $scope.cancel = function () {
-                                Log.i(TAG, JSON.stringify($scope.form));
-                            }
-                        }
-                    });
-                };
-                $scope.editManager = function (manager) {
-                    Log.i(TAG, "编辑客户经理");
-                    $modal.open({
-                        templateUrl: "./template/" + Dialog.Channel.Channel.ManagerDialog,
-                        resolve: {
-                            form: function () {
-                                return manager;
-                            }
-                        },
-                        controller: function ($scope, form) {
-                            var TAG = Dialog.Channel.Channel.ManagerDialog;
-                            Log.i(TAG, "对话框控制器");
-                            $scope.form = form;
-                            $scope.submit = function () {
-                                Log.i(TAG, JSON.stringify($scope.form));
-                            };
-                            $scope.cancel = function () {
-                                Log.i(TAG, JSON.stringify($scope.form));
                             }
                         }
                     });
@@ -653,56 +653,52 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                 $scope.addExternalChannel = function () {
                     Log.i(TAG, "新增外部渠道");
                     var dlg = $modal.open({
-                            templateUrl: "./template/" + Dialog.Channel.Channel.ExternalChannelDialog,
-                            resolve: {
-                                form: function () {
-                                    var channel = {
-                                            // 名称
-                                            name: "118114",
-                                            // 折扣
-                                            discount: 2,
-                                            // 合作起始时间
-                                            begin_cooperate_time: "2017-07-01",
-                                            // 合作结束时间
-                                            end_cooperate_time: "2017-07-05",
-                                            // 佣金核算方式
-                                            commission_type: 0,
-                                            // 佣金核算数值
-                                            commission_value: 1,
-                                            // 头像
-                                            icon: "/static/css/image/head1.jpg",
-                                            // 直属上级id
-                                            staff_id: 1
-                                        }
-                                    ;
-                                    return channel;
-                                }
-                            },
-                            controller: function ($scope, form) {
-                                var TAG = Dialog.Channel.Channel.ExternalChannelDialog;
-                                Log.i(TAG, "对话框控制器");
-                                $scope.option = "新增";
-                                $scope.form = form;
-                                $scope.staff = $rootScope.staff;
-                                $scope.discount = ["无折扣", "9.5折", "9.0折", "8.5折", "8.0折"];
-                                $scope.submit = function () {
-                                    dlg.close($scope.form);
+                        templateUrl: "./template/" + Dialog.Channel.Channel.ExternalChannelDialog,
+                        resolve: {
+                            form: function () {
+                                return {
+                                    // 名称
+                                    name: "118114",
+                                    // 折扣
+                                    discount: 2,
+                                    // 合作起始时间
+                                    begin_cooperate_time: "2017-07-01",
+                                    // 合作结束时间
+                                    end_cooperate_time: "2017-07-05",
+                                    // 佣金核算方式
+                                    commission_type: 0,
+                                    // 佣金核算数值
+                                    commission_value: 1,
+                                    // 头像
+                                    icon: "/static/css/image/head1.jpg",
+                                    // 直属上级id
+                                    staff_id: 1
                                 };
-                                $scope.cancel = function () {
-                                    dlg.dismiss('cancel');
-                                    Log.i(TAG, JSON.stringify($scope.form));
-                                }
+                            }
+                        },
+                        controller: function ($scope, form) {
+                            var TAG = Dialog.Channel.Channel.ExternalChannelDialog;
+                            Log.i(TAG, "对话框控制器");
+                            $scope.option = "新增";
+                            $scope.form = form;
+                            $scope.staff = $rootScope.staff;
+                            $scope.discount = ["无折扣", "9.5折", "9.0折", "8.5折", "8.0折"];
+                            $scope.submit = function () {
+                                dlg.close($scope.form);
+                            };
+                            $scope.cancel = function () {
+                                dlg.dismiss('cancel');
+                                Log.i(TAG, JSON.stringify($scope.form));
                             }
                         }
-                    );
+                    });
                     dlg.opened.then(function () {
                         Log.i(TAG, "对话框已经打开");
                     });
                     dlg.result.then(function (result) {
                         Log.i(TAG, JSON.stringify(result));
                         var url = "/webApp/admin/hotel/external_channel/add/";
-                        var param = result;
-                        $http.post(url, JSON.stringify(param)).success(function (obj) {
+                        $http.post(url, JSON.stringify(result)).success(function (obj) {
                             if (obj.status === "true") {
                                 $scope.data.external_channel.push(result);
                                 alert("添加外部渠道成功");
@@ -786,19 +782,21 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                     var dlg = $modal.open({
                         templateUrl: "./template/" + Dialog.Channel.Staff.StaffDialog,
                         controller: function ($scope, form) {
-                            var TAG = Dialog.Channel.Staff.EditStaff;
+                            var TAG = Dialog.Channel.Staff.StaffDialog;
                             Log.i(TAG, "编辑员工控制器");
                             $scope.option = "编辑";
+                            $scope.guest_channel = ["无", "高层管理", "预定员和迎宾", "客户经理"];
                             $scope.form = form;
                             $scope.submit = function () {
                                 Log.i(TAG, "提交员工信息：" + $scope.form);
+                                dlg.close($scope.form);
                             };
                             $scope.exit = function () {
                                 Log.i(TAG, "员工离岗");
-                                dlg.close(id);
                             };
                             $scope.cancel = function () {
                                 Log.i(TAG, "取消员工信息");
+                                dlg.dismiss();
                             }
                         },
                         resolve: {
@@ -812,12 +810,12 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                     });
                     dlg.result.then(function (result) {
                         Log.i(TAG, JSON.stringify(result));
-                        var url = "/webApp/admin/hotel/staff/modify/";
+                        var url = "/webApp/admin/hotel/staff/profile/modify/";
                         var param = result;
                         param.password = hex_md5(param.password);
                         $http.post(url, JSON.stringify(param)).success(function (obj) {
                             if (obj.status === "true") {
-                                alert("添加员工成功");
+                                alert("编辑员工成功");
                                 $scope.data.list.push(result);
                             } else {
                                 alert(obj.description);
@@ -834,23 +832,24 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                         templateUrl: "./template/" + Dialog.Channel.Staff.StaffDialog,
                         resolve: {
                             form: function () {
-                                var staff = {
+                                return {
                                     hotel_id: $rootScope.Hotel.hotel_id,
                                     phone: "18800184976",
                                     name: "赵强",
                                     id_number: "100124100124100124",
                                     password: "sunny",
                                     position: "经理",
+                                    guest_channel: 0,
                                     gender: 1,
                                     status: 1
                                 };
-                                return staff;
                             }
                         },
                         controller: function ($scope, form) {
                             var TAG = Dialog.Channel.Staff.StaffDialog;
                             Log.i(TAG, "添加员工控制器");
                             $scope.option = "添加";
+                            $scope.guest_channel = ["无", "高层管理", "预定员和迎宾", "客户经理"];
                             $scope.form = form;
                             // 提交
                             $scope.submit = function () {
@@ -873,7 +872,7 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                     dlg.result.then(function (result) {
                         Log.i(TAG, JSON.stringify(result));
                         var url = "/webApp/admin/hotel/staff/add/";
-                        var param = result;
+                        var param = angular.copy(result);
                         param.password = hex_md5(param.password);
                         $http.post(url, JSON.stringify(param)).success(function (obj) {
                             if (obj.status === "true") {
@@ -1262,7 +1261,7 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                         },
                         resolve: {
                             form: function () {
-                                var branch = {
+                                return {
                                     // 酒店ID
                                     hotel_id: $rootScope.Hotel.hotel_id,
                                     // 店长ID
@@ -1286,7 +1285,6 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                                     // 其他可选项
                                     icon: "/static/css/image/head.jpg"
                                 };
-                                return branch;
                             }
                         }
                     });

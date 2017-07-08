@@ -205,6 +205,12 @@ BranchApp.config(['$routeProvider', function ($routeProvider) {
                     $http.post(url, JSON.stringify(param)).success(function (obj) {
                         if (obj.status === "true") {
                             $scope.form = obj.data;
+                            $scope.facilities = $scope.facilities.filter(function (p1, p2, p3) {
+                                return $scope.form.facility.indexOf(p1) === -1;
+                            });
+                            $scope.pay_cards = $scope.pay_cards.filter(function (p1, p2, p3) {
+                                return $scope.form.pay_card.indexOf(p1) === -1;
+                            });
                             $rootScope.branch = obj.data;
                             getStaffList($rootScope.branch.hotel_id);
                         } else {
