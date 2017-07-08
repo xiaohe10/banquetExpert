@@ -1842,6 +1842,7 @@ def get_staff_profile(request, token, staff_id):
     'status': forms.IntegerField(required=False),
     'is_enabled': forms.BooleanField(required=False),
     'staff_id': forms.IntegerField(),
+    'phone_private': forms.BooleanField(required=False),
     'sale_enabled': forms.BooleanField(required=False),
     'order_sms_inform': forms.BooleanField(required=False),
     'order_sms_attach': forms.BooleanField(required=False),
@@ -1869,6 +1870,7 @@ def modify_staff_profile(request, token, staff_id, **kwargs):
         authority: 权限
         status: 状态, 0: 待审核, 1: 审核通过
         is_enabled: 是否可用, True/False
+        phone_private: 电话隐私
         sale_enabled: 销售职能
         order_sms_inform: 订单短信
         order_sms_attach: 短信附加
@@ -1891,7 +1893,9 @@ def modify_staff_profile(request, token, staff_id, **kwargs):
         return err_response('err_2', '权限错误')
 
     staff_keys = ('staff_number', 'gender', 'position', 'guest_channel',
-                  'description', 'authority', 'status', 'is_enabled')
+                  'description', 'authority', 'status', 'is_enabled',
+                  'phone_private', 'sale_enabled', 'order_sms_inform',
+                  'order_sms_attach')
     for k in staff_keys:
         if k in kwargs:
             setattr(staff, k, kwargs[k])
