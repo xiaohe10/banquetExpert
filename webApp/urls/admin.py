@@ -83,9 +83,17 @@ urlpatterns = [
     # 获取订单详情
     url(r'^order/profile/$', get_order_profile, name='get_order_profile'),
     # 提交订单
-    url(r'^submit/$', submit_order, name='submit'),
+    url(r'^order/submit/$', submit_order, name='submit_order'),
     # 编辑订单
-    url(r'^order/update/$', update_order, name='update_order'),
+    url(r'^order/modify/$', modify_order, name='modify_order'),
+    # 获取客户列表(搜索)
+    url(r'^guest/search/$', search_guest, name='search_guest'),
+    # 获取客户档案详情
+    url(r'^guest/profile/$', get_guest_profile, name='get_guest_profile'),
+    # 增加客户档案
+    url(r'^guest/add/$', add_guest, name='add_guest'),
+    # 编辑客户档案
+    url(r'^guest/modify/$', modify_guest, name='modify_guest'),
     # 获取自己酒店的直播间列表
     url(r'^live/list/$', get_lives, name='live_list'),
     # 发布直播间

@@ -5099,6 +5099,7 @@ URL：webApp/admin/order/search/ <br>
 | search_key | 搜索关键词（如姓名、手机等进行模糊搜索） | no |
 | dinner_period | 餐段，0：午餐，1：晚餐，2：夜宵    |   no |
 | status | 订单状态（0: 进行中，1: 已完成，2: 已删除，默认为0）  | no |
+| is_FIT    | 是否散客，默认否  | no    |
 | offset | 起始值（默认0） | no |
 | limit | 偏移量（默认10） | no |
 | order | 排序方式（0: 注册时间升序，1: 注册时间降序，默认1） | no |
@@ -5387,7 +5388,7 @@ URL：webApp/admin/order/submit/ <br>
 
 
 ##编辑订单
-URL：webApp/admin/order/update/ <br>
+URL：webApp/admin/order/modify/ <br>
 请求方式：POST <br>
 
 | 参数名称       | 含义             | 是否必选       |
@@ -5471,3 +5472,296 @@ URL：webApp/admin/order/update/ <br>
 | err_4 | 不存在该订单 |
 | err_5 | 桌位不存在 |
 | err_6 | 桌位已被预定    |
+
+
+## 获取客户列表（搜索）
+
+URL：webApp/admin/guest/list/ <br>
+请求方式：POST
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------|
+| token         | 登录口令          |         yes  |
+| search_key | 客户手机号或者姓名 | no |
+| status | 客户状态：0：全部，1：活跃，2：沉睡，3：流失，4：无订单，默认0 | no |
+| internal_channel | 内部销售ID | no |
+| external_channel | 外部销售ID | no |
+| offset | 起始值（默认0） | no |
+| limit | 偏移量（默认10） | no |
+| order | 排序方式（0: 最近就餐，1: 总预定桌数，2: 人均消费，3: 消费频度，默认0） | no |
+
+请求示例
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"search_key":"18813101211",
+	"status":0,
+	"internal_channel":1
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| count | 顾客总数 |
+| list  | 顾客列表 |
+| 以下为list中的数据 |
+| guest_id  | 顾客 ID |
+| phone | 电话    |
+| name | 姓名 |
+| gender    | 性别，0:保密，1:男，2:女    |
+| birthday | 生日 |
+| birthday_type | 生日类型，0:阳历，1:农历 |
+| guest_type  | 顾客类别  |
+| like | 喜好 |
+| dislike | 忌讳 |
+| special_day | 纪念日 |
+| personal_need | 个性化需求 |
+| status | 客户状态：1：活跃，2：沉睡，3：流失，4：无订单 |
+| desk_number   | 消费总桌数 |
+| person_consumption    | 人均消费  |
+| order_per_month    | 消费频度, 单/月 |
+| last_consumption  | 上次消费日期    |
+
+
+返回示例
+
+```
+{
+	"status":"true",
+	"data":
+	{
+	    "count":100,
+	    "list":[
+	    {
+	        "guest_id":1,
+	        "phone":"13111111111",
+			"name":"习某某",
+			"gender":1,
+			"guest_type":"vip",
+			"birthday":"1992-02-15",
+			"birthday_type":0,
+			"like":"吃辣",
+			"dislike":"不吃香菜",
+			"special_day":"",
+			"personal_need":"",
+			"status":1,
+			"desk_number":10,
+			"person_consumption":400,
+			"order_per_month":3.11,
+			"last_consumption":"1993-02-25"
+		},
+		...
+		]
+	}
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 管理员不存在   |
+| err_4 | 内部销售渠道不存在 |
+| err_5 | 外部销售渠道不存在 |
+
+
+## 获取客户档案详情（根据顾客ID或手机）
+
+URL：webApp/admin/guest/profile/ <br>
+请求方式：POST
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------|
+| token         | 登录口令          |         yes  |
+| guest_id      | 顾客 ID          |         no   |
+| phone         | 手机             |         no  |
+
+请求示例
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"phone":"18813101211"
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| name | 姓名 |
+| gender    | 性别，0:保密，1:男，2:女   |
+| phone | 电话    |
+| guest_type  | 顾客类别  |
+| birthday | 生日 |
+| birthday_type | 生日类型，0:阳历，1:农历 |
+| like | 喜好 |
+| dislike | 忌讳 |
+| special_day | 纪念日 |
+| personal_need | 个性化需求 |
+| status    | 客户状态, 1: 活跃, 2: 沉睡, 3: 流失, 4: 无订单 |
+| all_order_number | 历史所有有效订单数 |
+| day60_order_number | 最近60天订单数 |
+| all_consumption | 所有有效消费 |
+| day60_consumption | 最近60天消费金额 |
+
+
+返回示例
+
+```
+{
+	"status":"true",
+	"data":{
+		"name":"习某某",
+		"gender":1,
+		"phone":"13111111111",
+		"guest_type":"vip",
+		"birthday":"1992-02-15",
+		"birthday_type":0,
+		"like":"吃辣",
+		"dislike":"不吃香菜",
+		"special_day":"",
+		"personal_need":"",
+		"status":1,
+		"all_order_number":22,
+		"day60_order_number":9,
+		"all_consumption":10000,
+		"day60_consumption:800
+	}
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 管理员不存在    |
+| err_4 | 客户不存在 |
+
+
+## 添加客户档案
+URL：webApp/guest/profile/add/ <br>
+请求方式：POST
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------|
+| token         | 登录口令          |         yes  |
+| phone | 客户手机号（作为查找的依据） | yes |
+| name | 姓名 | yes |
+| gender    | 性别，0:保密，1:男，2:女   | no    |
+| guest_type | 客户类别 | no    |
+| birthday | 生日 | no    |
+| birthday_type | 生日类型，0:阳历，1:农历 | no   |
+| like | 喜好 | no    |
+| dislike | 忌讳 | no |
+| special_day | 纪念日 | no    |
+| personal_need | 个性化需求 | no    |
+
+请求示例
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"phone":"18813101211"
+	"name":"习某某",
+	"gender":1,
+	"guest_type":"vip",
+	"birthday":"1992-02-15",
+	"birthday_type":0,
+	"like":"吃辣",
+	"dislike":"不吃香菜",
+	"special_day":"10-25",
+	"personal_need":"生日宴"
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+
+
+返回示例
+
+```
+{
+	"status":"true"
+}
+```
+
+错误代码
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 管理员不存在    |
+| err_4 | 该手机号已存在   |
+| err_5 | 服务器创建员工错误 |
+
+
+## 修改客户档案
+
+URL：webApp/admin/guest/profile/modify/ <br>
+请求方式：POST
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------|
+| token         | 登录口令          |         yes  |
+| phone | 客户手机号（作为查找的依据） | yes |
+| name | 姓名 | no
+| gender    | 性别，0:保密，1:男，2:女   | no
+| guest_type | 客户类型 | no
+| birthday | 生日 | no
+| birthday_type | 生日类型，0:阳历，1:农历 | no
+| like | 喜好 | no
+| dislike | 忌讳 | no
+| special_day | 纪念日 | no
+| personal_need | 个性化需求 | no
+
+请求示例
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"phone":"18813101211"
+	"name":"习某某",
+	"gender":1,
+	"birthday":"1992-02-15",
+	"birthday_type":0,
+	"like":"吃辣",
+	"dislike":"不吃香菜",
+	"special_day":"10-25",
+	"personal_need":"生日宴"
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+
+
+返回示例
+
+```
+{
+	"status":"true"
+}
+```
+
+错误代码
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 管理员不存在    |
+| err_4 | 不存在该手机号码的客户 |
