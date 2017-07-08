@@ -12,7 +12,8 @@ from django.core.validators import RegexValidator
 from django.core.exceptions import ObjectDoesNotExist
 
 from ..utils.response import corr_response, err_response
-from ..utils.decorator import validate_args, validate_admin_token
+from ..utils.decorator import validate_args, validate_json_args,\
+    validate_admin_token
 from ..utils.cc_sdk import create_live_room, update_live_room, replay_live_room
 from ..models import Admin, Hotel, HotelBranch, Area, Desk, Staff, Live, Order,\
     Guest, ExternalChannel
@@ -413,6 +414,12 @@ def get_branch_profile(request, token, branch_id, **kwargs):
     'address': forms.CharField(min_length=1, max_length=50, required=False),
     'is_enabled': forms.BooleanField(required=False),
 })
+@validate_json_args({
+    'phone': forms.CharField(max_length=50, required=False),
+    'facility': forms.CharField(max_length=640, required=False),
+    'pay_card': forms.CharField(max_length=120, required=False),
+    'cuisine': forms.CharField(max_length=1000, required=False)
+})
 @validate_admin_token()
 def modify_branch_profile(request, token, branch_id, staff_id=None, **kwargs):
     """修改门店信息
@@ -453,20 +460,14 @@ def modify_branch_profile(request, token, branch_id, staff_id=None, **kwargs):
             return err_response('err_7', '门店名已存在')
 
     branch_keys = ('province', 'city', 'county', 'address', 'is_enabled')
-    branch_other_keys = ('phone', 'facility', 'pay_card', 'cuisine')
-
     for k in branch_keys:
         if k in kwargs:
             setattr(branch, k, kwargs[k])
 
-    try:
-        data = json.loads(request.body)
-        for k in branch_other_keys:
-            if k in data:
-                v = json.dumps(data[k])
-                setattr(branch, k, v)
-    except KeyError or ValueError:
-        return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+    branch_json_keys = ('phone', 'facility', 'pay_card', 'cuisine')
+    for k in branch_json_keys:
+        if k in kwargs:
+            setattr(branch, k, json.dumps(kwargs[k]))
 
     # 修改头像
     if 'icon' in request.FILES:
@@ -499,8 +500,11 @@ def modify_branch_profile(request, token, branch_id, staff_id=None, **kwargs):
     'token': forms.CharField(min_length=32, max_length=32),
     'branch_id': forms.IntegerField(),
 })
+@validate_json_args({
+    'meal_period': forms.CharField(max_length=5000)
+})
 @validate_admin_token()
-def modify_meal_period(request, token, branch_id):
+def modify_meal_period(request, token, branch_id, meal_period):
     """修改门店的餐段
 
     :param token: 令牌(必传)
@@ -542,7 +546,6 @@ def modify_meal_period(request, token, branch_id):
 
     # 解析餐段
     try:
-        meal_period = json.loads(request.body)['meal_period']
         with open('data/meal_period.json') as json_file:
             data = json.load(json_file)
         result = {}
@@ -581,8 +584,11 @@ def modify_meal_period(request, token, branch_id):
     'token': forms.CharField(min_length=32, max_length=32),
     'branch_id': forms.IntegerField(),
 })
+@validate_json_args({
+    'personal_tailor': forms.CharField(max_length=2000)
+})
 @validate_admin_token()
-def modify_personal_tailor(request, token, branch_id):
+def modify_personal_tailor(request, token, branch_id, personal_tailor):
     """修改门店的私人订制项
 
     :param token: 令牌(必传)
@@ -611,7 +617,6 @@ def modify_personal_tailor(request, token, branch_id):
 
     # 解析私人订制项
     try:
-        personal_tailor = json.loads(request.body)['personal_tailor']
         # 格式验证
         for p in personal_tailor:
             a = isinstance(p['name'], str)
@@ -1290,8 +1295,19 @@ def get_channels(request, token):
             gender: 性别
             staff_number: 员工编号
             position: 职位
+            authority: 职能权限
             guest_channel: 所属获客渠道
                 0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理
+            phone_private: 电话隐私
+            sale_enabled: 销售职能
+            order_sms_inform: 订单短信
+            order_sms_attach: 短信附加
+            order_bonus: 提成结算/接单提成(消费额百分比, 按订单数量, 按消费人数)
+            new_customer_bonus: 提成结算/开新客提成(消费额百分比, 按订单数量, 按消费人数)
+            manage_desks: 管辖桌位
+            manage_areas: 管辖区域
+            manage_channel: 管理渠道客户
+            communicate: 沟通渠道
             create_time: 创建时间
         external_channel: 外部销售
             id: ID
@@ -1316,7 +1332,25 @@ def get_channels(request, token):
               'icon': channel.icon,
               'gender': channel.gender,
               'position': channel.position,
+              'authority': json.loads(channel.authority)
+              if channel.authority else [],
               'guest_channel': channel.guest_channel,
+              'phone_private': channel.phone_private,
+              'sale_enabled': channel.sale_enabled,
+              'order_sms_inform': channel.order_sms_inform,
+              'order_sms_attach': channel.order_sms_attach,
+              'order_bonus': json.loads(channel.order_bonus)
+              if channel.order_bonus else {},
+              'new_customer_bonus': json.loads(channel.new_customer_bonus)
+              if channel.new_customer_bonus else {},
+              'manage_desks': json.loads(channel.manage_desks)
+              if channel.manage_desks else [],
+              'manage_areas': json.loads(channel.manage_areas)
+              if channel.manage_areas else [],
+              'manage_channel': json.loads(channel.manage_channel)
+              if channel.manage_channel else [],
+              'communicate': json.loads(channel.communicate)
+              if channel.communicate else {},
               'create_time': channel.create_time
               } for channel in in_channels]
 
@@ -1601,7 +1635,7 @@ def get_staffs(request, token, hotel_id, order=1):
           'hotel_name': s.hotel.name,
           'position': s.position,
           'guest_channel': s.guest_channel,
-          'authority': s.authority,
+          'authority': json.loads(s.authority) if s.authority else [],
           'is_enabled': s.is_enabled,
           'create_time': s.create_time} for s in staffs]
     return corr_response({'count': c, 'list': l})
@@ -1742,6 +1776,17 @@ def get_staff_profile(request, token, staff_id):
         guest_channel: 所属获客渠道
             0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理
         authority: 权限
+        phone_private: 电话隐私
+        sale_enabled: 销售职能
+        order_sms_inform: 订单短信
+        order_sms_attach: 短信附加
+        order_bonus: 提成结算/接单提成 0:消费额百分比, 1:按订单数量, 2:按消费人数
+        new_customer_bonus: 提成结算/开新客提成
+                0:消费额百分比, 1:按订单数量, 2:按消费人数
+        manage_desks: 管辖桌位
+        manage_areas: 管辖区域
+        manage_channel: 管理渠道客户
+        communicate: 沟通渠道
         create_time: 创建时间
     """
 
@@ -1762,7 +1807,23 @@ def get_staff_profile(request, token, staff_id):
          'position': staff.position,
          'guest_channel': staff.guest_channel,
          'description': staff.description,
-         'authority': staff.authority,
+         'authority': json.loads(staff.authority) if staff.authority else [],
+         'phone_private': staff.phone_private,
+         'sale_enabled': staff.sale_enabled,
+         'order_sms_inform': staff.order_sms_inform,
+         'order_sms_attach': staff.order_sms_attach,
+         'order_bonus': json.loads(staff.order_bonus)
+         if staff.order_bonus else {},
+         'new_customer_bonus': json.loads(staff.new_customer_bonus)
+         if staff.new_customer_bonus else {},
+         'manage_desks': json.loads(staff.manage_desks)
+         if staff.manage_desks else [],
+         'manage_areas': json.loads(staff.manage_areas)
+         if staff.manage_areas else [],
+         'manage_channel': json.loads(staff.manage_channel)
+         if staff.manage_channel else [],
+         'communicate': json.loads(staff.communicate)
+         if staff.communicate else {},
          'status': staff.status,
          'create_time': staff.create_time}
     return corr_response(d)
@@ -1781,6 +1842,17 @@ def get_staff_profile(request, token, staff_id):
     'status': forms.IntegerField(required=False),
     'is_enabled': forms.BooleanField(required=False),
     'staff_id': forms.IntegerField(),
+    'sale_enabled': forms.BooleanField(required=False),
+    'order_sms_inform': forms.BooleanField(required=False),
+    'order_sms_attach': forms.BooleanField(required=False),
+})
+@validate_json_args({
+    'order_bonus': forms.CharField(max_length=60, required=False),
+    'new_customer_bonus': forms.CharField(max_length=60, required=False),
+    'manage_desks': forms.CharField(max_length=1000, required=False),
+    'manage_areas': forms.CharField(max_length=500, required=False),
+    'manage_channel': forms.CharField(max_length=1000, required=False),
+    'communicate': forms.CharField(max_length=800, required=False),
 })
 @validate_admin_token()
 def modify_staff_profile(request, token, staff_id, **kwargs):
@@ -1797,6 +1869,15 @@ def modify_staff_profile(request, token, staff_id, **kwargs):
         authority: 权限
         status: 状态, 0: 待审核, 1: 审核通过
         is_enabled: 是否可用, True/False
+        sale_enabled: 销售职能
+        order_sms_inform: 订单短信
+        order_sms_attach: 短信附加
+        order_bonus: 提成结算/接单提成(按消费额百分比, 按订单数量, 按消费人数)
+        new_customer_bonus: 提成结算/开新客提成(按消费额百分比, 按订单数量, 按消费人数)
+        manage_desks: 管辖桌位
+        manage_areas: 管辖区域
+        manage_channel: 管理渠道客户
+        communicate: 沟通渠道
     :return: 200
     """
 
@@ -1814,6 +1895,12 @@ def modify_staff_profile(request, token, staff_id, **kwargs):
     for k in staff_keys:
         if k in kwargs:
             setattr(staff, k, kwargs[k])
+
+    staff_json_keys = ('order_bonus', 'new_customer_bonus', 'manage_desks',
+                       'manage_areas', 'manage_channel', 'communicate')
+    for k in staff_json_keys:
+        if k in kwargs:
+            setattr(staff, k, json.dumps(kwargs[k]))
 
     # 修改头像
     if 'icon' in request.FILES:

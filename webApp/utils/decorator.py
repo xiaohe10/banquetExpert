@@ -129,3 +129,36 @@ def validate_args(dic):
             return function(request, *args, **kwargs)
         return returned_wrapper
     return decorator
+
+
+def validate_json_args(dic):
+    """对被装饰的方法利用 "参数名/表单模型" 字典进行输入数据验证，
+    被验证的数据是数组或者键值对格式，验证后的数据作为关键字参数传入view函数中，
+    若部分数据非法则直接返回400 Bad Request
+    """
+    def decorator(function):
+        @wraps(function)
+        def returned_wrapper(request, *args, **kwargs):
+            try:
+                if request.method == "GET":
+                    data = request.GET
+                elif request.method == "POST":
+                    data = json.loads(request.body)
+                else:
+                    data = QueryDict(request.body)
+            except ValueError:
+                return err_response(
+                    'err_1', '参数不正确（缺少参数或者不符合格式）')
+            for k, v in dic.items():
+                try:
+                    kwargs[k] = json.loads(v.clean(data[k]))
+                except KeyError or ValueError:
+                    if v.required:
+                        return err_response(
+                            'err_1', '"%s" 参数不正确（缺少参数或者不符合格式）' % k)
+                except ValidationError:
+                    return err_response(
+                        'err_1', '"%s" 参数不正确（缺少参数或者不符合格式）' % k)
+            return function(request, *args, **kwargs)
+        return returned_wrapper
+    return decorator

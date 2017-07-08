@@ -4603,6 +4603,16 @@ URL：webApp/admin/hotel/staff/profile/get/ <br>
 | guest_channel | 所属获客渠道, 0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理 |
 | description   | 备注   |
 | authority | 权限等级 |
+| phone_private | 电话隐私  |
+| sale_enabled  | 销售职能  |
+| order_sms_inform  | 订单短信  |
+| order_sms_attach  | 短信附加  |
+| order_bonus   | 提成结算/接单提成（消费额百分比, 按订单数量, 按消费人数）  |
+| new_customer_bonus    | 提成结算/开新客提成（消费额百分比, 按订单数量, 按消费人数）   |
+| manage_desks  | 管辖桌位  |
+| manage_areas  | 管辖区域  |
+| manage_channel    | 管理渠道客户    |
+| communicate   | 沟通渠道  |
 | create_time   | 创建时间|
 
 返回示例：
@@ -4619,7 +4629,34 @@ URL：webApp/admin/hotel/staff/profile/get/ <br>
 		"position":"前台",
 		"guest_channel":0,
 		"description":"备注",
-		"authority":"权限等级",
+		"authority":[],
+		"phone_private": false,
+        "sale_enabled": true,
+        "order_sms_inform": false,
+        "order_sms_attach": false,
+        "order_bonus": {
+            enabled: true,
+            method: 1,
+            value: 0.8
+        },
+        "new_customer_bonus": {
+            enabled: false,
+            value: 0.8
+        },
+        "manage_desks": [],
+        "manage_areas": [0, 2, 3],
+        "manage_channel": [1, 2, 3],
+        "communicate": {
+            channel: "tel_box",
+            tel_box: [
+                "(来电盒子)线路1", "(来电盒子)线路2", "(来电盒子)线路3", "(来电盒子)线路4",
+                "(来电盒子)线路5", "(来电盒子)线路6", "(来电盒子)线路7", "(来电盒子)线路8"
+            ],
+            smart_tel: [
+                "(智能电话)线路1", "(智能电话)线路2", "(智能电话)线路3", "(智能电话)线路4",
+                "(智能电话)线路5", "(智能电话)线路6", "(智能电话)线路7"
+            ]
+            },
 		"icon":"http://oss.aliyun/banquet/avatar/1.jpg"
 		"create_time":"创建时间",
 	}
@@ -4652,6 +4689,16 @@ URL：webApp/admin/hotel/staff/profile/modify/ <br>
 | description      | 备注，最多100字符   |         no   |
 | authority      | 权限    |         no   |
 | icon      | 头像（文件）    |         no   |
+| phone_private | 电话隐私  | no    |
+| sale_enabled  | 销售职能  | no    |
+| order_sms_inform  | 订单短信  | no    |
+| order_sms_attach  | 短信附加  | no    |
+| order_bonus   | 提成结算/接单提成（消费额百分比, 按订单数量, 按消费人数）  | no |
+| new_customer_bonus    | 提成结算/开新客提成（消费额百分比, 按订单数量, 按消费人数）   | no   |
+| manage_desks  | 管辖桌位  | no    |
+| manage_areas  | 管辖区域  | no    |
+| manage_channel    | 管理渠道客户    | no    |
+| communicate   | 沟通渠道  | no    |
 
 请求示例:
 
@@ -4665,7 +4712,34 @@ URL：webApp/admin/hotel/staff/profile/modify/ <br>
 	"position":"前台",
 	"guest_channel":0,
 	"description":"备注",
-	"authority":"权限等级",
+	"authority":[],
+	"phone_private": false,
+    "sale_enabled": true,
+    "order_sms_inform": false,
+    "order_sms_attach": false,
+    "order_bonus": {
+        enabled: true,
+        method: 1,
+        value: 0.8
+    },
+    "new_customer_bonus": {
+        enabled: false,
+        value: 0.8
+    },
+    "manage_desks": [],
+    "manage_areas": [0, 2, 3],
+    "manage_channel": [1, 2, 3],
+    "communicate": {
+        channel: "tel_box",
+        tel_box: [
+            "(来电盒子)线路1", "(来电盒子)线路2", "(来电盒子)线路3", "(来电盒子)线路4",
+            "(来电盒子)线路5", "(来电盒子)线路6", "(来电盒子)线路7", "(来电盒子)线路8"
+        ],
+        smart_tel: [
+            "(智能电话)线路1", "(智能电话)线路2", "(智能电话)线路3", "(智能电话)线路4",
+            "(智能电话)线路5", "(智能电话)线路6", "(智能电话)线路7"
+        ]
+        },
 	"icon":[FILE]
 }
 ```
@@ -4725,6 +4799,17 @@ URL：webApp/admin/hotel/channel/list/ <br>
 | gender    | 性别   |
 | position  | 职位   |
 | guest_channel | 所属获客渠道, 0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理 |
+| authority | 权限    |
+| phone_private | 电话隐私  |
+| sale_enabled  | 销售职能  |
+| order_sms_inform  | 订单短信  |
+| order_sms_attach  | 短信附加  |
+| order_bonus   | 提成结算/接单提成（消费额百分比, 按订单数量, 按消费人数）  |
+| new_customer_bonus    | 提成结算/开新客提成（消费额百分比, 按订单数量, 按消费人数）   |
+| manage_desks  | 管辖桌位  |
+| manage_areas  | 管辖区域  |
+| manage_channel    | 管理渠道客户    |
+| communicate   | 沟通渠道  |
 | create_time   | 创建时间|
 | external_channel  | 外部获客渠道    |
 | 以下为external_channel中的数据    |
@@ -4752,7 +4837,35 @@ URL：webApp/admin/hotel/channel/list/ <br>
             "gender":1,
             "position":"前台",
             "guest_channel":0,
-            "icon":"http://oss.aliyun/banquet/avatar/1.jpg"
+            "icon":"http://oss.aliyun/banquet/avatar/1.jpg",
+            "authority":[],
+            "phone_private": false,
+            "sale_enabled": true,
+            "order_sms_inform": false,
+            "order_sms_attach": false,
+            "order_bonus": {
+                enabled: true,
+                method: 1,
+                value: 0.8
+            },
+            "new_customer_bonus": {
+                enabled: false,
+                value: 0.8
+            },
+            "manage_desks": [],
+            "manage_areas": [0, 2, 3],
+            "manage_channel": [1, 2, 3],
+            "communicate": {
+                channel: "tel_box",
+                tel_box: [
+                    "(来电盒子)线路1", "(来电盒子)线路2", "(来电盒子)线路3", "(来电盒子)线路4",
+                    "(来电盒子)线路5", "(来电盒子)线路6", "(来电盒子)线路7", "(来电盒子)线路8"
+                ],
+                smart_tel: [
+                    "(智能电话)线路1", "(智能电话)线路2", "(智能电话)线路3", "(智能电话)线路4",
+                    "(智能电话)线路5", "(智能电话)线路6", "(智能电话)线路7"
+                ]
+                },
             "create_time":"创建时间"
             },
             ...
