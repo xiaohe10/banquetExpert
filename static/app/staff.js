@@ -36,6 +36,12 @@ Templates = {
 
 // 对话框模板
 Dialog = {
+    // 预订台
+    SmartOrder: {
+        SmartOrder: {
+            CreateOrder: "SmartOrder/SmartOrder/ReserveOrderDialog.html"
+        }
+    },
     // 订单管理
     Order: {
         OrderHistory: {
@@ -125,11 +131,17 @@ StaffApp.filter("status", function () {
         return TAG[order_status];
     }
 });
+StaffApp.filter("desk_status", function () {
+    return function (desk_status) {
+        var TAG = ["空闲", "预定中", "用餐中"];
+        return TAG[desk_status];
+    }
+});
 
 // 服务定义
 StaffApp.service('HotelService', function ($http) {
 
-    // 【酒店】获取员工列表
+    // 获取员工列表
     this.getProfile = function (hotel_id) {
         var url = "/webApp/admin/hotel/staff/list/";
         var param = {hotel_id: hotel_id};
@@ -143,10 +155,10 @@ StaffApp.service('HotelService', function ($http) {
         });
     };
 
-    // 【酒店】获取渠道列表
+    // 获取渠道列表
     this.getChannelList = function (hotel_id) {
-        url = "/webApp/admin/hotel/channel/list/";
-        param = {hotel_id: hotel_id};
+        var url = "/webApp/admin/hotel/channel/list/";
+        var param = {hotel_id: hotel_id};
         $http.post(url, JSON.stringify(param)).success(function (obj) {
             if (obj.status === "true") {
                 return obj.data;
@@ -156,6 +168,21 @@ StaffApp.service('HotelService', function ($http) {
             }
         });
     };
+
+    // 获取员工所在酒店的门店列表
+    this.getBranchList = function (hotel_id) {
+        var url = "/webApp/staff/hotel_branch/list/ ";
+        var param = {
+            hotel_id: hotel_id
+        };
+        $http.post(url, JSON.stringify(param)).success(function (obj) {
+            if (obj.status === "true") {
+                return obj.data;
+            } else {
+                alert(obj.description);
+            }
+        });
+    }
 });
 StaffApp.service('BranchService', function ($http) {
 
@@ -172,7 +199,7 @@ StaffApp.service('BranchService', function ($http) {
         });
     };
 
-    // 【门店】获取门店区域列表area/list/";
+    // 【门店】获取门店区域列表
     this.getAreaList = function (branch_id) {
         var url = "/webApp/admin/hotel_branch/area/list/";
         var param = {branch_id: branch_id};
@@ -184,21 +211,21 @@ StaffApp.service('BranchService', function ($http) {
                 return {count: '', list: []};
             }
         });
-    }
+    };
 });
 StaffApp.service('StaffService', function ($http) {
 
     var TAG = "StaffService";
 
     // 【员工】获取酒店信息
-    this.getHotelProfile = function ($scope) {
+    this.getHotelProfile = function ($rootScope) {
         var url = "/webApp/staff/hotel/";
         var param = {};
         $http.post(url, JSON.stringify(param)).success(function (obj) {
             if (obj.status === "true") {
                 Log.i(TAG, "获取酒店信息成功");
-                $scope.hotel = obj.data;
-                $scope.menus = [
+                $rootScope.hotel = obj.data;
+                $rootScope.Menus = [
                     {
                         title: "智能订餐台",
                         menu_id: "SmartOrder",
@@ -247,7 +274,7 @@ StaffApp.service('StaffService', function ($http) {
 });
 
 // 侧边导航栏控制器
-StaffApp.controller('drawerCtrl', function ($routeParams, $rootScope, $scope, $http, $location, StaffService) {
+StaffApp.controller('drawerCtrl', function ($routeParams, $rootScope, $scope, $http, $location) {
 
     var TAG = "drawerCtrl";
 
@@ -260,11 +287,6 @@ StaffApp.controller('drawerCtrl', function ($routeParams, $rootScope, $scope, $h
         branches_count: 10,
         owner_name: "杨秀荣",
         create_time: "创建时间"
-    };
-    // 门店信息
-    $rootScope.branch = {
-        branch_id: -1,
-        name: "预订台"
     };
     // 餐段列表
     $rootScope.MealsTime = {
@@ -283,8 +305,16 @@ StaffApp.controller('drawerCtrl', function ($routeParams, $rootScope, $scope, $h
             "02:00", "02:30", "03:00", "03:30", "04:00"
         ]
     };
+    // 三十六宴
+    $rootScope.Banquet = {
+        "生日宴": ["满月宴", "周岁宴", "成人(18)宴", "生日宴"],
+        "婚宴": ["求婚宴", "订婚宴", "婚宴", "回门宴", "答谢宴", "纪念日", "银婚", "金婚", "钻石婚"],
+        "家宴": [""],
+        "商务宴": {},
+        "师徒宴": {}
+    };
     // 侧边栏
-    $scope.menus = [
+    $rootScope.Drawer = [
         {
             title: "未登录",
             menu_id: "Login",
@@ -298,7 +328,133 @@ StaffApp.controller('drawerCtrl', function ($routeParams, $rootScope, $scope, $h
         {title: "餐段设置"}
     ];
 
-    StaffService.getHotelProfile($scope);
+    var Hotel = {
+        // 获取员工列表
+        getStaffList: function (hotel_id) {
+            var url = "/webApp/admin/hotel/staff/list/";
+            var param = {hotel_id: hotel_id};
+            $http.post(url, JSON.stringify(param)).success(function (obj) {
+                if (obj.status === "true") {
+                    $rootScope.Hotel.Staff = obj.data;
+                } else {
+                    alert(obj.description);
+                    $rootScope.Hotel.Staff = {count: '', list: []};
+                }
+            });
+        },
+        // 获取渠道列表
+        getChannelList: function (hotel_id) {
+            var url = "/webApp/admin/hotel/channel/list/";
+            var param = {hotel_id: hotel_id};
+            $http.post(url, JSON.stringify(param)).success(function (obj) {
+                if (obj.status === "true") {
+                    $rootScope.Hotel.Channel = obj.data;
+                } else {
+                    alert(obj.description);
+                    $rootScope.Hotel.Channel = {count: '', list: []};
+                }
+            });
+        }
+    };
+
+    var URL = "/guest/id";
+
+    var Staff = {
+        // 获取所在酒店信息
+        getProfile: function (hotel_id) {
+            var url = "/webApp/staff/hotel/";
+            var param = {hotel_id: hotel_id};
+            $http.post(url, JSON.stringify(param)).success(function (obj) {
+                if (obj.status === "true") {
+                    $rootScope.Hotel = obj.data;
+                    $scope.Drawer = [
+                        {
+                            title: "智能订餐台",
+                            menu_id: "SmartOrder",
+                            item: [
+                                {title: "智能订餐台", item_id: "SmartOrder"}
+                            ]
+                        },
+                        {
+                            title: "订单管理",
+                            menu_id: "Order",
+                            item: [
+                                {title: "预定通知单", item_id: "ReserveNotice"},
+                                {title: "历史订单", item_id: "OrderHistory"},
+                                {title: "订单金额录入", item_id: "InsertOrder"},
+                                {title: "订单统计", item_id: "OrderStatistics"},
+                                {title: "来电记录", item_id: "PhoneReserve"},
+                                {title: "操作日志", item_id: "OperationLog"}
+                            ]
+                        },
+                        {
+                            title: "客户管理",
+                            menu_id: "Customer",
+                            item: [
+                                {title: "客户档案列表", item_id: "CustomerProfiles"},
+                                {title: "客源情况分析", item_id: "CustomerAnalysis"},
+                                {title: "会员价值设置", item_id: "MemberValue"},
+                                {title: "客户档案回收站", item_id: "CustomerRecycleBin"},
+                                {title: "纪念日查询报表", item_id: "AnniversaryReport"}
+                            ]
+                        },
+                        {
+                            title: "评分审阅",
+                            menu_id: "Review",
+                            item: [
+                                {title: "酒店排名", item_id: "Rank"},
+                                {title: "中国服务私人订制标准视频教程", item_id: "Tutorial"}
+                            ]
+                        }
+                    ];
+                } else {
+                    alert(obj.description);
+                    $rootScope.Hotel = {
+                        "hotel_id": 1,
+                        "branch_id": 2,
+                        "name": "北京宴",
+                        "icon": "http://oss.aliyun/banquet/avatar/1.jpg",
+                        "branches_count": 3,
+                        "owner_name": "杨秀荣",
+                        "create_time": "创建时间"
+                    };
+                }
+            });
+        },
+        // 获取员工所在酒店的门店列表
+        getBranchList: function (hotel_id) {
+            var url = "/webApp/staff/hotel_branch/list/ ";
+            var param = {};
+            $http.post(url, JSON.stringify(param)).success(function (obj) {
+                if (obj.status === "true") {
+                    $rootScope.Hotel.BranchList = obj.data;
+                } else {
+                    alert(obj.description);
+                    $rootScope.Hotel.BranchList = {count: '', list: []};
+                }
+            })
+        },
+        // 搜索我的订单列表
+        getOrderList: function (status, search_key) {
+            var url = "/webApp/staff/order/search/";
+            var param = {status: status, search_key: search_key};
+            $http.post(url, JSON.stringify(param)).success(function (obj) {
+                if (obj.status === "true") {
+                    $scope.Staff.OrderList = obj.data;
+                } else {
+                    alert(obj.description);
+                    $scope.Staff.OrderList = {count: '', list: []};
+                }
+            });
+        }
+    };
+
+    Staff.getProfile();
+    // 酒店数据更新了
+    $rootScope.$watch('Hotel', function () {
+        // 获取酒店的门店列表
+        Staff.getBranchList();
+    });
 });
 
 // Angular路由配置
@@ -307,69 +463,246 @@ StaffApp.config(['$routeProvider', function ($routeProvider) {
     // 【员工】智能订餐台
     $routeProvider
         .when('/SmartOrder/SmartOrder', {
-            templateUrl: "./template/" + Templates.SmartOrder.SmartOrder, controller: function ($rootScope, $scope) {
+            templateUrl: "./template/" + Templates.SmartOrder.SmartOrder, controller: function ($rootScope, $scope, $http, $modal) {
                 var TAG = Templates.SmartOrder.SmartOrder;
+                $scope.MealsPeriod = ['午餐', '晚餐', '夜宵'];
+                // 三十六宴
+                $scope.BanquetList = {
+                    '生日宴': {},
+                    '满月宴': {},
+                    '婚宴': {}
+                };
                 $scope.weekdays = [
                     "周一", "周二", "周三", "周四", "周五", "周六"
                 ];
-                $scope.branch = $rootScope.branch;
-                // 区域列表
-                $scope.area = $rootScope.area;
-                // 私人订制列表
-                $scope.personal_tailor = angular.copy($rootScope.branch.personal_tailor);
+                $scope.form = {
+                    branch_id: 5,
+                    date: "2017-07-08",
+                    dinner_period: 0
+                };
+                $scope.Branch = {};
+                $scope.MealsTime = $rootScope.MealsTime.dinner;
+                // 门店
+                var Branch = {
+                    // 获取门店的详情
+                    getProfile: function (branch_id) {
+                        var url = "/webApp/hotel_branch/profile/";
+                        var param = {branch_id: branch_id};
+                        $http.post(url, JSON.stringify(param)).success(function (obj) {
+                            if (obj.status === "true") {
+                                $scope.Branch = obj.data;
+                                alert("当前门店：" + $scope.Branch.name);
+                            } else {
+                                Log.e(TAG, "getProfile:" + obj.description);
+                                alert(obj.description);
+                            }
+                        });
+                    },
+                    /***
+                     * 获取门店的区域列表
+                     *
+                     * @param branch_id 门店ID
+                     *
+                     */
+                    getAreaList: function (branch_id) {
+                        var url = "/webApp/hotel_branch/area/list/";
+                        var param = {branch_id: branch_id};
+                        $http.post(url, JSON.stringify(param)).success(function (obj) {
+                            if (obj.status === "true") {
+                                $scope.Branch.Area = obj.data;
+                            } else {
+                                Log.e(TAG, "getAreaList:" + obj.description);
+                                $scope.Branch.Area = {count: '', list: []};
+                            }
+                        });
+                    },
+                    /***
+                     *
+                     * 获取门店某一天某餐段的桌位使用情况列表
+                     *
+                     * @param branch_id 门店ID
+                     * @param date 就餐日期
+                     * @param dinner_period 餐段
+                     *
+                     */
+                    getAreaDesk: function (branch_id, date, dinner_period) {
+                        var url = "/webApp/hotel_branch/desk/list/";
+                        var param = {
+                            "branch_id": branch_id,
+                            "date": date,
+                            "dinner_period": dinner_period
+                        };
+                        $http.post(url, JSON.stringify(param)).success(function (obj) {
+                            if (obj.status === "true") {
+                                $scope.Branch.AreaDesk = obj.data;
+                            } else {
+                                alert(obj.description);
+                                $scope.Branch.AreaDesk = {count: '', list: []};
+                            }
+                        });
+                    }
+                };
+                /***
+                 * 监测日期的变化
+                 */
+                $scope.$watch('form.date', function () {
+                    Branch.getAreaDesk($scope.form.branch_id, $scope.form.date, $scope.form.dinner_period);
+                });
+                $scope.changeBranch = function () {
+                    Branch.getProfile($scope.form.branch_id);
+                    Branch.getAreaList($scope.form.branch_id);
+                    Branch.getAreaDesk($scope.form.branch_id, $scope.form.date, $scope.form.dinner_period);
+                };
+                $scope.$watch('form.dinner_period', function () {
+                    Branch.getAreaDesk($scope.form.branch_id, $scope.form.date, $scope.form.dinner_period);
+                });
+                $scope.selectDesk = function (desk) {
+                    if ($scope.ReserveOrderForm.desks.length < 10) {
+                        if (desk.status === 0) {
+                            var index = $scope.ReserveOrderForm.desks.indexOf(desk.desk_id);
+                            if (index === -1) {
+                                $scope.ReserveOrderForm.desks.push(desk.desk_id);
+                            } else {
+                                $scope.ReserveOrderForm.desks.splice(index, 1);
+                            }
+                            desk.selected = !desk.selected;
+                        } else {
+                            alert("已被占用");
+                        }
+                    } else {
+                        alert("最多选择10个餐位！");
+                    }
+                };
+                // 预定表单
+                $scope.ReserveOrderForm = {
+                    // 预定用餐日期
+                    dinner_date: "2017-07-08",
+                    // 预定用餐时间
+                    dinner_time: "18:39:26",
+                    // 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵')
+                    dinner_period: 0,
+                    // 姓名
+                    name: "赵强",
+                    // 联系电话
+                    contact: "18800184976",
+                    // 客人数量
+                    guest_number: 10,
+                    // 桌位ID的数组
+                    desks: [],
+                    // 宴会类型，来自36宴
+                    banquet: "满月宴",
+                    // 员工备注
+                    staff_description: "客户年纪大，做好防滑",
+                    // --预约短信
+                    order_sms: false,
+                    // --发路线
+                    order_route: false
+                };
                 // 来电列表
-                $scope.Phone = [];
+                $scope.PhoneList = [];
                 // 预约列表
-                $scope.Reserve = [];
+                $scope.ReserveList = [];
                 // 订单列表
-                $scope.Orders = [];
-                // 分页导航、
+                $scope.OrderList = [];
+                //排序选项
+                $scope.SortSelection = [
+                    "按桌位排序", "按下单时间", "客户分类", "有换桌", "有接单人",
+                    "有临牌", "操作人", "手机下单", "网络"
+                ];
+                // 分页显示
                 $scope.pages = [1, 2, 3, 4, 5, 6, 7, 8, 9];
                 // 构造列表
                 for (var i = 0; i < 5; i++) {
-                    $scope.Phone.push({
+                    $scope.PhoneList.push({
                         id: i, time: "14:39", name: "赵强", gender: "male", phone: "18800184976", type: "活跃"
                     });
-                    $scope.Reserve.push({
+                    $scope.ReserveList.push({
                         id: i, time: "14:39", name: "姜璐", gender: "female", phone: "18800184976", type: "流失"
                     });
-                    $scope.Orders.push({
+                    $scope.OrderList.push({
                         id: i, name: "赵强", gender: "male", phone: "18050082265", order_time: "2017/6/23 19:04:48",
                         meal_time: "06月08日晚餐18:00", order_channel: "预订台", area: "二楼", desk: "525", people: "6",
                         amount: "4135.00", order_status: "消费成功", operator: "张欢欢"
                     });
                 }
-                // 订单
-                $scope.form = {
-                    // 预定日期
-                    dinner_date: "",
-                    dinner_time: "",
-                    dinner_period: "",
-                    name: "",
-                    contact: "",
-                    guest_number: "",
-                    desks: "",
-                    banquet: "",
-                    staff_description: ""
-                };
                 $scope.reserve = function () {
                     Log.i(TAG, "预定：" + JSON.stringify($scope.form));
                     var url = "/webApp/admin/order/submit/";
                     var param = $scope.form;
+                    var dlg = $modal.open({
+                        templateUrl: "./template/" + Dialog.SmartOrder.SmartOrder.CreateOrder,
+                        resolve: {
+                            form: function () {
+                                return $scope.ReserveOrderForm;
+                            },
+                            MealsPeriod: function () {
+                                return $scope.MealsPeriod;
+                            }
+                        },
+                        controller: function ($scope, form, MealsPeriod) {
+                            var TAG = Dialog.SmartOrder.SmartOrder.CreateOrder;
+                            Log.i(TAG, "添加预订单控制器");
+                            $scope.option = "添加";
+                            $scope.form = form;
+                            $scope.MealsPeriod = MealsPeriod;
+                            // 餐段选择变动了
+                            $scope.$watch('form.dinner_period', function (p1, p2, p3) {
+                                switch ($scope.form.dinner_period) {
+                                    case 0:
+                                        $scope.MealsTime = $rootScope.MealsTime.lunch;
+                                        break;
+                                    case 1:
+                                        $scope.MealsTime = $rootScope.MealsTime.dinner;
+                                        break;
+                                    case 2:
+                                        $scope.MealsTime = $rootScope.MealsTime.supper;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            });
+                            // 提交
+                            $scope.submit = function () {
+                                Log.i(TAG, "提交预订单：" + $scope.form);
+                                dlg.close($scope.form);
+                            };
+                            // 取消
+                            $scope.cancel = function () {
+                                Log.i(TAG, "取消预订单");
+                            }
+                        }
+                    });
+                    dlg.opened.then(function () {
+                        Log.i(TAG, "对话框已经打开");
+                    });
+                    dlg.result.then(function (result) {
+                        Log.i(TAG, JSON.stringify(result));
+                        var url = "/webApp/order/submit/";
+                        var param = angular.copy(result);
+                        $http.post(url, JSON.stringify(param)).success(function (obj) {
+                            if (obj.status === "true") {
+                                alert("添加预定单成功，订单编号是：" + obj.data.order_id);
+                            } else {
+                                alert(obj.description);
+                            }
+                        });
+                    }, function (reason) {
+                        Log.i(TAG, reason);
+                    });
                 };
                 $scope.cancel = function () {
 
                 };
                 $scope.handlePhone = function (index) {
-                    Log.i(TAG, JSON.stringify($scope.Phone[index]));
+                    Log.i(TAG, JSON.stringify($scope.PhoneList[index]));
                 };
                 $scope.handleReserve = function (index) {
-                    Log.i(TAG, JSON.stringify($scope.Reserve[index]));
+                    Log.i(TAG, JSON.stringify($scope.ReserveList[index]));
                 };
             }
         });
 
-    // 【员工】订单管理
+// 【员工】订单管理
     $routeProvider
         .when('/Order/InsertOrder', {
             templateUrl: "./template/" + Templates.Order.InsertOrder, controller: function ($rootScope, $scope) {
@@ -725,7 +1058,7 @@ StaffApp.config(['$routeProvider', function ($routeProvider) {
             }
         });
 
-    // 【员工】客户管理
+// 【员工】客户管理
     $routeProvider
         .when('/Customer/AnniversaryReport', {
             templateUrl: "./template/" + Templates.Customer.AnniversaryReport, controller: function ($scope) {
@@ -1026,7 +1359,7 @@ StaffApp.config(['$routeProvider', function ($routeProvider) {
             }
         });
 
-    // 【评分员】评分审阅
+// 【评分员】评分审阅
     $routeProvider
         .when('/Review/Rank', {
             templateUrl: "./template/" + Templates.Review.Rank, controller: function ($scope) {
@@ -1063,4 +1396,8 @@ StaffApp.config(['$routeProvider', function ($routeProvider) {
             }
         })
         .when('/Review/Tutorial', {templateUrl: "./template/" + Templates.Review.Tutorial});
-}]);
+
+    $routeProvider
+        .otherwise({redirectTo: "/SmartOrder/SmartOrder"});
+}])
+;

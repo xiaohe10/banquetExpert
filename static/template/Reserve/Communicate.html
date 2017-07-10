@@ -1,8 +1,8 @@
-<!--主页/预订管理/私人订制-->
+<!--主页/预订管理/沟通渠道-->
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="panel-title">
-            私人订制（最多添加12个分类）
+            沟通渠道（最多添加十个沟通渠道分类）
             <small>(共{{data.length}}个分类)</small>
         </div>
     </div>
@@ -51,8 +51,8 @@
         </table>
     </div>
     <div class="panel-footer">
-        <!--新增分类【限制最多12个分类】-->
-        <input class="btn btn-primary btn-sm" type="button" ng-hide="data.length===12"
+        <!--新增分类【限制最多10个分类】-->
+        <input class="btn btn-primary btn-sm" type="button" ng-hide="data.length===10"
                ng-click="data.push({
                     name: '新分类' + data.length,
                     order: data.length,

@@ -1,0 +1,129 @@
+<!--主页/智能订餐台/预约/预订单对话框-->
+<div class="modal-header">
+    创建预定单
+</div>
+<div class="modal-body">
+    <!--表单-->
+    <form class="form-horizontal">
+        <!--客户信息-->
+        <fieldset>
+            <legend class="col-form-legend">客户信息</legend>
+            <!--联系人-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><a style="color: red;">*</a>姓名：</label>
+                <div class="col-sm-10">
+                    <input type="text" ng-model="form.name"/>
+                </div>
+            </div>
+            <!--性别-->
+            <div class="form-group hidden">
+                <label class="col-sm-2 control-label"><a style="color: red;">*</a>性别：</label>
+                <div class="col-sm-10">
+                    <label class="radio-inline">
+                        <input type="radio" ng-model="form.gender" value='1'/>先生
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" ng-model="form.gender" value='2'/>女士
+                    </label>
+                </div>
+            </div>
+            <!--联系电话-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><a style="color: red;">*</a>电话：</label>
+                <div class="col-sm-10">
+                    <label class="text-warning">
+                        <input type="text" ng-model="form.contact" ng-minlength="11"/>请准确输入11位手机号码
+                    </label>
+                </div>
+            </div>
+            <!--员工备注-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label">员工备注：</label>
+                <div class="col-sm-10">
+                    <textarea ng-model="form.staff_description" cols="36" rows="3"></textarea>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend class="col-form-legend">订单信息</legend>
+            <!--预定用餐日期-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label">预定用餐日期</label>
+                <div class="col-sm-10">
+                    <input type="date" ng-model="form.dinner_date"/>
+                </div>
+            </div>
+            <!--订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵')-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label">订餐时段</label>
+                <div class="col-sm-10">
+                    <label class="radio-inline" ng-repeat="x in MealsPeriod">
+                        <input type="radio" ng-model="form.dinner_period" value="{{$index}}"/>{{x}}
+                    </label>
+                </div>
+            </div>
+            <!--预定用餐时间-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label">预定用餐时间</label>
+                <div class="col-sm-10">
+                    <select ng-model="form.dinner_time">
+                        <option ng-repeat="x in MealsTime" value="{{x}}">{{x}}</option>
+                    </select>
+                </div>
+            </div>
+            <!--预定桌位-->
+            <div class="form-group hidden">
+                <label class="col-sm-2 control-label">预定桌位</label>
+                <div class="col-sm-10">
+                    <div class="container">
+                        <!--<div class="row">-->
+                            <!--<div class="col-sm-12">-->
+                                <span class="label label-success" ng-repeat="x in form.desks">{{x}}</span>
+                                <span class="label label-warning" ng-show="form.desks.length===0">未选择桌位！</span>
+                            <!--</div>-->
+                        <!--</div>-->
+                    </div>
+                </div>
+            </div>
+            <!--客人数量-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label">客人数量</label>
+                <div class="col-sm-10">
+                    <input type="number" ng-model="form.guest_number">
+                </div>
+            </div>
+            <!--宴会类型，来自36宴-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label">宴会类型</label>
+                <div class="col-sm-10">
+                    <label class="control-label">
+                        <select ng-model="form.banquet">
+                            <option ng-repeat="x in BanquetList" value="{{$index}}">{{x}}</option>
+                        </select>
+                        来自三十六宴
+                    </label>
+                </div>
+            </div>
+            <!--桌位ID的数组-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label">餐位列表</label>
+                <div class="com-sm-10">
+                    <!--已选桌位ID的数组-->
+                    <div class="container">
+                        <div class="row">
+                            <span class="label label-info" ng-repeat="x in form.desks">{{x}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<div class="modal-footer">
+    <!--操作栏：-->
+    <!--预约短信 发路线 预约-->
+    <label for="order_sms"><input type="checkbox" id="order_sms" type="checkbox" ng-model="form.order_sms"/>预约短信</label>
+    <label for="order_route"><input type="checkbox" id="order_route" type="checkbox" ng-model="form.order_route"/>发路线</label>
+    <input class="btn btn-primary btn-sm" type="button" ng-click="submit()" value="提交"/>
+    <input class="btn btn-primary btn-sm" type="button" ng-click="cancel()" value="取消"/>
+</div>
