@@ -21,7 +21,8 @@
                 <option ng-repeat="x in desk.list|orderBy:'desk_id'|filter:{is_enabled:true}" value="{{x.desk_id}}">{{x.number}}
                 </option>
             </select>
-            <select class="form-control form-control-sm" ng-model="option.select_channel">
+            <!--员工端无此项-->
+            <select ng-hide="from==='staff'" class="form-control form-control-sm" ng-model="option.select_channel">
                 <option value="-1">全部接单渠道</option>
                 <optgroup label="内部渠道">内部渠道</optgroup>
                 <option ng-repeat="x in channel.internal_channel|filter:{is_enabled:true}" ng-value="JSON.stringify(x)">
@@ -33,8 +34,8 @@
                 </option>
             </select>
             <input class="form-control form-control-sm" type="text" ng-model="option.keyword" placeholder="输入姓名或手机号"/>
-            <input class="btn btn-sm btn-primary mx-1 px-2" type="button" ng-click="query()" value="查询"/>
-            <input class="btn btn-sm btn-secondary mx-1 px-2" type="button" ng-click="export()" value="生成报表"/>
+            <input class="btn btn-sm btn-primary" type="button" ng-click="query()" value="查询"/>
+            <input class="btn btn-sm btn-secondary" type="button" ng-click="export()" value="生成报表"/>
         </div>
         <div class="panel panel-default">
             <!--导航栏-->
@@ -46,9 +47,9 @@
             <div class="panel-body">
                 <!--详细信息-->
                 <div class="well well-sm form-inline">
-                    订单总数：{{detail.order_count}} 就餐人数：{{detail.customer_count}}人
+                    订单总数：{{data.count}} 就餐人数：{{detail.customer_count}}人
                     总金额：{{detail.total|currency:"￥"}} 人均消费：{{detail.average|currency:"￥"}}
-                    <input class="btn btn-primary btn-sm mx-1 px-2" type="button" value="补录订单" ng-click="order_append()"/>
+                    <input class="btn btn-primary btn-sm" type="button" value="补录订单" ng-click="order_append()"/>
                 </div>
                 <!--表格-->
                 <table class="table table-hover table-bordered small">
@@ -69,19 +70,23 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr align="center" ng-repeat="x in table">
-                        <td>{{x.name}} {{x.gender}}</td>
-                        <td>{{x.phone}}</td>
-                        <td>{{x.order_time}}</td>
-                        <td>{{x.meal_time}}</td>
-                        <td>{{x.order_channel}}</td>
-                        <td>{{x.area}}</td>
-                        <td>{{x.desk}}</td>
-                        <td>{{x.people}}</td>
-                        <td>{{x.amount|currency:'¥'}}</td>
-                        <td>{{x.order_status}}</td>
-                        <td>{{x.operator}}</td>
-                        <td><a ng-click="order_details($index)">订单详情</a></td>
+                    <tr align="center" ng-repeat="x in data.list">
+                        <td>{{x.name}} {{x.guest_type}}</td>
+                        <td>{{x.contact}}</td>
+                        <td>{{x.create_time|date:'yyyy/MM/dd'}}</td>
+                        <td>{{x.arrival_time|date:'yyyy/MM/dd'}}</td>
+                        <td>{{x.internal_channel}}|{{x.external_channel}}</td>
+                        <td>{{x.finish_time|date:'yyyy/MM/dd'}}</td>
+                        <td>
+                            <span class="badge badge-success" ng-repeat="y in x.desks">
+                                {{y}}
+                            </span>
+                        </td>
+                        <td>{{x.guest_number}}</td>
+                        <td>{{x.consumption|currency:'¥'}}</td>
+                        <td>{{x.status|status}}</td>
+                        <td>{{x.name}}</td>
+                        <td><a ng-click="order_details(x.order_id)">订单详情</a></td>
                     </tr>
                     </tbody>
                 </table>

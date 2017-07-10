@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CID</title>
+    <script for="window" event="onLoad">
+        CID124.SWinit();
+    </script>
+    <script for="window" event="onUnload">
+        CID124.SWfree();
+    </script>
+    <script>
+        var MyInterval;
+        function setType() {
+            var CID_ID = document.form.CIDTYPE.value;
+            CID124.SWsettype(CID_ID);
+            document.form.LineCount.value = CID124.SWgetcount();
+            document.form.CID_SN.value = CID124.SWgetsn();
+        }
+        function getBuf() {
+            var LineCount = CID124.SWgetcount();
+            for (var index = 0; index < LineCount; index++) {
+                var content = CID124.SWgetbuf(index) + ";";
+                document.form.CONTENT.innerHTML += content;
+            }
+        }
+        function run() {
+            if (MyInterval === null) {
+                MyInterval = setInterval(getBuf, 20);
+            } else {
+                clearInterval(MyInterval);
+                MyInterval = null;
+            }
+        }
+    </script>
+</head>
+<body>
+<object classid="CLSID:9141E87C-D5F3-4636-96EC-8E29C4D40567" width="36" height="36" id="CID124" type="application/x-itst/activex">
+    <param name="_ExtentX" value="953">
+    <param name="_ExtentY" value="953">
+</object>
+<form name="form">
+    <label>线路总数：<input type="number" name="LineCount" disabled/></label><br/>
+    <label>设备序列号：<input type="text" name="CID_SN" disabled/></label><br/>
+    <label>设置类型：<input type="text" name="CID_TYPE" click="setType()" value="2"/></label><br/>
+    <label>来电：<input type="button" name="run" click="run()" value="开启监听"/></label><br/>
+    <label>来电：<textarea name="CONTENT"></textarea></label>
+</form>
+</body>
+</html>
