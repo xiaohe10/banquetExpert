@@ -23,4 +23,6 @@ urlpatterns = [
     url(r'^guest/list/$', get_guests, name='get_guest_list'),
     # 获取员工的客户统计
     url(r'^guest/statistic/$', get_guest_statistic, name='get_guest_statistic'),
+    # 搜索员工的订单
+    url(r'^order/search/$', search_orders, name='search_order'),
 ]

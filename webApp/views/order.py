@@ -248,9 +248,9 @@ def get_profile(request, token, order_id):
     'has_balloon': forms.BooleanField(required=False),
 })
 @validate_staff_token()
-def submit_order(request, token, dinner_date, dinner_time,
-                 dinner_period, **kwargs):
-    """提交订单
+def submit_order(request, token, dinner_date, dinner_time, dinner_period,
+                 **kwargs):
+    """提交订单(今天及以后的订单)
 
     :param token: 令牌(必传)
     :param dinner_date: 预定就餐日期(必传)
@@ -278,7 +278,7 @@ def submit_order(request, token, dinner_date, dinner_time,
 
     # 下单日期校验
     if dinner_date < timezone.now().date():
-        return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+        return err_response('err_5', '下单日期不能小于当前日期')
 
     branch_list = []
     branch = None
@@ -302,6 +302,106 @@ def submit_order(request, token, dinner_date, dinner_time,
                                     status__in=[0, 1],
                                     desks__icontains=desk_id).count() > 0:
                 return err_response('err_4', '桌位已被预定')
+            desk_list[i] = desk_id
+        desks = json.dumps(desk_list)
+    except KeyError or ValueError:
+        return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+
+    # 桌位验证
+    if (len(branch_list) != 1) or (branch is None) or \
+            (branch.hotel != request.staff.hotel):
+        return err_response('err_3', '桌位不存在')
+
+    order_keys = ('name', 'contact', 'guest_number', 'staff_description',
+                  'water_card', 'door_card', 'sand_table', 'welcome_screen',
+                  'welcome_fruit', 'welcome_card', 'background_music',
+                  'has_candle', 'has_flower', 'has_balloon', 'banquet')
+
+    with transaction.atomic():
+        try:
+            order = Order(dinner_date=dinner_date, dinner_time=dinner_time,
+                          dinner_period=dinner_period, desks=desks,
+                          internal_channel=request.staff, branch=branch)
+            for k in order_keys:
+                if k in kwargs:
+                    setattr(order, k, kwargs[k])
+            order.save()
+            return corr_response({'order_id': order.id})
+        except IntegrityError as e:
+            print(e)
+            return err_response('err_6', '服务器创建订单错误')
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+    'dinner_date': forms.DateField(),
+    'dinner_time': forms.TimeField(),
+    'dinner_period': forms.IntegerField(min_value=0, max_value=2),
+    'name': forms.CharField(min_length=1, max_length=20),
+    'contact': forms.RegexField(r'[0-9]{11}'),
+    'guest_number': forms.IntegerField(),
+    'banquet': forms.CharField(max_length=10, required=False),
+    'staff_description': forms.CharField(max_length=100, required=False),
+    'water_card': forms.CharField(max_length=10, required=False),
+    'door_card': forms.CharField(max_length=10, required=False),
+    'sand_table': forms.CharField(max_length=10, required=False),
+    'welcome_screen': forms.CharField(max_length=10, required=False),
+    'welcome_fruit': forms.IntegerField(required=False),
+    'welcome_card': forms.CharField(max_length=10, required=False),
+    'background_music': forms.CharField(max_length=20, required=False),
+    'has_candle': forms.BooleanField(required=False),
+    'has_flower': forms.BooleanField(required=False),
+    'has_balloon': forms.BooleanField(required=False),
+})
+@validate_staff_token()
+def supply_order(request, token, dinner_date, dinner_time,
+                 dinner_period, **kwargs):
+    """补录订单(今天及以前的订单)
+
+    :param token: 令牌(必传)
+    :param dinner_date: 预定就餐日期(必传)
+    :param dinner_time: 预定就餐时间(必传)
+    :param dinner_period: 餐段, 0: 午餐, 1: 晚餐, 2: 夜宵(必传)
+    :param kwargs:
+        name: 联系人(必传)
+        contact: 联系电话(必传)
+        guest_number: 就餐人数(必传)
+        desks: 预定桌位, 可以多桌, 数组(必传)
+        banquet: 宴会类型
+        staff_description: 员工备注
+        water_card: 水牌
+        door_card: 门牌
+        sand_table: 沙盘
+        welcome_screen: 欢迎屏
+        welcome_fruit: 迎宾水果的价格
+        welcome_card: 欢迎卡
+        background_music: 背景音乐
+        has_candle: 是否有糖果
+        has_flower: 是否有鲜花
+        has_balloon: 是否有气球
+    :return: order_id
+    """
+
+    # 下单日期校验
+    if dinner_date > timezone.now().date():
+        return err_response('err_4', '补录订单日期不能大于当前日期')
+
+    branch_list = []
+    branch = None
+    # 验证桌位是否存在
+    try:
+        desk_list = json.loads(request.body)['desks']
+        for i in range(len(desk_list)):
+            # 桌位号加首尾限定符
+            desk_id = '$' + str(desk_list[i]) + '$'
+            if not Desk.enabled_objects.filter(id=desk_list[i]).count() > 0:
+                return err_response('err_3', '桌位不存在')
+
+            # 查找订餐的门店
+            branch = Desk.enabled_objects.get(id=desk_list[i]).area.branch
+            if branch.id not in branch_list:
+                branch_list.append(branch.id)
+
             desk_list[i] = desk_id
         desks = json.dumps(desk_list)
     except KeyError or ValueError:

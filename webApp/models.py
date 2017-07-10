@@ -454,7 +454,7 @@ class Order(models.Model):
     # 预定桌位, 可能多桌
     desks = models.CharField(max_length=50, default='')
     # 支付金额
-    consumption = models.IntegerField(default=None, null=True, db_index=True)
+    consumption = models.IntegerField(default=0, db_index=True)
     # 宴会类型
     banquet = models.CharField(max_length=10, default='')
     # 水牌
@@ -531,9 +531,9 @@ class HotelDayConsumption(models.Model):
     # 总桌数
     desk_number = models.IntegerField(default=0)
     # 人均消费
-    person_consumption = models.FloatField(default=0.0)
+    person_consumption = models.FloatField(default=0.00)
     # 桌均消费
-    desk_consumption = models.FloatField(default=0.0)
+    desk_consumption = models.FloatField(default=0.00)
 
     # 日期
     date = models.DateField(db_index=True)

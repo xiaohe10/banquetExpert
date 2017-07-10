@@ -9,6 +9,8 @@ urlpatterns = [
     url(r'^profile/$', get_profile, name='profile'),
     # 提交订单
     url(r'^submit/$', submit_order, name='submit'),
+    # 补录订单
+    url(r'^supply/$', supply_order, name='supply'),
     # 修改订单
     url(r'^update/$', modify_order, name='modify'),
     # 获取月订单列表
