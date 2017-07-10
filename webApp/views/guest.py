@@ -1,4 +1,3 @@
-import time
 import json
 
 from datetime import timedelta
@@ -325,7 +324,7 @@ def get_profile(request, token, guest_id=None, phone=None):
 
     if guest_id:
         try:
-            guest = Guest.objects.get(id=guest_id)
+            guest = Guest.objects.get(id=guest_id, hotel=hotel)
         except ObjectDoesNotExist:
             return err_response('err_4', '客户不存在')
     elif phone:
@@ -504,7 +503,7 @@ def add_profile(request, token, phone, name, **kwargs):
     hotel = request.staff.hotel
 
     if Guest.objects.filter(hotel=hotel, phone=phone).exists():
-        return err_response('err_2', '该客户已经存在')
+        return err_response('err_2', '该手机号已经存在')
 
     guest_keys = ('guest_type', 'gender', 'birthday', 'birthday_type', 'like',
                   'dislike', 'special_day', 'personal_need')

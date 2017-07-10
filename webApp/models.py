@@ -232,6 +232,26 @@ class Staff(models.Model):
     description = models.CharField(max_length=100, default='')
     # 权限
     authority = models.CharField(max_length=20, default='', db_index=True)
+    # 电话隐私
+    phone_private = models.BooleanField(default=False)
+    # 销售职能
+    sale_enabled = models.BooleanField(default=True)
+    # 订单短信
+    order_sms_inform = models.BooleanField(default=True)
+    # 短信附加
+    order_sms_attach = models.BooleanField(default=True)
+    # 提成结算/接单提成 消费额百分比，按订单数量，按消费人数
+    order_bonus = models.CharField(max_length=60, default='')
+    # 提成结算/开新客提成 消费额百分比，按订单数量，按消费人数
+    new_customer_bonus = models.CharField(max_length=60, default='')
+    # 管辖桌位
+    manage_desks = models.CharField(max_length=1000, default='')
+    # 管辖区域
+    manage_areas = models.CharField(max_length=500, default='')
+    # 管理渠道客户
+    manage_channel = models.CharField(max_length=1000, default='')
+    # 沟通渠道
+    communicate = models.CharField(max_length=800, default='')
     # 是否有效
     is_enabled = models.BooleanField(default=True, db_index=True)
 
