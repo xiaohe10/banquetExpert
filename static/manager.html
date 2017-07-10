@@ -28,21 +28,27 @@
     <div class="row">
         <!--左侧导航栏-->
         <div class="col-2 affix" ng-controller="drawerCtrl">
+            <!--标题栏-->
             <div class="thumbnail bg-warning">
+                <!--显示酒店Logo-->
                 <img class="img-rounded" ng-src="{{hotel.icon}}" alt="IMAGE">
+                <!--显示酒店名称-->
                 <div class="caption bg-warning">
                     <h3 class="text-center">{{hotel.name}}</h3>
                 </div>
             </div>
+            <!--折叠二级菜单-->
             <div class="panel-group" id="drawer">
                 <div class="panel panel-default" ng-repeat="menu in menus">
                     <div class="panel-heading" data-toggle="collapse" data-parent="#drawer" data-target="#{{menu.menu_id}}">
                         <h4 class="panel-title"> {{menu.title}} </h4>
                     </div>
                     <div class="panel-collapse collapse" id="{{menu.menu_id}}">
+                        <!--构造子菜单-->
                         <!--<div class="panel-body">-->
                         <ul class="nav nav-tabs nav-stacked">
-                            <li class="" ng-repeat="x in menu.item">
+                            <li ng-repeat="x in menu.item">
+                                <!--生成子菜单路由-->
                                 <a href="#/{{menu.menu_id}}/{{x.item_id}}">
                                     <i class="glyphicon-chevron-right"></i>
                                     {{x.title}}

@@ -253,13 +253,15 @@ ManagerApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
     $rootScope.Authority = [
         {
             name: "管理职能",
+            checked: false,
             item: [
                 {
                     name: "账户管理",
+                    checked: false,
                     item: [
-                        "购买服务及续费",
-                        "获客渠道管理",
-                        "自定义Logo"
+                        {name: "购买服务及续费", checked: false},
+                        {name: "获客渠道管理", checked: false},
+                        {name: "自定义Logo", checked: false},
                     ]
                 }
             ]
@@ -267,18 +269,15 @@ ManagerApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
         {
             name: "营销职能",
             item: []
-        }
-        ,
+        },
         {
             name: "预订职能",
             item: []
-        }
-        ,
+        },
         {
             name: "销售职能",
             item: []
-        }
-        ,
+        },
         {
             name: "移动端管理",
             item: []
@@ -306,7 +305,9 @@ ManagerApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
         if (obj.status === "true") {
             Log.i(TAG, "获取酒店信息成功");
             $rootScope.Hotel = obj.data;
+            // 酒店信息
             $scope.hotel = $rootScope.Hotel;
+            // 侧边栏
             $scope.menus = [
                 {
                     title: "员工管理",
@@ -368,6 +369,7 @@ ManagerApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
             ];
         } else {
             alert(obj.description);
+            // 无该管理员，跳转到
             location.href = "login.html";
         }
     });
@@ -521,28 +523,34 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                                     case 0:
                                         break;
                                     case 1:
-                                        // 【高层管理】 +管理渠道客户
-                                        channel.manage_channel = [1, 2, 3];
+                                        // 【高层管理】
+                                        angular.extend(channel, {
+                                            //+管理渠道客户
+                                            manage_channel: [1, 2, 3]
+                                        });
                                         break;
                                     case 2:
                                         // 【预订员】 +沟通渠道
-                                        channel.communicate = {
-                                            // 沟通渠道
-                                            channel: "tel_box",
-                                            // 电话盒子
-                                            tel_box: [
-                                                "(来电盒子)线路1", "(来电盒子)线路2", "(来电盒子)线路3", "(来电盒子)线路4",
-                                                "(来电盒子)线路5", "(来电盒子)线路6", "(来电盒子)线路7", "(来电盒子)线路8"
-                                            ],
-                                            // 智能电话
-                                            smart_tel: [
-                                                "(智能电话)线路1", "(智能电话)线路2", "(智能电话)线路3", "(智能电话)线路4",
-                                                "(智能电话)线路5", "(智能电话)线路6", "(智能电话)线路7"
-                                            ]
-                                        };
+                                        angular.extend(channel, {
+                                            communicate: {
+                                                // 沟通渠道
+                                                channel: "tel_box",
+                                                // 电话盒子
+                                                tel_box: [
+                                                    "(来电盒子)线路1", "(来电盒子)线路2", "(来电盒子)线路3", "(来电盒子)线路4",
+                                                    "(来电盒子)线路5", "(来电盒子)线路6", "(来电盒子)线路7", "(来电盒子)线路8"
+                                                ],
+                                                // 智能电话
+                                                smart_tel: [
+                                                    "(智能电话)线路1", "(智能电话)线路2", "(智能电话)线路3", "(智能电话)线路4",
+                                                    "(智能电话)线路5", "(智能电话)线路6", "(智能电话)线路7"
+                                                ]
+                                            }
+                                        });
                                         break;
                                     case 3:
                                         // 【客户经理】
+                                        channel.sale_enabled = true;
                                         break;
                                     default:
                                         break;
@@ -1800,5 +1808,5 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
 
     // 【酒店】默认自动进入订餐台
     $routeProvider
-        .otherwise({redirectTo: "/SmartOrder/SmartOrder"});
+        .otherwise({redirectTo: "/Channel/Staff"});
 }]);

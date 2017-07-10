@@ -8,12 +8,13 @@ Templates = {
     Breadcrumb: "Drawer/Breadcrumb.html",
     // 预定管理
     Reserve: {
-        Reserve: "/Reserve/Reserve.html", // 预订管理
+        Reserve: "Reserve/Reserve.html", // 预订管理
         AreaDesk: "Reserve/AreaDesk.html", // 桌位设置
         MealsTime: "Reserve/MealsTime.html", // 餐段管理
         MealsArea: "Reserve/MealsArea.html", // 餐位设置
-        DeskRecommend: "Reserve/DeskRecommend.html",// 自动推荐桌位
-        PersonalTailor: "Reserve/PersonalTailor.html"// 私人订制
+        DeskRecommend: "Reserve/DeskRecommend.html", // 自动推荐桌位
+        PersonalTailor: "Reserve/PersonalTailor.html", // 私人订制
+        Communicate: "Reserve/Communicate.html" // 沟通渠道
     }
 };
 
@@ -119,7 +120,8 @@ BranchApp.controller('drawerCtrl', function ($routeParams, $rootScope, $location
             {title: "餐位设置", item_id: "MealsArea"},
             {title: "桌位设置", item_id: "AreaDesk"},
             {title: "自动推荐桌位", item_id: "DeskRecommend"},
-            {title: "私人订制", item_id: "PersonalTailor"}
+            {title: "私人订制", item_id: "PersonalTailor"},
+            {title: "沟通渠道", item_id: "Communicate"}
         ]
     }];
     // 路径导航
@@ -578,6 +580,18 @@ BranchApp.config(['$routeProvider', function ($routeProvider) {
                         }
                     });
                 };
+                // 【管理员】修改桌位列表
+                var postDeskList = function (list) {
+                    var url = "/webApp/admin/hotel_branch/desks/modify";
+                    var param = angular.copy(list);
+                    $http.post(url, JSON.stringify(param)).success(function (obj) {
+                        if (obj.status === "true") {
+                            alert("保存成功");
+                        } else {
+                            alert(obj.description);
+                        }
+                    });
+                };
 
                 getDeskList($scope.selected_count);
 
@@ -587,6 +601,7 @@ BranchApp.config(['$routeProvider', function ($routeProvider) {
                 };
                 $scope.save = function () {
                     Log.i(TAG, JSON.stringify($scope.desk));
+                    postDeskList($scope.desk);
                 }
             }
         })
@@ -597,19 +612,27 @@ BranchApp.config(['$routeProvider', function ($routeProvider) {
                 $scope.save = function () {
                     Log.i(TAG, JSON.stringify($scope.data));
                     // 【门店】保存私人订制列表
-                    var url = "/webApp/admin/hotel_branch/personal_tailor/modify/";
-                    var param = {
-                        branch_id: $rootScope.branch_id,
-                        personal_tailor: $scope.data
+                    var postPersonalTailor = function (branch_id, personal_tailor) {
+                        var url = "/webApp/admin/hotel_branch/personal_tailor/modify/";
+                        var param = {
+                            branch_id: branch_id,
+                            personal_tailor: angular.copy(personal_tailor)
+                        };
+                        $http.post(url, JSON.stringify(param)).success(function (obj) {
+                            if (obj.status === "true") {
+                                alert("保存成功");
+                            } else {
+                                alert(obj.description);
+                            }
+                        });
                     };
-                    $http.post(url, JSON.stringify(param)).success(function (obj) {
-                        if (obj.status === "true") {
-                            alert("保存成功");
-                        } else {
-                            alert(obj.description);
-                        }
-                    });
+                    postPersonalTailor($rootScope.branch_id, $scope.data);
                 }
+            }
+        })
+        .when('/Reserve/Communicate', {
+            templateUrl: "./template/" + Templates.Reserve.Communicate, controller: function ($scope) {
+
             }
         })
         .otherwise({redirectTo: "/Reserve/:branch_id"});

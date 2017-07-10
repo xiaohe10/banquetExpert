@@ -61,7 +61,7 @@
                     <input type="text" ng-model="form.channel"/>
                 </div>
             </div>
-            <!--销售职能-->
+            <!--销售职能【客户经理默认打开】-->
             <div class="form-group">
                 <label class="col-lg-2 control-label">销售职能：</label>
                 <div class="col-lg-10">
@@ -107,7 +107,8 @@
                                     <label>
                                         <input type="radio" ng-model="form.order_bonus.method" value="0"/>按消费额百分比
                                     </label>
-                                    <label class=" inline">
+                                    <!--order_bonus.method为0时显示-->
+                                    <label ng-show="form.order_bonus.method==='0'">
                                         消费金额 * <input type="number" ng-model="form.order_bonus.value">元/桌
                                     </label>
                                 </div>
@@ -115,7 +116,8 @@
                                     <label>
                                         <input type="radio" ng-model="form.order_bonus.method" value="1"/>按订单数量
                                     </label>
-                                    <label>
+                                    <!--order_bonus.method为1时显示-->
+                                    <label ng-show="form.order_bonus.method==='1'">
                                         <input type="number" ng-model="form.order_bonus.value">元/桌
                                     </label>
                                 </div>
@@ -123,7 +125,8 @@
                                     <label>
                                         <input type="radio" ng-model="form.order_bonus.method" value="2"/>按消费人数
                                     </label>
-                                    <label>
+                                    <!--order_bonus.method为2时显示-->
+                                    <label ng-show="form.order_bonus.method==='2'">
                                         <input type="number" ng-model="form.order_bonus.value">元/人
                                     </label>
                                 </div>
@@ -134,12 +137,12 @@
                             <!--开新客提成-->
                             <label>
                                 <input type="checkbox" ng-model="form.new_customer_bonus.enabled"/>开新客提成
-                                <a class="warning">客户第一次在系统内生成订单消费成功，则接单人新开客数量加1。</a>
+                                <span class="text-warning">客户第一次在系统内生成订单消费成功，则接单人新开客数量加1。</span>
                             </label>
                             <div class="p-2 bg-warning" ng-show="form.new_customer_bonus.enabled">
                                 <h5>提成结算方式</h5>
                                 <div>
-                                    <label class=" inline">
+                                    <label>
                                         消费金额 * <input type="number" ng-model="form.new_customer_bonus.value">元/桌
                                     </label>
                                 </div>
@@ -179,7 +182,7 @@
                         </nav>
                     </div>
                     <!--桌位选择列表-->
-                    <div ng-hide="select_all_seat===false">
+                    <div ng-hide="select_all_seat===true">
                         <ul class="list-group">
                             <li class="list-group-item" ng-repeat="x in area.list">{{x.name}}</li>
                         </ul>
@@ -198,7 +201,7 @@
                             <ul class="list-inline" ng-show="form.communicate.channel==='tel_box'">
                                 <li ng-repeat="x in form.communicate.tel_box">
                                     <label>
-                                        <input type="checkbox" ng-click="check_box($index)"/>{{x}}
+                                        <input type="checkbox" ng-click="checkTelBox($index)"/>{{x}}
                                     </label>
                                 </li>
                             </ul>
@@ -210,7 +213,7 @@
                             <ul class="list-inline" ng-show="form.communicate.channel==='smart_tel'">
                                 <li ng-repeat="x in form.communicate.smart_tel">
                                     <label>
-                                        <input type="checkbox" ng-click="check_phone($index)"/>{{x}}
+                                        <input type="checkbox" ng-click="checkPhone($index)"/>{{x}}
                                     </label>
                                 </li>
                             </ul>

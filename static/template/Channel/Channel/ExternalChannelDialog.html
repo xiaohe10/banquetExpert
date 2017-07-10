@@ -57,31 +57,34 @@
                 <div class="col-lg-9">
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <label class="">
+                            <label>
                                 <input type="radio" ng-model="form.commission_type" value="0"/>无
                             </label>
                         </li>
                         <li class="list-group-item">
-                            <label class="">
-                                <input type="radio" ng-model="form.commission_type" value="1"/>按消费额百分比
+                            <label>
+                                <input type="radio" ng-model="form.commission_type" ng-bind="" value="1"/>按消费额百分比
                             </label>
-                            <label class="">
+                            <!--commission_type为1时显示-->
+                            <label ng-show="form.commission_type==='1'">
                                 消费金额 * <input type="number" ng-model="form.commission_value">元/桌
                             </label>
                         </li>
                         <li class="list-group-item">
-                            <label class="">
+                            <label>
                                 <input type="radio" ng-model="form.commission_type" value="2"/>按订单数量
                             </label>
-                            <label class="">
+                            <!--commission_type为2时显示-->
+                            <label ng-show="form.commission_type==='2'">
                                 <input type="number" ng-model="form.commission_value">元/桌
                             </label>
                         </li>
                         <li class="list-group-item">
-                            <label class="">
+                            <label>
                                 <input type="radio" ng-model="form.commission_type" value="3"/>按消费人数
                             </label>
-                            <label class="">
+                            <!--commission_type为3时显示-->
+                            <label ng-show="form.commission_type==='3'">
                                 <input type="number" ng-model="form.commission_value">元/人
                             </label>
                         </li>
