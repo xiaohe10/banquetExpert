@@ -14,7 +14,7 @@ from django.core.validators import RegexValidator
 from ..utils.decorator import validate_args, validate_staff_token
 from ..utils.response import corr_response, err_response
 from ..utils.http import send_message
-from ..models import Staff, Hotel, Order, Guest,\
+from ..models import Staff, Hotel, Order, Guest, Desk, \
     ValidationCode as ValidationCodeModel
 
 
@@ -689,7 +689,7 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
             guest_type: 顾客身份
             contact: 联系电话
             guest_number: 客人数量
-            desks: 桌位, 数组
+            desks: 桌位, 数组, [{"desk_id":1,"number":"110"}, ...]
     """
     ORDERS = ('create_time', '-create_time')
 
@@ -781,13 +781,17 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
              'internal_channel': r.internal_channel.name if
              r.internal_channel else '',
              'external_channel': r.external_channel.name if
-             r.external_channel else ''}
+             r.external_channel else '',
+             'desks': []}
 
         desks_list = json.loads(r.desks)
-        d['desks'] = []
         for desk in desks_list:
             desk_id = int(desk[1:-1])
-            d['desks'].append(desk_id)
+            try:
+                number = Desk.objects.get(id=desk_id).number
+            except ObjectDoesNotExist:
+                number = ''
+            d['desks'].append({'desk_id': desk_id, 'number': number})
 
         l.append(d)
 

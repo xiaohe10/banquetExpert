@@ -1462,7 +1462,7 @@ URL：webApp/staff/order/search/ <br>
 | contact | 联系电话 |
 | guest_type | 顾客身份 |
 | guest_number | 客人数量 |
-| desks | 桌位ID数组 |
+| desks | 桌位ID和编号数组 |
 | internal_channel | 内部获客渠道, 即接单人名字, 如果存在 |
 | external_channel | 外部获客渠道, 即外部渠道名称, 如果存在 |
 
@@ -1492,7 +1492,12 @@ URL：webApp/staff/order/search/ <br>
             "guest_type":"vip",
             "contact":"18813101211",
             "guest_number":10,
-            "desks":[1,3,5],
+            "desks":[{
+                "desk_id":1,
+                "number":"110"
+                },
+                ...
+            ],
             "internal_channel":"刘光艳",
             "external_channel":"美团"
             ],
@@ -1583,7 +1588,6 @@ URL：webApp/order/supply/ <br>
 	}
 }
 ```
-
 
 
 错误代码：
