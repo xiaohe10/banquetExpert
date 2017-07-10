@@ -12,6 +12,7 @@ from django.core.validators import RegexValidator
 
 from ..utils.decorator import validate_args, validate_staff_token
 from ..utils.response import corr_response, err_response
+from ..utils.http import send_message
 from ..models import Staff, Hotel, Order, Guest,\
     ValidationCode as ValidationCodeModel
 
@@ -28,10 +29,12 @@ def get_validation_code(request, phone):
 
     code = ValidationCodeModel.generate(phone)
     if code:
-        # 调用第三方短信平台给手机号发短信
-        # todo
-        # send_message(phone_number, code)
-        return corr_response()
+        # 调用第三方短信平台给手机号发短信验证码
+        result = send_message(phone, code)
+        if result == 1:
+            return corr_response()
+        else:
+            return err_response('err_3', '发送短信失败')
     else:
         return err_response('err_2', '接口访问频率限制')
 

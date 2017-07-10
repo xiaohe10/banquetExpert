@@ -19,7 +19,7 @@ def validate_super_admin_token():
             try:
                 admin = Admin.objects.get(token=kwargs['token'])
             except ObjectDoesNotExist:
-                return err_response('err_3', '不存在该管理员')
+                return err_response('err_3', '您已下线，请重新登录！')
             else:
                 if admin.type != 1:
                     return err_response('err_2', '权限错误')
@@ -41,7 +41,7 @@ def validate_admin_token():
             try:
                 admin = Admin.objects.get(token=kwargs['token'])
             except ObjectDoesNotExist:
-                return err_response('err_3', '不存在该管理员')
+                return err_response('err_3', '您已下线，请重新登录！')
             else:
                 if admin.type != 0:
                     return err_response('err_2', '权限错误')
@@ -63,7 +63,7 @@ def validate_staff_token():
             try:
                 staff = Staff.objects.get(token=kwargs['token'])
             except ObjectDoesNotExist:
-                return err_response('err_3', '不存在该员工')
+                return err_response('err_3', '您已下线，请重新登录！')
             else:
                 if staff.is_enabled is not True:
                     return err_response('err_3', '不存在该员工')
@@ -85,7 +85,7 @@ def validate_user_token():
             try:
                 user = User.objects.get(token=kwargs['token'])
             except ObjectDoesNotExist:
-                return err_response('err_3', '不存在该用户')
+                return err_response('err_3', '您已下线，请重新登录！')
             else:
                 if user.is_enabled is not True:
                     return err_response('err_3', '不存在该用户')
