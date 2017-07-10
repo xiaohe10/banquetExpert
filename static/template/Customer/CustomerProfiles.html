@@ -7,8 +7,10 @@
     </div>
     <div class="panel-body">
         <!--操作栏-->
-        <div class="well well-sm form-inline">选择渠道
-            <div class="input-group">
+        <div class="well well-sm form-inline">
+            <!--员工端无此项-->
+            <div ng-hide="from==='staff'" class="input-group">
+                选择渠道
                 <select class="form-control form-control-sm" ng-model="option.selected_channel">
                     <option value="-1">全部接单渠道</option>
                     <optgroup label="内部渠道"></optgroup>
@@ -27,7 +29,7 @@
         <!--导航栏-->
         <div class="well well-sm">
             <ul class="nav nav-tabs">
-                <li ng-repeat="(k,v) in type"><a ng-click="filter(v)">{{v}}</a></li>
+                <li ng-repeat="(k,v) in status"><a ng-click="filter($index)">{{v}}</a></li>
             </ul>
         </div>
         <!--详细信息-->
@@ -44,7 +46,7 @@
             <label for="to_type">
                 全部客户共{{table.length}}条记录，已经选择{{detail.selected_count}} / {{data.count}} | 移动到
                 <select class="form-control form-control-sm" ng-model="option.to_type" id="to_type">
-                    <option ng-repeat="(k, v) in type" value="{{$index}}">{{v}}</option>
+                    <option ng-repeat="(k, v) in status" value="{{$index}}">{{v}}</option>
                 </select>
             </label>
             <input class="btn btn-primary btn-sm" type="button" ng-click="move()" value="移动"/>

@@ -1,0 +1,15 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">
+            宴会类型
+        </div>
+    </div>
+    <div class="panel-body">
+        <ul class="list-group">
+            <li class="list-group-item" ng-repeat="(k, v) in form">
+                <small>{{k}}</small>
+                <span class="label label-info" ng-repeat="x in v">{{x}}</span>
+            </li>
+        </ul>
+    </div>
+</div>
