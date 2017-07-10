@@ -934,7 +934,7 @@ URL：webApp/hotel_branch/desk/list/ <br>
 
 # 订单接口
 
-## 提交订单
+## 提交订单（今天及以后的订单）
 URL：webApp/order/submit/ <br>
 请求方式：POST <br>
 
@@ -1017,6 +1017,10 @@ URL：webApp/order/submit/ <br>
 |:------------- |:---------------|
 | err_1 | 参数不正确（缺少参数或者不符合格式） |
 | err_2 | 权限错误 |
+| err_3 | 桌位不存在 |
+| err_4 | 桌位已被预定    |
+| err_5 | 补录订单日期不能大于当前日期    |
+| err_6 | 服务器创建订单错误 |
 
 
 ## 搜索订单列表
@@ -1404,6 +1408,197 @@ desk_consumption | 桌均消费
 	]
 }
 ```
+
+## 搜索员工自己的订单列表
+URL：webApp/staff/order/search/ <br>
+请求方式：POST <br>
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------:|
+| token         | 登录口令          |         yes  |
+| order_date    | 下单日期  |   no |
+| date_start    | 起始日期  | no    |
+| date_end  | 终止日期  | no    |
+| desk_id   | 桌位ID  | no    |
+| dinner_period | 餐段，0：午餐，1：晚餐，2：夜宵    |   no |
+| dinner_date   | 预定用餐日期  |   no  |
+| dinner_time   | 预定用餐时间  |   no  |
+| status | 订单状态（0: 进行中，1: 已完成，2: 已删除，默认为0）  | no |
+| search_key | 搜索关键词（如姓名、手机等进行模糊搜索） | no |
+| offset | 起始值（默认0） | no |
+| limit | 偏移量（默认10） | no |
+| order | 排序方式（0: 注册时间升序，1: 注册时间降序，默认1） | no |
+
+
+请求示例:
+
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"status":0,
+	"search_key":"张总",
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| count | 订单数量 |
+| list | 订单列表 |
+| 以下为list中的数据 |
+| order_id| 订单ID |
+| create_time | 创建日期 |
+| cancel_time | 撤销日期 |
+| arrival_time  | 客到日期 |
+| finish_time | 完成日期 |
+| consumption   | 消费金额  |
+| status | 状态((0, '已订'), (1, '客到'), (2, '已完成'), (3, '已撤单'))|
+| dinner_date | 预定用餐日期 |
+| dinner_time   | 预定用餐时间  |
+| dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') |
+| name | 联系人 |
+| contact | 联系电话 |
+| guest_type | 顾客身份 |
+| guest_number | 客人数量 |
+| desks | 桌位ID和编号数组 |
+| internal_channel | 内部获客渠道, 即接单人名字, 如果存在 |
+| external_channel | 外部获客渠道, 即外部渠道名称, 如果存在 |
+
+
+返回示例：
+
+注意：返回的订单列表以数组来表示
+
+```
+{
+	"status":"true",
+	"data":{
+	    "count":100,
+	    "list":[
+            "order_id":1,
+            "create_time":"2014-02-01 10:00:00",
+            "cancel_time":"2014-02-01 10:00:00",
+            "arrival_time":"2014-02-01 10:00:00",
+            "finish_time":"2014-02-01 10:00:00",
+            "consumption":1000,
+            "status":0,
+            "order_id":"001",
+            "dinner_date":"2014-02-01",
+            "dinner_time":"12:00",
+            "dinner_period":0,
+            "name":"李四",
+            "guest_type":"vip",
+            "contact":"18813101211",
+            "guest_number":10,
+            "desks":[{
+                "desk_id":1,
+                "number":"110"
+                },
+                ...
+            ],
+            "internal_channel":"刘光艳",
+            "external_channel":"美团"
+            ],
+			...
+	    }
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+
+
+## 补录订单（今天及以前的订单）
+URL：webApp/order/supply/ <br>
+请求方式：POST <br>
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------:|
+| token         | 登录口令          |         yes  |
+| dinner_date | 预定用餐日期 | yes |
+| dinner_time | 预定用餐时间 | yes |
+| dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') | yes |
+| name | 联系人 | yes |
+| contact | 联系电话 | yes |
+| guest_number | 客人数量 | yes |
+| desks | 桌位ID的数组 | yes |
+| banquet   | 宴会类型，来自36宴  | no    |
+| staff_description | 员工备注 | no |
+|以下是私人订制的字段|
+| water_card | 水牌 | no |
+| door_card | 门牌 | no |
+| sand_table | 沙盘 | no |
+| welcome_screen | 欢迎屏 | no |
+| welcome_fruit | 迎宾水果的价格 | no |
+| welcome_card | 欢迎卡 | no |
+| background_music | 背景音乐 | no |
+| has_candle | 是否有蜡烛 | no |
+| has_flower | 是否有鲜花 | no |
+| has_balloon | 是否有气球 | no |
+
+
+请求示例:
+
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"dinner_date":"2014-02-01",
+	"dinner_time":"12:00"
+	"dinner_period":0,
+	"name":"李四",
+	"contact":"18813101211",
+	"guest_number":10,
+	"banquet":"满月宴",
+	"desks":[1,3,5],
+	"staff_description":"客户年纪大，做好防滑",
+	"water_card":"水牌内容",
+	"door_card":"门牌内容",
+	"sand_table":"沙盘内容",
+	"welcome_screen":"欢迎xx领导",
+	"welcome_fruit": 128,
+	"welcome_card":"欢迎你",
+	"background_music":"我爱你中国",
+	"has_candle":true,
+	"has_flower":false,
+	"has_balloon":false,
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| order_id | 订单 ID |
+
+
+返回示例：
+
+```
+{
+	"status":"true",
+	"data":{
+		"order_id":1
+	}
+}
+```
+
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 桌位不存在 |
+| err_4 | 补录订单日期不能大于当前日期    |
+| err_5 | 服务器创建订单错误 |
 
 # 我的客户
 

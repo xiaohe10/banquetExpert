@@ -40,9 +40,9 @@ class Command(BaseCommand):
             # 总桌数
             desk_number = 0
             # 人均消费
-            guest_consumption = 0.0
+            guest_consumption = 0.00
             # 桌均消费
-            desk_consumption = 0.0
+            desk_consumption = 0.00
             for order in orders:
                 guest_number += order.guest_number
                 consumption += order.consumption
