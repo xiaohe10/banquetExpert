@@ -111,12 +111,12 @@ def login(request, phone, password):
     try:
         staff = Staff.objects.get(phone=phone)
     except Staff.DoesNotExist:
-        return err_response('err_2', '不存在该用户')
+        return err_response('err_2', '员工不存在')
     else:
         if not staff.is_enabled:
-            return err_response('err_2', '不存在该用户')
+            return err_response('err_2', '员工不存在')
         if staff.status == 0:
-            return err_response('err_2', '不存在该用户')
+            return err_response('err_2', '员工待审核')
         if staff.password != password:
             return err_response('err_3', '密码错误')
         staff.update_token()

@@ -327,8 +327,7 @@ def submit_order(request, token, dinner_date, dinner_time, dinner_period,
                     setattr(order, k, kwargs[k])
             order.save()
             return corr_response({'order_id': order.id})
-        except IntegrityError as e:
-            print(e)
+        except IntegrityError:
             return err_response('err_6', '服务器创建订单错误')
 
 
