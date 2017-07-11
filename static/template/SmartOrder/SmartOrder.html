@@ -59,6 +59,9 @@
                                                     {{x.name}}
                                                 </a>
                                             </li>
+                                            <li class="nav-item">
+                                                <a role="tab" data-toggle="tab" data-target="#all_area">所有楼层</a>
+                                            </li>
                                         </ul>
                                     </nav>
                                 </div>
@@ -86,6 +89,29 @@
                                                 <li class="list-group-item"
                                                     ng-if="(Branch.AreaDesk.list|filter:{area_name:x.name,status:0}).length===0">
                                                     <label class="label label-warning">该区域无空闲桌位</label>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="tab-pane" role="tabpanel" id="all_area">
+                                            <!--桌位列表-->
+                                            <ul class="list-group">
+                                                <li class="list-group-item"
+                                                    ng-repeat="y in Branch.AreaDesk.list|filter:{status:0}|orderBy:'order'"
+                                                    ng-click="y.selected=!y.selected;">
+                                                    <span class="badge" ng-class="{
+                                                        0:'badge-success',
+                                                        1:'badge-info',
+                                                        2:'badge-error'
+                                                    }[y.status]">{{y.status|desk_status}}</span>
+                                                    <span ng-show="y.selected===true" class="badge bg-success">
+                                                        已选<span class="glyphicon glyphicon-ok"></span>
+                                                    </span>
+                                                    <label class="text-center">{{y.number}}</label>
+                                                    <label class="text-center small">{{y.min_guest_num}} ~ {{y.max_guest_num}}人</label>
+                                                </li>
+                                                <li class="list-group-item"
+                                                    ng-if="(Branch.AreaDesk.list|filter:{status:0}).length===0">
+                                                    <label class="label label-warning">无空闲桌位</label>
                                                 </li>
                                             </ul>
                                         </div>
