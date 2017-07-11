@@ -3,6 +3,7 @@ from datetime import timedelta
 
 from django.core.management import BaseCommand
 from django.utils import timezone
+from django.db import connection
 from webApp.models import Order, Hotel
 
 
@@ -20,6 +21,8 @@ class Command(BaseCommand):
         # 月末
         self.last_date = date - timedelta(days=1)
         self.count_hotel_consumption()
+
+        self.clear_session()
 
     def count_hotel_consumption(self):
         """统计每个酒店上个月的消费情况"""
@@ -66,3 +69,19 @@ class Command(BaseCommand):
             daily_consumption.guest_consumption = guest_consumption
             daily_consumption.desk_consumption = desk_consumption
             daily_consumption.save()
+
+    def clear_session(self):
+        """定期清理过期的session"""
+
+        sql = '''DELETE FROM django_session WHERE expire_date < "%s"''' % \
+              (timezone.now())
+        cursor = connection.cursor()
+        try:
+            # 执行SQL语句
+            cursor.execute(sql)
+            # 提交修改
+            connection.commit()
+        except:
+            # 发生错误时回滚
+            connection.rollback()
+        connection.close()
