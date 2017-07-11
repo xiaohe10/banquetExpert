@@ -563,7 +563,6 @@ StaffApp.controller('drawerCtrl', function ($routeParams, $rootScope, $scope, $h
     $rootScope.$watch('Branch', function () {
         // 获取门店的区域列表
         Branch.getAreaList($rootScope.Branch.branch_id);
-        // 获取门店的餐段列表
     });
     // 选择门店
     $scope.selectBranch = function (index) {
@@ -672,6 +671,7 @@ StaffApp.config(['$routeProvider', function ($routeProvider) {
                     Staff.ReserveList();
                     Staff.OrderList();
                 });
+                // 获取门店的桌位列表
                 $scope.$watch('form.dinner_period', function () {
                     Branch.getAreaDesk($rootScope.Branch.branch_id, $scope.form.date, $scope.form.dinner_period);
                     Staff.ReserveList();
@@ -719,6 +719,7 @@ StaffApp.config(['$routeProvider', function ($routeProvider) {
                         });
                     }
                 };
+                Branch.getAreaDesk($rootScope.Branch.branch_id, $scope.form.date, $scope.form.dinner_period);
                 Staff.ReserveList();
                 Staff.OrderList();
                 // 预定表单
@@ -903,7 +904,8 @@ StaffApp.config(['$routeProvider', function ($routeProvider) {
                 $scope.search = function () {
                     var url = "/webApp/staff/order/search/";
                     var param = {
-                        status: 1
+                        status: 1,
+                        keyword:$scope.SearchForm.keyword
                     };
                     $http.post(url, JSON.stringify(param)).success(function (obj) {
                         if (obj.status === "true") {

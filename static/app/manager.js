@@ -677,7 +677,7 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                         },
                         resolve: {
                             form: function () {
-                                return staff;
+                                return angular.copy(staff);
                             }
                         }
                     });
@@ -687,8 +687,8 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                     dlg.result.then(function (result) {
                         Log.i(TAG, JSON.stringify(result));
                         var url = "/webApp/admin/hotel/staff/profile/modify/";
-                        var param = $scope.form;
-                        $http.post(url, param).success(function (obj) {
+                        var param = angular.copy(result);
+                        $http.post(url, JSON.stringify(param)).success(function (obj) {
                             if (obj.status === "true") {
                                 alert("审核通过");
                             } else {
