@@ -143,7 +143,7 @@ def validate_json_args(dic):
                 if request.method == "GET":
                     data = request.GET
                 elif request.method == "POST":
-                    data = request.body
+                    data = json.loads(request.body)
                 else:
                     data = QueryDict(request.body)
             except ValueError:
@@ -151,7 +151,7 @@ def validate_json_args(dic):
                     'err_1', '参数不正确（缺少参数或者不符合格式）')
             for k, v in dic.items():
                 try:
-                    kwargs[k] = json.loads(v.clean(data[k]))
+                    kwargs[k] = data[k]
                 except KeyError or ValueError:
                     if v.required:
                         return err_response(
