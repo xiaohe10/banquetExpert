@@ -466,7 +466,7 @@ class Order(models.Model):
     # 到店人数
     guest_number = models.IntegerField(default=0, db_index=True)
     # 预定桌位, 可能多桌
-    desks = models.CharField(max_length=50, default='')
+    desks = models.CharField(max_length=200, default='')
     # 支付金额
     consumption = models.IntegerField(default=0, db_index=True)
     # 宴会类型

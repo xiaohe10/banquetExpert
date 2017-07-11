@@ -130,6 +130,7 @@ def get_profile(request, token, phone=None):
 
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
+    'branch_id': forms.IntegerField(),
     'offset': forms.IntegerField(min_value=0, required=False),
     'limit': forms.IntegerField(min_value=0, required=False),
 })

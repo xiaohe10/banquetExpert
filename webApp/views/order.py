@@ -9,7 +9,8 @@ from django.db import IntegrityError, transaction
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import RegexValidator
 
-from ..utils.decorator import validate_args, validate_staff_token
+from ..utils.decorator import validate_args, validate_staff_token, \
+    validate_json_args
 from ..utils.response import corr_response, err_response
 from ..models import Desk, Order, Guest
 
@@ -247,6 +248,9 @@ def get_profile(request, token, order_id):
     'has_flower': forms.BooleanField(required=False),
     'has_balloon': forms.BooleanField(required=False),
 })
+@validate_json_args({
+    'desks': forms.CharField(max_length=200)
+})
 @validate_staff_token()
 def submit_order(request, token, dinner_date, dinner_time, dinner_period,
                  **kwargs):
@@ -284,7 +288,7 @@ def submit_order(request, token, dinner_date, dinner_time, dinner_period,
     branch = None
     # 验证桌位是否存在和是否被预定
     try:
-        desk_list = json.loads(request.body)['desks']
+        desk_list = kwargs['desks']
         for i in range(len(desk_list)):
             # 桌位号加首尾限定符
             desk_id = '$' + str(desk_list[i]) + '$'
@@ -352,9 +356,12 @@ def submit_order(request, token, dinner_date, dinner_time, dinner_period,
     'has_flower': forms.BooleanField(required=False),
     'has_balloon': forms.BooleanField(required=False),
 })
+@validate_json_args({
+    'desks': forms.CharField(max_length=200)
+})
 @validate_staff_token()
-def supply_order(request, token, dinner_date, dinner_time,
-                 dinner_period, **kwargs):
+def supply_order(request, token, dinner_date, dinner_time, dinner_period,
+                 **kwargs):
     """补录订单(今天及以前的订单)
 
     :param token: 令牌(必传)
@@ -389,7 +396,7 @@ def supply_order(request, token, dinner_date, dinner_time,
     branch = None
     # 验证桌位是否存在
     try:
-        desk_list = json.loads(request.body)['desks']
+        desk_list = kwargs['desks']
         for i in range(len(desk_list)):
             # 桌位号加首尾限定符
             desk_id = '$' + str(desk_list[i]) + '$'
@@ -454,6 +461,9 @@ def supply_order(request, token, dinner_date, dinner_time,
     'has_candle': forms.BooleanField(required=False),
     'has_flower': forms.BooleanField(required=False),
     'has_balloon': forms.BooleanField(required=False),
+})
+@validate_json_args({
+    'desks': forms.CharField(max_length=200, required=False)
 })
 @validate_staff_token()
 def modify_order(request, token, order_id, **kwargs):
@@ -521,11 +531,10 @@ def modify_order(request, token, order_id, **kwargs):
     order.save()
 
     # 如果换桌
-    data = json.loads(request.body)
-    if 'desks' in data:
+    if 'desks' in kwargs:
         branch_list = []
         branch = None
-        desk_list = data.pop('desks')
+        desk_list = kwargs['desks']
         # 验证桌位是否存在和是否被预定
         try:
             for i in range(len(desk_list)):
