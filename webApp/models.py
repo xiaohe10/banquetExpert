@@ -216,8 +216,7 @@ class Staff(models.Model):
     """员工模型"""
 
     # 员工编号
-    staff_number = models.CharField(
-        max_length=20, default=None, null=True, unique=True)
+    staff_number = models.CharField(max_length=20, default=None, null=True)
     # 手机
     phone = models.CharField(max_length=11, unique=True)
     # 密码
