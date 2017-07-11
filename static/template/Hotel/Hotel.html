@@ -16,8 +16,29 @@
                         {{form.name}}
                     </div>
                 </div>
-                <!--所在城市-->
+                <!--创建时间-->
                 <div class="form-group">
+                    <label class="col-lg-2 text-right">创建时间：</label>
+                    <div class="col-lg-8">
+                        {{form.create_time|date:'yyyy/MM/dd'}}
+                    </div>
+                </div>
+                <!--酒店老板-->
+                <div class="form-group">
+                    <label class="col-lg-2 text-right">酒店老板：</label>
+                    <div class="col-lg-8">
+                        {{form.owner_name}}
+                    </div>
+                </div>
+                <!--门店数-->
+                <div class="form-group">
+                    <label class="col-lg-2 text-right">门店数：</label>
+                    <div class="col-lg-8">
+                        {{form.branches_count}}
+                    </div>
+                </div>
+                <!--所在城市-->
+                <div class="form-group hidden">
                     <label class="col-lg-2 text-right">所在城市：</label>
                     <div class="col-lg-8">
                         <!--省-->
@@ -35,14 +56,14 @@
                     </div>
                 </div>
                 <!--详细地址-->
-                <div class="form-group">
+                <div class="form-group hidden">
                     <label class="col-lg-2 text-right">详细地址：</label>
                     <div class="col-lg-8">
                         <input type="text" ng-model="form.address" value=""/>
                     </div>
                 </div>
                 <!--预订电话-->
-                <div class="form-group">
+                <div class="form-group hidden">
                     <label class="col-lg-2 text-right">预订电话：</label>
                     <div class="col-lg-8">
                         <label>
@@ -83,7 +104,7 @@
                     </div>
                 </div>
                 <!--上传Logo-->
-                <div class="form-group">
+                <div class="form-group hidden">
                     <label class="col-lg-2 text-right">上传Logo：</label>
                     <div class="col-lg-8">
                         <div class="py-2">
@@ -98,7 +119,7 @@
                     <label class="col-lg-2 text-right">上传大图：</label>
                     <div class="col-lg-8">
                         <div class="py-2">
-                            <img ng-src="form.image" alt="IMAGE">
+                            <img ng-src="form.icon" alt="IMAGE">
                         </div>
                         <div class="py-2">
                             <input type="file" ng-model="image" value="上传图片"/>
