@@ -50,6 +50,27 @@ def login(request, username, password):
 
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
+    'new_password': forms.CharField(min_length=1, max_length=32),
+    'old_password': forms.CharField(min_length=1, max_length=32),
+})
+@validate_admin_token()
+def modify_password(request, token, old_password, new_password):
+    """修改密码
+
+    :param token: 令牌(必传)
+    :param old_password: 旧密码(md5加密结果, 32位, 必传)
+    :param new_password: 新密码(md5加密结果, 32位, 必传)
+    :return 200/403
+    """
+
+    if request.admin.password == old_password:
+        request.admin.password = new_password
+        return corr_response({'admin_id': request.admin.id})
+    return err_response('err_3', '旧密码错误')
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
 })
 @validate_admin_token()
 def get_hotel_profile(request, token):
