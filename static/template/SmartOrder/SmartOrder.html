@@ -15,10 +15,6 @@
                         <strong>{{form.date|date:'MM'}}</strong>月
                         <input type="date" ng-model="form.date"/>
                     </label>
-                    <label class="control-label" for="branch_id">选择门店</label>
-                    <select id="branch_id" ng-model="form.branch_id" ng-change="changeBranch()">
-                        <option ng-repeat="x in Hotel.BranchList.list" value={{x.branch_id}}>{{x.name}}</option>
-                    </select>
                     <label><input class="btn btn-primary btn-sm" type="radio" value=0 ng-model="form.dinner_period">午餐</label>
                     <label><input class="btn btn-primary btn-sm" type="radio" value=1 ng-model="form.dinner_period">晚餐</label>
                     <label><input class="btn btn-primary btn-sm" type="radio" value=2 ng-model="form.dinner_period">夜宵</label>
@@ -187,7 +183,7 @@
                                     <!--来电列表-->
                                     <!--<div class="container">-->
                                     <ul class="list-group">
-                                        <li class="list-group-item" ng-repeat="x in PhoneList">
+                                        <li class="list-group-item" ng-repeat="x in Staff.PhoneList.list">
                                             <div class="row">
                                                 <!--头像-->
                                                 <div class="col-lg-3 col-sm-3">
@@ -228,18 +224,18 @@
                                 <div class="tab-pane active" role="tabpanel" id="reserve">
                                     <!--预约列表-->
                                     <ul class="list-group">
-                                        <li class="list-group-item" ng-repeat="x in ReserveList">
+                                        <li class="list-group-item" ng-repeat="x in Staff.ReserveList.list">
                                             <!--<div class="container">-->
                                             <div class="row">
                                                 <!--头像-->
                                                 <div class="col-lg-3 col-sm-3">
                                                     <img class="img-responsive" src="/static/css/image/head1.jpg">
-                                                    <span class="align-items-center">{{x.time}}</span>
+                                                    <span class="align-items-center">{{x.create_time|date:'MM/dd'}}</span>
                                                 </div>
                                                 <!--个人信息-->
                                                 <div class="col-lg-6 col-sm-6">
-                                                    <p>{{x.name|surname}} {{x.gender|gender}}</p>
-                                                    <p>{{x.phone}} {{x.type}}</p>
+                                                    <p>{{x.name}}</p>
+                                                    <p>{{x.contact}} {{x.guest_type}}</p>
                                                 </div>
                                                 <!--操作-->
                                                 <div class="col-lg-3 col-sm-3">
@@ -294,7 +290,7 @@
                                 </div>
                                 <!--订单列表-->
                                 <ul class="list-group">
-                                    <li class="list-group-item" ng-repeat="x in OrderList">
+                                    <li class="list-group-item" ng-repeat="x in Staff.OrderList.list">
                                         <div class="container">
                                             <div class="row">
                                                 <!--左侧信息-->
