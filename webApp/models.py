@@ -470,7 +470,7 @@ class Order(models.Model):
     # 支付金额
     consumption = models.IntegerField(default=0, db_index=True)
     # 宴会类型
-    banquet = models.CharField(max_length=20, default='')
+    banquet = models.CharField(max_length=200, default='')
     # 水牌
     water_card = models.CharField(max_length=10, default='')
     # 门牌
