@@ -1027,23 +1027,22 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
             }
         })
         .when('/Hotel/AccountManage', {
-            templateUrl: "./template/" + Templates.Hotel.AccountManage, controller: function ($scope) {
+            templateUrl: "./template/" + Templates.Hotel.AccountManage, controller: function ($rootScope, $scope, $http) {
                 var TAG = Templates.Hotel.AccountManage;
                 $scope.form = {
-                    username: "",
-                    password: "",
+                    username: $rootScope.Hotel.name,
+                    old_password: "",
                     new_password: "",
                     new_password_acc: ""
                 };
                 $scope.save = function () {
-                    Log.i(TAG, $scope.form);
-                    var url = "/webApp/admin/profile/modify/";
-                    var param = angular.copy(result);
-                    param.password = hex_md5(param.password);
+                    Log.i(TAG, JSON.stringify($scope.form));
+                    var url = "/webApp/admin/pass_modify/";
+                    var param = angular.copy($scope.form);
+                    param.new_password = hex_md5(param.new_password);
                     $http.post(url, JSON.stringify(param)).success(function (obj) {
                         if (obj.status === "true") {
                             alert("密码修改成功");
-                            $scope.data.list.push(result);
                         } else {
                             alert(obj.description);
                         }
