@@ -665,6 +665,7 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                         controller: function ($scope, form) {
                             $scope.option = "审核";
                             $scope.form = form;
+                            delete $scope.form["staff_number"];
                             $scope.submit = function () {
                                 dlg.close($scope.form);
                             };
@@ -974,7 +975,7 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                         },
                         resolve: {
                             form: function () {
-                                return branch;
+                                return angular.copy(branch);
                             }
                         }
                     });
