@@ -88,7 +88,7 @@ BranchApp.controller('drawerCtrl', function ($routeParams, $rootScope, $location
     Log.i(TAG, $rootScope.branch_id);
 
     // 门店信息
-    $rootScope.branch = {
+    $rootScope.Branch = {
         branch_id: -1,
         name: "未登录"
     };
@@ -110,7 +110,7 @@ BranchApp.controller('drawerCtrl', function ($routeParams, $rootScope, $location
         ]
     };
 
-    $scope.branch = $rootScope.branch;
+    $scope.branch = $rootScope.Branch;
     // 侧边栏
     $scope.menus = [{
         title: "预订管理",
@@ -206,6 +206,7 @@ BranchApp.config(['$routeProvider', function ($routeProvider) {
                     var param = {branch_id: $rootScope.branch_id};
                     $http.post(url, JSON.stringify(param)).success(function (obj) {
                         if (obj.status === "true") {
+                            $rootScope.Branch = obj.data;
                             $scope.form = obj.data;
                             $scope.facilities = $scope.facilities.filter(function (p1, p2, p3) {
                                 return $scope.form.facility.indexOf(p1) === -1;
@@ -213,8 +214,7 @@ BranchApp.config(['$routeProvider', function ($routeProvider) {
                             $scope.pay_cards = $scope.pay_cards.filter(function (p1, p2, p3) {
                                 return $scope.form.pay_card.indexOf(p1) === -1;
                             });
-                            $rootScope.branch = obj.data;
-                            getStaffList($rootScope.branch.hotel_id);
+                            getStaffList($rootScope.Branch.hotel_id);
                         } else {
                             alert(obj.description);
                         }
@@ -397,7 +397,7 @@ BranchApp.config(['$routeProvider', function ($routeProvider) {
                 $scope.nav = function (area_id) {
                     Log.i(TAG, "选择区域：" + area_id);
                     var url = "/webApp/admin/hotel_branch/desk/list/";
-                    var param = {area_id: area_id};
+                    var param = {area_id: area_id, branch_id:$rootScope.Branch.branch_id};
                     $http.post(url, JSON.stringify(param)).success(function (obj) {
                         if (obj.status === "true") {
                             $scope.area_id = area_id;
@@ -433,7 +433,7 @@ BranchApp.config(['$routeProvider', function ($routeProvider) {
                 $scope.EnWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
                 $scope.Meals = {hasLunch: false, hasSupper: false, hasDinner: false};
                 // 餐段初始化
-                if ($rootScope.branch.meal_period.length === 0) {
+                if ($rootScope.Branch.meal_period.length === 0) {
                     $scope.MealPeriod = [
                         {
                             lunch: {from: "08:30", to: "09:30"},
@@ -472,13 +472,13 @@ BranchApp.config(['$routeProvider', function ($routeProvider) {
                         }
                     ];
                 } else {
-                    $scope.MealPeriod = $rootScope.branch.meal_period;
+                    $scope.MealPeriod = $rootScope.Branch.meal_period;
                 }
                 $scope.save = function () {
                     // 修改餐段信息
                     var url = "/webApp/admin/hotel_branch/meal_period/modify/";
                     var param = {
-                        branch_id: $rootScope.branch_id,
+                        branch_id: $rootScope.Branch.branch_id,
                         meal_period: angular.copy($scope.MealPeriod)
                     };
                     $http.post(url, JSON.stringify(param)).success(function (obj) {
@@ -608,7 +608,7 @@ BranchApp.config(['$routeProvider', function ($routeProvider) {
         .when('/Reserve/PersonalTailor', {
             templateUrl: "./template/" + Templates.Reserve.PersonalTailor, controller: function ($rootScope, $scope, $http) {
                 var TAG = Templates.Reserve.PersonalTailor;
-                $scope.data = $rootScope.branch.personal_tailor;
+                $scope.data = $rootScope.Branch.personal_tailor;
                 $scope.save = function () {
                     Log.i(TAG, JSON.stringify($scope.data));
                     // 【门店】保存私人订制列表

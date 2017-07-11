@@ -13,6 +13,9 @@
                     <li class="nav-item" ng-repeat="x in area.list|filter:{is_enabled:true}|orderBy:'order'">
                         <a ng-click="nav(x.area_id)">{{x.name}}</a>
                     </li>
+                    <li class="nav-item">
+                        <a ng-click="nav()">所有楼层</a>
+                    </li>
                 </ul>
             </div>
         </div>
