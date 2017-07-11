@@ -1324,8 +1324,8 @@ def get_channels(request, token):
 
     hotel = request.admin.hotel
 
-    in_channels = Staff.enabled_objects.exclude(hotel=hotel, guest_channel=0). \
-        filter(status=1)
+    in_channels = Staff.enabled_objects.filter(hotel=hotel, status=1). \
+        exclude(guest_channel=0)
     list1 = [{'id': channel.id,
               'name': channel.name,
               'phone': channel.phone,

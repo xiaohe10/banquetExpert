@@ -83,6 +83,7 @@ class Command(BaseCommand):
                 contact = "%s"''' % (",", ",,", g.phone)
                 cursor = connection.cursor()
                 cursor.execute(sql)
+                connection.close()
                 desk_number = cursor.fetchone()[0]
                 if desk_number:
                     desk_number = int(desk_number)
