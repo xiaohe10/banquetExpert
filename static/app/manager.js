@@ -1037,6 +1037,17 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                 };
                 $scope.save = function () {
                     Log.i(TAG, $scope.form);
+                    var url = "/webApp/admin/profile/modify/";
+                    var param = angular.copy(result);
+                    param.password = hex_md5(param.password);
+                    $http.post(url, JSON.stringify(param)).success(function (obj) {
+                        if (obj.status === "true") {
+                            alert("密码修改成功");
+                            $scope.data.list.push(result);
+                        } else {
+                            alert(obj.description);
+                        }
+                    });
                 }
             }
         });
