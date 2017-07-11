@@ -1394,7 +1394,7 @@ def get_channels(request, token):
               'create_time': channel.create_time
               } for channel in in_channels]
 
-    ex_channels = ExternalChannel.objects.all()
+    ex_channels = ExternalChannel.objects.filter(staff__hotel=hotel)
     list2 = [{'id': channel.id,
               'name': channel.name,
               'discount': channel.discount,
