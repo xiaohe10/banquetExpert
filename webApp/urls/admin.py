@@ -5,6 +5,8 @@ from webApp.views.admin import *
 urlpatterns = [
     # 登录
     url(r'^login/$', login, name='login'),
+    # 修改密码
+    url(r'^pass_modify/$', modify_password, name='modify_password'),
     # 获取酒店资料
     url(r'^hotel/profile/get/$', get_hotel_profile, name='get_hotel_profile'),
     # 修改酒店资料
