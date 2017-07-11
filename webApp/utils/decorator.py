@@ -151,7 +151,8 @@ def validate_json_args(dic):
                     'err_1', '参数不正确（缺少参数或者不符合格式）')
             for k, v in dic.items():
                 try:
-                    kwargs[k] = data[k]
+                    tmp = json.dumps(data[k])
+                    kwargs[k] = json.loads(v.clean(tmp))
                 except KeyError or ValueError:
                     if v.required:
                         return err_response(
