@@ -852,7 +852,7 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                             var TAG = Dialog.Hotel.Branch.BranchDialog;
                             Log.i(TAG, "添加门店");
                             // 初始化员工列表
-                            $scope.staff = $rootScope.staff;
+                            $scope.staff = $rootScope.Hotel.StaffList;
                             // 初始化手机号
                             $scope.phone = "";
                             // 初始化酒店设施
@@ -938,7 +938,7 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                             var TAG = Dialog.Channel.Staff.BranchDialog;
                             Log.i(TAG, "编辑门店：" + branch.name);
                             // 初始化员工列表
-                            $scope.staff = $rootScope.staff;
+                            $scope.staff = $rootScope.Hotel.StaffList;
                             // 初始化手机号
                             $scope.phone = "";
                             // 初始化门店设施
@@ -1001,24 +1001,25 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
         .when('/Hotel/Hotel', {
             templateUrl: "./template/" + Templates.Hotel.Hotel, controller: function ($rootScope, $scope, $modal, $http) {
                 var TAG = Templates.Hotel.Hotel;
-                $scope.form = {
-                    hotel_id: 1,
-                    // 餐厅名称
-                    name: "北京宴总店",
-                    // 餐厅标志
-                    icon: "/static/css/image/head1.jpg",
-                    // 详细地址
-                    address: "丰台区靛厂路3号(永辉超市东侧)",
-                    // 预订电话
-                    phone: "01088177777",
-                    // 餐厅设施
-                    facility: [],
-                    // 可以刷卡
-                    VISA: false,
-                    UnionPay: false,
-                    // Logo
-                    image: "/static/css/image/head2.jpg"
-                };
+                // $scope.form = {
+                //     hotel_id: 1,
+                //     // 餐厅名称
+                //     name: "北京宴总店",
+                //     // 餐厅标志
+                //     icon: "/static/css/image/head1.jpg",
+                //     // 详细地址
+                //     address: "丰台区靛厂路3号(永辉超市东侧)",
+                //     // 预订电话
+                //     phone: "01088177777",
+                //     // 餐厅设施
+                //     facility: [],
+                //     // 可以刷卡
+                //     VISA: false,
+                //     UnionPay: false,
+                //     // Logo
+                //     image: "/static/css/image/head2.jpg"
+                // };
+                $scope.form = $rootScope.Hotel;
                 $scope.data = $rootScope.Hotel;
                 $scope.submit = function () {
                     Log.i(TAG, "提交酒店信息：" + JSON.stringify($scope.form))
