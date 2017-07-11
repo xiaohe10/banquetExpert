@@ -1028,7 +1028,7 @@ def get_desk_profile(request, token, desk_id):
     'max_guest_num': forms.IntegerField(),
     'type': forms.CharField(max_length=10, required=False),
     'is_beside_window': forms.BooleanField(required=False),
-    'description': forms.CharField(max_length=100, required=False),
+    'description': forms.CharField(max_length=200, required=False),
 })
 @validate_admin_token()
 def add_desk(request, token, area_id, number, order, **kwargs):
@@ -1116,7 +1116,7 @@ def add_desk(request, token, area_id, number, order, **kwargs):
     'max_guest_num': forms.IntegerField(required=False),
     'type': forms.CharField(max_length=10, required=False),
     'is_beside_window': forms.BooleanField(required=False),
-    'description': forms.CharField(max_length=100, required=False),
+    'description': forms.CharField(max_length=200, required=False),
     'is_enabled': forms.BooleanField(required=False)
 })
 @validate_admin_token()
@@ -1693,7 +1693,7 @@ def get_staffs(request, token, hotel_id, order=1):
     'id_number': forms.CharField(min_length=18, max_length=18),
     'guest_channel': forms.IntegerField(
         min_value=0, max_value=3, required=False),
-    'description': forms.CharField(max_length=100, required=False),
+    'description': forms.CharField(max_length=200, required=False),
     'authority': forms.CharField(max_length=20, required=False),
     'hotel_id': forms.IntegerField(),
 })
@@ -1881,7 +1881,7 @@ def get_staff_profile(request, token, staff_id):
     'position': forms.CharField(max_length=20, required=False),
     'guest_channel': forms.IntegerField(
         min_value=0, max_value=3, required=False),
-    'description': forms.CharField(max_length=100, required=False),
+    'description': forms.CharField(max_length=200, required=False),
     'authority': forms.CharField(max_length=20, required=False),
     'status': forms.IntegerField(required=False),
     'is_enabled': forms.BooleanField(required=False),
@@ -2195,7 +2195,7 @@ def get_order_profile(request, token, order_id):
     'contact': forms.RegexField(r'[0-9]{11}'),
     'guest_number': forms.IntegerField(),
     'banquet': forms.CharField(max_length=10, required=False),
-    'staff_description': forms.CharField(max_length=100, required=False),
+    'staff_description': forms.CharField(max_length=200, required=False),
     'water_card': forms.CharField(max_length=10, required=False),
     'door_card': forms.CharField(max_length=10, required=False),
     'sand_table': forms.CharField(max_length=10, required=False),
@@ -2306,7 +2306,7 @@ def submit_order(request, token, dinner_date, dinner_time,
     'name': forms.CharField(min_length=1, max_length=20, required=False),
     'contact': forms.RegexField(r'[0-9]{11}', required=False),
     'guest_number': forms.IntegerField(required=False),
-    'staff_description': forms.CharField(max_length=100, required=False),
+    'staff_description': forms.CharField(max_length=200, required=False),
     'water_card': forms.CharField(max_length=10, required=False),
     'door_card': forms.CharField(max_length=10, required=False),
     'sand_table': forms.CharField(max_length=10, required=False),
@@ -2869,7 +2869,7 @@ def get_lives(request, token, offset=0, limit=10, order=1):
     'start_time': forms.TimeField(),
     'end_time': forms.TimeField(),
     'price': forms.IntegerField(required=False),
-    'description': forms.CharField(max_length=100, required=False),
+    'description': forms.CharField(max_length=200, required=False),
 })
 @validate_admin_token()
 def push_live(request, token, name, **kwargs):
@@ -2941,7 +2941,7 @@ def push_live(request, token, name, **kwargs):
     'start_time': forms.TimeField(required=False),
     'end_time': forms.TimeField(required=False),
     'price': forms.IntegerField(required=False),
-    'description': forms.CharField(max_length=100, required=False),
+    'description': forms.CharField(max_length=200, required=False),
 })
 @validate_admin_token()
 def modify_live_profile(request, token, live_id, **kwargs):

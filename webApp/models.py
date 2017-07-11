@@ -194,7 +194,7 @@ class Desk(models.Model):
     # 最大可容纳人数
     max_guest_num = models.IntegerField(default=None, null=True)
     # 备注
-    description = models.CharField(max_length=100, default='')
+    description = models.CharField(max_length=200, default='')
     # 是否有效
     is_enabled = models.BooleanField(default=True, db_index=True)
 
@@ -242,7 +242,7 @@ class Staff(models.Model):
     status = models.IntegerField(
         choices=((0, '待审核'), (1, '审核通过')), default=0, db_index=True)
     # 备注
-    description = models.CharField(max_length=100, default='')
+    description = models.CharField(max_length=200, default='')
     # 权限
     authority = models.CharField(max_length=20, default='', db_index=True)
     # 电话隐私
@@ -367,7 +367,7 @@ class User(models.Model):
     # 详细地址
     address = models.CharField(max_length=50, default='')
     # 备注
-    description = models.CharField(max_length=100, default='')
+    description = models.CharField(max_length=200, default='')
     # 是否有效
     is_enabled = models.BooleanField(default=True, db_index=True)
 
@@ -495,9 +495,9 @@ class Order(models.Model):
     # 用户上传的合照
     group_photo = models.CharField(max_length=100, default='')
     # 顾客备注
-    user_description = models.CharField(max_length=100, default='')
+    user_description = models.CharField(max_length=200, default='')
     # 员工备注
-    staff_description = models.CharField(max_length=100, default='')
+    staff_description = models.CharField(max_length=200, default='')
 
     # 餐段
     dinner_period = models.IntegerField(
@@ -690,7 +690,7 @@ class Course(models.Model):
     # 价格
     price = models.IntegerField(default=0)
     # 描述
-    description = models.CharField(max_length=100, default='')
+    description = models.CharField(max_length=200, default='')
 
     # 创建时间
     create_time = models.DateTimeField(default=timezone.now, db_index=True)
@@ -736,7 +736,7 @@ class Live(models.Model):
     # 直播间名称
     name = models.CharField(max_length=20)
     # 描述
-    description = models.CharField(max_length=100, default='')
+    description = models.CharField(max_length=200, default='')
     # 价格
     price = models.IntegerField(default=0)
     # 推流端密，即讲师密码
