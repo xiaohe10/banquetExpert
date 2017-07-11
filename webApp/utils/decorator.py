@@ -143,7 +143,7 @@ def validate_json_args(dic):
                 if request.method == "GET":
                     data = request.GET
                 elif request.method == "POST":
-                    data = json.loads(request.body)
+                    data = request.body
                 else:
                     data = QueryDict(request.body)
             except ValueError:
