@@ -73,10 +73,10 @@ def register(request, phone, password, validation_code, hotel_id, **kwargs):
     except Hotel.DoesNotExist:
         return err_response('err_4', '酒店不存在')
 
-    if Staff.objects.filter(phone=phone).exists():
+    if Staff.objects.filter(phone=phone).count() > 0:
         return err_response('err_2', '该手机号已经注册过')
 
-    if Staff.objects.filter(id_number=kwargs['id_number']).exists():
+    if Staff.objects.filter(id_number=kwargs['id_number']).count() > 0:
         return err_response('err_3', '身份证号已经注册过')
 
     if not ValidationCodeModel.verify(phone, validation_code):

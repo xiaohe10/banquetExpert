@@ -1725,8 +1725,12 @@ def register_staff(request, phone, password, hotel_id, **kwargs):
     if hotel != request.admin.hotel:
         return err_response('err_2', '权限错误')
 
-    if Staff.objects.filter(phone=phone).exists():
+    if Staff.objects.filter(phone=phone).count() > 0:
         return err_response('err_5', '该手机号已注册')
+    id_number = kwargs['id_number']
+    if Staff.objects.filter(id_number=id_number).count() > 0:
+        return err_response('err_6', '该身份证已注册')
+
     staff_keys = ('staff_number', 'name', 'gender', 'position', 'id_number',
                   'guest_channel', 'description', 'authority')
     with transaction.atomic():
@@ -1752,7 +1756,7 @@ def register_staff(request, phone, password, hotel_id, **kwargs):
                     img = Image.open(icon)
                     img.save(file_name, quality=90)
                 except OSError:
-                    return err_response('err6', '图片为空或图片格式错误')
+                    return err_response('err_7', '图片为空或图片格式错误')
 
                 # 删除旧文件, 保存新的文件路径
                 if staff.icon:
@@ -1765,7 +1769,7 @@ def register_staff(request, phone, password, hotel_id, **kwargs):
             staff.save()
             return corr_response()
         except IntegrityError:
-            return err_response('err_7', '服务器创建员工失败')
+            return err_response('err_8', '服务器创建员工失败')
 
 
 @validate_args({
