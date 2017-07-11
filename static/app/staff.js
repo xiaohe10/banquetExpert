@@ -669,10 +669,16 @@ StaffApp.config(['$routeProvider', function ($routeProvider) {
                 // 监测日期和餐段的变化
                 $scope.$watch('form.date', function () {
                     Branch.getAreaDesk($rootScope.Branch.branch_id, $scope.form.date, $scope.form.dinner_period);
+                    Staff.ReserveList();
+                    Staff.OrderList();
                 });
                 $scope.$watch('form.dinner_period', function () {
                     Branch.getAreaDesk($rootScope.Branch.branch_id, $scope.form.date, $scope.form.dinner_period);
+                    Staff.ReserveList();
+                    Staff.OrderList();
                 });
+                Staff.ReserveList();
+                Staff.OrderList();
                 // 员工记录
                 $scope.Staff = {
                     // 来电列表
@@ -684,6 +690,7 @@ StaffApp.config(['$routeProvider', function ($routeProvider) {
                 };
                 // 员工
                 var Staff = {
+                    // 预定列表
                     ReserveList: function () {
                         var url = "/webApp/staff/order/search/";
                         var param = {
@@ -697,10 +704,23 @@ StaffApp.config(['$routeProvider', function ($routeProvider) {
                                 $scope.Staff.ReserveList = {count: '', list: []};
                             }
                         });
+                    },
+                    // 订单
+                    OrderList: function () {
+                        var url = "/webApp/staff/order/search/";
+                        var param = {
+                            status: 1
+                        };
+                        $http.post(url, JSON.stringify(param)).success(function (obj) {
+                            if (obj.status === "true") {
+                                $scope.Staff.OrderList = obj.data;
+                            } else {
+                                alert(obj.description);
+                                $scope.Staff.OrderList = {count: '', list: []};
+                            }
+                        });
                     }
                 };
-                $scope.$watch('')
-                Staff.ReserveList();
                 // 预定表单
                 $scope.ReserveForm = {
                     // 预定用餐日期
