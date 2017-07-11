@@ -468,7 +468,7 @@ def get_history_orders(request, token, phone, offset=0, limit=10):
 
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
-    'phone': forms.CharField(validators=[RegexValidator(regex=r'^[0-9]{11}$')]),
+    'phone': forms.CharField(max_length=11),
     'name': forms.CharField(max_length=20),
     'guest_type': forms.CharField(max_length=10, required=False),
     'gender': forms.IntegerField(min_value=0, max_value=2, required=False),

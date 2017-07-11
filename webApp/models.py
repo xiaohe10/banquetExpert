@@ -134,6 +134,20 @@ class HotelBranch(models.Model):
         ordering = ['-create_time']
 
 
+class CallRecord(models.Model):
+    """餐厅来电记录"""
+    # 电话
+    phone = models.CharField(max_length=11)
+    # 创建时间
+    create_time = models.DateTimeField(default=timezone.now, db_index=True)
+
+    # 处理人
+    staff = models.ForeignKey('Staff', models.CASCADE, 'dealt_call_records')
+
+    class Meta:
+        ordering = ['-create_time']
+
+
 class Area(models.Model):
     """餐厅区域模型"""
 
@@ -452,11 +466,11 @@ class Order(models.Model):
     # 到店人数
     guest_number = models.IntegerField(default=0, db_index=True)
     # 预定桌位, 可能多桌
-    desks = models.CharField(max_length=50, default='')
+    desks = models.CharField(max_length=200, default='')
     # 支付金额
     consumption = models.IntegerField(default=0, db_index=True)
     # 宴会类型
-    banquet = models.CharField(max_length=10, default='')
+    banquet = models.CharField(max_length=20, default='')
     # 水牌
     water_card = models.CharField(max_length=10, default='')
     # 门牌
