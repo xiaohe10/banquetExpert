@@ -27,6 +27,12 @@ Templates = {
         CustomerRecycleBin: "Customer/CustomerRecycleBin.html", // 客户档案回收站
         MemberValue: "Customer/MemberValue.html"// 会员价值设置
     },
+    // 账户管理
+    Account: {
+        FinanceManage: "Account/FinanceManage.html", // 财务报表
+        SMSDetails: "Account/SMSDetails.html", // 短信详单
+        AccountManage: "Account/AccountManage.html" // 修改密码
+    },
     // 评分审阅
     Review: {
         Rank: "Review/Rank.html", // 餐厅排名
@@ -288,6 +294,18 @@ StaffApp.controller('drawerCtrl', function ($routeParams, $rootScope, $scope, $h
         owner_name: "杨秀荣",
         create_time: "创建时间"
     };
+    $rootScope.Branch = {
+        address: "北京市丰台区靛厂路333号",
+        branch_id: 6,
+        city: "北京",
+        county: "北京",
+        create_time: "2017-07-10T23:50:57.077",
+        hotel_name: "未登录",
+        icon: "",
+        manager_name: "郭藏燃",
+        name: "未选择门店",
+        province: "北京",
+    };
     // 餐段列表
     $rootScope.MealsTime = {
         lunch: [
@@ -379,7 +397,7 @@ StaffApp.controller('drawerCtrl', function ($routeParams, $rootScope, $scope, $h
                             title: "智能订餐台",
                             menu_id: "SmartOrder",
                             item: [
-                                {title: "智能订餐台", item_id: "SmartOrder"}
+                                {title: "智能订餐台", item_id: "SmartOrder", enable: false}
                             ]
                         },
                         {
@@ -406,11 +424,34 @@ StaffApp.controller('drawerCtrl', function ($routeParams, $rootScope, $scope, $h
                             ]
                         },
                         {
+                            title: "账户管理",
+                            menu_id: "Account",
+                            item: [
+                                {title: "财务报表", item_id: "FinanceManage"},
+                                {title: "短信详单", item_id: "SMSDetails"},
+                                {title: "修改密码", item_id: "AccountManage"}
+                            ]
+                        },
+                        {
                             title: "评分审阅",
                             menu_id: "Review",
                             item: [
                                 {title: "酒店排名", item_id: "Rank"},
                                 {title: "中国服务私人订制标准视频教程", item_id: "Tutorial"}
+                            ]
+                        },
+                        {
+                            title: "营销管理",
+                            menu_id: "",
+                            item: [
+                                {title: "", item_id: ""}
+                            ]
+                        },
+                        {
+                            "title": "微课堂管理",
+                            menu_id: "MicroCourse",
+                            item: [
+                                {title: "", item_id: ""}
                             ]
                         }
                     ];
@@ -435,9 +476,11 @@ StaffApp.controller('drawerCtrl', function ($routeParams, $rootScope, $scope, $h
             $http.post(url, JSON.stringify(param)).success(function (obj) {
                 if (obj.status === "true") {
                     $rootScope.Hotel.BranchList = obj.data;
+                    $rootScope.Hotel.index = 1;
                 } else {
                     alert(obj.description);
                     $rootScope.Hotel.BranchList = {count: '', list: []};
+                    $rootScope.Hotel.index = 1;
                 }
             })
         },
@@ -487,16 +530,14 @@ StaffApp.config(['$routeProvider', function ($routeProvider) {
                         content: "这是私人订制"
                     });
                 };
-                $scope.weekdays = [
-                    "周一", "周二", "周三", "周四", "周五", "周六"
-                ];
+                $scope.weekdays = ["周一", "周二", "周三", "周四", "周五", "周六"];
                 $scope.form = {
                     branch_id: 5,
                     date: "2017-07-16",
                     dinner_period: 0
                 };
                 $scope.Branch = {};
-                $scope.MealsTime = $rootScope.MealsTime.dinner;
+                $scope.MealsTime = $rootScope.MealsTime.lunch;
                 // 门店
                 var Branch = {
                     // 获取门店的详情
@@ -560,9 +601,9 @@ StaffApp.config(['$routeProvider', function ($routeProvider) {
                 /***
                  * 监测日期的变化
                  */
-                $scope.$watch('form.date', function () {
-                    Branch.getAreaDesk($scope.form.branch_id, $scope.form.date, $scope.form.dinner_period);
-                });
+                // $scope.$watch('form.date', function () {
+                //     Branch.getAreaDesk($scope.form.branch_id, $scope.form.date, $scope.form.dinner_period);
+                // });
                 $scope.changeBranch = function () {
                     Branch.getProfile($scope.form.branch_id);
                     Branch.getAreaList($scope.form.branch_id);
@@ -676,9 +717,12 @@ StaffApp.config(['$routeProvider', function ($routeProvider) {
                         templateUrl: "./template/" + Dialog.SmartOrder.SmartOrder.CreateOrder,
                         resolve: {
                             form: function () {
+                                // 选中的桌位列表
                                 var Desks = $scope.Branch.AreaDesk.list.filter(function (item) {
                                     return item.selected === true;
                                 });
+                                // 重新添加桌位
+                                $scope.ReserveForm.desks.splice(0, $scope.ReserveForm.desks.length);
                                 Desks.forEach(function (item) {
                                     $scope.ReserveForm.desks.push(item.desk_id);
                                 });
@@ -707,6 +751,7 @@ StaffApp.config(['$routeProvider', function ($routeProvider) {
                                         $scope.MealsTime = $rootScope.MealsTime.supper;
                                         break;
                                     default:
+                                        $scope.MealsTime = $rootScope.MealsTime.lunch;
                                         break;
                                 }
                             });
@@ -1501,6 +1546,47 @@ StaffApp.config(['$routeProvider', function ($routeProvider) {
             }
         });
 
+    // 【员工】账户管理
+    $routeProvider
+        .when('/Account/AccountManage', {
+            templateUrl: "./template/" + Templates.Account.AccountManage, controller: function ($scope) {
+                $scope.form = {
+                    username: "",
+                    password: "",
+                    new_password: "",
+                    new_password_acc: ""
+                };
+                $scope.save = function () {
+                    Log.i(TAG, $scope.form);
+                }
+            }
+        })
+        .when('/Account/FinanceManage', {
+            templateUrl: "./template/" + Templates.Account.FinanceManage, controller: function ($scope) {
+                var TAG = Templates.Account.FinanceManage;
+                $scope.option = {
+                    selected_year: 1,
+                    selected_month: 1
+                };
+                $scope.detail = {
+                    rest: "636.96", recharge: "500.0000", sms_cost: "476.24", service_cost: "476.24"
+                };
+                $scope.year = [2011, 2012, 2013, 2014, 2015, 2016, 2017];
+                $scope.month = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+                $scope.table = [];
+                for (var i = 0; i < 10; i++) {
+                    $scope.table.push({
+                        date: "2017年5月24日", recharge: "0.00", sms_cost: "8.00",
+                        order_cost: "8.00", service_cost: "0.00", sum: "0.00", rest: "636.96"
+                    });
+                }
+                $scope.query = function () {
+                    Log.i(TAG, JSON.stringify($scope.option));
+                };
+            }
+        })
+        .when('/Account/SMSDetails', {templateUrl: "./template/" + Templates.Account.SMSDetails});
+
 // 【评分员】评分审阅
     $routeProvider
         .when('/Review/Rank', {
@@ -1541,5 +1627,4 @@ StaffApp.config(['$routeProvider', function ($routeProvider) {
 
     $routeProvider
         .otherwise({redirectTo: "/SmartOrder/SmartOrder"});
-}])
-;
+}]);

@@ -208,6 +208,17 @@ AdminApp.config(['$routeProvider', function ($routeProvider) {
                             Log.i(TAG, "添加管理员");
                             $scope.option = "添加";
                             $scope.form = form;
+                            // 【超级管理员】获取酒店列表
+                            var url = "/webApp/super_admin/hotel/list/";
+                            var param = {};
+                            $http.post(url, JSON.stringify(param)).success(function (obj) {
+                                if (obj.status === "true") {
+                                    $scope.HotelList = obj.data;
+                                } else {
+                                    alert(obj.description);
+                                    $scope.HotelList = {count: 0, list: []};
+                                }
+                            });
                             $scope.edit = function () {
                                 Log.i(TAG, "编辑管理员信息：" + $scope.form);
                             };
@@ -223,8 +234,10 @@ AdminApp.config(['$routeProvider', function ($routeProvider) {
                         resolve: {
                             form: function () {
                                 return {
-                                    name: "珍珠大酒店",
-                                    owner_name: "赵强"
+                                    username: "17701092671",
+                                    password: "123456",
+                                    hotel_id: 0,
+                                    type: 0
                                 };
                             }
                         }
@@ -235,7 +248,9 @@ AdminApp.config(['$routeProvider', function ($routeProvider) {
                     dlg.result.then(function (result) {
                         Log.i(TAG, JSON.stringify(result));
                         var url = "/webApp/super_admin/manager/register/";
-                        $http.post(url, JSON.stringify(result)).success(function (obj) {
+                        var param = angular.copy(result);
+                        param.password = hex_md5(param.password);
+                        $http.post(url, JSON.stringify(param)).success(function (obj) {
                             if (obj.status === "true") {
                                 alert("注册管理员成功");
                             } else {

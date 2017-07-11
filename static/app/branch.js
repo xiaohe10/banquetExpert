@@ -479,7 +479,7 @@ BranchApp.config(['$routeProvider', function ($routeProvider) {
                     var url = "/webApp/admin/hotel_branch/meal_period/modify/";
                     var param = {
                         branch_id: $rootScope.branch_id,
-                        meal_period: $scope.MealPeriod
+                        meal_period: angular.copy($scope.MealPeriod)
                     };
                     $http.post(url, JSON.stringify(param)).success(function (obj) {
                         if (obj.status === "true") {

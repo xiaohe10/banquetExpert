@@ -27,6 +27,19 @@
                 <img class="img-rounded" src="/static/css/image/head1.jpg" alt="IMAGE">
                 <div class="caption bg-warning">
                     <h3 class="text-center">{{Hotel.name}}</h3>
+                    <!-- 酒店选择 -->
+                    <div class="btn-group">
+                        <!--<button type="button" class="btn btn-info"></button>-->
+                        <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{Branch.name}}
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li ng-repeat="x in Hotel.BranchList.list">
+                                <label><input type="radio" ng-model="branch_id" value="{{x.branch_id}}">{{x.name}}</label>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div class="panel-group" id="drawer">

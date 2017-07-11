@@ -14,11 +14,11 @@
             <input class="form-control form-control-sm" type="date" ng-model="option.date_to"/>
             <select class="form-control form-control-sm" ng-model="option.select_area" ng-change="on_area_change()">
                 <optgroup label="请选择区域"></optgroup>
-                <option ng-repeat="x in area.list|orderBy:'area_id'|filter:{is_enabled:true}" value="{{x.area_id}}">{{x.name}}</option>
+                <option ng-repeat="x in Branch.Area.list|orderBy:'area_id'|filter:{is_enabled:true}" value="{{x.area_id}}">{{x.name}}</option>
             </select>
             <select class="form-control form-control-sm" ng-model="option.select_desk">
                 <optgroup label="请选择餐位"></optgroup>
-                <option ng-repeat="x in desk.list|orderBy:'desk_id'|filter:{is_enabled:true}" value="{{x.desk_id}}">{{x.number}}
+                <option ng-repeat="x in Branch.AreaDesk.list|orderBy:'desk_id'|filter:{is_enabled:true}" value="{{x.desk_id}}">{{x.number}}
                 </option>
             </select>
             <!--员工端无此项-->

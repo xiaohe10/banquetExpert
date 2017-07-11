@@ -5,25 +5,25 @@
     <SCRIPT LANGUAGE="JavaScript">
         var CID_id;
     </SCRIPT>
+
+
     <SCRIPT LANGUAGE="JavaScript" FOR="window" EVENT="onLoad()">
-        	CID124.SWinit();
+        CID124.SWinit()
     </SCRIPT>
 
     <SCRIPT LANGUAGE="JavaScript" FOR="window" EVENT="onUnload()">
-        	CID124.SWfree();
+        CID124.SWfree();
     </SCRIPT>
 
     <SCRIPT type="text/javascript" language="JavaScript">
         function settype() {
-            CID_id = document.forms.CIDTYPE.value;
-            CID124.SWsettype(CID_id);
-            document.forms.str3.value = CID124.SWgetcount();
-            document.forms.str2.value = CID124.SWgetsn();
+            CID_id = document.forms.CIDTYPE.value
+            CID124.SWsettype(CID_id)
+            document.forms.str3.value = CID124.SWgetcount()
+            document.forms.str2.value = CID124.SWgetsn()
         }
         function get1buf() {
-
             document.forms.str1.value = CID124.SWgetbuf(0)
-
         }
     </SCRIPT>
 </HEAD>
@@ -38,31 +38,72 @@
     <FORM ACTION="#" NAME="forms">
         <table width="100%" border="1" cellpadding="0" cellspacing="0" onload height="330">
             <tr>
-                <td width="9%" height="30" style="text-align: center;">
-                    <h3>CID124.OCX 控件 来电实例</h3>
+                <td width="9%" height="30">
+                    <center>
+                        <h3>CID124.OCX �ؼ� ����ʵ��</h3>
+                    </center>
                 </td>
             </tr>
             <tr>
-                <td width="9%" height="30"><p align="center">线路总数
+                <td width="9%" height="30"><p align="center">��·����
                     <INPUT TYPE=text SIZE=4 NAME="str3" maxlength="6"/>&nbsp;&nbsp;&nbsp;&nbsp;</td>
             </tr>
 
             <tr>
-                <td width="9%" height="30" style="text-align: center;"> 设备序列号
-
-                    <INPUT TYPE=text SIZE=15 NAME="str2" maxlength="12"/></td>
+                <td width="9%" height="30">
+                    <center>&nbsp;&nbsp;&nbsp;�豸���к�
+                        <INPUT TYPE=text SIZE=15 NAME="str2" maxlength="12"/></center>
+                </td>
             </tr>
 
             <tr>
-                <td width="9%" height="30" style="text-align: center;">
-                    <INPUT NAME="CIDTYPE" TYPE=text id="CIDTYPE" VALUE="2" size="38"/>
-                    <INPUT TYPE=button VALUE="设置类型" ONCLICK="settype();" NAME="Submit"></td>
+                <td width="9%" height="30">
+                    <center>
+                    </center>
+                </td>
             </tr>
             <tr>
-                <td width="9%" height="30" style="text-align: center;">
-                    来电
-                    <input name="str1" type=text id="str1" size="52"/>
-                    <input type=button value="得到第一路来电" onClick="get1buf();" name="button2">
+                <td width="9%" height="30">
+                    <center>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</center>
+                </td>
+            </tr>
+            <tr>
+                <td width="9%" height="30">
+                    <center>
+                        <INPUT NAME="CIDTYPE" TYPE=text id="CIDTYPE" VALUE="2" size="38"/>
+                        <INPUT TYPE=button VALUE="��������" ONCLICK="settype();" NAME="Submit"></center>
+                </td>
+            </tr>
+            <tr>
+                <td width="9%" height="30">
+                    <center></center>
+                </td>
+            </tr>
+            <tr>
+                <td width="9%" height="30">
+                    <center>
+                        ����&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input name="str1" type=text id="str1" size="52"/>
+                        <input type=button value="�õ���һ·����" onClick="get1buf();" name="button2">
+                    </center>
+                </td>
+            </tr>
+            <tr>
+                <td width="9%" height="30">
+                    <center>&nbsp;&nbsp;&nbsp;&nbsp;
+                    </center>
+                </td>
+            </tr>
+            <tr>
+                <td width="9%" height="30">
+                    <center>&nbsp;&nbsp;&nbsp;&nbsp;
+                    </center>
+                </td>
+            </tr>
+            <tr>
+                <td width="9%" height="30">
+                    <center>&nbsp;&nbsp;&nbsp;&nbsp;
+                    </center>
                 </td>
             </tr>
         </table>
