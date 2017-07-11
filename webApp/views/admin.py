@@ -892,16 +892,18 @@ def modify_area(request, token):
 
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
-    'area_id': forms.IntegerField(),
+    'area_id': forms.IntegerField(required=False),
+    'branch_id': forms.IntegerField(required=False),
     'offset': forms.IntegerField(min_value=0, required=False),
     'limit': forms.IntegerField(min_value=0, required=False),
 })
 @validate_admin_token()
-def get_desks(request, token, area_id, offset=0, limit=10):
+def get_desks(request, token, area_id=None, branch_id=None, offset=0, limit=10):
     """获取门店的桌位列表
 
     :param token: 令牌(必传)
-    :param area_id: 区域ID(必传)
+    :param area_id: 区域ID，不传返回所有区域桌位
+    :param branch_id: 门店ID，不传area_id时传
     :param offset: 起始值
     :param limit: 偏移量
     :return:
@@ -922,17 +924,33 @@ def get_desks(request, token, area_id, offset=0, limit=10):
             create_time: 创建时间
     """
 
-    try:
-        area = Area.objects.get(id=area_id)
-    except ObjectDoesNotExist:
-        return err_response('err_4', '该区域不存在')
+    if area_id:
+        try:
+            area = Area.objects.get(id=area_id)
+        except ObjectDoesNotExist:
+            return err_response('err_4', '该区域不存在')
 
-    # 只能查看自己酒店的门店区域
-    if area.branch.hotel != request.admin.hotel:
-        return err_response('err_2', '权限错误')
+        # 只能查看自己酒店的门店区域
+        if area.branch.hotel != request.admin.hotel:
+            return err_response('err_2', '权限错误')
 
-    c = area.desks.count()
-    ds = area.desks.order_by('-order')[offset:offset + limit]
+        c = area.desks.count()
+        ds = area.desks.order_by('-order')[offset:offset + limit]
+    elif branch_id:
+        try:
+            branch = HotelBranch.objects.get(id=branch_id)
+        except ObjectDoesNotExist:
+            return err_response('err_4', '该门店不存在')
+
+        # 只能查看自己酒店的门店区域
+        if branch.hotel != request.admin.hotel:
+            return err_response('err_2', '权限错误')
+
+        qs = Desk.objects.filter(area__branch=branch)
+        c = qs.count()
+        ds = qs.order_by('-order')[offset:offset + limit]
+    else:
+        return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
 
     l = [{'desk_id': desk.id,
           'number': desk.number,

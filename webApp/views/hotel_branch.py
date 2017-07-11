@@ -147,7 +147,7 @@ def get_desks(request, token, branch_id, date, dinner_period, area_id=None):
     if area_id is None:
         c = Desk.enabled_objects.filter(area__branch=branch).count()
         ds = Desk.enabled_objects.filter(
-            area__branch=branch).order_by('order')
+            area__branch=branch).order_by('-order')
     else:
         try:
             area = Area.enabled_objects.get(id=area_id)

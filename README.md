@@ -4254,7 +4254,8 @@ URL：webApp/admin/hotel_branch/desk/list/ <br>
 | 参数名称       | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------:|
 | token         | 令牌          |         yes    |
-| area_id  | 区域 ID | yes   |
+| area_id  | 区域ID，不传时获取所有区域的桌位 | no   |
+| branch_id | 门店ID，不传area_id时传  | no    |
 | offset | 起始值（默认0） | no |
 | limit | 偏移量（默认10） | no |
 
