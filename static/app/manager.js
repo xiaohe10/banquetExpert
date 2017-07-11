@@ -725,7 +725,7 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                         },
                         resolve: {
                             form: function () {
-                                return staff;
+                                return angular.copy(staff);
                             }
                         }
                     });
@@ -758,10 +758,10 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                             form: function () {
                                 return {
                                     hotel_id: $rootScope.Hotel.hotel_id,
-                                    phone: "18800184976",
-                                    name: "赵强",
-                                    id_number: "100124100124100124",
-                                    password: "sunny",
+                                    phone: "",
+                                    name: "",
+                                    id_number: "",
+                                    password: "",
                                     position: "经理",
                                     guest_channel: 0,
                                     gender: 1,
