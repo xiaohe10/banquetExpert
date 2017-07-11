@@ -746,7 +746,12 @@ StaffApp.config(['$routeProvider', function ($routeProvider) {
                     // --发路线
                     order_route: false
                 };
-                //排序选项
+                // 查询表单
+                $scope.SearchForm = {
+                    keyword: "",
+                    type: 0
+                };
+                // 排序选项
                 $scope.SortSelection = [
                     "按桌位排序", "按下单时间", "客户分类", "有换桌", "有接单人",
                     "有临牌", "操作人", "手机下单", "网络"
@@ -894,11 +899,26 @@ StaffApp.config(['$routeProvider', function ($routeProvider) {
                 $scope.cancel = function () {
 
                 };
+                // 查询
+                $scope.search = function () {
+                    var url = "/webApp/staff/order/search/";
+                    var param = {
+                        status: 1
+                    };
+                    $http.post(url, JSON.stringify(param)).success(function (obj) {
+                        if (obj.status === "true") {
+                            $scope.Staff.OrderList = obj.data;
+                        } else {
+                            alert(obj.description);
+                            $scope.Staff.OrderList = {count: '', list: []};
+                        }
+                    });
+                };
                 $scope.handlePhone = function (index) {
-                    Log.i(TAG, JSON.stringify($scope.PhoneList[index]));
+                    Log.i(TAG, JSON.stringify($scope.Staff.PhoneList[index]));
                 };
                 $scope.handleReserve = function (index) {
-                    Log.i(TAG, JSON.stringify($scope.ReserveList[index]));
+                    Log.i(TAG, JSON.stringify($scope.Staff.ReserveList[index]));
                 };
             }
         });

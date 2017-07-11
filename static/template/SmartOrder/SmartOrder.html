@@ -277,10 +277,10 @@
                             </div>
                             <div class="panel-collapse">
                                 <div class="well well-sm form-inline">
-                                    <input type="text" placeholder="手机号筛选"/>
-                                    <select>
+                                    <input type="text" ng-model="SearchForm.keyword" placeholder="手机号筛选"/>
+                                    <select ng-model="SearchForm.type" ng-change="search()">
                                         <optgroup label="筛选方式"></optgroup>
-                                        <option ng-repeat="x in SortSelection" value="$index">by {{x}}</option>
+                                        <option ng-repeat="x in SortSelection" value=$index >by {{x}}</option>
                                     </select>
                                 </div>
                                 <!--提示信息-->
@@ -300,8 +300,8 @@
                                                 </div>
                                                 <!--右侧信息-->
                                                 <div class="col-8">
-                                                    <p><strong>{{x.name|surname}}</strong> 先生</p>
-                                                    <p>备注：桌号({{x.desk}}) {{x.order_status}}</p>
+                                                    <p><strong>{{x.name}}</strong> 先生</p>
+                                                    <p>备注：桌号() {{x.status}}</p>
                                                 </div>
                                                 <!--操作栏-->
                                                 <div class="col-lg-12 col-sm-12 p-2 bg-success">
