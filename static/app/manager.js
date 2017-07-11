@@ -289,31 +289,6 @@ ManagerApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
         }
     });
 
-    $rootScope.$watch('Hotel', function () {
-        // 【酒店】获取员工列表
-        var url = "/webApp/admin/hotel/staff/list/";
-        var param = {hotel_id: $rootScope.Hotel.hotel_id};
-        $http.post(url, JSON.stringify(param)).success(function (obj) {
-            if (obj.status === "true") {
-                $rootScope.Hotel.StaffList = obj.data;
-            } else {
-                $rootScope.Hotel.StaffList = {count: 0, list: []};
-                alert(obj.description);
-            }
-        });
-
-        // 【酒店】获取渠道列表
-        url = "/webApp/admin/hotel/channel/list/";
-        param = {hotel_id: $rootScope.Hotel.hotel_id};
-        $http.post(url, JSON.stringify(param)).success(function (obj) {
-            if (obj.status === "true") {
-                $rootScope.Hotel.Channel = obj.data;
-            } else {
-                $rootScope.Hotel.Channel = {count: 0, list: []};
-                alert(obj.description);
-            }
-        });
-    });
     // // 【门店】获取门店信息
     // url = "/webApp/admin/hotel_branch/profile/get/";
     // param = {branch_id: $};
@@ -346,7 +321,22 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
             templateUrl: "./template/" + Templates.Channel.Channel, controller: function ($rootScope, $scope, $modal, $http) {
                 var TAG = Templates.Channel.Channel;
                 // 初始化渠道列表
-                $scope.data = $rootScope.Hotel.Channel;
+                // 初始化酒店信息
+                $rootScope.$watch('Hotel', function () {
+                    // 【酒店】获取渠道列表
+                    url = "/webApp/admin/hotel/channel/list/";
+                    param = {hotel_id: $rootScope.Hotel.hotel_id};
+                    $http.post(url, JSON.stringify(param)).success(function (obj) {
+                        if (obj.status === "true") {
+                            $rootScope.Hotel.Channel = obj.data;
+                            $scope.data = $rootScope.Hotel.Channel;
+                        } else {
+                            $rootScope.Hotel.Channel = {count: 0, list: []};
+                            $scope.data = $rootScope.Hotel.Channel;
+                            alert(obj.description);
+                        }
+                    });
+                });
                 /**
                  * 添加/编辑内部渠道
                  * @guest_channel 客户渠道：0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理
@@ -656,7 +646,21 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
             templateUrl: "./template/" + Templates.Channel.Staff, controller: function ($rootScope, $scope, $modal, $http) {
                 var TAG = Templates.Channel.Staff;
                 // 初始化员工列表
-                $scope.data = $rootScope.Hotel.StaffList;
+                $rootScope.$watch('Hotel', function () {
+                    // 【酒店】获取员工列表
+                    var url = "/webApp/admin/hotel/staff/list/";
+                    var param = {hotel_id: $rootScope.Hotel.hotel_id};
+                    $http.post(url, JSON.stringify(param)).success(function (obj) {
+                        if (obj.status === "true") {
+                            $rootScope.Hotel.StaffList = obj.data;
+                            $scope.data = $rootScope.Hotel.StaffList;
+                        } else {
+                            $rootScope.Hotel.StaffList = {count: 0, list: []};
+                            $scope.data = $rootScope.Hotel.StaffList;
+                            alert(obj.description);
+                        }
+                    });
+                });
                 // 审核员工
                 $scope.approve = function (staff) {
                     Log.i(TAG, "审核员工：" + JSON.stringify(staff));
@@ -1002,24 +1006,6 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
         .when('/Hotel/Hotel', {
             templateUrl: "./template/" + Templates.Hotel.Hotel, controller: function ($rootScope, $scope, $modal, $http) {
                 var TAG = Templates.Hotel.Hotel;
-                // $scope.form = {
-                //     hotel_id: 1,
-                //     // 餐厅名称
-                //     name: "北京宴总店",
-                //     // 餐厅标志
-                //     icon: "/static/css/image/head1.jpg",
-                //     // 详细地址
-                //     address: "丰台区靛厂路3号(永辉超市东侧)",
-                //     // 预订电话
-                //     phone: "01088177777",
-                //     // 餐厅设施
-                //     facility: [],
-                //     // 可以刷卡
-                //     VISA: false,
-                //     UnionPay: false,
-                //     // Logo
-                //     image: "/static/css/image/head2.jpg"
-                // };
                 $scope.form = $rootScope.Hotel;
                 $scope.data = $rootScope.Hotel;
                 $scope.submit = function () {
