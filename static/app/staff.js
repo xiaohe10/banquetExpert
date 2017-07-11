@@ -677,8 +677,6 @@ StaffApp.config(['$routeProvider', function ($routeProvider) {
                     Staff.ReserveList();
                     Staff.OrderList();
                 });
-                Staff.ReserveList();
-                Staff.OrderList();
                 // 员工记录
                 $scope.Staff = {
                     // 来电列表
@@ -721,6 +719,8 @@ StaffApp.config(['$routeProvider', function ($routeProvider) {
                         });
                     }
                 };
+                Staff.ReserveList();
+                Staff.OrderList();
                 // 预定表单
                 $scope.ReserveForm = {
                     // 预定用餐日期
