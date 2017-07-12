@@ -515,6 +515,7 @@ URL：webApp/staff/order/search/ <br>
 | dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') |
 | name | 联系人 |
 | contact | 联系电话 |
+| gender    | 性别，0：保密，1：男，2：女    |
 | guest_type | 顾客身份 |
 | guest_number | 客人数量 |
 | desks | 桌位ID数组 |
@@ -545,6 +546,7 @@ URL：webApp/staff/order/search/ <br>
             "dinner_time":"12:00",
             "dinner_period":0,
             "name":"李四",
+            "gender":1,
             "guest_type":"vip",
             "contact":"18813101211",
             "guest_number":10,
@@ -950,6 +952,7 @@ URL：webApp/order/submit/ <br>
 | dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') | yes |
 | name | 联系人 | yes |
 | contact | 联系电话 | yes |
+| gender    | 性别，0：保密，1：男，2：女    | yes  |
 | guest_number | 客人数量 | yes |
 | table_count   | 餐桌数   | yes    |
 | desks | 桌位ID的数组 | yes |
@@ -978,6 +981,7 @@ URL：webApp/order/submit/ <br>
 	"dinner_time":"12:00"
 	"dinner_period":0,
 	"name":"李四",
+	"gender:1,
 	"contact":"18813101211",
 	"guest_number":10,
 	"table_count":1,
@@ -1065,6 +1069,9 @@ URL：webApp/order/search/ <br>
 | 参数名称       | 含义             |
 |:------------- |:---------------|
 | count | 订单数量 |
+| consumption   | 总消费   |
+| guest_number   | 用餐人数  |
+| guest_consumption | 人均消费  |
 | list | 订单列表 |
 | 以下为list中的数据 |
 | order_id| 订单ID |
@@ -1078,6 +1085,7 @@ URL：webApp/order/search/ <br>
 | dinner_time   | 预定用餐时间  |
 | dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') |
 | name | 联系人 |
+| gender    | 性别，0：保密，1：男，2：女    |
 | contact | 联系电话 |
 | guest_type | 顾客身份 |
 | guest_number | 客人数量 |
@@ -1097,6 +1105,9 @@ URL：webApp/order/search/ <br>
 	"status":"true",
 	"data":{
 	    "count":100,
+	    "consumption":1000,
+	    "guest_number":10,
+	    "guest_consumption":300.15,
 	    "list":[
             "order_id":1,
             "create_time":"2014-02-01 10:00:00",
@@ -1110,6 +1121,7 @@ URL：webApp/order/search/ <br>
             "dinner_time":"12:00",
             "dinner_period":0,
             "name":"李四",
+            "gender":1,
             "guest_type":"vip",
             "contact":"18813101211",
             "guest_number":10,
@@ -1166,6 +1178,7 @@ URL：webApp/order/profile/ <br>
 | dinner_time   | 预定用餐时间  |   yes  |
 | dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') | yes |
 | name | 联系人 |
+| gender    | 性别，0：保密，1：男，2：女    |
 | guest_type | 顾客身份 |
 | contact | 联系电话 |
 | guest_number | 客人数量 |
@@ -1210,6 +1223,7 @@ URL：webApp/order/profile/ <br>
 		"dinner_time":"12:00",
 		"dinner_period":0,
 		"name":"李四",
+		"gender":1,
 		"guest_type":"vip",
 		"contact":"18813101211",
 		"guest_number":10,
@@ -1259,6 +1273,7 @@ URL：webApp/order/update/ <br>
 | status | 订单状态, 0: 已订, 1: 客到, 2: 已完成, 3: 已撤单   | no    |
 | banquet   | 宴会类型，来自36宴    | no    |
 | name | 联系人 | no |
+| gender    | 性别，0：保密，1：男，2：女    | no  |
 | contact | 联系电话 | no |
 | guest_number | 客人数量 | no |
 | table_count   | 餐桌数   | no    |
@@ -1288,6 +1303,7 @@ URL：webApp/order/update/ <br>
 	"status":2,
 	"banquet":"满月宴",
 	"name":"李四",
+	"gender":1,
 	"contact":"18813101211",
 	"guest_number":10,
 	"table_count":3,
@@ -1462,6 +1478,9 @@ URL：webApp/staff/order/search/ <br>
 | 参数名称       | 含义             |
 |:------------- |:---------------|
 | count | 订单数量 |
+| consumption   | 总消费   |
+| guest_number   | 用餐人数  |
+| guest_consumption | 人均消费  |
 | list | 订单列表 |
 | 以下为list中的数据 |
 | order_id| 订单ID |
@@ -1475,6 +1494,7 @@ URL：webApp/staff/order/search/ <br>
 | dinner_time   | 预定用餐时间  |
 | dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') |
 | name | 联系人 |
+| gender    | 性别，0：保密，1：男，2：女    |
 | contact | 联系电话 |
 | guest_type | 顾客身份 |
 | guest_number | 客人数量 |
@@ -1492,6 +1512,9 @@ URL：webApp/staff/order/search/ <br>
 	"status":"true",
 	"data":{
 	    "count":100,
+	    "consumption":1000,
+	    "guest_number":10,
+	    "guest_consumption":300.15,
 	    "list":[
             "order_id":1,
             "create_time":"2014-02-01 10:00:00",
@@ -1505,6 +1528,7 @@ URL：webApp/staff/order/search/ <br>
             "dinner_time":"12:00",
             "dinner_period":0,
             "name":"李四",
+            "gender":1,
             "guest_type":"vip",
             "contact":"18813101211",
             "guest_number":10,
@@ -1541,6 +1565,7 @@ URL：webApp/order/supply/ <br>
 | dinner_time | 预定用餐时间 | yes |
 | dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') | yes |
 | name | 联系人 | yes |
+| gender    | 性别，0：保密，1：男，2：女    | yes   |
 | contact | 联系电话 | yes |
 | guest_number | 客人数量 | yes |
 | desks | 桌位ID的数组 | yes |
@@ -1569,6 +1594,7 @@ URL：webApp/order/supply/ <br>
 	"dinner_time":"12:00"
 	"dinner_period":0,
 	"name":"李四",
+	"gender":1,
 	"contact":"18813101211",
 	"guest_number":10,
 	"banquet":"满月宴",
@@ -1615,6 +1641,65 @@ URL：webApp/order/supply/ <br>
 | err_3 | 桌位不存在 |
 | err_4 | 补录订单日期不能大于当前日期    |
 | err_5 | 服务器创建订单错误 |
+
+
+## 获取订单操作日志
+URL：webApp/order/log/list/ <br>
+请求方式：POST
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------|
+| token         | 登录口令          |         yes  |
+| order_id | 订单ID | yes |
+
+
+请求示例:
+
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"order_id":"order_id",
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| content   | 内容    |
+| staff_id  | 操作员工ID |
+| staff_name    | 操作员工姓名    |
+| create_time | 创建日期 |
+
+返回示例
+
+```
+{
+	"status":"true",
+	"data":
+	{
+	    "list":[
+	    {
+	        "content":"创建订单",
+	        "staff_id":1,
+	        "staff_name":"张三",
+	        "create_time":"创建时间"
+		},
+		...
+		]
+	}
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 不存在该条件的用户 |
+
 
 # 我的客户
 
@@ -2289,6 +2374,7 @@ URL：webApp/score/list/ <br>
 | dinner_time   | 预定用餐时间  |
 | dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') |
 | name | 联系人 |
+| gender    | 性别，0：保密，1：男，2：女    |
 | contact | 联系电话 |
 | guest_type | 顾客身份 |
 | guest_number | 客人数量 |
@@ -2320,6 +2406,7 @@ URL：webApp/score/list/ <br>
             "dinner_time":"12:00",
             "dinner_period":0,
             "name":"李四",
+            "gender":1,
             "guest_type":"vip",
             "contact":"18813101211",
             "guest_number":10,
@@ -2765,7 +2852,7 @@ hotel_name | | 品牌名称
 branch_id | | 门店ID
 branch_name| | 店名
 position || 地址
-manageer || 店总
+manager || 店总
 items |  所有的评分项
 ||item_key | 评分关键词
 ||item_name | 评分名称
@@ -5355,6 +5442,9 @@ URL：webApp/admin/order/search/ <br>
 | 参数名称       | 含义             |
 |:------------- |:---------------|
 | count | 订单数量 |
+| consumption   | 总消费   |
+| guest_number   | 用餐人数  |
+| guest_consumption | 人均消费  |
 | list | 订单列表 |
 | 以下为list中的数据 |
 | order_id| 订单ID |
@@ -5368,6 +5458,7 @@ URL：webApp/admin/order/search/ <br>
 | dinner_time   | 预定用餐时间  |
 | dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') |
 | name | 联系人 |
+| gender    | 性别，0：保密，1：男，2：女    |
 | contact | 联系电话 |
 | guest_type | 顾客身份 |
 | guest_number | 客人数量 |
@@ -5387,6 +5478,9 @@ URL：webApp/admin/order/search/ <br>
 	"status":"true",
 	"data":{
 	    "count":100,
+	    "consumption":1000,
+	    "guest_number":10,
+	    "guest_consumption":300.15,
 	    "list":[
             "order_id":1,
             "create_time":"2014-02-01 10:00:00",
@@ -5400,6 +5494,7 @@ URL：webApp/admin/order/search/ <br>
             "dinner_time":"12:00",
             "dinner_period":0,
             "name":"李四",
+            "gender":1,
             "guest_type":"vip",
             "contact":"18813101211",
             "guest_number":10,
@@ -5458,6 +5553,7 @@ URL：webApp/admin/order/profile/ <br>
 | dinner_time   | 预定用餐时间  |   yes  |
 | dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') | yes |
 | name | 联系人 |
+| gender    | 性别，0：保密，1：男，2：女    |
 | guest_type | 顾客身份 |
 | contact | 联系电话 |
 | guest_number | 客人数量 |
@@ -5502,6 +5598,7 @@ URL：webApp/admin/order/profile/ <br>
 		"dinner_time":"12:00",
 		"dinner_period":0,
 		"name":"李四",
+		"gender":1,
 		"guest_type":"vip",
 		"contact":"18813101211",
 		"guest_number":10,
@@ -5548,6 +5645,7 @@ URL：webApp/admin/order/submit/ <br>
 | dinner_time | 预定用餐时间 | yes |
 | dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') | yes |
 | name | 联系人 | yes |
+| gender    | 性别，0：保密，1：男，2：女    | yes  |
 | contact | 联系电话 | yes |
 | guest_number | 客人数量 | yes |
 | table_count   | 餐桌数   | yes   |
@@ -5577,6 +5675,7 @@ URL：webApp/admin/order/submit/ <br>
 	"dinner_time":"12:00"
 	"dinner_period":0,
 	"name":"李四",
+	"gender":1,
 	"contact":"18813101211",
 	"guest_number":10,
 	"table_count":3,
@@ -5642,6 +5741,7 @@ URL：webApp/admin/order/modify/ <br>
 | status | 订单状态, 0: 已订, 1: 客到, 2: 已完成, 3: 已撤单   | no    |
 | banquet   | 宴会类型  | no    |
 | name | 联系人 | no |
+| gender    | 性别，0：保密，1：男，2：女    | no   |
 | contact | 联系电话 | no |
 | guest_number | 客人数量 | no |
 | table_count   | 餐桌数   | no    |
@@ -5672,6 +5772,7 @@ URL：webApp/admin/order/modify/ <br>
 	"status":2,
 	"banquet":"满月宴",
 	"name":"李四",
+	"gender":1,
 	"contact":"18813101211",
 	"guest_number":10,
 	"table_count":3,

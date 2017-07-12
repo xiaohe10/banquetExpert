@@ -2001,6 +2001,9 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
         dinner_period: 餐段, 0: 午餐, 1: 晚餐, 2: 夜宵
     :return:
         count: 订单总数
+        consumption: 总消费
+        guest_number: 就餐人数
+        guest_consumption: 人均消费
         list: 订单列表
             order_id: 订单ID
             create_time: 创建日期
@@ -2014,6 +2017,7 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
             consumption: 消费金额
             name: 联系人
             guest_type: 顾客身份
+            gender: 性别
             contact: 联系电话
             guest_number: 客人数量
             table_count: 餐位数
@@ -2053,6 +2057,29 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
     c = rs.count()
     rs = rs.order_by(ORDERS[order])[offset:offset + limit]
 
+    # 就餐人数
+    result = rs.values('branch_id').annotate(
+        sum=Sum('guest_number')).order_by('branch_id')
+    if result:
+        guest_number = result[0]['sum']
+    else:
+        guest_number = 0
+
+    # 总消费
+    result = rs.values('branch_id').annotate(
+        sum=Sum('consumption')).order_by('branch_id')
+    if result:
+        consumption = result[0]['sum']
+    else:
+        consumption = 0
+
+    # 人均消费
+    if guest_number > 0:
+        # 结果保留2位小数
+        guest_consumption = '%.2f' % (float(consumption) / guest_number)
+    else:
+        guest_consumption = 0.00
+
     l = []
     for r in rs:
         d = {'order_id': r.id,
@@ -2066,6 +2093,7 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
              'dinner_period': r.dinner_period,
              'consumption': r.consumption,
              'name': r.name,
+             'gender': r.gender,
              'guest_type': Guest.objects.get(phone=r.contact).name
              if Guest.objects.filter(phone=r.contact).count() == 1 else '',
              'contact': r.contact,
@@ -2085,7 +2113,11 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
 
         l.append(d)
 
-    return corr_response({'count': c, 'list': l})
+    return corr_response({'count': c,
+                          'consumption': consumption,
+                          'guest_number': guest_number,
+                          'guest_consumption': guest_consumption,
+                          'list': l})
 
 
 @validate_args({
@@ -2106,6 +2138,7 @@ def get_order_profile(request, token, order_id):
         banquet: 订单类型
         consumption: 消费金额
         name: 联系人
+        gender: 性别
         guest_type: 顾客身份
         contact: 联系电话
         guest_number: 就餐人数
@@ -2146,6 +2179,7 @@ def get_order_profile(request, token, order_id):
          'consumption': order.consumption,
          'name': order.name,
          'contact': order.contact,
+         'gender': order.gender,
          'guest_type': Guest.objects.get(phone=order.contact).name
          if Guest.objects.filter(
              phone=order.contact).count() == 1 else '',
@@ -2193,7 +2227,8 @@ def get_order_profile(request, token, order_id):
     'dinner_time': forms.TimeField(),
     'dinner_period': forms.IntegerField(min_value=0, max_value=2),
     'name': forms.CharField(min_length=1, max_length=20),
-    'contact': forms.RegexField(r'[0-9]{11}'),
+    'contact': forms.CharField(max_length=11),
+    'gender': forms.IntegerField(min_value=0, max_value=2, required=False),
     'guest_number': forms.IntegerField(),
     'table_count': forms.IntegerField(required=False),
     'banquet': forms.CharField(max_length=10, required=False),
@@ -2221,6 +2256,7 @@ def submit_order(request, token, dinner_date, dinner_time,
     :param kwargs:
         name: 联系人(必传)
         contact: 联系电话(必传)
+        gender: 性别
         guest_number: 就餐人数(必传)
         table_count: 餐桌数(必传)
         desks: 预定桌位, 可以多桌, 数组(必传)
@@ -2279,7 +2315,7 @@ def submit_order(request, token, dinner_date, dinner_time,
                   'water_card', 'door_card', 'sand_table', 'welcome_screen',
                   'welcome_fruit', 'welcome_card', 'background_music',
                   'has_candle', 'has_flower', 'has_balloon', 'banquet',
-                  'table_count')
+                  'table_count', 'gender')
 
     with transaction.atomic():
         try:
@@ -2308,7 +2344,8 @@ def submit_order(request, token, dinner_date, dinner_time,
         min_value=0, max_value=2, required=False),
     'consumption': forms.IntegerField(min_value=0, required=False),
     'name': forms.CharField(min_length=1, max_length=20, required=False),
-    'contact': forms.RegexField(r'[0-9]{11}', required=False),
+    'contact': forms.CharField(max_length=11, required=False),
+    'gender': forms.IntegerField(min_value=0, max_value=2, required=False),
     'guest_number': forms.IntegerField(required=False),
     'table_count': forms.IntegerField(required=False),
     'staff_description': forms.CharField(max_length=200, required=False),
@@ -2338,6 +2375,7 @@ def modify_order(request, token, order_id, **kwargs):
         consumption: 消费金额
         name: 联系人
         contact: 联系电话
+        gender: 性别
         guest_number: 就餐人数
         table_count: 餐桌数
         desks: 预定桌位, 可以多桌, 数组
@@ -2367,7 +2405,7 @@ def modify_order(request, token, order_id, **kwargs):
                   'water_card', 'door_card', 'sand_table', 'welcome_screen',
                   'welcome_fruit', 'welcome_card', 'background_music'
                   'has_candle', 'has_flower', 'has_balloon', 'consumption',
-                  'banquet', 'table_count')
+                  'banquet', 'table_count', 'gender')
 
     # 下单日期校验
     if 'dinner_date' in kwargs:
@@ -2388,11 +2426,6 @@ def modify_order(request, token, order_id, **kwargs):
             order.cancel_time = timezone.now()
         else:
             return err_response('err_5', '订单状态切换非法')
-
-    for k in order_keys:
-        if k in kwargs:
-            setattr(order, k, kwargs[k])
-    order.save()
 
     # 如果换桌
     data = json.loads(request.body)
@@ -2423,7 +2456,6 @@ def modify_order(request, token, order_id, **kwargs):
                 desk_list[i] = desk_id
             desks = json.dumps(desk_list)
             order.desks = desks
-            order.save()
         except KeyError or ValueError:
             return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
 
@@ -2431,6 +2463,11 @@ def modify_order(request, token, order_id, **kwargs):
         if (len(branch_list) != 1) or (branch is None) or \
                 (branch.hotel != request.admin.hotel):
             return err_response('err_5', '桌位不存在')
+
+    for k in order_keys:
+        if k in kwargs:
+            setattr(order, k, kwargs[k])
+    order.save()
 
     return corr_response()
 
