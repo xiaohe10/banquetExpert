@@ -44,7 +44,7 @@
                 <input class="form-check mx-1" type="checkbox" ng-model="option.no_marketing" id="no_marketing"/>不接受营销
             </label>
             <label for="to_type">
-                全部客户共{{table.length}}条记录，已经选择{{detail.selected_count}} / {{data.count}} | 移动到
+                全部客户共{{data.count}}条记录，已经选择{{detail.selected_count}} / {{data.count}} | 移动到
                 <select class="form-control form-control-sm" ng-model="option.to_type" id="to_type">
                     <option ng-repeat="(k, v) in status" value="{{$index}}">{{v}}</option>
                 </select>
@@ -75,7 +75,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="x in data.list|filter:{guest_type:option.selected_type}">
+            <tr ng-repeat="x in data.list">
                 <td>
                     <label>
                         <input type="checkbox" ng-model="x.selected" ng-click="select()" value="{{x.selected}}">{{x.guest_id}}

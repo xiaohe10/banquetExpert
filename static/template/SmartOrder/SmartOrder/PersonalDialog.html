@@ -6,10 +6,21 @@
     </div>
     <div class="panel-body">
         <ul class="list-group">
-            <li class="list-group-item" ng-repeat="(k, v) in form">
-                <small>{{v.name}}</small>
-                <span class="label label-info" ng-repeat="x in v.labels">{{x}}</span>
+            <li class="list-group-item">
+                <small>私人订制：</small>
+                <p>{{ReserveForm.staff_description}}</p>
+            </li>
+            <li class="list-group-item" ng-repeat="x in Branch.personal_tailor|orderBy:'order'">
+                <small>{{x.name}}：</small>
+                <span class="label label-success" style="display: inline-block" ng-click="selectLabel(y)" ng-repeat="y in x.labels">
+                    <small>{{y}}</small>
+                    <span class="glyphicon glyphicon-ok"></span>
+                </span>
             </li>
         </ul>
+    </div>
+    <div class="panel-footer">
+        <input class="btn btn-primary btn-sm" type="button" ng-click="submit()" value="提交"/>
+        <input class="btn btn-default btn-sm" type="button" ng-click="cancel()" value="取消"/>
     </div>
 </div>
