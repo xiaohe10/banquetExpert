@@ -13,6 +13,8 @@ urlpatterns = [
     url(r'^supply/$', supply_order, name='supply'),
     # 修改订单
     url(r'^update/$', modify_order, name='modify'),
+    # 获取订单操作日志
+    url(r'^log/list/$', get_order_logs, name='log_list'),
     # 获取月订单列表
     url(r'^month_list/$', get_month_orders, name='month_list'),
     # 获取日订单列表

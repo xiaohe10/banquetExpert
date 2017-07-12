@@ -464,6 +464,9 @@ class Order(models.Model):
         default=0, db_index=True)
     # 联系人
     name = models.CharField(max_length=20, db_index=True)
+    # 性别
+    gender = models.IntegerField(choices=((0, '保密'), (1, '男'), (2, '女')),
+                                 default=0, db_index=True)
     # 联系电话
     contact = models.CharField(max_length=11, default='')
     # 到店人数
@@ -533,6 +536,23 @@ class Order(models.Model):
 
     # 所属门店
     branch = models.ForeignKey('HotelBranch', models.CASCADE, 'orders')
+
+    class Meta:
+        ordering = ['-create_time']
+
+
+class OrderLog(models.Model):
+    """订单操作日志"""
+
+    # 创建时间
+    create_time = models.DateTimeField(default=timezone.now)
+    # 内容
+    content = models.CharField(max_length=200, default='')
+
+    # 订单
+    order = models.ForeignKey('Order', models.CASCADE, 'logs')
+    # 操作员工
+    staff = models.ForeignKey('Staff', models.CASCADE, 'order_logs')
 
     class Meta:
         ordering = ['-create_time']

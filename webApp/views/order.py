@@ -4,7 +4,7 @@ import datetime
 
 from datetime import timedelta
 from django import forms
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.utils import timezone
 from django.db import IntegrityError, transaction
 from django.core.exceptions import ObjectDoesNotExist
@@ -53,6 +53,9 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
         dinner_period: 餐段, 0: 午餐, 1: 晚餐, 2: 夜宵
     :return:
         count: 订单总数
+        consumption: 总消费
+        guest_number: 就餐人数
+        guest_consumption: 人均消费
         list: 订单列表
             order_id: 订单ID
             create_time: 创建日期
@@ -114,6 +117,29 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
     c = rs.count()
     rs = rs.order_by(ORDERS[order])[offset:offset + limit]
 
+    # 就餐人数
+    result = rs.values('branch_id').annotate(
+        sum=Sum('guest_number')).order_by('branch_id')
+    if result:
+        guest_number = result[0]['sum']
+    else:
+        guest_number = 0
+
+    # 总消费
+    result = rs.values('branch_id').annotate(
+        sum=Sum('consumption')).order_by('branch_id')
+    if result:
+        consumption = result[0]['sum']
+    else:
+        consumption = 0
+
+    # 人均消费
+    if guest_number > 0:
+        # 结果保留2位小数
+        guest_consumption = '%.2f' % (float(consumption) / guest_number)
+    else:
+        guest_consumption = 0.00
+
     l = []
     for r in rs:
         d = {'order_id': r.id,
@@ -146,7 +172,11 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
 
         l.append(d)
 
-    return corr_response({'count': c, 'list': l})
+    return corr_response({'count': c,
+                          'consumption': consumption,
+                          'guest_number': guest_number,
+                          'guest_consumption': guest_consumption,
+                          'list': l})
 
 
 @validate_args({
@@ -198,6 +228,9 @@ def get_profile(request, token, order_id):
         order = Order.objects.get(id=order_id)
     except ObjectDoesNotExist:
         return err_response('err_3', '订单不存在')
+
+    if order.branch.hotel != request.staff.hotel:
+        return err_response('err_2', '权限错误')
 
     d = {'dinner_date': order.dinner_date,
          'dinner_time': order.dinner_time,
@@ -255,6 +288,7 @@ def get_profile(request, token, order_id):
     'dinner_period': forms.IntegerField(min_value=0, max_value=2),
     'name': forms.CharField(min_length=1, max_length=20),
     'contact': forms.CharField(max_length=11),
+    'gender': forms.IntegerField(min_value=0, max_value=2, required=False),
     'guest_number': forms.IntegerField(),
     'table_count': forms.IntegerField(required=False),
     'banquet': forms.CharField(max_length=200, required=False),
@@ -285,6 +319,7 @@ def submit_order(request, token, dinner_date, dinner_time, dinner_period,
     :param kwargs:
         name: 联系人(必传)
         contact: 联系电话(必传)
+        gender: 性别(必传)
         guest_number: 就餐人数(必传)
         desks: 预定桌位, 可以多桌, 数组(必传)
         table_count: 餐桌数
@@ -339,11 +374,11 @@ def submit_order(request, token, dinner_date, dinner_time, dinner_period,
             (branch.hotel != request.staff.hotel):
         return err_response('err_3', '桌位不存在')
 
-    order_keys = ('name', 'contact', 'guest_number', 'staff_description',
+    order_keys = ('name', 'contact', 'guest_number', 'gender', 'table_count',
                   'water_card', 'door_card', 'sand_table', 'welcome_screen',
                   'welcome_fruit', 'welcome_card', 'background_music',
                   'has_candle', 'has_flower', 'has_balloon', 'banquet',
-                  'table_count')
+                  'staff_description')
 
     with transaction.atomic():
         try:
@@ -353,6 +388,8 @@ def submit_order(request, token, dinner_date, dinner_time, dinner_period,
             for k in order_keys:
                 if k in kwargs:
                     setattr(order, k, kwargs[k])
+            # 记录订单的操作日志
+            order.logs.create(staff=request.staff, content='创建订单')
             order.save()
             return corr_response({'order_id': order.id})
         except IntegrityError:
@@ -366,6 +403,7 @@ def submit_order(request, token, dinner_date, dinner_time, dinner_period,
     'dinner_period': forms.IntegerField(min_value=0, max_value=2),
     'name': forms.CharField(min_length=1, max_length=20),
     'contact': forms.CharField(max_length=11),
+    'gender': forms.IntegerField(min_value=0, max_value=2, required=False),
     'guest_number': forms.IntegerField(),
     'table_count': forms.IntegerField(required=False),
     'banquet': forms.CharField(max_length=200, required=False),
@@ -396,6 +434,7 @@ def supply_order(request, token, dinner_date, dinner_time, dinner_period,
     :param kwargs:
         name: 联系人(必传)
         contact: 联系电话(必传)
+        gender: 性别(必传)
         guest_number: 就餐人数(必传)
         desks: 预定桌位, 可以多桌, 数组(必传)
         table_count: 餐位数
@@ -444,11 +483,11 @@ def supply_order(request, token, dinner_date, dinner_time, dinner_period,
             (branch.hotel != request.staff.hotel):
         return err_response('err_3', '桌位不存在')
 
-    order_keys = ('name', 'contact', 'guest_number', 'staff_description',
+    order_keys = ('name', 'contact', 'guest_number', 'gender', 'table_count',
                   'water_card', 'door_card', 'sand_table', 'welcome_screen',
                   'welcome_fruit', 'welcome_card', 'background_music',
                   'has_candle', 'has_flower', 'has_balloon', 'banquet',
-                  'table_count')
+                  'staff_description')
 
     with transaction.atomic():
         try:
@@ -458,6 +497,8 @@ def supply_order(request, token, dinner_date, dinner_time, dinner_period,
             for k in order_keys:
                 if k in kwargs:
                     setattr(order, k, kwargs[k])
+            # 记录订单的操作日志
+            order.logs.create(staff=request.staff, content='补录订单')
             order.save()
             return corr_response({'order_id': order.id})
         except IntegrityError as e:
@@ -476,6 +517,7 @@ def supply_order(request, token, dinner_date, dinner_time, dinner_period,
         min_value=0, max_value=2, required=False),
     'name': forms.CharField(min_length=1, max_length=20, required=False),
     'contact': forms.CharField(max_length=11, required=False),
+    'gender': forms.IntegerField(min_value=0, max_value=2, required=False),
     'guest_number': forms.IntegerField(required=False),
     'table_count': forms.IntegerField(required=False),
     'staff_description': forms.CharField(max_length=200, required=False),
@@ -507,6 +549,7 @@ def modify_order(request, token, order_id, **kwargs):
         dinner_period: 餐段, 0: 午餐, 1: 晚餐, 2: 夜宵
         name: 联系人
         contact: 联系电话
+        gender: 性别
         guest_number: 就餐人数
         table_count: 餐桌数
         desks: 预定桌位, 可以多桌, 数组
@@ -533,7 +576,7 @@ def modify_order(request, token, order_id, **kwargs):
                   'water_card', 'door_card', 'sand_table', 'welcome_screen',
                   'welcome_fruit', 'welcome_card', 'background_music',
                   'has_candle', 'has_flower', 'has_balloon', 'banquet',
-                  'table_count')
+                  'table_count', 'gender')
 
     # 下单日期校验
     if 'dinner_date' in kwargs:
@@ -546,19 +589,20 @@ def modify_order(request, token, order_id, **kwargs):
         # 客到
         if status == 1 and order.status == 0:
             order.arrival_time = timezone.now()
+            # 记录订单的操作日志
+            order.logs.create(staff=request.staff, content='更改订单状态为客到')
         # 翻台
         elif status == 2 and order.status == 1:
             order.finish_time = timezone.now()
+            # 记录订单的操作日志
+            order.logs.create(staff=request.staff, content='更改订单状态为已完成')
         # 撤单
         elif status == 3 and order.status != 2:
             order.cancel_time = timezone.now()
+            # 记录订单的操作日志
+            order.logs.create(staff=request.staff, content='更改订单状态为已撤单')
         else:
             return err_response('err_5', '订单状态切换非法')
-
-    for k in order_keys:
-        if k in kwargs:
-            setattr(order, k, kwargs[k])
-    order.save()
 
     # 如果换桌
     if 'desks' in kwargs:
@@ -588,7 +632,8 @@ def modify_order(request, token, order_id, **kwargs):
                 desk_list[i] = desk_id
             desks = json.dumps(desk_list)
             order.desks = desks
-            order.save()
+            # 记录订单的操作日志
+            order.logs.create(staff=request.staff, content='换桌')
         except KeyError or ValueError:
             return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
 
@@ -597,7 +642,49 @@ def modify_order(request, token, order_id, **kwargs):
                 (branch.hotel != request.staff.hotel):
             return err_response('err_3', '桌位不存在')
 
+    for k in order_keys:
+        if k in kwargs:
+            setattr(order, k, kwargs[k])
+    order.save()
+
     return corr_response()
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+    'order_id': forms.IntegerField(),
+})
+@validate_staff_token()
+def get_order_logs(request, token, order_id):
+    """获取订单的操作日志
+    :param token: 令牌(必传)
+    :param order_id: 订单ID(必传)
+    :return
+        count: 总数
+        list:
+            content: 内容
+            staff_id: 操作员工ID
+            staff_name: 操作员工姓名
+            create_time: 创建时间
+    """
+
+    try:
+        order = Order.objects.get(id=order_id)
+    except ObjectDoesNotExist:
+        return err_response('err_3', '订单不存在')
+
+    if order.branch.hotel != request.staff.hotel:
+        return err_response('err_2', '权限错误')
+
+    logs = order.logs.all()
+    c = logs.count()
+
+    l = [{'content': log.content,
+          'staff_id': log.staff.id,
+          'staff_name': log.staff.name,
+          'create_time': log.create_time} for log in logs]
+
+    return corr_response({'count': c, 'list': l})
 
 
 @validate_args({
