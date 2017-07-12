@@ -2,6 +2,7 @@ import json
 import time
 import datetime
 
+from datetime import timedelta
 from django import forms
 from django.db.models import Q
 from django.utils import timezone
@@ -19,6 +20,8 @@ from ..models import Desk, Order, Guest
     'token': forms.CharField(min_length=32, max_length=32),
     'order_date': forms.DateField(required=False),
     'dinner_date': forms.DateField(required=False),
+    'date_from': forms.DateField(required=False),
+    'date_to': forms.DateField(required=False),
     'dinner_time': forms.TimeField(required=False),
     'dinner_period': forms.IntegerField(
         min_value=0, max_value=2, required=False),
@@ -44,6 +47,8 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
         search_key: 关键字
         order_date: 下单日期
         dinner_date: 预定用餐日期
+        date_from: 起始时间
+        date_to: 终止时间
         dinner_time: 预定用餐时间
         dinner_period: 餐段, 0: 午餐, 1: 晚餐, 2: 夜宵
     :return:
@@ -63,7 +68,9 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
             guest_type: 顾客身份
             contact: 联系电话
             guest_number: 客人数量
+            table_count: 餐位数
             desks: 桌位, 数组
+            staff_description: 员工备注
             internal_channel: 内部获客渠道, 即接单人名字, 如果存在
             external_channel: 外部获客渠道, 即外部渠道名称, 如果存在
     """
@@ -81,6 +88,16 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
     if 'search_key' in kwargs:
         rs = rs.filter(Q(name__icontains=kwargs['search_key']) |
                        Q(contact__icontains=kwargs['search_key']))
+
+    if 'date_from' in kwargs:
+        date_from = kwargs['date_from']
+        date_from = datetime.datetime.strptime(str(date_from), '%Y-%m-%d')
+        rs = rs.filter(Q(create_time__gte=date_from))
+
+    if 'date_to' in kwargs:
+        date_to = kwargs['date_to'] + timedelta(days=1)
+        date_to = datetime.datetime.strptime(str(date_to), '%Y-%m-%d')
+        rs = rs.filter(Q(create_time__lt=date_to))
 
     if 'dinner_date' in kwargs:
         rs = rs.filter(Q(dinner_date=kwargs['dinner_date']))
@@ -114,6 +131,8 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
              if Guest.objects.filter(phone=r.contact).count() == 1 else '',
              'contact': r.contact,
              'guest_number': r.guest_number,
+             'table_count': r.table_count,
+             'staff_description': r.staff_descrition,
              'internal_channel': r.internal_channel.name if
              r.internal_channel else '',
              'external_channel': r.external_channel.name if
@@ -152,6 +171,7 @@ def get_profile(request, token, order_id):
         contact: 联系电话
         guest_number: 就餐人数
         desks: 预定桌位, 可以多桌, 数组, [{"desk_id":1,"number":"110"}, ...]
+        table_count: 预定的餐桌数
         user_description: 用户备注
         staff_description: 员工备注
         water_card: 水牌
@@ -191,6 +211,7 @@ def get_profile(request, token, order_id):
          if Guest.objects.filter(
              phone=order.contact).count() == 1 else '',
          'guest_number': order.guest_number,
+         'table_count': order.table_count,
          'user_description': order.user_description,
          'staff_description': order.staff_description,
          'water_card': order.water_card,
@@ -235,6 +256,7 @@ def get_profile(request, token, order_id):
     'name': forms.CharField(min_length=1, max_length=20),
     'contact': forms.CharField(max_length=11),
     'guest_number': forms.IntegerField(),
+    'table_count': forms.IntegerField(required=False),
     'banquet': forms.CharField(max_length=200, required=False),
     'staff_description': forms.CharField(max_length=200, required=False),
     'water_card': forms.CharField(max_length=10, required=False),
@@ -265,6 +287,7 @@ def submit_order(request, token, dinner_date, dinner_time, dinner_period,
         contact: 联系电话(必传)
         guest_number: 就餐人数(必传)
         desks: 预定桌位, 可以多桌, 数组(必传)
+        table_count: 餐桌数
         banquet: 宴会类型
         staff_description: 员工备注
         water_card: 水牌
@@ -319,7 +342,8 @@ def submit_order(request, token, dinner_date, dinner_time, dinner_period,
     order_keys = ('name', 'contact', 'guest_number', 'staff_description',
                   'water_card', 'door_card', 'sand_table', 'welcome_screen',
                   'welcome_fruit', 'welcome_card', 'background_music',
-                  'has_candle', 'has_flower', 'has_balloon', 'banquet')
+                  'has_candle', 'has_flower', 'has_balloon', 'banquet',
+                  'table_count')
 
     with transaction.atomic():
         try:
@@ -343,6 +367,7 @@ def submit_order(request, token, dinner_date, dinner_time, dinner_period,
     'name': forms.CharField(min_length=1, max_length=20),
     'contact': forms.CharField(max_length=11),
     'guest_number': forms.IntegerField(),
+    'table_count': forms.IntegerField(required=False),
     'banquet': forms.CharField(max_length=200, required=False),
     'staff_description': forms.CharField(max_length=200, required=False),
     'water_card': forms.CharField(max_length=10, required=False),
@@ -373,6 +398,7 @@ def supply_order(request, token, dinner_date, dinner_time, dinner_period,
         contact: 联系电话(必传)
         guest_number: 就餐人数(必传)
         desks: 预定桌位, 可以多桌, 数组(必传)
+        table_count: 餐位数
         banquet: 宴会类型
         staff_description: 员工备注
         water_card: 水牌
@@ -421,7 +447,8 @@ def supply_order(request, token, dinner_date, dinner_time, dinner_period,
     order_keys = ('name', 'contact', 'guest_number', 'staff_description',
                   'water_card', 'door_card', 'sand_table', 'welcome_screen',
                   'welcome_fruit', 'welcome_card', 'background_music',
-                  'has_candle', 'has_flower', 'has_balloon', 'banquet')
+                  'has_candle', 'has_flower', 'has_balloon', 'banquet',
+                  'table_count')
 
     with transaction.atomic():
         try:
@@ -450,6 +477,7 @@ def supply_order(request, token, dinner_date, dinner_time, dinner_period,
     'name': forms.CharField(min_length=1, max_length=20, required=False),
     'contact': forms.CharField(max_length=11, required=False),
     'guest_number': forms.IntegerField(required=False),
+    'table_count': forms.IntegerField(required=False),
     'staff_description': forms.CharField(max_length=200, required=False),
     'water_card': forms.CharField(max_length=10, required=False),
     'door_card': forms.CharField(max_length=10, required=False),
@@ -480,6 +508,7 @@ def modify_order(request, token, order_id, **kwargs):
         name: 联系人
         contact: 联系电话
         guest_number: 就餐人数
+        table_count: 餐桌数
         desks: 预定桌位, 可以多桌, 数组
         staff_description: 员工备注
         water_card: 水牌
@@ -503,7 +532,8 @@ def modify_order(request, token, order_id, **kwargs):
                   'name', 'contact', 'guest_number', 'staff_description',
                   'water_card', 'door_card', 'sand_table', 'welcome_screen',
                   'welcome_fruit', 'welcome_card', 'background_music',
-                  'has_candle', 'has_flower', 'has_balloon', 'banquet')
+                  'has_candle', 'has_flower', 'has_balloon', 'banquet',
+                  'table_count')
 
     # 下单日期校验
     if 'dinner_date' in kwargs:

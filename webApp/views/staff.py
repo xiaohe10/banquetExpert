@@ -479,6 +479,8 @@ def get_guests(request, token, offset=0, limit=10, **kwargs):
             dislike: 忌讳
             special_day: 特殊
             personal_need: 个性化需求
+            unit: 单位
+            position: 职位
             status: 客户状态, 1: 活跃, 2: 沉睡, 3: 流失, 4: 无订单
             desk_number: 消费总桌数
             person_consumption: 人均消费
@@ -546,6 +548,8 @@ def get_guests(request, token, offset=0, limit=10, **kwargs):
              'dislike': guest.dislike,
              'special_day': guest.special_day,
              'personal_need': guest.personal_need,
+             'unit': guest.unit,
+             'position': guest.position,
              'desk_number': guest.desk_number,
              'person_consumption': guest.person_consumption,
              'order_per_month': guest.order_per_month,
@@ -634,8 +638,8 @@ def get_guest_statistic(request, token):
 
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
-    'date_start': forms.DateField(required=False),
-    'date_end': forms.DateField(required=False),
+    'date_from': forms.DateField(required=False),
+    'date_to': forms.DateField(required=False),
     'order_date': forms.DateField(required=False),
     'dinner_date': forms.DateField(required=False),
     'dinner_time': forms.TimeField(required=False),
@@ -662,8 +666,8 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
         1: 注册时间降序（默认值）
     :param kwargs:
         search_key: 关键字
-        date_start: 起始时间
-        date_end: 终止时间
+        date_from: 订单创建日期起始时间
+        date_to: 订单创建日期终止时间
         order_date: 下单日期
         dinner_date: 预定用餐日期
         dinner_time: 预定用餐时间
@@ -689,6 +693,8 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
             guest_type: 顾客身份
             contact: 联系电话
             guest_number: 客人数量
+            table_count: 餐桌数
+            staff_description: 员工备注
             desks: 桌位, 数组, [{"desk_id":1,"number":"110"}, ...]
     """
     ORDERS = ('create_time', '-create_time')
@@ -709,15 +715,15 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
         rs = rs.filter(Q(name__icontains=kwargs['search_key']) |
                        Q(contact__icontains=kwargs['search_key']))
 
-    if 'date_start' in kwargs:
-        date_start = kwargs['date_start']
-        date_start = datetime.datetime.strptime(str(date_start), '%Y-%m-%d')
-        rs = rs.filter(Q(create_time__gte=date_start))
+    if 'date_from' in kwargs:
+        date_from = kwargs['date_from']
+        date_from = datetime.datetime.strptime(str(date_from), '%Y-%m-%d')
+        rs = rs.filter(Q(create_time__gte=date_from))
 
-    if 'date_end' in kwargs:
-        date_end = kwargs['date_end'] + timedelta(days=1)
-        date_end = datetime.datetime.strptime(str(date_end), '%Y-%m-%d')
-        rs = rs.filter(Q(create_time__lt=date_end))
+    if 'date_to' in kwargs:
+        date_to = kwargs['date_to'] + timedelta(days=1)
+        date_to = datetime.datetime.strptime(str(date_to), '%Y-%m-%d')
+        rs = rs.filter(Q(create_time__lt=date_to))
 
     if 'dinner_date' in kwargs:
         rs = rs.filter(Q(dinner_date=kwargs['dinner_date']))
@@ -778,6 +784,8 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
              if Guest.objects.filter(phone=r.contact).count() == 1 else '',
              'contact': r.contact,
              'guest_number': r.guest_number,
+             'table_count': r.table_count,
+             'staff_description': r.staff_description,
              'internal_channel': r.internal_channel.name if
              r.internal_channel else '',
              'external_channel': r.external_channel.name if

@@ -145,9 +145,10 @@ def get_desks(request, token, branch_id, date, dinner_period, area_id=None):
         return err_response('err_2', '权限错误')
 
     if area_id is None:
-        c = Desk.enabled_objects.filter(area__branch=branch).count()
+        c = Desk.enabled_objects.filter(area__branch=branch,
+                                        area__is_enabled=True).count()
         ds = Desk.enabled_objects.filter(
-            area__branch=branch).order_by('-order')
+            area__branch=branch, area__is_enabled=True).order_by('-order')
     else:
         try:
             area = Area.enabled_objects.get(id=area_id)

@@ -1,6 +1,7 @@
 import os
 import string
 import json
+import datetime
 
 from datetime import timedelta
 from PIL import Image
@@ -1030,6 +1031,10 @@ def get_desk_profile(request, token, desk_id):
     'is_beside_window': forms.BooleanField(required=False),
     'description': forms.CharField(max_length=200, required=False),
 })
+@validate_json_args({
+    'facility': forms.CharField(max_length=120, required=False),
+    'expense': forms.CharField(max_length=500, required=False)
+})
 @validate_admin_token()
 def add_desk(request, token, area_id, number, order, **kwargs):
     """增加门店区域的桌位
@@ -1063,6 +1068,8 @@ def add_desk(request, token, area_id, number, order, **kwargs):
 
     desk_keys = ('min_guest_num', 'max_guest_num',
                  'type', 'facility', 'is_beside_window', 'description')
+    desk_json_keys = ('facility', 'expense')
+
     with transaction.atomic():
         try:
             desk = Desk(number=number, order=order, area=area)
@@ -1071,18 +1078,9 @@ def add_desk(request, token, area_id, number, order, **kwargs):
                 if k in kwargs:
                     setattr(desk, k, kwargs[k])
 
-            try:
-                data = json.loads(request.body)
-                if 'facility' in data:
-                    v = json.dumps(data['facility'])
-                    setattr(desk, 'facility', v)
-
-                if 'expense' in data:
-                    v = json.dumps(data['expense'])
-                    setattr(desk, 'expense', v)
-
-            except KeyError or ValueError:
-                return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+            for k in desk_json_keys:
+                if k in kwargs:
+                    setattr(desk, k, json.dumps(kwargs[k]))
 
             # 图片
             if 'picture' in request.FILES:
@@ -1118,6 +1116,10 @@ def add_desk(request, token, area_id, number, order, **kwargs):
     'is_beside_window': forms.BooleanField(required=False),
     'description': forms.CharField(max_length=200, required=False),
     'is_enabled': forms.BooleanField(required=False)
+})
+@validate_json_args({
+    'facility': forms.CharField(max_length=120, required=False),
+    'expense': forms.CharField(max_length=500, required=False)
 })
 @validate_admin_token()
 def modify_desk(request, token, desk_id, **kwargs):
@@ -1156,25 +1158,14 @@ def modify_desk(request, token, desk_id, **kwargs):
 
     desk_keys = ('number', 'order', 'min_guest_num', 'max_guest_num',
                  'type', 'is_beside_window', 'description', 'is_enabled')
-
-    try:
-        data = json.loads(request.body)
-        if 'expense' in data:
-            v = json.dumps(data['expense'])
-            setattr(desk, 'expense', v)
-    except KeyError or ValueError:
-        return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
-
     for k in desk_keys:
         if k in kwargs:
             setattr(desk, k, kwargs[k])
 
-    try:
-        if 'facility' in data:
-            v = json.dumps(data['facility'])
-            setattr(desk, 'facility', v)
-    except KeyError or ValueError:
-        return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
+    desk_json_keys = ('facility', 'expense')
+    for k in desk_json_keys:
+        if k in kwargs:
+            setattr(desk, k, json.dumps(kwargs[k]))
 
     # 修改图片
     if 'picture' in request.FILES:
@@ -1979,8 +1970,8 @@ def modify_staff_profile(request, token, staff_id, **kwargs):
 
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
-    'dinner_date_begin': forms.DateField(required=False),
-    'dinner_date_end': forms.DateField(required=False),
+    'date_from': forms.DateField(required=False),
+    'date_to': forms.DateField(required=False),
     'dinner_period': forms.IntegerField(
         min_value=0, max_value=2, required=False),
     'status': forms.IntegerField(min_value=0, max_value=2, required=False),
@@ -2005,8 +1996,8 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
     :param is_FIT: 是否是散客，默认否
     :param kwargs:
         search_key: 关键字
-        dinner_date_begin: 预定用餐日期起始
-        dinner_date_end: 预定用餐日期终止
+        date_from: 起始时间
+        date_to: 终止时间
         dinner_period: 餐段, 0: 午餐, 1: 晚餐, 2: 夜宵
     :return:
         count: 订单总数
@@ -2025,6 +2016,8 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
             guest_type: 顾客身份
             contact: 联系电话
             guest_number: 客人数量
+            table_count: 餐位数
+            staff_description: 员工备注
             desks: 桌位, 数组
             internal_channel: 内部获客渠道, 即接单人名字, 如果存在
             external_channel: 外部获客渠道, 即外部渠道名称, 如果存在
@@ -2044,11 +2037,15 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
         rs = rs.filter(Q(name__icontains=kwargs['search_key']) |
                        Q(contact__icontains=kwargs['search_key']))
 
-    if 'dinner_date_begin' in kwargs:
-        rs = rs.filter(Q(dinner_date__gte=kwargs['dinner_date_begin']))
+    if 'date_from' in kwargs:
+        date_from = kwargs['date_from']
+        date_from = datetime.datetime.strptime(str(date_from), '%Y-%m-%d')
+        rs = rs.filter(Q(create_time__gte=date_from))
 
-    if 'dinner_date_end' in kwargs:
-        rs = rs.filter(Q(dinner_date__lte=kwargs['dinner_date_end']))
+    if 'date_to' in kwargs:
+        date_to = kwargs['date_to'] + timedelta(days=1)
+        date_to = datetime.datetime.strptime(str(date_to), '%Y-%m-%d')
+        rs = rs.filter(Q(create_time__lt=date_to))
 
     if 'dinner_period' in kwargs:
         rs = rs.filter(Q(dinner_period=kwargs['dinner_period']))
@@ -2073,6 +2070,8 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
              if Guest.objects.filter(phone=r.contact).count() == 1 else '',
              'contact': r.contact,
              'guest_number': r.guest_number,
+             'table_count': r.table_count,
+             'staff_description': r.staff_description,
              'internal_channel': r.internal_channel.name if
              r.internal_channel else '',
              'external_channel': r.external_channel.name if
@@ -2110,6 +2109,7 @@ def get_order_profile(request, token, order_id):
         guest_type: 顾客身份
         contact: 联系电话
         guest_number: 就餐人数
+        table_count: 餐桌数
         desks: 预定桌位, 可以多桌, 数组, [{"desk_id":1,"number":"110"}, ...]
         user_description: 用户备注
         staff_description: 员工备注
@@ -2150,6 +2150,7 @@ def get_order_profile(request, token, order_id):
          if Guest.objects.filter(
              phone=order.contact).count() == 1 else '',
          'guest_number': order.guest_number,
+         'table_count': order.table_count,
          'user_description': order.user_description,
          'staff_description': order.staff_description,
          'water_card': order.water_card,
@@ -2194,6 +2195,7 @@ def get_order_profile(request, token, order_id):
     'name': forms.CharField(min_length=1, max_length=20),
     'contact': forms.RegexField(r'[0-9]{11}'),
     'guest_number': forms.IntegerField(),
+    'table_count': forms.IntegerField(required=False),
     'banquet': forms.CharField(max_length=10, required=False),
     'staff_description': forms.CharField(max_length=200, required=False),
     'water_card': forms.CharField(max_length=10, required=False),
@@ -2220,6 +2222,7 @@ def submit_order(request, token, dinner_date, dinner_time,
         name: 联系人(必传)
         contact: 联系电话(必传)
         guest_number: 就餐人数(必传)
+        table_count: 餐桌数(必传)
         desks: 预定桌位, 可以多桌, 数组(必传)
         banquet: 宴会类型
         staff_description: 员工备注
@@ -2275,7 +2278,8 @@ def submit_order(request, token, dinner_date, dinner_time,
     order_keys = ('name', 'contact', 'guest_number', 'staff_description',
                   'water_card', 'door_card', 'sand_table', 'welcome_screen',
                   'welcome_fruit', 'welcome_card', 'background_music',
-                  'has_candle', 'has_flower', 'has_balloon', 'banquet')
+                  'has_candle', 'has_flower', 'has_balloon', 'banquet',
+                  'table_count')
 
     with transaction.atomic():
         try:
@@ -2306,6 +2310,7 @@ def submit_order(request, token, dinner_date, dinner_time,
     'name': forms.CharField(min_length=1, max_length=20, required=False),
     'contact': forms.RegexField(r'[0-9]{11}', required=False),
     'guest_number': forms.IntegerField(required=False),
+    'table_count': forms.IntegerField(required=False),
     'staff_description': forms.CharField(max_length=200, required=False),
     'water_card': forms.CharField(max_length=10, required=False),
     'door_card': forms.CharField(max_length=10, required=False),
@@ -2334,6 +2339,7 @@ def modify_order(request, token, order_id, **kwargs):
         name: 联系人
         contact: 联系电话
         guest_number: 就餐人数
+        table_count: 餐桌数
         desks: 预定桌位, 可以多桌, 数组
         staff_description: 员工备注
         water_card: 水牌
@@ -2361,7 +2367,7 @@ def modify_order(request, token, order_id, **kwargs):
                   'water_card', 'door_card', 'sand_table', 'welcome_screen',
                   'welcome_fruit', 'welcome_card', 'background_music'
                   'has_candle', 'has_flower', 'has_balloon', 'consumption',
-                  'banquet')
+                  'banquet', 'table_count')
 
     # 下单日期校验
     if 'dinner_date' in kwargs:
@@ -2466,6 +2472,8 @@ def search_guest(request, token, offset=0, limit=10, order=0, **kwargs):
             dislike: 忌讳
             special_day: 特殊
             personal_need: 个性化需求
+            unit: 单位
+            position: 职位
             status: 客户状态, 1: 活跃, 2: 沉睡, 3: 流失, 4: 无订单
             desk_number: 消费总桌数
             person_consumption: 人均消费
@@ -2571,6 +2579,8 @@ def search_guest(request, token, offset=0, limit=10, order=0, **kwargs):
              'dislike': guest.dislike,
              'special_day': guest.special_day,
              'personal_need': guest.personal_need,
+             'unit': guest.unit,
+             'position': guest.position,
              'desk_number': guest.desk_number,
              'person_consumption': guest.person_consumption,
              'order_per_month': guest.order_per_month,
@@ -2630,6 +2640,8 @@ def get_guest_profile(request, token, guest_id=None, phone=None):
         dislike: 忌讳
         special_day: 特殊
         personal_need: 个性化需求
+        unit: 单位
+        position: 职位
         status: 客户状态, 1: 活跃, 2: 沉睡, 3: 流失, 4: 无订单
         all_order_number: 历史所有有效订单数
         day60_order_number: 最近60天订单数
@@ -2679,6 +2691,8 @@ def get_guest_profile(request, token, guest_id=None, phone=None):
          'dislike': guest.dislike,
          'special_day': guest.special_day,
          'personal_need': guest.personal_need,
+         'unit': guest.unit,
+         'position': guest.position,
          'all_order_number': orders.count(),
          'day60_order_number': orders.filter(finish_time__gte=day60).count(),
          'all_consumption': all_consumption,
@@ -2718,7 +2732,9 @@ def get_guest_profile(request, token, guest_id=None, phone=None):
     'like': forms.CharField(max_length=100, required=False),
     'dislike': forms.CharField(max_length=100, required=False),
     'special_day': forms.CharField(max_length=20, required=False),
-    'personal_need': forms.CharField(max_length=100, required=False)
+    'personal_need': forms.CharField(max_length=100, required=False),
+    'unit': forms.CharField(max_length=60, required=False),
+    'position': forms.CharField(max_length=20, required=False),
 })
 @validate_admin_token()
 def add_guest(request, token, phone, name, **kwargs):
@@ -2746,7 +2762,7 @@ def add_guest(request, token, phone, name, **kwargs):
         return err_response('err_4', '该手机号已经存在')
 
     guest_keys = ('guest_type', 'gender', 'birthday', 'birthday_type', 'like',
-                  'dislike', 'special_day', 'personal_need')
+                  'dislike', 'special_day', 'personal_need', 'unit', 'position')
     with transaction.atomic():
         try:
             guest = Guest(hotel=hotel, phone=phone, name=name)
@@ -2771,7 +2787,9 @@ def add_guest(request, token, phone, name, **kwargs):
     'like': forms.CharField(max_length=100, required=False),
     'dislike': forms.CharField(max_length=100, required=False),
     'special_day': forms.CharField(max_length=20, required=False),
-    'personal_need': forms.CharField(max_length=100, required=False)
+    'personal_need': forms.CharField(max_length=100, required=False),
+    'unit': forms.CharField(max_length=60, required=False),
+    'position': forms.CharField(max_length=20, required=False),
 })
 @validate_admin_token()
 def modify_guest(request, token, phone, **kwargs):
@@ -2798,7 +2816,7 @@ def modify_guest(request, token, phone, **kwargs):
         return err_response('err_4', '客户不存在')
 
     guest_keys = ('guest_type', 'gender', 'birthday', 'birthday_type', 'like',
-                  'dislike', 'special_day', 'personal_need')
+                  'dislike', 'special_day', 'personal_need', 'unit', 'position')
 
     for k in guest_keys:
         if k in kwargs:

@@ -474,6 +474,8 @@ URL：webApp/staff/order/search/ <br>
 | token         | 登录口令          |         yes  |
 | order_date    | 下单日期  |   no |
 | dinner_period | 餐段，0：午餐，1：晚餐，2：夜宵    |   no |
+| date_from | 订单创建日期起始   | no    |
+| date_end  | 订单创建日期终止  | no |
 | dinner_date   | 预定用餐日期  |   no  |
 | dinner_time   | 预定用餐时间  |   no  |
 | status | 订单状态（0: 进行中，1: 已完成，2: 已删除，默认为0）  | no |
@@ -516,6 +518,7 @@ URL：webApp/staff/order/search/ <br>
 | guest_type | 顾客身份 |
 | guest_number | 客人数量 |
 | desks | 桌位ID数组 |
+| staff_description | 员工备注  |
 | internal_channel | 内部获客渠道, 即接单人名字, 如果存在 |
 | external_channel | 外部获客渠道, 即外部渠道名称, 如果存在 |
 
@@ -546,6 +549,7 @@ URL：webApp/staff/order/search/ <br>
             "contact":"18813101211",
             "guest_number":10,
             "desks":[1,3,5],
+            "staff_description":"备注",
             "internal_channel":"刘光艳",
             "external_channel":"美团"
             ],
@@ -947,6 +951,7 @@ URL：webApp/order/submit/ <br>
 | name | 联系人 | yes |
 | contact | 联系电话 | yes |
 | guest_number | 客人数量 | yes |
+| table_count   | 餐桌数   | yes    |
 | desks | 桌位ID的数组 | yes |
 | banquet   | 宴会类型，来自36宴  | no    |
 | staff_description | 员工备注 | no |
@@ -975,6 +980,7 @@ URL：webApp/order/submit/ <br>
 	"name":"李四",
 	"contact":"18813101211",
 	"guest_number":10,
+	"table_count":1,
 	"banquet":"满月宴",
 	"desks":[1,3,5],
 	"staff_description":"客户年纪大，做好防滑",
@@ -1032,6 +1038,8 @@ URL：webApp/order/search/ <br>
 | token         | 登录口令          |         yes  |
 | order_date    | 下单日期  |   no |
 | dinner_period | 餐段，0：午餐，1：晚餐，2：夜宵    |   no |
+| date_from | 订单创建日期起始   | no    |
+| date_end  | 订单创建日期终止  | no |
 | dinner_date   | 预定用餐日期  |   no  |
 | dinner_time   | 预定用餐时间  |   no  |
 | status | 订单状态（0: 进行中，1: 已完成，2: 已删除，默认为0）  | no |
@@ -1073,6 +1081,8 @@ URL：webApp/order/search/ <br>
 | contact | 联系电话 |
 | guest_type | 顾客身份 |
 | guest_number | 客人数量 |
+| table_count   | 餐位数   |
+| staff_description | 员工备注  |
 | desks | 桌位ID数组 |
 | internal_channel | 内部获客渠道, 即接单人名字, 如果存在 |
 | external_channel | 外部获客渠道, 即外部渠道名称, 如果存在 |
@@ -1103,7 +1113,9 @@ URL：webApp/order/search/ <br>
             "guest_type":"vip",
             "contact":"18813101211",
             "guest_number":10,
+            "table_count":3,
             "desks":[1,3,5],
+            "staff_description":"备注",
             "internal_channel":"刘光艳",
             "external_channel":"美团"
             ],
@@ -1157,6 +1169,7 @@ URL：webApp/order/profile/ <br>
 | guest_type | 顾客身份 |
 | contact | 联系电话 |
 | guest_number | 客人数量 |
+| table_count   | 餐桌数   |
 | banquet   | 宴会类型  |
 | desks | 桌位ID和编号 |
 | user_description | 用户备注 |
@@ -1200,6 +1213,7 @@ URL：webApp/order/profile/ <br>
 		"guest_type":"vip",
 		"contact":"18813101211",
 		"guest_number":10,
+		"table_count":3,
 		"banquet":"满月宴",
 		"desks":[{"desk_id":1,"number":"309"},{"desk_id":2,"number":"312"},{"desk_id":3,"number":"311"}],
 		"user_description":"生日宴，准备蜡烛",
@@ -1247,6 +1261,7 @@ URL：webApp/order/update/ <br>
 | name | 联系人 | no |
 | contact | 联系电话 | no |
 | guest_number | 客人数量 | no |
+| table_count   | 餐桌数   | no    |
 | desks | 桌位ID数组 | no |
 | staff_description | 员工备注 | no |
 |以下是私人订制的字段|
@@ -1275,6 +1290,7 @@ URL：webApp/order/update/ <br>
 	"name":"李四",
 	"contact":"18813101211",
 	"guest_number":10,
+	"table_count":3,
 	"desk":[1,3,5],
 	"staff_description":"客户年纪大，做好防滑",
 	"water_card":"水牌内容",
@@ -1642,6 +1658,8 @@ URL：webApp/staff/guest/list/ <br>
 | dislike | 忌讳 |
 | special_day | 纪念日 |
 | personal_need | 个性化需求 |
+| unit  | 单位    |
+| position  | 职位    |
 | status | 客户状态：1：活跃，2：沉睡，3：流失，4：无订单 |
 | desk_number   | 消费总桌数 |
 | person_consumption    | 人均消费  |
@@ -1670,6 +1688,8 @@ URL：webApp/staff/guest/list/ <br>
 			"dislike":"不吃香菜",
 			"special_day":"",
 			"personal_need":"",
+			"unit":"财务部",
+		    "position":"科长",
 			"status":1,
 			"desk_number":10,
 			"person_consumption":400,
@@ -1890,6 +1910,8 @@ URL：webApp/guest/list/ <br>
 | dislike | 忌讳 |
 | special_day | 纪念日 |
 | personal_need | 个性化需求 |
+| unit  | 单位    |
+| position  | 职位    |
 | status | 客户状态：1：活跃，2：沉睡，3：流失，4：无订单 |
 | desk_number   | 消费总桌数 |
 | person_consumption    | 人均消费  |
@@ -1918,6 +1940,8 @@ URL：webApp/guest/list/ <br>
 			"dislike":"不吃香菜",
 			"special_day":"",
 			"personal_need":"",
+			"unit":"财务部",
+		    "position":"科长",
 			"status":1,
 			"desk_number":10,
 			"person_consumption":400,
@@ -1975,6 +1999,8 @@ URL：webApp/guest/profile/ <br>
 | dislike | 忌讳 |
 | special_day | 纪念日 |
 | personal_need | 个性化需求 |
+| unit  | 单位    |
+| position  | 职位    |
 | status    | 客户状态, 1: 活跃, 2: 沉睡, 3: 流失, 4: 无订单 |
 | all_order_number | 历史所有有效订单数 |
 | day60_order_number | 最近60天订单数 |
@@ -1998,6 +2024,8 @@ URL：webApp/guest/profile/ <br>
 		"dislike":"不吃香菜",
 		"special_day":"",
 		"personal_need":"",
+		"unit":"财务部",
+		"position":"科长",
 		"status":1,
 		"all_order_number":22,
 		"day60_order_number":9,
@@ -2105,6 +2133,8 @@ URL：webApp/guest/profile/add/ <br>
 | dislike | 忌讳 | no |
 | special_day | 纪念日 | no    |
 | personal_need | 个性化需求 | no    |
+| unit  | 单位    | no    |
+| position  | 职位    | no |
 
 请求示例
 
@@ -2120,7 +2150,9 @@ URL：webApp/guest/profile/add/ <br>
 	"like":"吃辣",
 	"dislike":"不吃香菜",
 	"special_day":"10-25",
-	"personal_need":"生日宴"
+	"personal_need":"生日宴",
+	"unit":"财务部",
+	"position":"科长",
 }
 ```
 
@@ -2165,6 +2197,8 @@ URL：webApp/guest/profile/modify/ <br>
 | dislike | 忌讳 | no
 | special_day | 纪念日 | no 
 | personal_need | 个性化需求 | no
+| unit  | 单位    | no
+| position  | 职位    | no
 
 请求示例
 
@@ -2179,7 +2213,9 @@ URL：webApp/guest/profile/modify/ <br>
 	"like":"吃辣",
 	"dislike":"不吃香菜",
 	"special_day":"10-25",
-	"personal_need":"生日宴"
+	"personal_need":"生日宴",
+	"unit":"财务部",
+	"position":"科长",
 }
 ```
 
@@ -5290,8 +5326,8 @@ URL：webApp/admin/order/search/ <br>
 | 参数名称       | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------:|
 | token         | 登录口令          |         yes  |
-| dinner_date_begin   | 预定用餐日期开始  |   yes  |
-| dinner_date_end   | 预定用餐日期终止  |   yes  |
+| date_from | 订单创建日期起始   | no    |
+| date_end  | 订单创建日期终止  | no |
 | search_key | 搜索关键词（如姓名、手机等进行模糊搜索） | no |
 | dinner_period | 餐段，0：午餐，1：晚餐，2：夜宵    |   no |
 | status | 订单状态（0: 进行中，1: 已完成，2: 已删除，默认为0）  | no |
@@ -5335,6 +5371,8 @@ URL：webApp/admin/order/search/ <br>
 | contact | 联系电话 |
 | guest_type | 顾客身份 |
 | guest_number | 客人数量 |
+| table_count   | 餐桌数   |
+| staff_description   | 员工备注  |
 | desks | 桌位ID数组 |
 | internal_channel | 内部获客渠道, 即接单人名字, 如果存在 |
 | external_channel | 外部获客渠道, 即外部渠道名称, 如果存在 |
@@ -5365,6 +5403,8 @@ URL：webApp/admin/order/search/ <br>
             "guest_type":"vip",
             "contact":"18813101211",
             "guest_number":10,
+            "table_count":3,
+            "staff_description":"备注",
             "desks":[1,3,5],
             "internal_channel":"刘光艳",
             "external_channel":"美团"
@@ -5421,6 +5461,7 @@ URL：webApp/admin/order/profile/ <br>
 | guest_type | 顾客身份 |
 | contact | 联系电话 |
 | guest_number | 客人数量 |
+| table_count   | 餐桌数   |
 | desks | 桌位ID和编号 |
 | user_description | 用户备注 |
 | staff_description | 员工备注 |
@@ -5464,6 +5505,7 @@ URL：webApp/admin/order/profile/ <br>
 		"guest_type":"vip",
 		"contact":"18813101211",
 		"guest_number":10,
+		"table_count":3,
 		"desks":[{"desk_id":1,"number":"309"},{"desk_id":2,"number":"312"},{"desk_id":3,"number":"311"}],
 		"user_description":"生日宴，准备蜡烛",
 		"staff_description":"客户年纪大，做好防滑",
@@ -5508,6 +5550,7 @@ URL：webApp/admin/order/submit/ <br>
 | name | 联系人 | yes |
 | contact | 联系电话 | yes |
 | guest_number | 客人数量 | yes |
+| table_count   | 餐桌数   | yes   |
 | desks | 桌位ID的数组 | yes |
 | banquet   | 宴会类型  | no    |
 | staff_description | 员工备注 | no |
@@ -5536,6 +5579,7 @@ URL：webApp/admin/order/submit/ <br>
 	"name":"李四",
 	"contact":"18813101211",
 	"guest_number":10,
+	"table_count":3,
 	"desks":[1,3,5],
 	"banquet":"满月宴",
 	"staff_description":"客户年纪大，做好防滑",
@@ -5600,6 +5644,7 @@ URL：webApp/admin/order/modify/ <br>
 | name | 联系人 | no |
 | contact | 联系电话 | no |
 | guest_number | 客人数量 | no |
+| table_count   | 餐桌数   | no    |
 | desks | 桌位ID数组 | no |
 | staff_description | 员工备注 | no |
 |以下是私人订制的字段|
@@ -5629,6 +5674,7 @@ URL：webApp/admin/order/modify/ <br>
 	"name":"李四",
 	"contact":"18813101211",
 	"guest_number":10,
+	"table_count":3,
 	"desk":[1,3,5],
 	"staff_description":"客户年纪大，做好防滑",
 	"water_card":"水牌内容",
@@ -5715,6 +5761,8 @@ URL：webApp/admin/guest/list/ <br>
 | dislike | 忌讳 |
 | special_day | 纪念日 |
 | personal_need | 个性化需求 |
+| unit  | 单位    |
+| position  | 职位    |
 | status | 客户状态：1：活跃，2：沉睡，3：流失，4：无订单 |
 | desk_number   | 消费总桌数 |
 | person_consumption    | 人均消费  |
@@ -5743,6 +5791,8 @@ URL：webApp/admin/guest/list/ <br>
 			"dislike":"不吃香菜",
 			"special_day":"",
 			"personal_need":"",
+			"unit":"财政部",
+			"position":"科长",
 			"status":1,
 			"desk_number":10,
 			"person_consumption":400,
@@ -5800,6 +5850,8 @@ URL：webApp/admin/guest/profile/ <br>
 | dislike | 忌讳 |
 | special_day | 纪念日 |
 | personal_need | 个性化需求 |
+| unit  | 单位    |
+| position  | 职位    |
 | status    | 客户状态, 1: 活跃, 2: 沉睡, 3: 流失, 4: 无订单 |
 | all_order_number | 历史所有有效订单数 |
 | day60_order_number | 最近60天订单数 |
@@ -5823,6 +5875,8 @@ URL：webApp/admin/guest/profile/ <br>
 		"dislike":"不吃香菜",
 		"special_day":"",
 		"personal_need":"",
+		"unit":"财务部",
+		"position":"科长",
 		"status":1,
 		"all_order_number":22,
 		"day60_order_number":9,
@@ -5859,6 +5913,8 @@ URL：webApp/guest/profile/add/ <br>
 | dislike | 忌讳 | no |
 | special_day | 纪念日 | no    |
 | personal_need | 个性化需求 | no    |
+| unit  | 单位    | no    |
+| position  | 职位    | no    |
 
 请求示例
 
@@ -5874,7 +5930,9 @@ URL：webApp/guest/profile/add/ <br>
 	"like":"吃辣",
 	"dislike":"不吃香菜",
 	"special_day":"10-25",
-	"personal_need":"生日宴"
+	"personal_need":"生日宴",
+	"unit":"财务部",
+	"position":"科长",
 }
 ```
 
@@ -5921,6 +5979,8 @@ URL：webApp/admin/guest/profile/modify/ <br>
 | dislike | 忌讳 | no
 | special_day | 纪念日 | no
 | personal_need | 个性化需求 | no
+| unit  | 单位    | no
+| position  | 职位    | no
 
 请求示例
 
@@ -5935,7 +5995,9 @@ URL：webApp/admin/guest/profile/modify/ <br>
 	"like":"吃辣",
 	"dislike":"不吃香菜",
 	"special_day":"10-25",
-	"personal_need":"生日宴"
+	"personal_need":"生日宴",
+	"unit":"财务部",
+	"position":"科长",
 }
 ```
 
