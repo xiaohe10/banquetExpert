@@ -77,7 +77,7 @@ def get_courses(request, token, tag=None, offset=0, limit=10, order=1):
     'cc_video_id': forms.CharField(min_length=1, max_length=32),
     'title': forms.CharField(min_length=1, max_length=20),
     'tags': forms.CharField(min_length=1, max_length=20),
-    'description': forms.CharField(max_length=100, required=False),
+    'description': forms.CharField(max_length=200, required=False),
     'price': forms.IntegerField(required=False),
 })
 @validate_staff_token()

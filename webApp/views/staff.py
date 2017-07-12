@@ -199,7 +199,7 @@ def get_profile(request, token, staff_id=None):
     'position': forms.CharField(max_length=20, required=False),
     'guest_channel': forms.IntegerField(
         min_value=0, max_value=3, required=False),
-    'description': forms.CharField(max_length=100, required=False),
+    'description': forms.CharField(max_length=200, required=False),
     'authority': forms.CharField(max_length=20, required=False),
 })
 @validate_staff_token()
@@ -237,7 +237,7 @@ def modify_profile(request, token, **kwargs):
             img = Image.open(icon)
             img.save(file_name, quality=90)
         except OSError:
-            return err_response('err4', '图片为空或图片格式错误')
+            return err_response('err_4', '图片为空或图片格式错误')
 
         # 删除旧文件, 保存新的文件路径
         if request.staff.icon:
