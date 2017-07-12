@@ -29,22 +29,6 @@
                 <img class="img-rounded" src="/static/css/image/head1.jpg" alt="IMAGE">
                 <div class="caption bg-warning">
                     <h3 class="text-center">{{Hotel.name}}</h3>
-                    <div class="input-group">
-                        <!-- 酒店选择 -->
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                {{Branch.name}}
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li ng-repeat="x in Hotel.BranchList.list">
-                                    <label class="control-label">
-                                        <input type="radio" name="branch" ng-click="selectBranch($index)">{{x.name}}
-                                    </label>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="panel-group" id="drawer">
@@ -67,7 +51,7 @@
         <!--内容页-->
         <div class="col-sm-10">
             <!--路径导航-->
-            <div>
+            <div class="hidden">
                 <ol class="breadcrumb mb-2 bg-faded" id="breadcrumb">
                     路径导航
                 </ol>

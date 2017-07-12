@@ -64,15 +64,15 @@
                     </label>
                 </div>
             </div>
-            <!--用户名-->
-            <div class="form-group">
+            <!--用户名【编辑时无法修改】-->
+            <div class="form-group" ng-hide="option==='编辑'">
                 <label class="col-sm-2 control-label">用户名：</label>
                 <div class="col-sm-10">
                     <input type="text" ng-model="form.name"/>
                 </div>
             </div>
-            <!--密码-->
-            <div class="form-group">
+            <!--密码【编辑时可以修改】-->
+            <div class="form-group" ng-show="option==='编辑'">
                 <label class="col-sm-2 control-label">密码：</label>
                 <div class="col-sm-10">
                     <input type="password" ng-model="form.password"/>

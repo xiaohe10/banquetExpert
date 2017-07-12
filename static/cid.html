@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>CID</title>
     <script for="window" event="onLoad">
+        var CID124 = document.getElementById('#CID124');
         CID124.SWinit();
     </script>
     <script for="window" event="onUnload">
@@ -12,16 +13,20 @@
     <script>
         var MyInterval;
         function setType() {
-            var CID_ID = document.form.CIDTYPE.value;
+            var CID_ID = document.form.CID_TYPE.value;
             CID124.SWsettype(CID_ID);
-            document.form.LineCount.value = CID124.SWgetcount();
-            document.form.CID_SN.value = CID124.SWgetsn();
+            var LineCount = CID124.SWgetcount();
+            var CID_SN = CID124.SWgetsn();
+            document.form.LineCount.value = LineCount;
+            document.form.CID_SN.value = CID_SN;
+            alert("LineCount:" + LineCount + ",CID_SN:" + CID_SN);
         }
         function getBuf() {
             var LineCount = CID124.SWgetcount();
             for (var index = 0; index < LineCount; index++) {
-                var content = CID124.SWgetbuf(index) + ";";
-                document.form.CONTENT.innerHTML += content;
+                var Content = "receive:" + CID124.SWgetbuf(index) + ";";
+                alert("Content:" + Content);
+                document.form.CONTENT.innerHTML += Content;
             }
         }
         function run() {
@@ -40,11 +45,26 @@
     <param name="_ExtentY" value="953">
 </object>
 <form name="form">
-    <label>线路总数：<input type="number" name="LineCount" disabled/></label><br/>
-    <label>设备序列号：<input type="text" name="CID_SN" disabled/></label><br/>
-    <label>设置类型：<input type="text" name="CID_TYPE" click="setType()" value="2"/></label><br/>
-    <label>来电：<input type="button" name="run" click="run()" value="开启监听"/></label><br/>
-    <label>来电：<textarea name="CONTENT"></textarea></label>
+    <label>
+        线路总数：
+        <input type="number" name="LineCount" disabled/>
+    </label><br/>
+    <label>
+        设备序列号：
+        <input type="text" name="CID_SN" disabled/>
+    </label><br/>
+    <label>
+        设置类型：<input type="text" name="CID_TYPE" click="setType()" value="2"/>
+        <input type="button" value="设置" onclick="setType();" name="Submit">
+    </label><br/>
+    <label>
+        来电：
+        <input type="button" name="run" onclick="run()" value="开启监听"/>
+    </label><br/>
+    <label>
+        来电：
+        <textarea name="CONTENT"></textarea>
+    </label>
 </form>
 </body>
 </html>

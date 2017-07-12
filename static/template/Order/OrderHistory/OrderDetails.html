@@ -35,9 +35,9 @@
                         <!--五张图片-->
                         <div class="row m-2">
                             <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3" ng-repeat="(k, x) in order.images">
-                                <a class="" ng-click="check(k)">
-                                    <img class="img-responsive" src="/static/css/image/head.jpg" alt="{{x}}">
-                                </a>
+                                <div class="img-thumbnail" ng-click="check(k)">
+                                    <img class="img-responsive" src="/static/css/image/head1.jpg" alt="{{x}}">
+                                </div>
                             </div>
                         </div>
                         <!--图片操作-->

@@ -21,7 +21,7 @@
         </div>
         <!--提示信息-->
         <div class="well well-sm">
-            全部桌位，共{{desk.list.length}}个 注：序号数值越大，则优先推荐
+            全部桌位，共{{data.count}}个 注：序号数值越大，则优先推荐
         </div>
         <!--表格-->
         <table class="table table-bordered table-hover small">
@@ -40,7 +40,7 @@
             </tr>
             </thead>
             <tbody id="desk-table">
-            <tr ng-repeat="x in desk.list">
+            <tr ng-repeat="x in data.list">
                 <td style="width: 80px"><input type="text" ng-model="x.number" value="{{x.number}}"/></td>
                 <td>{{x.min_guest_num}} 人 至 {{x.max_guest_num}} 人</td>
                 <td style="width: 320px">

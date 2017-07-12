@@ -1,15 +1,21 @@
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <div class="panel-title">
-            宴会类型
-        </div>
+<div class="modal-header">
+    <div class="modal-title">
+        选择宴会类型
     </div>
-    <div class="panel-body">
-        <ul class="list-group">
-            <li class="list-group-item" ng-repeat="(k, v) in form">
-                <small>{{k}}</small>
-                <span class="label label-info" ng-repeat="x in v">{{x}}</span>
-            </li>
-        </ul>
-    </div>
+</div>
+<div class="modal-body">
+    <ul class="list-group">
+        <li class="list-group-item">
+            <small>已选择宴会类型：</small>
+            <label class="label label-info">{{form.banquet}}</label>
+        </li>
+        <li class="list-group-item" ng-repeat="(k, v) in banquet">
+            <small>{{k}}：</small>
+            <span class="label label-success" ng-click="form.banquet=x" ng-repeat="x in v">{{x}}</span>
+        </li>
+    </ul>
+</div>
+<div class="modal-footer">
+    <input class="btn btn-primary btn-sm" type="button" ng-click="submit()" value="提交"/>
+    <input class="btn btn-default btn-sm" type="button" ng-click="cancel()" value="取消"/>
 </div>

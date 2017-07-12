@@ -2,212 +2,232 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="panel-title">
-            智能订餐台
+            <form class="form-inline">
+                <div class="input-group">
+                    <!--门店选择-->
+                    <div class="input-group-btn">
+                        <button class="btn btn-info dropdown-toggle" type="button"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false">
+                            {{Branch.name}}
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li ng-repeat="x in Hotel.BranchList.list">
+                                <label>
+                                    <input type="radio" name="branch" ng-click="selectBranch($index)">{{x.name}}
+                                </label>
+                            </li>
+                        </ul>
+                        <button class="btn btn-default">订餐台</button>
+                    </div>
+                </div>
+                <!--餐段日期选择-->
+                <div class="form-inline pull-right">
+                    <input class="input-group-addon" type="date" ng-model="form.date"/>
+                    <div class="form-group form-group-sm">
+                        <label class="radio-inline">
+                            <input class="btn btn-primary btn-sm" type="radio" value=0 ng-model="form.dinner_period">午餐
+                        </label>
+                        <label class="radio-inline">
+                            <input class="btn btn-primary btn-sm" type="radio" value=1 ng-model="form.dinner_period">晚餐
+                        </label>
+                        <label class="radio-inline">
+                            <input class="btn btn-primary btn-sm" type="radio" value=2 ng-model="form.dinner_period">夜宵
+                        </label>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
     <div class="panel-body">
-        <!--餐段日期选择-->
-        <div class="navbar">
-            <div class="navbar-inner">
-                <div class="nav">
-                    <label class="brand">
-                        <strong>{{form.date|date:'yyyy'}}</strong>年
-                        <strong>{{form.date|date:'MM'}}</strong>月
-                        <input type="date" ng-model="form.date"/>
-                    </label>
-                    <label><input class="btn btn-primary btn-sm" type="radio" value=0 ng-model="form.dinner_period">午餐</label>
-                    <label><input class="btn btn-primary btn-sm" type="radio" value=1 ng-model="form.dinner_period">晚餐</label>
-                    <label><input class="btn btn-primary btn-sm" type="radio" value=2 ng-model="form.dinner_period">夜宵</label>
-                    <!--<input class="btn btn-secondary btn-sm" type="button" ng-repeat="x in weekdays" value="{{x}}"/>-->
-                </div>
-            </div>
-        </div>
         <!--主面板-->
-        <div class="container">
-            <div class="row">
-                <!--餐位列表-->
-                <div class="col-lg-4" style="height: 60%">
-                    <div class="panel panel-default">
-                        <div class="panel-heading" role="tab">
-                            预订台
-                        </div>
-                        <div class="panel-body" role="tabpanel">
-                            <!--已选择餐位列表-->
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <div class="panel-title">
-                                        已选择桌位
-                                    </div>
-                                </div>
-                                <div class="panel-body">
-                                    <span class="label label-success"
-                                          style="display: inline-block"
-                                          ng-repeat="x in Branch.AreaDesk.list|filter:{selected:true}|orderBy:'order'">
+        <div class="row">
+            <!--餐位列表-->
+            <div class="col-lg-4" style="height: 60%">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab">
+                        <!--TabHost: 区域导航-->
+                        <nav>
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item" ng-repeat="x in Branch.Area.list|orderBy:'order'">
+                                    <a role="tab" data-toggle="tab" data-target="#area{{$index}}">
+                                        {{x.name}}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a role="tab" data-toggle="tab" data-target="#all_area">所有楼层</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="panel-collapse" role="tabpanel">
+                        <!--已选择餐位列表-->
+                        <div class="well well-sm hidden">
+                            <label class="panel-title">
+                                已选择桌位：
+                            </label>
+                            <span class="label label-success"
+                                  style="display: inline-block"
+                                  ng-repeat="x in Branch.AreaDesk.list|filter:{selected:true}|orderBy:'order'">
                                         <small>{{x.number}}</small>
                                         <span class="glyphicon glyphicon-remove" ng-click="x.selected=false;"></span>
                                     </span>
+                        </div>
+                        <!--TabContent：区域和餐位选择-->
+                        <div class="tab-content">
+                            <div class="tab-pane" role="tabpanel" id="area{{$index}}"
+                                 ng-repeat="x in Branch.Area.list|orderBy:'order'">
+                                <!--桌位列表-->
+                                <div class="pre-scrollable">
+                                    <ul class="list-group">
+                                        <li class="list-group-item"
+                                            ng-repeat="y in Branch.AreaDesk.list|filter:{area_name:x.name,status:0}|orderBy:'order'"
+                                            ng-click="y.selected=!y.selected;">
+                                                    <span class="badge" ng-class="{
+                                                        0:'badge-success',
+                                                        1:'badge-info',
+                                                        2:'badge-error'
+                                                    }[y.status]">
+                                                        {{y.status|desk_status}}
+                                                    </span>
+                                            <span ng-show="y.selected===true" class="badge bg-success">
+                                                        已选<span class="glyphicon glyphicon-ok"></span>
+                                                    </span>
+                                            <label class="text-center">{{y.number}}</label>
+                                            <label class="text-center small">{{y.min_guest_num}} ~ {{y.max_guest_num}}人</label>
+                                        </li>
+                                        <li class="list-group-item"
+                                            ng-if="(Branch.AreaDesk.list|filter:{area_name:x.name,status:0}).length===0">
+                                            <label class="label label-warning">该区域无空闲桌位</label>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
-                            <!--区域和餐位选择-->
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <!--TabHost: 区域导航-->
-                                    <nav>
-                                        <ul class="nav nav-tabs">
-                                            <li class="nav-item" ng-repeat="x in Branch.Area.list|orderBy:'order'">
-                                                <a role="tab" data-toggle="tab" data-target="#area{{$index}}">
-                                                    {{x.name}}
-                                                </a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a role="tab" data-toggle="tab" data-target="#all_area">所有楼层</a>
-                                            </li>
-                                        </ul>
-                                    </nav>
-                                </div>
-                                <div class="panel-collapse">
-                                    <!--TabContent：桌位列表-->
-                                    <div class="tab-content">
-                                        <div class="tab-pane" role="tabpanel" id="area{{$index}}"
-                                             ng-repeat="x in Branch.Area.list|orderBy:'order'">
-                                            <!--桌位列表-->
-                                            <ul class="list-group">
-                                                <li class="list-group-item"
-                                                    ng-repeat="y in Branch.AreaDesk.list|filter:{area_name:x.name,status:0}|orderBy:'order'"
-                                                    ng-click="y.selected=!y.selected;">
+                            <div class="tab-pane" role="tabpanel" id="all_area">
+                                <!--桌位列表-->
+                                <div class="pre-scrollable">
+                                    <ul class="list-group">
+                                        <li class="list-group-item"
+                                            ng-repeat="y in Branch.AreaDesk.list|filter:{status:0}|orderBy:'order'"
+                                            ng-click="y.selected=!y.selected;">
                                                     <span class="badge" ng-class="{
                                                         0:'badge-success',
                                                         1:'badge-info',
                                                         2:'badge-error'
                                                     }[y.status]">{{y.status|desk_status}}</span>
-                                                    <span ng-show="y.selected===true" class="badge bg-success">
+                                            <span ng-show="y.selected===true" class="badge badge-success">
                                                         已选<span class="glyphicon glyphicon-ok"></span>
                                                     </span>
-                                                    <label class="text-center">{{y.number}}</label>
-                                                    <label class="text-center small">{{y.min_guest_num}} ~ {{y.max_guest_num}}人</label>
-                                                </li>
-                                                <li class="list-group-item"
-                                                    ng-if="(Branch.AreaDesk.list|filter:{area_name:x.name,status:0}).length===0">
-                                                    <label class="label label-warning">该区域无空闲桌位</label>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="tab-pane" role="tabpanel" id="all_area">
-                                            <!--桌位列表-->
-                                            <ul class="list-group">
-                                                <li class="list-group-item"
-                                                    ng-repeat="y in Branch.AreaDesk.list|filter:{status:0}|orderBy:'order'"
-                                                    ng-click="y.selected=!y.selected;">
-                                                    <span class="badge" ng-class="{
-                                                        0:'badge-success',
-                                                        1:'badge-info',
-                                                        2:'badge-error'
-                                                    }[y.status]">{{y.status|desk_status}}</span>
-                                                    <span ng-show="y.selected===true" class="badge bg-success">
-                                                        已选<span class="glyphicon glyphicon-ok"></span>
-                                                    </span>
-                                                    <label class="text-center">{{y.number}}</label>
-                                                    <label class="text-center small">{{y.min_guest_num}} ~ {{y.max_guest_num}}人</label>
-                                                </li>
-                                                <li class="list-group-item"
-                                                    ng-if="(Branch.AreaDesk.list|filter:{status:0}).length===0">
-                                                    <label class="label label-warning">无空闲桌位</label>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!--操作栏-->
-                        <div class="panel-footer">
-                            <label>短信提醒<input type="checkbox" ng-model="sms"/></label>
-                            <input class="btn btn-primary btn-sm" type="button" ng-click="selectBanquet()" value="宴会类型">
-                            <input class="btn btn-primary btn-sm" type="button" ng-click="selectPersonal()" value="私人订制">
-                            <input class="btn btn-success btn-sm" type="button" ng-click="reserve()" value="预定"/>
-                        </div>
-                        <!--宴会类型和私人订制-->
-                        <div class="panel-group" id="accordion">
-                            <!--宴会类型-->
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <div class="panel-title" data-toggle="collapse" data-parent="#accordion" data-target="#collapseOne">
-                                        宴会类型
-                                    </div>
-                                </div>
-                                <div class="panel-collapse collapse" id="collapseOne">
-                                    <div class="panel-body">
-                                        <ul class="list-group">
-                                            <li class="list-group-item">
-                                                <small>已选择宴会类型：</small>
-                                                <label class="label label-info">{{ReserveForm.banquet}}</label>
-                                            </li>
-                                            <li class="list-group-item" ng-repeat="(k, v) in Banquet">
-                                                <small>{{k}}：</small>
-                                                <span class="label label-success" style="display: inline-block"
-                                                      ng-click="ReserveForm.banquet=y"
-                                                      ng-repeat="y in v">
-                                                    <small>{{y}}</small>
-                                                    <span class="glyphicon glyphicon-ok"></span>
-                                                </span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--私人订制列表-->
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <div class="panel-title" data-toggle="collapse" data-parent="#accordion" data-target="#collapseTwo">
-                                        私人订制
-                                    </div>
-                                </div>
-                                <div class="panel-collapse collapse" id="collapseTwo">
-                                    <div class="panel-body">
-                                        <ul class="list-group">
-                                            <li class="list-group-item">
-                                                <small>私人订制：</small>
-                                                <p>{{ReserveForm.staff_description}}</p>
-                                            </li>
-                                            <li class="list-group-item" ng-repeat="x in Branch.personal_tailor|orderBy:'order'">
-                                                <small>{{x.name}}：</small>
-                                                <span class="label label-success" style="display: inline-block"
-                                                      ng-click="selectLabel(y)"
-                                                      ng-repeat="y in x.labels">
-                                                    <small>{{y}}</small>
-                                                    <span class="glyphicon glyphicon-ok"></span>
-                                                </span>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                            <label class="text-center">{{y.number}}</label>
+                                            <label class="text-center small">{{y.min_guest_num}} ~ {{y.max_guest_num}}人</label>
+                                        </li>
+                                        <li class="list-group-item"
+                                            ng-if="(Branch.AreaDesk.list|filter:{status:0}).length===0">
+                                            <label class="label label-warning">无空闲桌位</label>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!--操作栏-->
+                    <div class="panel-footer">
+                        <!--<div class="input-group">-->
+                        <label>短信提醒<input type="checkbox" ng-model="sms"/></label>
+                        <!--<div class="btn-group">-->
+                        <input class="btn btn-primary btn-sm" type="button" ng-click="selectBanquet()" value="宴会类型">
+                        <input class="btn btn-primary btn-sm" type="button" ng-click="selectPersonal()" value="私人订制">
+                        <input class="btn btn-success btn-sm" type="button" ng-click="reserve()" value="预定"/>
+                        <!--</div>-->
+                        <!--</div>-->
+                    </div>
                 </div>
-                <!--电话/预约-->
-                <div class="col-lg-4" style="height: 60%">
+                <!--宴会类型和私人订制-->
+                <div class="panel-group hidden" id="accordion">
+                    <!--宴会类型-->
                     <div class="panel panel-default">
-                        <!--TabHost-->
                         <div class="panel-heading">
-                            <nav>
-                                <ul class="nav nav-tabs">
-                                    <li class="nav-item">
-                                        <a role="tab" data-toggle="tab" data-target="#phone">电话</a>
+                            <div class="panel-title" data-toggle="collapse" data-parent="#accordion" data-target="#collapseOne">
+                                宴会类型
+                            </div>
+                        </div>
+                        <div class="panel-collapse collapse" id="collapseOne">
+                            <div class="panel-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <small>已选择宴会类型：</small>
+                                        <label class="label label-info">{{ReserveForm.banquet}}</label>
                                     </li>
-                                    <li class="nav-item active">
-                                        <a role="tab" data-toggle="tab" data-target="#reserve">预定</a>
+                                    <li class="list-group-item" ng-repeat="(k, v) in Banquet">
+                                        <small>{{k}}：</small>
+                                        <span class="label label-success" style="display: inline-block"
+                                              ng-click="ReserveForm.banquet=y"
+                                              ng-repeat="y in v">
+                                                    <small>{{y}}</small>
+                                                    <span class="glyphicon glyphicon-ok"></span>
+                                                </span>
                                     </li>
                                 </ul>
-                            </nav>
+                            </div>
                         </div>
-                        <div class="panel-collapse">
-                            <!--TabContent-->
-                            <div class="tab-content">
-                                <!--来电-->
-                                <div class="tab-pane" role="tabpanel" id="phone">
-                                    <!--来电列表-->
-                                    <!--<div class="container">-->
+                    </div>
+                    <!--私人订制列表-->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title" data-toggle="collapse" data-parent="#accordion" data-target="#collapseTwo">
+                                私人订制
+                            </div>
+                        </div>
+                        <div class="panel-collapse collapse" id="collapseTwo">
+                            <div class="panel-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <small>私人订制：</small>
+                                        <p>{{ReserveForm.staff_description}}</p>
+                                    </li>
+                                    <li class="list-group-item" ng-repeat="x in Branch.personal_tailor|orderBy:'order'">
+                                        <small>{{x.name}}：</small>
+                                        <span class="label label-success" style="display: inline-block"
+                                              ng-click="selectLabel(y)"
+                                              ng-repeat="y in x.labels">
+                                                    <small>{{y}}</small>
+                                                    <span class="glyphicon glyphicon-ok"></span>
+                                                </span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--电话/预约-->
+            <div class="col-lg-4" style="height: 60%">
+                <div class="panel panel-default">
+                    <!--TabHost-->
+                    <div class="panel-heading">
+                        <nav>
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item">
+                                    <a role="tab" data-toggle="tab" data-target="#phone">来电</a>
+                                </li>
+                                <li class="nav-item active">
+                                    <a role="tab" data-toggle="tab" data-target="#reserve">预约</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a role="tab" data-toggle="tab" data-target="#order">预订单</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="panel-collapse">
+                        <!--TabContent-->
+                        <div class="tab-content">
+                            <!--来电列表-->
+                            <div class="tab-pane" role="tabpanel" id="phone">
+                                <!--来电列表-->
+                                <div class="pre-scrollable">
                                     <ul class="list-group">
                                         <li class="list-group-item" ng-repeat="x in Staff.PhoneList.list">
                                             <div class="row">
@@ -228,29 +248,30 @@
                                             </div>
                                         </li>
                                     </ul>
-                                    <!--</div>-->
-                                    <!--分页导航-->
-                                    <nav aria-label="Page navigation">
-                                        <ul class="pagination pagination-sm">
-                                            <li>
-                                                <a href="#" aria-label="Previous">
-                                                    <span aria-hidden="true">&laquo;</span>
-                                                </a>
-                                            </li>
-                                            <li ng-repeat="(k, v) in pages"><a href="#{{v}}">{{v}}</a></li>
-                                            <li>
-                                                <a href="#" aria-label="Next">
-                                                    <span aria-hidden="true">&raquo;</span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </nav>
                                 </div>
-                                <!--预约-->
-                                <div class="tab-pane active" role="tabpanel" id="reserve">
-                                    <!--预约列表-->
+                                <!--分页导航-->
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination pagination-sm">
+                                        <li>
+                                            <a href="#" aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+                                        <li ng-repeat="(k, v) in pages"><a href="#{{v}}">{{v}}</a></li>
+                                        <li>
+                                            <a href="#" aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <!--预约列表-->
+                            <div class="tab-pane active" role="tabpanel" id="reserve">
+                                <!--预约列表-->
+                                <div class="pre-scrollable">
                                     <ul class="list-group">
-                                        <li class="list-group-item" ng-repeat="x in Staff.ReserveList.list">
+                                        <li class="list-group-item" ng-repeat="x in Staff.ReserveList.list|filter:{status:0}">
                                             <!--<div class="container">-->
                                             <div class="row">
                                                 <!--头像-->
@@ -269,95 +290,251 @@
                                                 </div>
                                             </div>
                                             <!--</div>-->
+                                            <span class="badge badge-info">{{status|status}}</span>
                                         </li>
                                     </ul>
-                                    <!--分页导航-->
-                                    <nav aria-label="Page navigation">
-                                        <ul class="pagination pagination-sm">
-                                            <li>
-                                                <a href="#" aria-label="Previous">
-                                                    <span aria-hidden="true">&laquo;</span>
-                                                </a>
-                                            </li>
-                                            <li ng-repeat="(k, v) in pages"><a href="#{{v}}">{{v}}</a></li>
-                                            <li>
-                                                <a href="#" aria-label="Next">
-                                                    <span aria-hidden="true">&raquo;</span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </nav>
+                                </div>
+                                <!--分页导航-->
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination pagination-sm">
+                                        <li>
+                                            <a href="#" aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+                                        <li ng-repeat="(k, v) in pages"><a href="#{{v}}">{{v}}</a></li>
+                                        <li>
+                                            <a href="#" aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <!--预订单-->
+                            <div class="tab-pane" role="tabpanel" id="order">
+                                <div class="panel panel-default">
+                                    <!--预订单-->
+                                    <div class="pre-scrollable">
+                                        <div class="panel-body">
+                                            <!--表单-->
+                                            <form role="form">
+                                                <!--订单信息-->
+                                                <fieldset>
+                                                    <legend class="col-form-legend">订单信息</legend>
+                                                    <!--预定用餐日期-->
+                                                    <div class="form-group">
+                                                        <label>预定用餐日期</label>
+                                                        <input type="date" ng-model="ReserveForm.dinner_date"/>
+                                                    </div>
+                                                    <!--订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵')-->
+                                                    <div class="form-group">
+                                                        <label>订餐时段</label>
+                                                        <label class="radio-inline" ng-repeat="x in MealsPeriod">
+                                                            <input type="radio"
+                                                                   ng-model="ReserveForm.dinner_period"
+                                                                   value="{{$index}}"
+                                                                   disabled/>{{x}}
+                                                        </label>
+                                                    </div>
+                                                    <!--预定用餐时间-->
+                                                    <div class="form-group">
+                                                        <label>预定用餐时间</label>
+                                                        <select ng-model="ReserveForm.dinner_time">
+                                                            <option ng-repeat="x in MealsTime" value="{{x}}">{{x}}</option>
+                                                        </select>
+                                                    </div>
+                                                    <!--预定桌位-->
+                                                    <div class="form-group hidden">
+                                                        <label>预定桌位：</label>
+                                                        <span class="label label-success" ng-repeat="x in ReserveForm.desks">
+                                                            {{x}}
+                                                        </span>
+                                                        <span class="label label-warning" ng-show="ReserveForm.desks.length===0">
+                                                            未选择桌位！
+                                                    </span>
+                                                    </div>
+                                                    <!--客人数量-->
+                                                    <div class="form-group">
+                                                        <label>客人数量：</label>
+                                                        <input type="number" ng-model="ReserveForm.guest_number">
+                                                    </div>
+                                                    <!--数量-->
+                                                    <div class="form-group">
+                                                        <label>桌位数量：</label>
+                                                        <input type="number" ng-model="ReserveForm.table_count">
+                                                    </div>
+                                                    <!--宴会类型，来自36宴-->
+                                                    <div class="form-group">
+                                                        <label>宴会类型：</label>
+                                                        <span>
+                                                            <span ng-hide="ReserveForm.banquet===''"
+                                                                  class="label label-success">
+                                                                {{ReserveForm.banquet}}
+                                                            </span>
+                                                            <span ng-show="ReserveForm.banquet===''"
+                                                                  class="label label-warning">
+                                                                未设置宴会类型！
+                                                            </span>
+                                                            <span class="text-info">来自三十六宴</span>
+                                                        </span>
+                                                    </div>
+                                                    <!--餐位列表-->
+                                                    <div class="form-group">
+                                                        <label>餐位列表：</label>
+                                                        <!--已选桌位数组-->
+                                                        <span class="label label-info" style="display: inline-block"
+                                                              ng-repeat="x in ReserveForm.rooms">{{x}}</span>
+                                                        <span class="label label-warning" ng-show="Staff.ReserveForm.length===0" style="display: inline-block">
+                                                    未选择餐位
+                                                </span>
+                                                    </div>
+                                                </fieldset>
+                                                <!--客户信息-->
+                                                <fieldset>
+                                                    <legend class="col-form-legend">客户信息</legend>
+                                                    <!--联系人-->
+                                                    <div class="form-group">
+                                                        <label><a style="color: red;">*</a>姓名：</label>
+                                                        <input type="text" ng-model="ReserveForm.name"/>
+                                                    </div>
+                                                    <!--性别-->
+                                                    <div class="form-group hidden">
+                                                        <label><a style="color: red;">*</a>性别：</label>
+                                                        <label class="radio-inline">
+                                                            <input type="radio" ng-model="ReserveForm.gender" value='1'/>先生
+                                                        </label>
+                                                        <label class="radio-inline">
+                                                            <input type="radio" ng-model="ReserveForm.gender" value='2'/>女士
+                                                        </label>
+                                                    </div>
+                                                    <!--联系电话-->
+                                                    <div class="form-group">
+                                                        <label><a style="color: red;">*</a>电话：</label>
+                                                        <label class="text-warning">
+                                                            <input type="text"
+                                                                   ng-model="ReserveForm.contact" ng-minlength="11"
+                                                                   placeholder="请准确输入11位手机号码"/>
+                                                        </label>
+                                                    </div>
+                                                    <!--员工备注-->
+                                                    <div class="form-group">
+                                                        <label>员工备注：</label>
+                                                        <textarea ng-model="ReserveForm.staff_description" cols="36" rows="3"></textarea>
+                                                    </div>
+                                                </fieldset>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="panel-footer">
+                                        <!--操作栏：-->
+                                        <!--预约短信 发路线 预约-->
+                                        <label for="order_sms">
+                                            <input type="checkbox" id="order_sms" type="checkbox" ng-model="form.order_sms"/>预约短信
+                                        </label>
+                                        <label for="order_route">
+                                            <input type="checkbox" id="order_route" type="checkbox" ng-model="form.order_route"/>发路线
+                                        </label>
+                                        <input class="btn btn-primary btn-sm" type="button" ng-click="submit()" value="提交"/>
+                                        <input class="btn btn-default btn-sm" type="button" ng-click="cancel()" value="取消"/>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!--订单列表-->
-                <div class="col-lg-4" style="height: 60%">
-                    <div class="panel-group panel-primary">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <div class="panel-title">
-                                    预订单查询
-                                </div>
+            </div>
+            <!--订单列表-->
+            <div class="col-lg-4" style="height: 60%">
+                <div class="panel-group panel-primary">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                <h5>预订单查询</h5>
+                                <span>{{form.dinner_period|dinner_period}} {{Staff.OrderList.count}}桌</span>
+                                <span>周一 {{Staff.OrderList.guest_number}}人</span>
                             </div>
-                            <div class="panel-collapse">
-                                <div class="well well-sm form-inline">
-                                    <input type="text" ng-model="SearchForm.keyword" placeholder="手机号筛选"/>
+                        </div>
+                        <div class="panel-collapse">
+                            <div class="input-group">
+                                <input class="form-control" type="text" ng-model="SearchForm.keyword" placeholder="手机号筛选"/>
+                                <div class="input-group-addon">
                                     <select ng-model="SearchForm.type" ng-change="search()">
                                         <optgroup label="筛选方式"></optgroup>
-                                        <option ng-repeat="x in SortSelection" value=$index >by {{x}}</option>
+                                        <option ng-repeat="x in SortSelection" value=$index>{{x}}</option>
                                     </select>
                                 </div>
-                                <!--提示信息-->
-                                <div class="well well-sm">
-                                    <span>晚餐 39桌</span>
-                                    <span>周一 262人</span>
-                                </div>
-                                <!--订单列表-->
-                                <ul class="list-group">
-                                    <li class="list-group-item" ng-repeat="x in Staff.OrderList.list">
-                                        <div class="container">
-                                            <div class="row">
-                                                <!--左侧信息-->
-                                                <div class="col-4">
-                                                    <h5>{{x.desk}} ({{x.people}}人)</h5>
-                                                    <span>{{x.order_time|date:"hh:MM:ss"}}</span>
-                                                </div>
-                                                <!--右侧信息-->
-                                                <div class="col-8">
-                                                    <p><strong>{{x.name}}</strong> 先生</p>
-                                                    <p>备注：桌号() {{x.status}}</p>
-                                                </div>
-                                                <!--操作栏-->
-                                                <div class="col-lg-12 col-sm-12 p-2 bg-success">
-                                                    <!--第一行-->
-                                                    <div class="input-group">
-                                                        <input type="button" value="撤单"/>
-                                                        <div class="btn-group btn-group-sm">
-                                                            <input type="button" value="换桌"/>
-                                                            <input type="button" value="加桌"/>
-                                                            <input type="button" value="修改"/>
-                                                        </div>
-                                                        <input type="button" value="关闭"/>
+                            </div>
+                        </div>
+                        <!--订单列表-->
+                        <div class="pre-scrollable">
+                            <ul class="list-group">
+                                <li class="list-group-item" ng-repeat="x in Staff.OrderList.list">
+                                    <span class="badge badge-info">{{x.status|status}}</span>
+                                    <div class="container">
+                                        <div class="row">
+                                            <!--右侧信息-->
+                                            <div class="col-12">
+                                                <p>
+                                                    <strong>{{x.name}}</strong> 先生
+                                                    <span class="badge badge-primary">
+                                                            {{x.dinner_date|date:'yy/MM/dd'}}
+                                                            {{x.dinner_time|date:'hh:mm'}}
+                                                        </span>
+                                                </p>
+                                                <p>
+                                                    桌位：<span class="label label-info"
+                                                             style="display: inline-block"
+                                                             ng-repeat="y in x.desks">
+                                                            {{y.number}}
+                                                        </span>
+                                                </p>
+                                                <p>备注：<span> ( {{x.guest_description}} {{x.guest_number}}人)</span></p>
+                                            </div>
+                                            <!--操作栏-->
+                                            <div class="col-sm-12 bg-success">
+                                                <!--第一行-->
+                                                <div class="input-group">
+                                                    <input type="button" value="撤单"/>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <input type="button" value="换桌"/>
+                                                        <input type="button" value="加桌"/>
+                                                        <input type="button" value="修改"/>
                                                     </div>
-                                                    <!--第二行-->
-                                                    <select>
-                                                        <option ng-repeat="x in [1,2,3,4]">x</option>
-                                                    </select>
-                                                    <div class="input-group">
-                                                        <input type="button" value="发路线"/>
-                                                        <input type="button" value="发短信"/>
-                                                        <input type="button" value="相关订单"/>
-                                                        <input type="button" value="客户档案"/>
-                                                    </div>
+                                                    <input type="button" value="关闭"/>
+                                                </div>
+                                                <!--第二行-->
+                                                <!--<select>-->
+                                                <!--<option ng-repeat="x in [1,2,3,4]">x</option>-->
+                                                <!--</select>-->
+                                                <div class="input-group">
+                                                    <input type="button" value="发路线"/>
+                                                    <input type="button" value="发短信"/>
+                                                    <input type="button" value="相关订单"/>
+                                                    <input type="button" value="客户档案"/>
                                                 </div>
                                             </div>
                                         </div>
-                                    </li>
-                                </ul>
-                            </div>
+                                    </div>
+                                </li>
+                            </ul>
                         </div>
+                        <!--分页导航-->
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination pagination-sm">
+                                <li>
+                                    <a href="#" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <li ng-repeat="(k, v) in pages"><a href="#{{v}}">{{v}}</a></li>
+                                <li>
+                                    <a href="#" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
