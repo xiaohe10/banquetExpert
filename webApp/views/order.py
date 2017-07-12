@@ -132,7 +132,7 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
              'contact': r.contact,
              'guest_number': r.guest_number,
              'table_count': r.table_count,
-             'staff_description': r.staff_descrition,
+             'staff_description': r.staff_description,
              'internal_channel': r.internal_channel.name if
              r.internal_channel else '',
              'external_channel': r.external_channel.name if

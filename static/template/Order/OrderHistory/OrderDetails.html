@@ -23,20 +23,23 @@
                         <!--文字信息-->
                         <div class="row m-2">
                             <div class="col-12 text-info">
-                                <p><strong>{{order.area}} {{order.seat}} </strong></p>
-                                <p><strong>{{order.name}} {{order.gender}} {{order.phone}} {{order.count}} 人 {{order.type}}客户</strong></p>
-                                <p><strong>用餐时间：{{order.meal_time}}</strong></p>
-                                <p><strong>创建时间：{{order.create_time}} 操作：{{order.operator}} </strong></p>
+                                <p>桌位：<span class="label label-info" ng-repeat="x in desks">{{x.number}} </span></p>
+                                <p>订单信息：{{data.name}} {{data.banquet}} {{data.contact}} </p>
+                                <p>{{data.guest_number}} 人 {{data.guest_type}}客户</p>
                             </div>
                             <div class="text-info bg-faded p-2">
-                                <p>备注：{{order.note}}</p>
+                                <p>用餐时间：{{data.meal_time}}</p>
+                                <p>创建时间：{{data.create_time}} 操作：{{data.staff_name}}</p>
+                                <p>客到时间：{{data.arrival_time}}</p>
+                                <p>结账时间：{{data.finish_time}}</p>
+                                <p>消费金额：{{data.consumption}}</p>
                             </div>
                         </div>
                         <!--五张图片-->
                         <div class="row m-2">
-                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3" ng-repeat="(k, x) in order.images">
+                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3" ng-repeat="(k, x) in data.pictures">
                                 <div class="img-thumbnail" ng-click="check(k)">
-                                    <img class="img-responsive" src="/static/css/image/head1.jpg" alt="{{x}}">
+                                    <img class="img-responsive" ng-src="x" src="/static/css/image/head1.jpg" alt="PICTURE">
                                 </div>
                             </div>
                         </div>

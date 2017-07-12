@@ -20,12 +20,12 @@
                                 </label>
                             </li>
                         </ul>
+                        <input class="input-group-addon" type="date" ng-model="form.date"/>
                         <button class="btn btn-default">订餐台</button>
                     </div>
                 </div>
                 <!--餐段日期选择-->
-                <div class="form-inline pull-right">
-                    <input class="input-group-addon" type="date" ng-model="form.date"/>
+                <div class="input-group pull-right">
                     <div class="form-group form-group-sm">
                         <label class="radio-inline">
                             <input class="btn btn-primary btn-sm" type="radio" value=0 ng-model="form.dinner_period">午餐
@@ -322,24 +322,20 @@
                                                 <!--订单信息-->
                                                 <fieldset>
                                                     <legend class="col-form-legend">订单信息</legend>
-                                                    <!--预定用餐日期-->
+                                                    <!--预定用餐日期【不可在此编辑】-->
                                                     <div class="form-group">
-                                                        <label>预定用餐日期</label>
-                                                        <input type="date" ng-model="ReserveForm.dinner_date"/>
+                                                        <label>预定用餐日期：</label>
+                                                        <span class="label label-info">{{ReserveForm.dinner_date|date:'yyyy-MM-dd'}}</span>
                                                     </div>
-                                                    <!--订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵')-->
+                                                    <!--订餐时段【不可在此编辑】(0, '午餐'), (1, '晚餐'), (2, '夜宵')-->
                                                     <div class="form-group">
-                                                        <label>订餐时段</label>
-                                                        <label class="radio-inline" ng-repeat="x in MealsPeriod">
-                                                            <input type="radio"
-                                                                   ng-model="ReserveForm.dinner_period"
-                                                                   value="{{$index}}"
-                                                                   disabled/>{{x}}
-                                                        </label>
+                                                        <label>订餐时段：</label>
+                                                        <span class="label label-info">{{ReserveForm.dinner_period|dinner_period}}</span>
                                                     </div>
                                                     <!--预定用餐时间-->
                                                     <div class="form-group">
-                                                        <label>预定用餐时间</label>
+                                                        <label>预定用餐时间：</label>
+                                                        <span class="label label-info">{{ReserveForm.dinner_time|date:'hh:mm'}}</span>
                                                         <select ng-model="ReserveForm.dinner_time">
                                                             <option ng-repeat="x in MealsTime" value="{{x}}">{{x}}</option>
                                                         </select>
