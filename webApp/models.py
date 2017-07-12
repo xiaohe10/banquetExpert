@@ -408,6 +408,10 @@ class Guest(models.Model):
     # 性别
     gender = models.IntegerField(choices=((0, '保密'), (1, '男'), (2, '女')),
                                  default=0, db_index=True)
+    # 单位
+    unit = models.CharField(max_length=60, default='')
+    # 职位
+    position = models.CharField(max_length=20, default='')
     # 生日
     birthday = models.DateField(default=None, null=True)
     # 生日类型
@@ -466,6 +470,8 @@ class Order(models.Model):
     guest_number = models.IntegerField(default=0, db_index=True)
     # 预定桌位, 可能多桌
     desks = models.CharField(max_length=200, default='')
+    # 餐桌数
+    table_count = models.IntegerField(default=1, db_index=True)
     # 支付金额
     consumption = models.IntegerField(default=0, db_index=True)
     # 宴会类型

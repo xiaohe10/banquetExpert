@@ -51,6 +51,8 @@ def get_guests(request, token, offset=0, limit=10, order=0, **kwargs):
             dislike: 忌讳
             special_day: 特殊
             personal_need: 个性化需求
+            unit: 单位
+            position: 职位
             status: 客户状态, 1: 活跃, 2: 沉睡, 3: 流失, 4: 无订单
             desk_number: 消费总桌数
             person_consumption: 人均消费
@@ -156,6 +158,8 @@ def get_guests(request, token, offset=0, limit=10, order=0, **kwargs):
              'dislike': guest.dislike,
              'special_day': guest.special_day,
              'personal_need': guest.personal_need,
+             'unit': guest.unit,
+             'position': guest.position,
              'desk_number': guest.desk_number,
              'person_consumption': guest.person_consumption,
              'order_per_month': guest.order_per_month,
@@ -313,6 +317,8 @@ def get_profile(request, token, guest_id=None, phone=None):
         dislike: 忌讳
         special_day: 特殊
         personal_need: 个性化需求
+        unit: 单位
+        position: 职位
         status: 客户状态, 1: 活跃, 2: 沉睡, 3: 流失, 4: 无订单
         all_order_number: 历史所有有效订单数
         day60_order_number: 最近60天订单数
@@ -362,6 +368,8 @@ def get_profile(request, token, guest_id=None, phone=None):
          'dislike': guest.dislike,
          'special_day': guest.special_day,
          'personal_need': guest.personal_need,
+         'unit': guest.unit,
+         'position': guest.position,
          'all_order_number': orders.count(),
          'day60_order_number': orders.filter(finish_time__gte=day60).count(),
          'all_consumption': all_consumption,
@@ -478,7 +486,9 @@ def get_history_orders(request, token, phone, offset=0, limit=10):
     'like': forms.CharField(max_length=100, required=False),
     'dislike': forms.CharField(max_length=100, required=False),
     'special_day': forms.CharField(max_length=20, required=False),
-    'personal_need': forms.CharField(max_length=100, required=False)
+    'personal_need': forms.CharField(max_length=100, required=False),
+    'unit': forms.CharField(max_length=60, required=False),
+    'position': forms.CharField(max_length=20, required=False),
 })
 @validate_staff_token()
 def add_profile(request, token, phone, name, **kwargs):
@@ -496,6 +506,8 @@ def add_profile(request, token, phone, name, **kwargs):
         dis_like: 忌讳
         special_day: 纪念日
         personal_need: 个性化需求
+        unit: 单位
+        position: 职位
     :return:
         guest_id: 顾客ID
     """
@@ -506,7 +518,7 @@ def add_profile(request, token, phone, name, **kwargs):
         return err_response('err_2', '该手机号已经存在')
 
     guest_keys = ('guest_type', 'gender', 'birthday', 'birthday_type', 'like',
-                  'dislike', 'special_day', 'personal_need')
+                  'dislike', 'special_day', 'personal_need', 'unit', 'position')
     with transaction.atomic():
         try:
             guest = Guest(hotel=hotel, phone=phone, name=name,
@@ -532,7 +544,9 @@ def add_profile(request, token, phone, name, **kwargs):
     'like': forms.CharField(max_length=100, required=False),
     'dislike': forms.CharField(max_length=100, required=False),
     'special_day': forms.CharField(max_length=20, required=False),
-    'personal_need': forms.CharField(max_length=100, required=False)
+    'personal_need': forms.CharField(max_length=100, required=False),
+    'unit': forms.CharField(max_length=60, required=False),
+    'position': forms.CharField(max_length=20, required=False),
 })
 @validate_staff_token()
 def modify_profile(request, token, phone, **kwargs):
@@ -549,6 +563,8 @@ def modify_profile(request, token, phone, **kwargs):
         dis_like: 忌讳
         special_day: 纪念日
         personal_need: 个性化需求
+        unit: 单位
+        position: 职位
     :return:
     """
 
@@ -559,7 +575,7 @@ def modify_profile(request, token, phone, **kwargs):
         return err_response('err_2', '客户档案不存在')
 
     guest_keys = ('guest_type', 'gender', 'birthday', 'birthday_type', 'like',
-                  'dislike', 'special_day', 'personal_need')
+                  'dislike', 'special_day', 'personal_need', 'unit', 'position')
 
     for k in guest_keys:
         if k in kwargs:
