@@ -609,13 +609,32 @@ def modify_order(request, token, order_id, **kwargs):
         branch_list = []
         branch = None
         desk_list = kwargs['desks']
+        new_desk_list = []
+        old_desk_str = ''
+        old_desks = order.desks
+        # 获取原桌位编号字符串
+        if old_desks:
+            old_desk_list = []
+            for old_desk in old_desk_list:
+                old_desk_id = old_desk[1:-1]
+                try:
+                    desk = Desk.enabled_objects.get(id=old_desk_list)
+                    old_desk_list.append(desk.number)
+                except ObjectDoesNotExist:
+                    pass
+            old_desk_str = ', '.join(old_desk_list)
+
         # 验证桌位是否存在和是否被预定
         try:
             for i in range(len(desk_list)):
                 # 桌位号加首尾限定符
                 desk_id = '$' + str(desk_list[i]) + '$'
-                if not Desk.enabled_objects.filter(id=desk_list[i]).count() > 0:
+                if Desk.enabled_objects.filter(id=desk_list[i]).count() == 0:
                     return err_response('err_3', '桌位不存在')
+
+                # 获取新桌位编号字符串
+                desk = Desk.enabled_objects.get(id=desk_list[i])
+                new_desk_list.append(desk.number)
 
                 # 查找订餐的门店
                 branch = Desk.enabled_objects.get(id=desk_list[i]).area.branch
@@ -633,7 +652,9 @@ def modify_order(request, token, order_id, **kwargs):
             desks = json.dumps(desk_list)
             order.desks = desks
             # 记录订单的操作日志
-            order.logs.create(staff=request.staff, content='换桌')
+            new_desk_str = ', '.join(new_desk_list)
+            content = '换桌[%s]为[%s]' % (old_desk_str, new_desk_str)
+            order.logs.create(staff=request.staff, content=content)
         except KeyError or ValueError:
             return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
 
