@@ -2055,7 +2055,7 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
         rs = rs.filter(Q(dinner_period=kwargs['dinner_period']))
 
     c = rs.count()
-    rs = rs.order_by(ORDERS[order])[offset:offset + limit]
+    orders = rs.order_by(ORDERS[order])[offset:offset + limit]
 
     # 就餐人数
     result = rs.values('branch_id').annotate(
@@ -2081,7 +2081,7 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
         guest_consumption = 0.00
 
     l = []
-    for r in rs:
+    for r in orders:
         d = {'order_id': r.id,
              'create_time': r.create_time,
              'cancel_time': r.cancel_time,
