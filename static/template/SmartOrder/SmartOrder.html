@@ -387,10 +387,10 @@
                     </div>
                     <!--订单列表-->
                     <section class="pre-scrollable">
-                        <ul class="list-group">
-                            <li class="list-group-item" ng-repeat="x in Staff.OrderList.list">
+                        <div class="list-group" id="OrderList">
+                            <div class="list-group-item" ng-repeat="x in Staff.OrderList.list">
                                 <!--右侧信息-->
-                                <section>
+                                <div data-toggle="collapse" data-parent="#OrderList" data-target="#OrderItem{{$index}}">
                                     <p>
                                         <strong>{{x.name}}</strong> 先生
                                         <!--订单时间-->
@@ -409,9 +409,9 @@
                                                         </span>
                                     </p>
                                     <p>备注：<span> ( {{x.guest_description}} {{x.guest_number}}人)</span></p>
-                                </section>
+                                </div>
                                 <!--操作栏-->
-                                <section>
+                                <div class="collapse" id="OrderItem{{$index}}">
                                     <!--第一行-->
                                     <div class="btn-group btn-group-sm">
                                         <input type="button" value="撤单" class="btn btn-default btn-sm">
@@ -427,9 +427,9 @@
                                         <input type="button" value="相关订单" class="btn btn-default btn-sm">
                                         <input type="button" value="客户档案" class="btn btn-default btn-sm">
                                     </div>
-                                </section>
-                            </li>
-                        </ul>
+                                </div>
+                            </div>
+                        </div>
                     </section>
                 </div>
                 <!--分页导航-->
