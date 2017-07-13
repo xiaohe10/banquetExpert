@@ -6,7 +6,8 @@
                 <div class="input-group">
                     <!--门店选择-->
                     <div class="btn-group">
-                        <button class="btn btn-info dropdown-toggle" type="button"
+                        <button class="btn btn-primary btn-sm" type="button">订餐台</button>
+                        <button class="btn btn-default btn-sm dropdown-toggle" type="button"
                                 data-toggle="dropdown"
                                 aria-haspopup="true"
                                 aria-expanded="false">
@@ -20,7 +21,6 @@
                                 </label>
                             </li>
                         </ul>
-                        <button class="btn btn-default" type="button">订餐台</button>
                     </div>
                 </div>
                 <!--餐段日期选择-->
@@ -28,13 +28,13 @@
                     <input class="input-group-addon" type="date" ng-model="QueryForm.date"/>
                     <div class="form-group form-group-sm">
                         <label class="radio-inline">
-                            <input type="radio" ng-model="QueryForm.dinner_period" value="0" />午餐
+                            <input type="radio" ng-model="QueryForm.dinner_period" value="0"/>午餐
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" ng-model="QueryForm.dinner_period" value="1" />晚餐
+                            <input type="radio" ng-model="QueryForm.dinner_period" value="1"/>晚餐
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" ng-model="QueryForm.dinner_period" value="2" />夜宵
+                            <input type="radio" ng-model="QueryForm.dinner_period" value="2"/>夜宵
                         </label>
                     </div>
                 </div>
@@ -49,12 +49,16 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <div class="panel-title">
-                            <!--区域选择-->
-                            <select class="form-control form-control-sm" ng-model="option.name">
-                                <option value="all">全部区域</option>
-                                <optgroup label="区域选择"></optgroup>
-                                <option ng-repeat="x in Branch.Area.list|orderBy:'order'" value="{{x.name}}">{{x.name}}</option>
-                            </select>
+                            <form class="form-inline">
+                                <!--区域选择-->
+                                <select class="form-control form-control-sm" ng-model="option.name">
+                                    <option value="all">全部区域</option>
+                                    <optgroup label="区域选择"></optgroup>
+                                    <option ng-repeat="x in Branch.Area.list|orderBy:'order'" value="{{x.name}}">{{x.name}}</option>
+                                </select>
+                                <!--只看空闲桌位-->
+                                <label class="checkbox-inline"><input type="checkbox"/>只看空闲桌位</label>
+                            </form>
                         </div>
                     </div>
                     <div class="panel-body">
@@ -277,7 +281,7 @@
                                                     <!--宴会类型，来自36宴-->
                                                     <div class="form-group">
                                                         <label>宴会类型：</label>
-                                                        <span>
+                                                        <span ng-click="selectBanquet()">
                                                             <span ng-hide="ReserveForm.banquet===''"
                                                                   class="label label-success">
                                                                 {{ReserveForm.banquet}}
@@ -330,7 +334,7 @@
                                                     <!--员工备注-->
                                                     <div class="form-group">
                                                         <label>员工备注：</label>
-                                                        <textarea ng-model="ReserveForm.staff_description" cols="36" rows="3"></textarea>
+                                                        <textarea ng-model="ReserveForm.staff_description" cols="36" rows="5"></textarea>
                                                     </div>
                                                 </fieldset>
                                             </form>
@@ -369,9 +373,9 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <div class="panel-title">
-                            <h5>预订单查询</h5>
-                            <span>{{form.dinner_period|dinner_period}} {{Staff.OrderList.count}}桌</span>
-                            <span>周一 {{Staff.OrderList.guest_number}}人</span>
+                            <span>预订单查询</span>
+                            <span class="pull-right">{{form.dinner_period|dinner_period}} {{Staff.OrderList.count}}桌</span>
+                            <span class="pull-right">周一 {{Staff.OrderList.guest_number}}人</span>
                         </div>
                     </div>
                     <div class="panel-body">
