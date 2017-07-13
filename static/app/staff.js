@@ -636,20 +636,6 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                     }
                 };
                 $scope.MealsPeriod = ['午餐', '晚餐', '夜宵'];
-                $scope.selectOne = function (k, v) {
-                    $(this).popover({
-                        title: k,
-                        content: "这是三十六宴"
-                    });
-                };
-                $scope.selectTwo = function (k, v) {
-                    var Html = "";
-                    $(this).popover({
-                        trigger: 'click',
-                        title: k,
-                        content: "这是私人订制"
-                    });
-                };
                 $scope.weekdays = ["周一", "周二", "周三", "周四", "周五", "周六"];
                 $scope.MealsTime = $rootScope.MealsTime.lunch;
                 // 当前门店信息
@@ -684,15 +670,15 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                 var date = new Date();
                 $scope.QueryForm = {
                     branch_id: 0,
-                    date: "",
+                    date: "2017-07-12",
                     dinner_period: 0
                 };
                 // 预定表单
                 $scope.ReserveForm = {
                     // 预定用餐日期
-                    dinner_date: "",
+                    dinner_date: "2017-07-12",
                     // 预定用餐时间
-                    dinner_time: "",
+                    dinner_time: "23:19:11",
                     // 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵')
                     dinner_period: 0,
                     // 姓名
@@ -757,6 +743,20 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                 Branch.getAreaDesk($scope.Branch.branch_id, $scope.QueryForm.date, $scope.QueryForm.dinner_period);
                 Staff.ReserveList();
                 Staff.OrderList();
+                $scope.selectOne = function (k, v) {
+                    $(this).popover({
+                        title: k,
+                        content: "这是三十六宴"
+                    });
+                };
+                $scope.selectTwo = function (k, v) {
+                    var Html = "";
+                    $(this).popover({
+                        trigger: 'click',
+                        title: k,
+                        content: "这是私人订制"
+                    });
+                };
                 // 选择门店
                 $scope.selectBranch = function (index) {
                     Log.i(TAG, "选择门店：" + index);
@@ -1458,77 +1458,57 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
         })
         .when('/Customer/CustomerAnalysis', {
             templateUrl: "./template/" + Templates.Customer.CustomerAnalysis, controller: function ($scope) {
-                var json = {
-                    chart: {type: 'area'},
-                    title: {text: 'US and USSR nuclear stockpiles'},
-                    subtitle: {
-                        text: 'Source: the bullet in</a>'
-                    },
-                    tooltip: {
-                        pointFormat: '{series.name} produced <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
-                    },
-                    xAxis: {
-                        allowDecimals: false,
-                        labels: {
-                            formatter: function () {
-                                return this.value; // clean, unformatted number for year
+                var config = {
+                    type: 'doughnut',
+                    data: {
+                        datasets: [
+                            {
+                                data: [0.10, 0.20, 0.30, 0.40],
+                                backgroundColor: [
+                                    '#ffccff',
+                                    '#ccffcc',
+                                    '#ffcccc',
+                                    '#ccccff'
+                                ],
+                                label: '客源流动监测'
                             }
-                        }
+                        ],
+                        labels: [
+                            "活跃",
+                            "沉睡",
+                            "流失",
+                            "无订单"
+                        ]
                     },
-                    yAxis: {
+                    options: {
+                        responsive: true,
+                        legend: {
+                            position: 'top'
+                        },
                         title: {
-                            text: 'Nuclear weapon states'
+                            display: true,
+                            text: '客源流动监测图'
                         },
-                        labels: {
-                            formatter: function () {
-                                return this.value / 1000 + 'k';
-                            }
-                        }
-                    },
-                    series: [
-                        {
-                            name: 'USA',
-                            data: [
-                                null, null, null, null, null, 6, 11, 32, 110, 235, 369, 640,
-                                1005, 1436, 2063, 3057, 4618, 6444, 9822, 15468, 20434, 24126,
-                                27387, 29459, 31056, 31982, 32040, 31233, 29224, 27342, 26662,
-                                26956, 27912, 28999, 28965, 27826, 25579, 25722, 24826, 24605,
-                                24304, 23464, 23708, 24099, 24357, 24237, 24401, 24344, 23586,
-                                22380, 21004, 17287, 14747, 13076, 12555, 12144, 11009, 10950,
-                                10871, 10824, 10577, 10527, 10475, 10421, 10358, 10295, 10104
-                            ]
-                        },
-                        {
-                            name: 'USSR/Russia',
-                            data: [
-                                null, null, null, null, null, null, null, null, null, null,
-                                5, 25, 50, 120, 150, 200, 426, 660, 869, 1060, 1605, 2471, 3322,
-                                4238, 5221, 6129, 7089, 8339, 9399, 10538, 11643, 13092, 14478,
-                                15915, 17385, 19055, 21205, 23044, 25393, 27935, 30062, 32049,
-                                33952, 35804, 37431, 39197, 45000, 43000, 41000, 39000, 37000,
-                                35000, 33000, 31000, 29000, 27000, 25000, 24000, 23000, 22000,
-                                21000, 20000, 19000, 18000, 18000, 17000, 16000
-                            ]
-                        }
-                    ],
-                    plotOptions: {
-                        area: {
-                            pointStart: 1940,
-                            marker: {
-                                enabled: false,
-                                symbol: 'circle',
-                                radius: 2,
-                                states: {
-                                    hover: {
-                                        enabled: true
-                                    }
-                                }
-                            }
+                        animation: {
+                            animateScale: true,
+                            animateRotate: true
                         }
                     }
                 };
-                $("#chart1").highcharts(json);
-                $("#chart2").highcharts(json);
+                var chart1 = document.getElementById('chart1').getContext('2d');
+                var myDoughnut = new Chart(chart1, config);
+
+                var url = "";
+                var param = "";
+                $http.post(url, JSON.stringify(param)).success(function (obj) {
+                    if (obj.status === "true") {
+                        config.data.datasets.push(obj.data);
+                        myDoughnut.update();
+                    } else {
+                        // $scope.data = {count: 0, list: []};
+                        alert("无订单！");
+                    }
+                });
             }
         })
         .when('/Customer/CustomerProfiles', {
