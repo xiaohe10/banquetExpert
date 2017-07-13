@@ -947,6 +947,8 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                 $scope.submit = function () {
                     var url = "/webApp/order/submit/";
                     var param = angular.copy($scope.ReserveForm);
+                    // 转换数据类型
+                    param.dinner_period = parseInt(param.dinner_period);
                     Log.i(TAG, JSON.stringify(param));
                     $http.post(url, JSON.stringify(param)).success(function (obj) {
                         if (obj.status === "true") {
