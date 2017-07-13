@@ -465,7 +465,7 @@ URL：webApp/staff/hotel_branch/list/ <br>
 | err_3 | 不存在该员工 |
 
 
-## 搜索我的订单列表
+## 搜索我的订单列表（如果是预定员和迎宾则显示所有的订单）
 URL：webApp/staff/order/search/ <br>
 请求方式：POST <br>
 
@@ -1643,8 +1643,8 @@ URL：webApp/order/supply/ <br>
 | err_5 | 服务器创建订单错误 |
 
 
-## 获取订单操作日志
-URL：webApp/order/log/list/ <br>
+## 搜索所有订单操作日志
+URL：webApp/order/log/search/ <br>
 请求方式：POST
 
 | 参数名称       | 含义             | 是否必选       |
@@ -1653,6 +1653,8 @@ URL：webApp/order/log/list/ <br>
 | date_from | 起始时间 | no |
 | date_to   | 终止时间  | no    |
 | desk_id   | 桌位ID  | no    |
+| offset    | 起始下标，默认0  | no    |
+| limit | 偏移量，默认10  | no    |
 
 
 请求示例:
@@ -1739,7 +1741,7 @@ URL：webApp/order/log/list/ <br>
 | err_3 | 不存在该条件的用户 |
 
 
-## 获取订单操作日志
+## 获取某订单的操作日志
 URL：webApp/order/log/list/ <br>
 请求方式：POST
 

@@ -114,9 +114,6 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
     if 'dinner_period' in kwargs:
         rs = rs.filter(Q(dinner_period=kwargs['dinner_period']))
 
-    c = rs.count()
-    orders = rs.order_by(ORDERS[order])[offset:offset + limit]
-
     # 就餐人数
     result = rs.values('branch_id').annotate(
         sum=Sum('guest_number')).order_by('branch_id')
@@ -139,6 +136,9 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
         guest_consumption = '%.2f' % (float(consumption) / guest_number)
     else:
         guest_consumption = 0.00
+
+    c = rs.count()
+    orders = rs.order_by(ORDERS[order])[offset:offset + limit]
 
     l = []
     for r in orders:
@@ -719,12 +719,16 @@ def get_order_logs(request, token, order_id):
     'token': forms.CharField(min_length=32, max_length=32),
     'date_from': forms.DateField(required=False),
     'date_to': forms.DateField(required=False),
-    'desk_id': forms.IntegerField(required=False)
+    'desk_id': forms.IntegerField(required=False),
+    'offset': forms.IntegerField(min_value=0, required=False),
+    'limit': forms.IntegerField(min_value=0, required=False),
 })
 @validate_staff_token()
-def search_order_logs(request, token, **kwargs):
+def search_order_logs(request, token, offset=0, limit=10, **kwargs):
     """搜索订单的操作日志
     :param token: 令牌(必传)
+    :param offset: 起始值
+    :param limit: 偏移量
     :param kwargs
         date_from: 起始时间
         date_to: 终止时间
@@ -773,6 +777,7 @@ def search_order_logs(request, token, **kwargs):
         logs = logs.filter(Q(order__desks__icontains=desk_id))
 
     c = logs.count()
+    logs = logs[offset: offset + limit]
 
     l = []
     for log in logs:
