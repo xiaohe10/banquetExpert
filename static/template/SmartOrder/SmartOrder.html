@@ -20,21 +20,21 @@
                                 </label>
                             </li>
                         </ul>
-                        <input class="input-group-addon" type="date" ng-model="QueryForm.date"/>
                         <button class="btn btn-default">订餐台</button>
                     </div>
                 </div>
                 <!--餐段日期选择-->
                 <div class="input-group pull-right">
+                    <input class="input-group-addon" type="date" ng-model="QueryForm.date"/>
                     <div class="form-group form-group-sm">
                         <label class="radio-inline">
-                            <input class="btn btn-primary btn-sm" type="radio" value=0 ng-model="QueryForm.dinner_period">午餐
+                            <input class="radio" type="radio" value=0 ng-model="QueryForm.dinner_period">午餐
                         </label>
                         <label class="radio-inline">
-                            <input class="btn btn-primary btn-sm" type="radio" value=1 ng-model="QueryForm.dinner_period">晚餐
+                            <input class="radio" type="radio" value=1 ng-model="QueryForm.dinner_period">晚餐
                         </label>
                         <label class="radio-inline">
-                            <input class="btn btn-primary btn-sm" type="radio" value=2 ng-model="QueryForm.dinner_period">夜宵
+                            <input class="radio" type="radio" value=2 ng-model="QueryForm.dinner_period">夜宵
                         </label>
                     </div>
                 </div>
@@ -134,14 +134,9 @@
                     </div>
                     <!--操作栏-->
                     <div class="panel-footer">
-                        <!--<div class="input-group">-->
-                        <label>短信提醒<input type="checkbox" ng-model="sms"/></label>
-                        <!--<div class="btn-group">-->
-                        <input class="btn btn-primary btn-sm" type="button" ng-click="selectBanquet()" value="宴会类型">
-                        <input class="btn btn-primary btn-sm" type="button" ng-click="selectPersonal()" value="私人订制">
-                        <input class="btn btn-success btn-sm" type="button" ng-click="reserve()" value="预定"/>
-                        <!--</div>-->
-                        <!--</div>-->
+                        <button class="btn btn-success btn-sm" type="button" ng-click="reserve()">
+                            创建订单<span class="glyphicon glyphicon-plus"></span>
+                        </button>
                     </div>
                 </div>
                 <!--宴会类型和私人订制-->
@@ -424,15 +419,24 @@
                                     </div>
                                     <div class="panel-footer">
                                         <!--操作栏：-->
-                                        <!--预约短信 发路线 预约-->
-                                        <label for="order_sms">
-                                            <input type="checkbox" id="order_sms" type="checkbox" ng-model="form.order_sms"/>预约短信
-                                        </label>
-                                        <label for="order_route">
-                                            <input type="checkbox" id="order_route" type="checkbox" ng-model="form.order_route"/>发路线
-                                        </label>
-                                        <input class="btn btn-primary btn-sm" type="button" ng-click="submit()" value="提交"/>
-                                        <input class="btn btn-default btn-sm" type="button" ng-click="cancel()" value="取消"/>
+                                        <div class="input-group">
+                                            <!--预约短信 发路线 预约-->
+                                            <label class="checkbox-inline">
+                                                <input type="checkbox" id="sms" ng-model="ReserveForm.sms"/>短信提醒
+                                            </label>
+                                            <label class="checkbox-inline" for="order_sms">
+                                                <input type="checkbox" id="order_sms" ng-model="ReserveForm.order_sms"/>预约短信
+                                            </label>
+                                            <label class="checkbox-inline" for="order_route">
+                                                <input type="checkbox" id="order_route" ng-model="ReserveForm.order_route"/>发路线
+                                            </label>
+                                        </div>
+                                        <div class="btn-group btn-group-sm">
+                                            <input class="btn btn-primary btn-sm" type="button" ng-click="selectBanquet()" value="宴会类型">
+                                            <input class="btn btn-primary btn-sm" type="button" ng-click="selectPersonal()" value="私人订制">
+                                            <input class="btn btn-primary btn-sm" type="button" ng-click="submit()" value="提交"/>
+                                            <input class="btn btn-default btn-sm" type="button" ng-click="cancel()" value="取消"/>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -490,24 +494,19 @@
                                             <!--操作栏-->
                                             <div class="col-sm-12 bg-success">
                                                 <!--第一行-->
-                                                <div class="input-group">
-                                                    <input type="button" value="撤单"/>
-                                                    <div class="btn-group btn-group-sm">
-                                                        <input type="button" value="换桌"/>
-                                                        <input type="button" value="加桌"/>
-                                                        <input type="button" value="修改"/>
-                                                    </div>
-                                                    <input type="button" value="关闭"/>
+                                                <div class="btn-group btn-group-sm">
+                                                    <input type="button" value="撤单" class="btn btn-default btn-sm">
+                                                    <input type="button" value="换桌" class="btn btn-default btn-sm">
+                                                    <input type="button" value="加桌" class="btn btn-default btn-sm">
+                                                    <input type="button" value="修改" class="btn btn-default btn-sm">
+                                                    <input type="button" value="关闭" class="btn btn-default btn-sm">
                                                 </div>
                                                 <!--第二行-->
-                                                <!--<select>-->
-                                                <!--<option ng-repeat="x in [1,2,3,4]">x</option>-->
-                                                <!--</select>-->
-                                                <div class="input-group">
-                                                    <input type="button" value="发路线"/>
-                                                    <input type="button" value="发短信"/>
-                                                    <input type="button" value="相关订单"/>
-                                                    <input type="button" value="客户档案"/>
+                                                <div class="btn-group btn-group-sm">
+                                                    <input type="button" value="发路线" class="btn btn-primary btn-sm">
+                                                    <input type="button" value="发短信" class="btn btn-primary btn-sm">
+                                                    <input type="button" value="相关订单" class="btn btn-primary btn-sm">
+                                                    <input type="button" value="客户档案" class="btn btn-primary btn-sm">
                                                 </div>
                                             </div>
                                         </div>
