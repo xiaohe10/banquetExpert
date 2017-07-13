@@ -265,6 +265,7 @@ def get_hotel(request, token):
         icon: 头像
         branches_count: 门店数
         owner_name: 法人代表
+        positions: 职位列表
         create_time: 创建时间
     """
 
@@ -275,6 +276,7 @@ def get_hotel(request, token):
          'icon': hotel.icon,
          'branches_count': hotel.branches.count(),
          'owner_name': hotel.owner_name,
+         'positions': json.loads(hotel.positions) if hotel.positions else [],
          'create_time': hotel.create_time}
     return corr_response(d)
 
@@ -537,7 +539,7 @@ def get_guest_statistic(request, token):
 @validate_staff_token()
 def search_orders(request, token, status=0, offset=0, limit=10, order=1,
                   **kwargs):
-    """搜索员工自己的订单列表
+    """搜索员工自己的订单列表(如果是预定员和迎宾则显示所有的订单)
 
     :param token: 令牌(必传)
     :param status: 订单状态, 0: 进行中(默认), 1: 已完成, 2: 已撤单
@@ -585,14 +587,15 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
     hotel = request.staff.hotel
 
     if status == 0:
-        rs = Order.objects.filter(Q(branch__hotel=hotel, status__in=[0, 1],
-                                    internal_channel=request.staff))
+        rs = Order.objects.filter(Q(branch__hotel=hotel, status__in=[0, 1]))
     elif status == 1:
-        rs = Order.objects.filter(Q(branch__hotel=hotel, status=2,
-                                    internal_channel=request.staff))
+        rs = Order.objects.filter(Q(branch__hotel=hotel, status=2))
     else:
-        rs = Order.objects.filter(Q(branch__hotel=hotel, status=3,
-                                    internal_channel=request.staff))
+        rs = Order.objects.filter(Q(branch__hotel=hotel, status=3))
+
+    # 预定员和迎宾可以看到所有订单
+    if request.staff.guest_channel != 2:
+        rs = rs.filter(Q(internal_channel=request.staff))
 
     if 'search_key' in kwargs:
         rs = rs.filter(Q(name__icontains=kwargs['search_key']) |

@@ -72,6 +72,8 @@ class Hotel(models.Model):
     branch_number = models.IntegerField(default=10)
     # 开通的服务
     service = models.CharField(max_length=50, default='')
+    # 职位列表
+    positions = models.CharField(max_length=1000, default='')
     # 是否有效
     is_enabled = models.BooleanField(default=True, db_index=True)
 
@@ -546,6 +548,11 @@ class OrderLog(models.Model):
 
     # 创建时间
     create_time = models.DateTimeField(default=timezone.now)
+    # 操作类型
+    type = models.IntegerField(
+        choices=((0, '预定'), (1, '客到'), (2, '翻台'), (3, '调桌'), (4, '撤单'),
+                 (5, '补录')),
+        default=0, db_index=True)
     # 内容
     content = models.CharField(max_length=200, default='')
 

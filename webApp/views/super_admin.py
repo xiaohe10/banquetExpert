@@ -8,7 +8,8 @@ from django.utils import timezone
 from django.db import IntegrityError, transaction
 from django.core.exceptions import ObjectDoesNotExist
 
-from ..utils.decorator import validate_args, validate_super_admin_token
+from ..utils.decorator import validate_args, validate_super_admin_token, \
+    validate_json_args
 from ..utils.response import corr_response, err_response
 from ..models import Admin, Hotel
 
@@ -216,6 +217,7 @@ def get_hotels(request, token, is_enabled=True, offset=0, limit=10, order=1):
             owner_name: 法人代表
             branch_number: 门店数量上限
             service: 开通的服务
+            positions: 职位列表
             is_enabled: 是否有效
             create_time: 创建时间
     """
@@ -232,6 +234,7 @@ def get_hotels(request, token, is_enabled=True, offset=0, limit=10, order=1):
           'is_enabled': h.is_enabled,
           'branch_number': h.branch_number,
           'service': json.loads(h.service) if h.service else {},
+          'positions': json.loads(h.positions) if h.positions else [],
           'create_time': h.create_time} for h in hotels]
     return corr_response({'count': c, 'list': l})
 
@@ -242,14 +245,19 @@ def get_hotels(request, token, is_enabled=True, offset=0, limit=10, order=1):
     'owner_name': forms.CharField(min_length=1, max_length=20),
     'branch_number': forms.IntegerField(min_value=1, required=False),
 })
+@validate_json_args({
+    'positions': forms.CharField(max_length=1000, required=False)
+})
 @validate_super_admin_token()
-def register_hotel(request, token, name, owner_name, branch_number=None):
+def register_hotel(request, token, name, owner_name, positions,
+                   branch_number=None):
     """注册新酒店
 
     :param token: 令牌(必传)
     :param name: 名称(必传)
     :param owner_name: 法人代表(必传)
     :param branch_number: 门店数量上限
+    :param positions: 职位列表
     :return 200
     """
 
@@ -259,7 +267,9 @@ def register_hotel(request, token, name, owner_name, branch_number=None):
         hotel = Hotel.objects.create(name=name, owner_name=owner_name)
         if branch_number:
             hotel.branch_number = branch_number
-            hotel.save()
+        if positions:
+            hotel.positions = json.dumps(positions)
+        hotel.save()
         return corr_response({'hotel_id': hotel.id})
     except IntegrityError:
         return err_response('err_5', '服务器创建酒店失败')
@@ -306,6 +316,7 @@ def get_hotel_profile(request, token, hotel_id):
         owner_name: 法人代表
         branch_number: 门店数量上限
         service: 开通的服务
+        positions: 职位列表
         is_enabled: 是否有效
         create_time: 创建时间
     """
@@ -322,6 +333,8 @@ def get_hotel_profile(request, token, hotel_id):
              'owner_name': hotel.owner_name,
              'branch_number': hotel.branch_number,
              'service': json.loads(hotel.service) if hotel.service else {},
+             'positions': json.loads(hotel.positions)
+             if hotel.positions else [],
              'is_enabled': hotel.is_enabled,
              'create_time': hotel.create_time}
         return corr_response(d)
@@ -334,6 +347,9 @@ def get_hotel_profile(request, token, hotel_id):
                                   required=False),
     'branch_number': forms.IntegerField(min_value=1, required=False),
     'hotel_id': forms.IntegerField(),
+})
+@validate_json_args({
+    'positions': forms.CharField(max_length=1000, required=False)
 })
 @validate_super_admin_token()
 def modify_hotel_profile(request, token, hotel_id, **kwargs):
@@ -387,6 +403,9 @@ def modify_hotel_profile(request, token, hotel_id, **kwargs):
     for k in hotel_keys:
         if k in kwargs:
             setattr(hotel, k, kwargs[k])
+
+    if 'positions' in kwargs:
+        hotel.positions = json.dumps(kwargs['positions'])
 
     # 修改开通的服务
     data = json.loads(request.body)
