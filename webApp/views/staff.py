@@ -265,6 +265,7 @@ def get_hotel(request, token):
         icon: 头像
         branches_count: 门店数
         owner_name: 法人代表
+        positions: 职位列表
         create_time: 创建时间
     """
 
@@ -275,6 +276,7 @@ def get_hotel(request, token):
          'icon': hotel.icon,
          'branches_count': hotel.branches.count(),
          'owner_name': hotel.owner_name,
+         'positions': json.loads(hotel.positions) if hotel.positions else [],
          'create_time': hotel.create_time}
     return corr_response(d)
 

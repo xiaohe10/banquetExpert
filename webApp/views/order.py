@@ -374,6 +374,17 @@ def submit_order(request, token, dinner_date, dinner_time, dinner_period,
             (branch.hotel != request.staff.hotel):
         return err_response('err_3', '桌位不存在')
 
+    # 验证门牌是否重复
+    if 'door_card' in kwargs:
+        door_card = kwargs['door_card']
+        if Order.objects.filter(branch=branch,
+                                dinner_date=dinner_date,
+                                dinner_time=dinner_time,
+                                dinner_period=dinner_period,
+                                status__in=[0, 1],
+                                door_card=door_card).count() > 0:
+            return err_response('err_7', '门牌重复')
+
     order_keys = ('name', 'contact', 'guest_number', 'gender', 'table_count',
                   'water_card', 'door_card', 'sand_table', 'welcome_screen',
                   'welcome_fruit', 'welcome_card', 'background_music',
@@ -580,6 +591,24 @@ def modify_order(request, token, order_id, **kwargs):
                   'has_candle', 'has_flower', 'has_balloon', 'banquet',
                   'table_count', 'gender')
 
+    # 如果换门牌, 验证门牌是否重复
+    if 'door_card' in kwargs:
+        dinner_date = kwargs['dinner_date'] if \
+            'dinner_date' in kwargs else order.dinner_date
+        dinner_time = kwargs['dinner_time'] if \
+            'dinner_time' in kwargs else order.dinner_time
+        dinner_period = kwargs['dinner_period'] if \
+            'dinner_period' in kwargs else order.dinner_period,
+        door_card = kwargs['door_card']
+        if Order.objects.filter(branch=order.branch,
+                                dinner_date=dinner_date,
+                                dinner_time=dinner_time,
+                                dinner_period=dinner_period,
+                                status__in=[0, 1],
+                                door_card=door_card). \
+                exclude(id=order.id).count() > 0:
+            return err_response('err_7', '门牌重复')
+
     # 下单日期校验
     if 'dinner_date' in kwargs:
         if kwargs['dinner_date'] < timezone.now().date():
@@ -623,7 +652,7 @@ def modify_order(request, token, order_id, **kwargs):
             for old_desk in old_desk_list:
                 old_desk_id = old_desk[1:-1]
                 try:
-                    desk = Desk.enabled_objects.get(id=old_desk_list)
+                    desk = Desk.enabled_objects.get(id=old_desk_id)
                     old_desk_list.append(desk.number)
                 except ObjectDoesNotExist:
                     pass

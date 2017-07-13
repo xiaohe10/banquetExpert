@@ -86,6 +86,7 @@ def get_hotel_profile(request, token):
         owner_name: 法人代表
         branch_number: 门店数量上限
         service: 开通的服务
+        positions: 职位列表
         create_time: 创建时间
     """
 
@@ -103,6 +104,7 @@ def get_hotel_profile(request, token):
          'owner_name': hotel.owner_name,
          'branch_number': hotel.branch_number,
          'service': json.loads(hotel.service) if hotel.service else {},
+         'positions': json.loads(hotel.positions) if hotel.positions else [],
          'create_time': hotel.create_time}
     return corr_response(d)
 
@@ -114,6 +116,9 @@ def get_hotel_profile(request, token):
                                   required=False),
     'hotel_id': forms.IntegerField(),
 })
+@validate_json_args({
+    'positions': forms.CharField(max_length=1000, required=False)
+})
 @validate_admin_token()
 def modify_hotel_profile(request, token, hotel_id, **kwargs):
     """修改酒店信息
@@ -123,6 +128,7 @@ def modify_hotel_profile(request, token, hotel_id, **kwargs):
     :param kwargs:
         name: 酒店名
         owner_name: 法人代表
+        positions: 职位列表
         icon: 头像，[file]文件
     :return: 200/400/403/404
     """
@@ -146,6 +152,9 @@ def modify_hotel_profile(request, token, hotel_id, **kwargs):
 
     if owner_name:
         hotel.owner_name = owner_name
+
+    if 'positions' in kwargs:
+        hotel.positions = json.dumps(kwargs['positions'])
 
     if 'icon' in request.FILES:
         icon = request.FILES['icon']
@@ -2244,6 +2253,9 @@ def get_order_profile(request, token, order_id):
     'has_flower': forms.BooleanField(required=False),
     'has_balloon': forms.BooleanField(required=False),
 })
+@validate_json_args({
+    'desks': forms.CharField(max_length=200)
+})
 @validate_admin_token()
 def submit_order(request, token, dinner_date, dinner_time,
                  dinner_period, **kwargs):
@@ -2283,7 +2295,7 @@ def submit_order(request, token, dinner_date, dinner_time,
     branch = None
     # 验证桌位是否存在和是否被预定
     try:
-        desk_list = json.loads(request.body)['desks']
+        desk_list = kwargs['desks']
         for i in range(len(desk_list)):
             # 桌位号加首尾限定符
             desk_id = '$' + str(desk_list[i]) + '$'
@@ -2316,6 +2328,17 @@ def submit_order(request, token, dinner_date, dinner_time,
                   'welcome_fruit', 'welcome_card', 'background_music',
                   'has_candle', 'has_flower', 'has_balloon', 'banquet',
                   'table_count', 'gender')
+
+    # 验证门牌是否重复
+    if 'door_card' in kwargs:
+        door_card = kwargs['door_card']
+        if Order.objects.filter(branch=branch,
+                                dinner_date=dinner_date,
+                                dinner_time=dinner_time,
+                                dinner_period=dinner_period,
+                                status__in=[0, 1],
+                                door_card=door_card).count() > 0:
+            return err_response('err_7', '门牌重复')
 
     with transaction.atomic():
         try:
@@ -2359,6 +2382,9 @@ def submit_order(request, token, dinner_date, dinner_time,
     'has_candle': forms.BooleanField(required=False),
     'has_flower': forms.BooleanField(required=False),
     'has_balloon': forms.BooleanField(required=False),
+})
+@validate_json_args({
+    'desks': forms.CharField(max_length=200)
 })
 @validate_admin_token()
 def modify_order(request, token, order_id, **kwargs):
@@ -2407,6 +2433,24 @@ def modify_order(request, token, order_id, **kwargs):
                   'has_candle', 'has_flower', 'has_balloon', 'consumption',
                   'banquet', 'table_count', 'gender')
 
+    # 如果换门牌, 验证门牌是否重复
+    if 'door_card' in kwargs:
+        dinner_date = kwargs['dinner_date'] if \
+            'dinner_date' in kwargs else order.dinner_date
+        dinner_time = kwargs['dinner_time'] if \
+            'dinner_time' in kwargs else order.dinner_time
+        dinner_period = kwargs['dinner_period'] if \
+            'dinner_period' in kwargs else order.dinner_period,
+        door_card = kwargs['door_card']
+        if Order.objects.filter(branch=order.branch,
+                                dinner_date=dinner_date,
+                                dinner_time=dinner_time,
+                                dinner_period=dinner_period,
+                                status__in=[0, 1],
+                                door_card=door_card). \
+                exclude(id=order.id).count() > 0:
+            return err_response('err_7', '门牌重复')
+
     # 下单日期校验
     if 'dinner_date' in kwargs:
         if kwargs['dinner_date'] < timezone.now().date():
@@ -2428,11 +2472,10 @@ def modify_order(request, token, order_id, **kwargs):
             return err_response('err_5', '订单状态切换非法')
 
     # 如果换桌
-    data = json.loads(request.body)
-    if 'desks' in data:
+    if 'desks' in kwargs:
         branch_list = []
         branch = None
-        desk_list = data.pop('desks')
+        desk_list = kwargs['desks']
         # 验证桌位是否存在和是否被预定
         try:
             for i in range(len(desk_list)):

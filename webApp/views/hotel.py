@@ -1,3 +1,5 @@
+import json
+
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -29,6 +31,7 @@ def get_hotels(request, offset=0, limit=10, order=1):
             icon: 头像
             branches_count: 门店数
             owner_name: 法人代表
+            positions: 职位列表
             create_time: 创建时间
     """
     ORDERS = ('create_time', '-create_time', 'name', '-name')
@@ -41,6 +44,7 @@ def get_hotels(request, offset=0, limit=10, order=1):
           'icon': h.icon,
           'branches_count': h.branches.count(),
           'owner_name': h.owner_name,
+          'positions': json.loads(h.positions) if h.positions else [],
           'create_time': h.create_time} for h in hotels]
     return corr_response({'count': c, 'list': l})
 

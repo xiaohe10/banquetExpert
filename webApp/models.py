@@ -72,6 +72,8 @@ class Hotel(models.Model):
     branch_number = models.IntegerField(default=10)
     # 开通的服务
     service = models.CharField(max_length=50, default='')
+    # 职位列表
+    positions = models.CharField(max_length=1000, default='')
     # 是否有效
     is_enabled = models.BooleanField(default=True, db_index=True)
 

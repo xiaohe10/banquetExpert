@@ -366,6 +366,7 @@ URL：webApp/staff/hotel/ <br>
 | icon | 头像 |
 | branches_count | 门店数 |
 | owner_name | 法人代表 |
+| positions | 职位列表  |
 | create_time | 创建时间 |
 
 
@@ -381,6 +382,7 @@ URL：webApp/staff/hotel/ <br>
 		"icon":"http://oss.aliyun/banquet/avatar/1.jpg",
 		"branches_count":3,
 		"owner_name":"杨秀荣",
+		"positions":["经理","管家"],
 		"create_time":"创建时间"
 	}
 }
@@ -602,6 +604,7 @@ URL：webApp/hotel/list/ <br>
 | icon | 头像 |
 | branches_count | 门店数 |
 | owner_name | 法人代表 |
+| positions | 职位列表  |
 | create_time | 创建时间 |
 
 
@@ -618,6 +621,7 @@ URL：webApp/hotel/list/ <br>
             "icon":"http://oss.aliyun/banquet/avatar/1.jpg",
             "branches_count":3,
             "owner_name":"杨秀荣",
+            "positions":["经理","管家"],
             "create_time":"创建时间"
             ],
             ...
@@ -3274,6 +3278,7 @@ URL：webApp/super_admin/hotel/list/ <br>
 | owner_name    | 法人代表   |
 | branch_number | 门店数量上限    |
 | service   | 开通的服务 |
+| positions | 职位列表  |
 | is_enabled    | 是否有效  |
 | create_time   | 创建时间  |
 
@@ -3295,6 +3300,7 @@ URL：webApp/super_admin/hotel/list/ <br>
                 "order_analyze":True,
                 "source_statistic":True
             },
+            "positions":["经理","管家"],
 		    "is_enabled":"True",
 		    "create_time":"创建时间"
 		    ],
@@ -3435,6 +3441,7 @@ URL：webApp/super_admin/hotel/profile/get/ <br>
 | owner_name    | 法人    |
 | branch_number | 门店数量上限    |
 | service   | 开通的服务 |
+| positions | 职位列表  |
 | is_enabled    | 是否有效  |
 | create_time   | 创建时间  |
 
@@ -3454,6 +3461,7 @@ URL：webApp/super_admin/hotel/profile/get/ <br>
 	        "order_analyze":True,
 	        "source_statistic":True
 	    },
+	    "positions":["经理","管家"],
 	    "is_enabled":"True",
 	    "create_time":"创建时间"
 	}
@@ -3525,6 +3533,7 @@ URL：webApp/super_admin/hotel/profile/modify/ <br>
 | owner_name    | 法人    | no    |
 | branch_number | 门店数量上限    | no    |
 | service   | 开通的服务 |   no  |
+| positions | 职位列表  | no    |
 | icon  | 头像，file格式    | no    |
 
 请求示例：
@@ -3540,6 +3549,7 @@ URL：webApp/super_admin/hotel/profile/modify/ <br>
 	        "order_analyze":True,
 	        "source_statistic":True
 	    },
+	"positions":["经理","管家"],
 	"icon":"[file]"
 }
 ```
@@ -3644,6 +3654,7 @@ URL：webApp/admin/hotel/profile/get/ <br>
 | owner_name    | 法人    |
 | branch_number | 门店数量上限    |
 | service   | 开通的服务 |
+| positions | 职位列表  |
 | create_time   | 创建时间  |
 
 返回示例：
@@ -3688,6 +3699,7 @@ URL：webApp/admin/hotel/profile/modify/ <br>
 | hotel_id      | 酒店ID          |         yes    |
 | name  | 酒店名   | no  |
 | owner_name    | 法人    | no    |
+| positions | 职位列表  | no    |
 | icon  | 头像，file格式    | no    |
 
 请求示例：
@@ -3698,6 +3710,7 @@ URL：webApp/admin/hotel/profile/modify/ <br>
 	"hotel_id":1,
 	"name":"珍珠大饭店",
 	"owner":"梅本山",
+	"positions":["经理","管家"],
 	"icon":"[file]"
 }
 ```
