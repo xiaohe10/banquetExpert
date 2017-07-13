@@ -31,8 +31,10 @@
                     <!--图表-->
                     <div class="container-fluid">
                         <div class="row">
-                            <canvas id="chart1" width="480" height="480" style="display: block; width: 480px; height: 480px;">
-                            </canvas>
+                            <div class="col-sm-6">
+                                <canvas id="chart1" style="display: block; width: 320px; height: 320px;">
+                                </canvas>
+                            </div>
                         </div>
                     </div>
                     <!--表格-->
@@ -209,10 +211,10 @@
                     <!--标志说明-->
                     <div class="well well-sm">
                         <ul class="nav nav-tabs">
-                            <li class="nav-item mx-1"><span class="glyphicon-arrow-up red">高于最近时间均值</span></li>
-                            <li class="nav-item mx-1"><span class="glyphicon-arrow-up blue">高于订单频率均值</span></li>
-                            <li class="nav-item mx-1"><span class="glyphicon-arrow-up green">高于人均消费均值</span></li>
-                            <li class="nav-item mx-1"><span class="glyphicon-arrow-up gray">低于均值</span></li>
+                            <li class="nav-item mx-1"><span class="glyphicon glyphicon-arrow-up text-success">高于最近时间均值</span></li>
+                            <li class="nav-item mx-1"><span class="glyphicon glyphicon-arrow-up text-success">高于订单频率均值</span></li>
+                            <li class="nav-item mx-1"><span class="glyphicon glyphicon-arrow-up text-success">高于人均消费均值</span></li>
+                            <li class="nav-item mx-1"><span class="glyphicon glyphicon-arrow-up text-warning">低于均值</span></li>
                         </ul>
                     </div>
                     <!--表格-->
