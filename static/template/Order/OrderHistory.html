@@ -8,17 +8,28 @@
     <div class="panel-body">
         <!--操作栏-->
         <div class="well well-sm form-inline">
+            <!--选择日期-->
             <a>就餐日期：</a>
             <input class="form-control form-control-sm" type="date" ng-model="option.date_from"/>
             ~
             <input class="form-control form-control-sm" type="date" ng-model="option.date_to"/>
-            <select class="form-control form-control-sm" ng-model="option.select_area" ng-change="on_area_change()">
-                <optgroup label="请选择区域"></optgroup>
-                <option ng-repeat="x in Branch.Area.list|orderBy:'area_id'|filter:{is_enabled:true}" value="{{x.area_id}}">{{x.name}}</option>
+            <!--选择门店-->
+            <select class="form-control form-control-sm" ng-model="option.branch_id">
+                <optgroup label="请选择门店"></optgroup>
+                <option ng-repeat="x in Hotel.BranchList.list|orderBy:'branch_id'" value="{{x.branch_id}}">
+                    {{x.name}}
+                </option>
             </select>
-            <select class="form-control form-control-sm" ng-model="option.select_desk">
+            <!--选择区域-->
+            <select class="form-control form-control-sm" ng-model="option.area_id">
+                <optgroup label="请选择区域"></optgroup>
+                <option ng-repeat="x in Branch.Area.list|orderBy:'area_id'" value="{{x.area_id}}">{{x.name}}</option>
+            </select>
+            <!--选择餐位-->
+            <select class="form-control form-control-sm" ng-model="option.desk_id">
                 <optgroup label="请选择餐位"></optgroup>
-                <option ng-repeat="x in Branch.AreaDesk.list|orderBy:'desk_id'|filter:{is_enabled:true}" value="{{x.desk_id}}">{{x.number}}
+                <option ng-repeat="x in Branch.AreaDesk.list|filter:{area_name:option.select_area}|orderBy:'desk_id'" value="{{x.desk_id}}">
+                    {{x.number}}
                 </option>
             </select>
             <!--员工端无此项-->
@@ -47,25 +58,61 @@
             <div class="panel-body">
                 <!--详细信息-->
                 <div class="well well-sm form-inline">
-                    订单总数：{{data.count}} 就餐人数：{{detail.customer_count}}人
-                    总金额：{{detail.total|currency:"￥"}} 人均消费：{{detail.average|currency:"￥"}}
+                    订单总数：{{data.count}} 就餐人数：{{data.guest_number}}人
+                    总金额：{{data.consumption|currency:"￥"}} 人均消费：{{data.guest_consumption|currency:"￥"}}
                     <input class="btn btn-primary btn-sm" type="button" value="补录订单" ng-click="order_append()"/>
                 </div>
                 <!--表格-->
                 <table class="table table-hover table-bordered small">
                     <thead>
                     <tr align="center">
-                        <th><a class="glyphicon-arrow-down" ng-click="sort(0)">客户姓名</a></th>
-                        <th><a class="glyphicon-arrow-down" ng-click="sort(1)">手机</a></th>
-                        <th><a class="glyphicon-arrow-down" ng-click="sort(2)">下单时间</a></th>
-                        <th><a class="glyphicon-arrow-down" ng-click="sort(3)">就餐时间</a></th>
+                        <th>
+                            <a class="btn btn-link btn-sm" ng-click="sort(0)">
+                                客户姓名<span class="glyphicon glyphicon-chevron-down"></span>
+                            </a>
+                        </th>
+                        <th>
+                            <a class="btn btn-link btn-sm" ng-click="sort(1)">
+                                手机<span class="glyphicon glyphicon-chevron-down"></span>
+                            </a>
+                        </th>
+                        <th>
+                            <a class="btn btn-link btn-sm" ng-click="sort(2)">
+                                下单时间<span class="glyphicon glyphicon-chevron-down"></span>
+                            </a>
+                        </th>
+                        <th>
+                            <a class="btn btn-link btn-sm" ng-click="sort(3)">
+                                就餐时间<span class="glyphicon glyphicon-chevron-down"></span>
+                            </a>
+                        </th>
                         <th>接单渠道</th>
                         <th>区域</th>
-                        <th><a class="glyphicon-arrow-down" ng-click="sort(6)">桌位</a></th>
-                        <th>就餐人数</th>
-                        <th>消费金额</th>
-                        <th>订单状态</th>
-                        <th>操作人</th>
+                        <th>
+                            <a class="btn btn-link btn-sm" ng-click="sort(6)">
+                                桌位<span class="glyphicon glyphicon-chevron-down"></span>
+                            </a>
+                        </th>
+                        <th>
+                            <a class="btn btn-link btn-sm" ng-click="sort(7)">
+                                就餐人数<span class="glyphicon glyphicon-chevron-down"></span>
+                            </a>
+                        </th>
+                        <th>
+                            <a class="btn btn-link btn-sm" ng-click="sort(8)">
+                                消费金额<span class="glyphicon glyphicon-chevron-down"></span>
+                            </a>
+                        </th>
+                        <th>
+                            <a class="btn btn-link btn-sm" ng-click="sort(8)">
+                                订单状态<span class="glyphicon glyphicon-chevron-down"></span>
+                            </a>
+                        </th>
+                        <th>
+                            <a class="btn btn-link btn-sm" ng-click="sort(8)">
+                                操作人<span class="glyphicon glyphicon-chevron-down"></span>
+                            </a>
+                        </th>
                         <th>订单详情</th>
                     </tr>
                     </thead>

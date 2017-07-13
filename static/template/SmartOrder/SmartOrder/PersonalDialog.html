@@ -1,26 +1,26 @@
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <div class="panel-title">
-            私人订制
-        </div>
+<div class="modal-header">
+    <div class="modal-title">
+        私人订制
     </div>
-    <div class="panel-body">
-        <ul class="list-group">
-            <li class="list-group-item">
-                <small>私人订制：</small>
-                <p>{{form.staff_description}}</p>
-            </li>
-            <li class="list-group-item" ng-repeat="x in branch.personal_tailor|orderBy:'order'">
-                <small>{{x.name}}：</small>
-                <span class="label label-success" style="display: inline-block" ng-click="selectLabel(y)" ng-repeat="y in x.labels">
+</div>
+<div class="modal-body">
+    <ul class="list-group">
+        <li class="list-group-item">
+            <h5>私人订制：</h5>
+            <textarea cols="48" rows="3">
+                {{form.staff_description}}
+            </textarea>
+        </li>
+        <li class="list-group-item" ng-repeat="x in branch.personal_tailor|orderBy:'order'">
+            <small>{{x.name}}：</small>
+            <span class="label label-success" style="display: inline-block" ng-click="selectLabel(y)" ng-repeat="y in x.labels">
                     <small>{{y}}</small>
                     <span class="glyphicon glyphicon-ok"></span>
                 </span>
-            </li>
-        </ul>
-    </div>
-    <div class="panel-footer">
-        <input class="btn btn-primary btn-sm" type="button" ng-click="submit()" value="提交"/>
-        <input class="btn btn-default btn-sm" type="button" ng-click="cancel()" value="取消"/>
-    </div>
+        </li>
+    </ul>
+</div>
+<div class="modal-footer">
+    <input class="btn btn-primary btn-sm" type="button" ng-click="submit()" value="提交"/>
+    <input class="btn btn-default btn-sm" type="button" ng-click="cancel()" value="取消"/>
 </div>

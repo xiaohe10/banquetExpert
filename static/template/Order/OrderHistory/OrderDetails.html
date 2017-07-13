@@ -14,59 +14,57 @@
             </nav>
         </div>
         <div class="panel-body">
-            <div class="well well-sm">2017年6月7日 周三 晚餐</div>
+            <div class="well well-sm">
+                {{order.details.dinner_date}} {{order.dinner_period|dinner_period}}
+            </div>
             <!--TabContent-->
             <div class="tab-content">
                 <!--订单信息-->
                 <div class="tab-pane active" id="ddxx" role="tabpanel">
-                    <div class="container">
-                        <!--文字信息-->
-                        <div class="row m-2">
-                            <div class="col-12 text-info">
-                                <p>桌位：<span class="label label-info" ng-repeat="x in desks">{{x.number}} </span></p>
-                                <p>订单信息：{{data.name}} {{data.banquet}} {{data.contact}} </p>
-                                <p>{{data.guest_number}} 人 {{data.guest_type}}客户</p>
-                            </div>
-                            <div class="text-info bg-faded p-2">
-                                <p>用餐时间：{{data.meal_time}}</p>
-                                <p>创建时间：{{data.create_time}} 操作：{{data.staff_name}}</p>
-                                <p>客到时间：{{data.arrival_time}}</p>
-                                <p>结账时间：{{data.finish_time}}</p>
-                                <p>消费金额：{{data.consumption}}</p>
-                            </div>
-                        </div>
-                        <!--五张图片-->
-                        <div class="row m-2">
-                            <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3" ng-repeat="(k, x) in data.pictures">
-                                <div class="img-thumbnail" ng-click="check(k)">
-                                    <img class="img-responsive" ng-src="x" src="/static/css/image/head1.jpg" alt="PICTURE">
-                                </div>
-                            </div>
-                        </div>
-                        <!--图片操作-->
-                        <div class="row m-2">
-                            <div class="col-12 form-group" style="float: right">
-                                <span>已选0张
-                                </span>
-                                <div class="btn-group btn-group-sm">
-                                    <input class="btn btn-danger btn-sm" type="button" ng-click="delete()" value="删除"/>
-                                    <input class="btn btn-success btn-sm" type="button" ng-click="download()" value="下载"/>
-                                </div>
-                            </div>
+                    <section class="text-info">
+                        <p>桌位：<span class="label label-info" ng-repeat="x in order.details.desks">{{x.number}} </span></p>
+                        <p>订单信息：{{order.details.name}} {{order.details.banquet}} {{order.details.contact}} </p>
+                        <p>{{order.details.guest_number}} 人 {{order.details.guest_type}}客户</p>
+                    </section>
+                    <section class="text-info">
+                        <p>用餐时间：{{order.details.meal_time}}</p>
+                        <p>创建时间：{{order.details.create_time}} 操作员：{{order.details.staff_name}}</p>
+                        <p>客到时间：{{order.details.arrival_time}}</p>
+                        <p>结账时间：{{order.details.finish_time}}</p>
+                        <p>消费金额：{{order.details.consumption}}</p>
+                    </section>
+                </div>
+                <!--五张图片-->
+                <div class="row m-2">
+                    <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3" ng-repeat="(k, x) in order.details.pictures">
+                        <div class="img-thumbnail" ng-click="check(k)">
+                            <img class="img-responsive" ng-src="x" src="/static/css/image/head1.jpg" alt="PICTURE">
                         </div>
                     </div>
                 </div>
-                <!--操作信息-->
-                <div role="tabpanel" class="tab-pane" id="czxx">
-                    <p><a>2017/6/1 13:24:42 预订单修改 单蕾</a></p>
-                    <p class="text-info">对张先生18614023307预订的2017-06-02晚餐段315桌位</p>
-                    <p><a>2017/6/1 13:24:42 预订单修改 单蕾</a></p>
-                    <p class="text-info">对张先生18614023307预订的2017-06-02晚餐段315桌位</p>
-                    <p><a>系统ID：0cdc987e-e654-43f9-a6ed-01af184c3251</a></p>
+                <!--图片操作-->
+                <div class="row m-2">
+                    <div class="col-12 form-group" style="float: right">
+                                <span>已选0张
+                                </span>
+                        <div class="btn-group btn-group-sm">
+                            <input class="btn btn-danger btn-sm" type="button" ng-click="delete()" value="删除"/>
+                            <input class="btn btn-success btn-sm" type="button" ng-click="download()" value="下载"/>
+                        </div>
+                    </div>
                 </div>
+            </div>
+            <!--操作信息-->
+            <div class="tab-pane" id="czxx" role="tabpanel">
+                <section>
+                    <p ng-repeat="x in order.log.list">
+                        {{x.staff_name}} {{x.staff_id}} {{x.content}}
+                    </p>
+                </section>
             </div>
         </div>
     </div>
+</div>
 </div>
 <div class="modal-footer">
     <input class="btn btn-secondary" type="button" value="关闭" ng-click="cancel()"/>
