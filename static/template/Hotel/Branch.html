@@ -4,9 +4,12 @@
         <div class="panel-title">
             门店列表
             <small>(共{{data.count}}家门店)</small>
-            <span class="glyphicon"
+            <span class="hidden glyphicon"
                   ng-class="{'glyphicon-th':layout==='list','glyphicon-th-list':layout==='grid'}"
                   ng-click="changeLayout()"></span>
+            <label class="pull-right text-success" ng-click="addBranch()">
+                <span class="glyphicon glyphicon-plus"></span> 添加酒店
+            </label>
         </div>
     </div>
     <div class="panel-body">
@@ -99,8 +102,8 @@
                         </span>
                     </td>
                     <td>
-                        <a ng-click="editBranch(x)">编辑</a>
-                        <a href="/static/branch.html#/Reserve/Reserve/{{x.branch_id}}">门店管理</a>
+                        <button class="btn btn-link btn-sm" ng-click="editBranch(x)">编辑</button>
+                        <a class="btn btn-link btn-sm" href="/static/branch.html?id={{x.branch_id}}#/Reserve/Reserve/">门店管理</a>
                     </td>
                 </tr>
             </table>

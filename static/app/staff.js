@@ -779,11 +779,11 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                             $scope.banquet = banquet;
                             $scope.form = form;
                             $scope.submit = function () {
-
+                                dlg.close();
                             };
                             $scope.cancel = function () {
-
-                            };
+                                dlg.dismiss({reason: "关闭选项"})
+                            }
                         }
                     });
                 };
@@ -792,12 +792,31 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                     var dlg = $modal.open({
                         templateUrl: "./template/SmartOrder/SmartOrder/PersonalDialog.html",
                         resolve: {
+                            branch: function () {
+                                return $scope.Branch;
+                            },
                             form: function () {
-                                return $scope.Branch.personal_tailor
+                                return $scope.ReserveForm;
                             }
                         },
-                        controller: function ($scope, form) {
+                        controller: function ($scope, branch, form) {
+                            $scope.branch = branch;
                             $scope.form = form;
+                            // 选择私人订制对话框
+                            $scope.selectLabel = function (label) {
+                                var index = $scope.form.staff_description.indexOf(label);
+                                if (index === -1) {
+                                    $scope.form.staff_description += label + ", ";
+                                } else {
+                                    $scope.form.staff_description.replace(label + ",", "");
+                                }
+                            };
+                            $scope.submit = function () {
+                                dlg.close();
+                            };
+                            $scope.cancel = function () {
+                                dlg.dismiss({reason: "关闭选项"})
+                            }
                         }
                     });
                 };
@@ -814,7 +833,7 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                 $scope.reserve = function () {
                     Log.i(TAG, "预定:" + JSON.stringify($scope.form));
                     // 用餐日期
-                    $scope.ReserveForm.dinner_date = $scope.option.date;
+                    $scope.ReserveForm.dinner_date = $scope.QueryForm.date;
                     // 选择桌位
                     var Desks = $scope.Branch.AreaDesk.list.filter(function (item) {
                         return item.selected === true;

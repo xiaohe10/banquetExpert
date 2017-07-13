@@ -8,9 +8,9 @@
         <ul class="list-group">
             <li class="list-group-item">
                 <small>私人订制：</small>
-                <p>{{ReserveForm.staff_description}}</p>
+                <p>{{form.staff_description}}</p>
             </li>
-            <li class="list-group-item" ng-repeat="x in Branch.personal_tailor|orderBy:'order'">
+            <li class="list-group-item" ng-repeat="x in branch.personal_tailor|orderBy:'order'">
                 <small>{{x.name}}：</small>
                 <span class="label label-success" style="display: inline-block" ng-click="selectLabel(y)" ng-repeat="y in x.labels">
                     <small>{{y}}</small>
