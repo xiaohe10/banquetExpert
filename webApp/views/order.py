@@ -13,7 +13,7 @@ from django.core.validators import RegexValidator
 from ..utils.decorator import validate_args, validate_staff_token, \
     validate_json_args
 from ..utils.response import corr_response, err_response
-from ..models import Desk, Order, Guest
+from ..models import Desk, Order, Guest, OrderLog
 
 
 @validate_args({
@@ -390,7 +390,7 @@ def submit_order(request, token, dinner_date, dinner_time, dinner_period,
                     setattr(order, k, kwargs[k])
             order.save()
             # 记录订单的操作日志
-            order.logs.create(staff=request.staff, content='创建订单')
+            order.logs.create(staff=request.staff, status=0, content='创建订单')
             order.save()
             return corr_response({'order_id': order.id})
         except IntegrityError:
@@ -498,8 +498,9 @@ def supply_order(request, token, dinner_date, dinner_time, dinner_period,
             for k in order_keys:
                 if k in kwargs:
                     setattr(order, k, kwargs[k])
+            order.save()
             # 记录订单的操作日志
-            order.logs.create(staff=request.staff, content='补录订单')
+            order.logs.create(staff=request.staff, status=5, content='补录订单')
             order.save()
             return corr_response({'order_id': order.id})
         except IntegrityError as e:
@@ -591,17 +592,20 @@ def modify_order(request, token, order_id, **kwargs):
         if status == 1 and order.status == 0:
             order.arrival_time = timezone.now()
             # 记录订单的操作日志
-            order.logs.create(staff=request.staff, content='更改订单状态为客到')
+            order.logs.create(staff=request.staff, status=1,
+                              content='更改订单状态为客到')
         # 翻台
         elif status == 2 and order.status == 1:
             order.finish_time = timezone.now()
             # 记录订单的操作日志
-            order.logs.create(staff=request.staff, content='更改订单状态为已完成')
+            order.logs.create(staff=request.staff, status=2,
+                              content='更改订单状态为已完成')
         # 撤单
         elif status == 3 and order.status != 2:
             order.cancel_time = timezone.now()
             # 记录订单的操作日志
-            order.logs.create(staff=request.staff, content='更改订单状态为已撤单')
+            order.logs.create(staff=request.staff, status=4,
+                              content='更改订单状态为已撤单')
         else:
             return err_response('err_5', '订单状态切换非法')
 
@@ -655,7 +659,7 @@ def modify_order(request, token, order_id, **kwargs):
             # 记录订单的操作日志
             new_desk_str = ', '.join(new_desk_list)
             content = '换桌[%s]为[%s]' % (old_desk_str, new_desk_str)
-            order.logs.create(staff=request.staff, content=content)
+            order.logs.create(staff=request.staff, status=3, content=content)
         except KeyError or ValueError:
             return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
 
@@ -685,6 +689,7 @@ def get_order_logs(request, token, order_id):
         count: 总数
         list:
             content: 内容
+            type: 操作类型, 0: 预定, 1: 客到, 2: 翻台, 3: 调桌, 4: 撤单, 5: 补录
             staff_id: 操作员工ID
             staff_name: 操作员工姓名
             create_time: 创建时间
@@ -702,9 +707,102 @@ def get_order_logs(request, token, order_id):
     c = logs.count()
 
     l = [{'content': log.content,
+          'type': log.type,
           'staff_id': log.staff.id,
           'staff_name': log.staff.name,
           'create_time': log.create_time} for log in logs]
+
+    return corr_response({'count': c, 'list': l})
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+    'date_from': forms.DateField(required=False),
+    'date_to': forms.DateField(required=False),
+    'desk_id': forms.IntegerField(required=False)
+})
+@validate_staff_token()
+def search_order_logs(request, token, **kwargs):
+    """搜索订单的操作日志
+    :param token: 令牌(必传)
+    :param kwargs
+        date_from: 起始时间
+        date_to: 终止时间
+        desk_id: 桌位ID
+    :return
+        count: 总数
+        list:
+            type: 类型, 0: 预定, 1: 客到, 2: 翻台, 3: 调桌, 4: 撤单, 5: 补录
+            content: 内容
+            staff_id: 操作员工ID
+            staff_name: 操作员工姓名
+            order_id: 订单ID
+            status: 订单状态
+            name: 订餐人
+            contact: 订餐人电话
+            gender: 订餐人性别
+            contact: 订餐电话
+            guest_number: 人数
+            dinner_date: 用餐日期
+            dinner_time: 用餐时间
+            dinner_period: 餐段
+            internal_channel: 内部获客渠道
+            external_channel： 外部获客渠道
+            branch_id: 门店ID
+            branch_name: 门店名称
+            desks: 桌位[{"id":1, "number":110}, ...]
+            create_time: 创建时间
+    """
+
+    hotel = request.staff.hotel
+
+    logs = OrderLog.objects.filter(order__branch__hotel=hotel)
+
+    if 'date_from' in kwargs:
+        date_from = kwargs['date_from']
+        date_from = datetime.datetime.strptime(str(date_from), '%Y-%m-%d')
+        logs = logs.filter(Q(create_time__gte=date_from))
+
+    if 'date_to' in kwargs:
+        date_to = kwargs['date_to'] + timedelta(days=1)
+        date_to = datetime.datetime.strptime(str(date_to), '%Y-%m-%d')
+        logs = logs.filter(Q(create_time__lt=date_to))
+
+    if 'desk_id' in kwargs:
+        desk_id = '$' + kwargs['desk_id'] + '$'
+        logs = logs.filter(Q(order__desks__icontains=desk_id))
+
+    c = logs.count()
+
+    l = []
+    for log in logs:
+        d = {'content': log.content,
+             'type': log.type,
+             'staff_id': log.staff.id,
+             'staff_name': log.staff.name,
+             'order_id': log.order.id,
+             'name': log.order.name,
+             'contact': log.order.contact,
+             'gender': log.order.gender,
+             'guest_number': log.order.guest_number,
+             'status': log.order.status,
+             'dinner_date': log.order.dinner_date,
+             'dinner_time': log.order.dinner_time,
+             'dinner_period': log.order.dinner_period,
+             'internal_channel': log.order.internal_channel.name,
+             'external_channel': log.order.external_channel.name,
+             'branch_id': log.order.branch.id,
+             'branch_name': log.order.branch.name,
+             'create_time': log.create_time}
+
+        desks_list = json.loads(log.order.desks)
+        for desk in desks_list:
+            desk_id = int(desk[1:-1])
+            try:
+                number = Desk.objects.get(id=desk_id).number
+            except ObjectDoesNotExist:
+                number = ''
+            d['desks'].append({'desk_id': desk_id, 'number': number})
 
     return corr_response({'count': c, 'list': l})
 

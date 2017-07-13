@@ -1650,6 +1650,102 @@ URL：webApp/order/log/list/ <br>
 | 参数名称       | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------|
 | token         | 登录口令          |         yes  |
+| date_from | 起始时间 | no |
+| date_to   | 终止时间  | no    |
+| desk_id   | 桌位ID  | no    |
+
+
+请求示例:
+
+
+```
+{
+	"token":"129ASDFIOJIO3RN23U12934INASDF",
+	"date_from":"2017-06-11",
+	"date_to":"2017-07-11",
+	"desk_id":1
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| content   | 内容    |
+| type  | 操作类型, 0: 预定, 1: 客到, 2: 翻台, 3: 调桌, 4: 撤单, 5: 补录    |
+| staff_id  | 操作员工ID |
+| staff_name    | 操作员工姓名    |
+| order_id| 订单ID |
+| status | 订单状态((0, '已订'), (1, '客到'), (2, '已完成'), (3, '已撤单'))|
+| dinner_date | 预定用餐日期 |
+| dinner_time   | 预定用餐时间  |
+| dinner_period | 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵') |
+| name | 联系人 |
+| gender    | 性别，0：保密，1：男，2：女    |
+| contact | 联系电话 |
+| guest_number | 客人数量 |
+| desks | 桌位ID和编号数组 |
+| internal_channel | 内部获客渠道, 即接单人名字, 如果存在 |
+| external_channel | 外部获客渠道, 即外部渠道名称, 如果存在 |
+| branch_id | 预定门店ID  |
+| branch_name   | 预定门店名称  |
+| create_time | 创建日期 |
+
+返回示例
+
+```
+{
+	"status":"true",
+	"data":
+	{
+	    "list":[
+	    {
+	        "content":"创建订单",
+	        "type":0,
+	        "staff_id":1,
+	        "staff_name":"张三",
+	        "dinner_date":"2014-02-01",
+            "dinner_time":"12:00"
+            "dinner_period":0,
+            "name":"李四",
+            "gender":1,
+            "contact":"18813101211",
+            "guest_number":10,
+	        "create_time":"创建时间",
+	        "desks":[{
+                "desk_id":1,
+                "number":"110"
+                },
+                ...
+            ],
+            "internal_channel":"刘光艳",
+            "external_channel":"美团"
+            ],
+            "branch_id":1,
+            "branch_name":"北京宴总店"
+		},
+		...
+		]
+	}
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 不存在该条件的用户 |
+
+
+## 获取订单操作日志
+URL：webApp/order/log/list/ <br>
+请求方式：POST
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------|
+| token         | 登录口令          |         yes  |
 | order_id | 订单ID | yes |
 
 
@@ -1668,6 +1764,7 @@ URL：webApp/order/log/list/ <br>
 | 参数名称       | 含义             |
 |:------------- |:---------------|
 | content   | 内容    |
+| type  | 操作类型, 0: 预定, 1: 客到, 2: 翻台, 3: 调桌, 4: 撤单, 5: 补录    |
 | staff_id  | 操作员工ID |
 | staff_name    | 操作员工姓名    |
 | create_time | 创建日期 |
@@ -1682,6 +1779,7 @@ URL：webApp/order/log/list/ <br>
 	    "list":[
 	    {
 	        "content":"创建订单",
+	        "type":0,
 	        "staff_id":1,
 	        "staff_name":"张三",
 	        "create_time":"创建时间"
