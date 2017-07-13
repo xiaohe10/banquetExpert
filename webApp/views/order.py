@@ -388,6 +388,7 @@ def submit_order(request, token, dinner_date, dinner_time, dinner_period,
             for k in order_keys:
                 if k in kwargs:
                     setattr(order, k, kwargs[k])
+            order.save()
             # 记录订单的操作日志
             order.logs.create(staff=request.staff, content='创建订单')
             order.save()
