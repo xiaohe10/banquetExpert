@@ -401,7 +401,7 @@ def submit_order(request, token, dinner_date, dinner_time, dinner_period,
                     setattr(order, k, kwargs[k])
             order.save()
             # 记录订单的操作日志
-            order.logs.create(staff=request.staff, status=0, content='创建订单')
+            order.logs.create(staff=request.staff, type=0, content='创建订单')
             order.save()
             return corr_response({'order_id': order.id})
         except IntegrityError:
@@ -511,7 +511,7 @@ def supply_order(request, token, dinner_date, dinner_time, dinner_period,
                     setattr(order, k, kwargs[k])
             order.save()
             # 记录订单的操作日志
-            order.logs.create(staff=request.staff, status=5, content='补录订单')
+            order.logs.create(staff=request.staff, type=5, content='补录订单')
             order.save()
             return corr_response({'order_id': order.id})
         except IntegrityError as e:
@@ -621,19 +621,19 @@ def modify_order(request, token, order_id, **kwargs):
         if status == 1 and order.status == 0:
             order.arrival_time = timezone.now()
             # 记录订单的操作日志
-            order.logs.create(staff=request.staff, status=1,
+            order.logs.create(staff=request.staff, type=1,
                               content='更改订单状态为客到')
         # 翻台
         elif status == 2 and order.status == 1:
             order.finish_time = timezone.now()
             # 记录订单的操作日志
-            order.logs.create(staff=request.staff, status=2,
+            order.logs.create(staff=request.staff, type=2,
                               content='更改订单状态为已完成')
         # 撤单
         elif status == 3 and order.status != 2:
             order.cancel_time = timezone.now()
             # 记录订单的操作日志
-            order.logs.create(staff=request.staff, status=4,
+            order.logs.create(staff=request.staff, type=4,
                               content='更改订单状态为已撤单')
         else:
             return err_response('err_5', '订单状态切换非法')
@@ -688,7 +688,7 @@ def modify_order(request, token, order_id, **kwargs):
             # 记录订单的操作日志
             new_desk_str = ', '.join(new_desk_list)
             content = '换桌[%s]为[%s]' % (old_desk_str, new_desk_str)
-            order.logs.create(staff=request.staff, status=3, content=content)
+            order.logs.create(staff=request.staff, type=3, content=content)
         except KeyError or ValueError:
             return err_response('err_1', '参数不正确（缺少参数或者不符合格式）')
 
