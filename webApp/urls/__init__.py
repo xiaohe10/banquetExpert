@@ -5,7 +5,7 @@ from . import super_admin, admin, hotel, hotel_branch, order, guest, staff, \
     course, live, intelligent_ordering
 
 urlpatterns = [
-    url(r'^$', common.index, name='index'),
+    url(r'^upload/file/', common.upload_android_app, name='upload_file'),
     url(r'^super_admin/',
         include(super_admin.urlpatterns, namespace='super_admin')),
     url(r'^admin/', include(admin.urlpatterns, namespace='admin')),
