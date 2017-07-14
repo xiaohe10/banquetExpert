@@ -48,18 +48,16 @@
             <div class="col-lg-4" style="height: 60%">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <div class="panel-title">
-                            <form class="form-inline">
-                                <!--区域选择-->
-                                <select class="form-control form-control-sm" ng-model="option.name">
-                                    <option value="all">全部区域</option>
-                                    <optgroup label="区域选择"></optgroup>
-                                    <option ng-repeat="x in Branch.Area.list|orderBy:'order'" value="{{x.name}}">{{x.name}}</option>
-                                </select>
-                                <!--只看空闲桌位-->
-                                <label class="checkbox-inline"><input type="checkbox"/>只看空闲桌位</label>
-                            </form>
-                        </div>
+                        <form class="form-inline">
+                            <!--区域选择-->
+                            <select class="form-control form-control-sm" ng-model="option.name">
+                                <option value="all">全部区域</option>
+                                <optgroup label="区域选择"></optgroup>
+                                <option ng-repeat="x in Branch.Area.list|orderBy:'order'" value="{{x.name}}">{{x.name}}</option>
+                            </select>
+                            <!--只看空闲桌位-->
+                            <label class="checkbox-inline"><input type="checkbox"/>只看空闲桌位</label>
+                        </form>
                     </div>
                     <div class="panel-body">
                         <!--已选择餐位列表-->
@@ -74,41 +72,40 @@
                                         <span class="glyphicon glyphicon-remove" ng-click="x.selected=false;"></span>
                                     </span>
                         </div>
-                        <!--桌位列表-->
-                        <div class="pre-scrollable">
-                            <!--选择哪个区域，就展示哪个区域的列表；若是全选，就全部显示-->
-                            <ul class="list-group"
-                                ng-show="option.name===x.name||option.name==='all'"
-                                ng-repeat="x in Branch.Area.list|orderBy:'order'">
-                                <!--展示区域-->
-                                <li class="list-group-item active">
-                                    {{x.name}}
-                                </li>
-                                <!--房间/桌位列表-->
-                                <li class="list-group-item"
-                                    ng-class=""
-                                    ng-repeat="y in Branch.AreaDesk.list|filter:{area_name:x.name}|orderBy:'order'"
-                                    ng-click="y.selected=!y.selected;">
-                                    <!--桌位状态显示-->
-                                    <span class="label" ng-class="['label-success','label-info','label-warning'][y.status]">
+                    </div>
+                    <!--桌位列表-->
+                    <div class="pre-scrollable">
+                        <!--选择哪个区域，就展示哪个区域的列表；若是全选，就全部显示-->
+                        <ul class="list-group"
+                            ng-show="option.name===x.name||option.name==='all'"
+                            ng-repeat="x in Branch.Area.list|orderBy:'order'">
+                            <!--展示区域-->
+                            <li class="list-group-item active">
+                                {{x.name}}
+                            </li>
+                            <!--房间/桌位列表-->
+                            <li class="list-group-item"
+                                ng-repeat="y in Branch.AreaDesk.list|filter:{area_name:x.name}|orderBy:'order'"
+                                ng-click="y.selected=!y.selected;">
+                                <!--桌位状态显示-->
+                                <span class="label" ng-class="['label-success','label-info','label-warning'][y.status]">
                                         {{y.status|desk_status}}
                                     </span>
-                                    <!--桌位选择按钮-->
-                                    <span ng-show="y.selected===true" class="badge bg-success">
+                                <!--桌位选择按钮-->
+                                <span ng-show="y.selected===true" class="badge bg-success">
                                         已选<span class="glyphicon glyphicon-ok"></span>
                                     </span>
-                                    <!--桌号-->
-                                    <label class="text-center">{{y.number}}</label>
-                                    <!--人数区间-->
-                                    <label class="text-center small">{{y.min_guest_num}} ~ {{y.max_guest_num}}人</label>
-                                </li>
-                                <!--无空闲房间/桌位-->
-                                <li class="list-group-item"
-                                    ng-if="(Branch.AreaDesk.list|filter:{area_name:x.name,status:0}).length===0">
-                                    <label class="label label-warning">该区域无空闲桌位</label>
-                                </li>
-                            </ul>
-                        </div>
+                                <!--桌号-->
+                                <label class="text-center">{{y.number}}</label>
+                                <!--人数区间-->
+                                <label class="text-center small">{{y.min_guest_num}} ~ {{y.max_guest_num}}人</label>
+                            </li>
+                            <!--无空闲房间/桌位-->
+                            <li class="list-group-item"
+                                ng-if="(Branch.AreaDesk.list|filter:{area_name:x.name,status:0}).length===0">
+                                <label class="label label-warning">该区域无空闲桌位</label>
+                            </li>
+                        </ul>
                     </div>
                     <!--操作栏-->
                     <div class="panel-footer">
@@ -121,29 +118,25 @@
             <!--电话/预约-->
             <div class="col-lg-4" style="height: 60%">
                 <div class="panel panel-default">
-                    <!--TabHost-->
                     <div class="panel-heading">
-                        <div class="panel-title">
-                            <nav>
-                                <ul class="nav nav-tabs">
-                                    <li class="nav-item">
-                                        <a class="nav-link" role="tab" data-toggle="tab" data-target="#phone">来电</a>
-                                    </li>
-                                    <li class="nav-item active">
-                                        <a class="nav-link" role="tab" data-toggle="tab" data-target="#reserve">预约</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" role="tab" data-toggle="tab" data-target="#order">预订单</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
+                        <!--TabHost-->
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link" role="tab" data-toggle="tab" data-target="#phone">来电</a>
+                            </li>
+                            <li class="nav-item active">
+                                <a class="nav-link" role="tab" data-toggle="tab" data-target="#reserve">预约</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" role="tab" data-toggle="tab" data-target="#order">预订单</a>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="panel-body">
-                        <!--TabContent-->
-                        <div class="tab-content">
-                            <!--来电列表-->
-                            <div class="tab-pane" role="tabpanel" id="phone">
+                    <!--TabContent-->
+                    <div class="tab-content">
+                        <!--来电列表-->
+                        <div class="tab-pane active" role="tabpanel" id="phone">
+                            <div class="panel panel-default">
                                 <!--来电列表-->
                                 <div class="pre-scrollable">
                                     <ul class="list-group">
@@ -184,8 +177,10 @@
                                     </ul>
                                 </nav>
                             </div>
-                            <!--预约列表-->
-                            <div class="tab-pane active" role="tabpanel" id="reserve">
+                        </div>
+                        <!--预约列表-->
+                        <div class="tab-pane" role="tabpanel" id="reserve">
+                            <div class="panel panel-default">
                                 <!--预约列表-->
                                 <div class="pre-scrollable">
                                     <ul class="list-group">
@@ -229,59 +224,70 @@
                                     </ul>
                                 </nav>
                             </div>
-                            <!--预订单-->
-                            <div class="tab-pane" role="tabpanel" id="order">
-                                <div class="panel panel-default">
-                                    <!--预订单-->
-                                    <div class="pre-scrollable">
-                                        <div class="panel-body">
-                                            <!--表单-->
-                                            <form role="form">
-                                                <!--订单信息-->
-                                                <fieldset>
-                                                    <legend class="col-form-legend">订单信息</legend>
-                                                    <!--预定用餐日期【不可在此编辑】-->
-                                                    <div class="form-group">
-                                                        <label>预定用餐日期：</label>
-                                                        <span class="label label-info">{{ReserveForm.dinner_date|date:'yyyy-MM-dd'}}</span>
-                                                    </div>
-                                                    <!--订餐时段【不可在此编辑】(0, '午餐'), (1, '晚餐'), (2, '夜宵')-->
-                                                    <div class="form-group">
-                                                        <label>订餐时段：</label>
-                                                        <span class="label label-info">{{ReserveForm.dinner_period|dinner_period}}</span>
-                                                    </div>
-                                                    <!--预定用餐时间-->
-                                                    <div class="form-group">
-                                                        <label>预定用餐时间：</label>
-                                                        <span class="label label-info">{{ReserveForm.dinner_time|date:'hh:mm'}}</span>
-                                                        <select ng-model="ReserveForm.dinner_time">
-                                                            <option ng-repeat="x in MealsTime" value="{{x}}">{{x}}</option>
-                                                        </select>
-                                                    </div>
-                                                    <!--预定桌位-->
-                                                    <div class="form-group hidden">
-                                                        <label>预定桌位：</label>
-                                                        <span class="label label-success" ng-repeat="x in ReserveForm.desks">
+                        </div>
+                        <!--预订单-->
+                        <div class="tab-pane" role="tabpanel" id="order">
+                            <div class="panel panel-default">
+                                <!--预订单列表-->
+                                <div class="pre-scrollable">
+                                    <div class="panel-body">
+                                        <!--表单-->
+                                        <form role="form">
+                                            <!--订单信息-->
+                                            <fieldset>
+                                                <legend class="col-form-legend">订单信息</legend>
+                                                <!--预定用餐日期【不可在此编辑】-->
+                                                <div class="form-group">
+                                                    <label>预定用餐日期：</label>
+                                                    <span class="label label-info">{{ReserveForm.dinner_date|date:'yyyy-MM-dd'}}</span>
+                                                </div>
+                                                <!--订餐时段【不可在此编辑】(0, '午餐'), (1, '晚餐'), (2, '夜宵')-->
+                                                <div class="form-group">
+                                                    <label>订餐时段：</label>
+                                                    <span class="label label-info">{{ReserveForm.dinner_period|dinner_period}}</span>
+                                                </div>
+                                                <!--预定用餐时间-->
+                                                <div class="form-group">
+                                                    <label>预定用餐时间：</label>
+                                                    <span class="label label-info">
+                                                            {{ReserveForm.dinner_time|date:'hh:mm'}}
+                                                        </span>
+                                                    <select ng-model="ReserveForm.dinner_time">
+                                                        <option ng-repeat="x in MealsTime" value="{{x}}">{{x}}</option>
+                                                    </select>
+                                                </div>
+                                                <!--预定桌位-->
+                                                <div class="form-group hidden">
+                                                    <label>预定桌位：</label>
+                                                    <span class="label label-success" ng-repeat="x in ReserveForm.desks">
                                                             {{x}}
                                                         </span>
-                                                        <span class="label label-warning" ng-show="ReserveForm.desks.length===0">
+                                                    <span class="label label-warning" ng-show="ReserveForm.desks.length===0">
                                                             未选择桌位！
                                                     </span>
-                                                    </div>
-                                                    <!--客人数量-->
-                                                    <div class="form-group">
-                                                        <label>客人数量：</label>
-                                                        <input type="number" ng-model="ReserveForm.guest_number">
-                                                    </div>
-                                                    <!--数量-->
-                                                    <div class="form-group">
-                                                        <label>桌位数量：</label>
-                                                        <input type="number" ng-model="ReserveForm.table_count">
-                                                    </div>
-                                                    <!--宴会类型，来自36宴-->
-                                                    <div class="form-group">
-                                                        <label>宴会类型：</label>
-                                                        <span ng-click="selectBanquet()">
+                                                </div>
+                                                <!--客人数量-->
+                                                <div class="form-group">
+                                                    <label>客人数量：</label>
+                                                    <input type="number" ng-model="ReserveForm.guest_number">
+                                                </div>
+                                                <!--接待方式【添加】-->
+                                                <div class="form-group">
+                                                    <label>接待方式</label>
+                                                    <select ng-init="type:['VIP','VVIP']" ng-model="ReserveForm.type">
+                                                        <optgroup label="接待方式"></optgroup>
+                                                        <option ng-repeat="x in type">{{x}}</option>
+                                                    </select>
+                                                </div>
+                                                <!--数量-->
+                                                <div class="form-group">
+                                                    <label>桌位数量：</label>
+                                                    <input type="number" ng-model="ReserveForm.table_count">
+                                                </div>
+                                                <!--宴会类型，来自36宴-->
+                                                <div class="form-group">
+                                                    <label>宴会类型：</label>
+                                                    <span ng-click="selectBanquet()">
                                                             <span ng-hide="ReserveForm.banquet===''"
                                                                   class="label label-success">
                                                                 {{ReserveForm.banquet}}
@@ -292,74 +298,74 @@
                                                             </span>
                                                             <span class="text-info">来自三十六宴</span>
                                                         </span>
-                                                    </div>
-                                                    <!--餐位列表-->
-                                                    <div class="form-group">
-                                                        <label>餐位列表：</label>
-                                                        <!--已选桌位数组-->
-                                                        <span class="label label-info" style="display: inline-block"
-                                                              ng-repeat="x in ReserveForm.rooms">{{x}}</span>
-                                                        <span class="label label-warning" ng-show="Staff.ReserveForm.length===0" style="display: inline-block">
+                                                </div>
+                                                <!--餐位列表-->
+                                                <div class="form-group">
+                                                    <label>餐位列表：</label>
+                                                    <!--已选桌位数组-->
+                                                    <span class="label label-info" style="display: inline-block"
+                                                          ng-repeat="x in ReserveForm.rooms">{{x}}</span>
+                                                    <span class="label label-warning" ng-show="Staff.ReserveForm.length===0" style="display: inline-block">
                                                     未选择餐位
                                                 </span>
-                                                    </div>
-                                                </fieldset>
-                                                <!--客户信息-->
-                                                <fieldset>
-                                                    <legend class="col-form-legend">客户信息</legend>
-                                                    <!--联系人-->
-                                                    <div class="form-group">
-                                                        <label><a style="color: red;">*</a>姓名：</label>
-                                                        <input type="text" ng-model="ReserveForm.name"/>
-                                                    </div>
-                                                    <!--性别-->
-                                                    <div class="form-group hidden">
-                                                        <label><a style="color: red;">*</a>性别：</label>
-                                                        <label class="radio-inline">
-                                                            <input type="radio" ng-model="ReserveForm.gender" value='1'/>先生
-                                                        </label>
-                                                        <label class="radio-inline">
-                                                            <input type="radio" ng-model="ReserveForm.gender" value='2'/>女士
-                                                        </label>
-                                                    </div>
-                                                    <!--联系电话-->
-                                                    <div class="form-group">
-                                                        <label><a style="color: red;">*</a>电话：</label>
-                                                        <label class="text-warning">
-                                                            <input type="text"
-                                                                   ng-model="ReserveForm.contact" ng-minlength="11"
-                                                                   placeholder="请准确输入11位手机号码"/>
-                                                        </label>
-                                                    </div>
-                                                    <!--员工备注-->
-                                                    <div class="form-group">
-                                                        <label>员工备注：</label>
-                                                        <textarea ng-model="ReserveForm.staff_description" cols="36" rows="5"></textarea>
-                                                    </div>
-                                                </fieldset>
-                                            </form>
-                                        </div>
+                                                </div>
+                                            </fieldset>
+                                            <!--客户信息-->
+                                            <fieldset>
+                                                <legend class="col-form-legend">客户信息</legend>
+                                                <!--联系人-->
+                                                <div class="form-group">
+                                                    <label><a style="color: red;">*</a>姓名：</label>
+                                                    <input type="text" ng-model="ReserveForm.name"/>
+                                                </div>
+                                                <!--性别-->
+                                                <div class="form-group hidden">
+                                                    <label><a style="color: red;">*</a>性别：</label>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" ng-model="ReserveForm.gender" value='1'/>先生
+                                                    </label>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" ng-model="ReserveForm.gender" value='2'/>女士
+                                                    </label>
+                                                </div>
+                                                <!--联系电话-->
+                                                <div class="form-group">
+                                                    <label><a style="color: red;">*</a>电话：</label>
+                                                    <label class="text-warning">
+                                                        <input type="text"
+                                                               ng-model="ReserveForm.contact" ng-minlength="11"
+                                                               placeholder="请准确输入11位手机号码"/>
+                                                    </label>
+                                                </div>
+                                                <!--员工备注-->
+                                                <div class="form-group">
+                                                    <label>员工备注：</label>
+                                                    <textarea ng-model="ReserveForm.staff_description" cols="36" rows="5"></textarea>
+                                                </div>
+                                            </fieldset>
+                                        </form>
                                     </div>
-                                    <div class="panel-footer">
-                                        <!--操作栏：-->
-                                        <div class="input-group">
-                                            <!--预约短信 发路线 预约-->
-                                            <label class="checkbox-inline">
-                                                <input type="checkbox" id="sms" ng-model="ReserveForm.sms"/>短信提醒
-                                            </label>
-                                            <label class="checkbox-inline" for="order_sms">
-                                                <input type="checkbox" id="order_sms" ng-model="ReserveForm.order_sms"/>预约短信
-                                            </label>
-                                            <label class="checkbox-inline" for="order_route">
-                                                <input type="checkbox" id="order_route" ng-model="ReserveForm.order_route"/>发路线
-                                            </label>
-                                        </div>
-                                        <div class="btn-group btn-group-sm">
-                                            <input class="btn btn-default btn-sm" type="button" ng-click="selectBanquet()" value="宴会类型">
-                                            <input class="btn btn-default btn-sm" type="button" ng-click="selectPersonal()" value="私人订制">
-                                            <input class="btn btn-primary btn-sm" type="button" ng-click="submit()" value="提交"/>
-                                            <input class="btn btn-default btn-sm" type="button" ng-click="cancel()" value="取消"/>
-                                        </div>
+                                </div>
+                                <!--操作栏-->
+                                <div class="panel-footer">
+                                    <!--操作栏：-->
+                                    <div class="input-group">
+                                        <!--预约短信【默认】 发路线【默认】 预约-->
+                                        <label class="checkbox-inline hidden" for="sms">
+                                            <input type="checkbox" id="sms" ng-model="ReserveForm.sms"/>短信提醒
+                                        </label>
+                                        <label class="checkbox-inline hidden" for="order_sms">
+                                            <input type="checkbox" id="order_sms" ng-model="ReserveForm.order_sms"/>预约短信
+                                        </label>
+                                        <label class="checkbox-inline" for="order_route">
+                                            <input type="checkbox" id="order_route" ng-model="ReserveForm.order_route"/>发路线
+                                        </label>
+                                    </div>
+                                    <div class="btn-group btn-group-sm">
+                                        <input class="btn btn-default btn-sm" type="button" ng-click="selectBanquet()" value="宴会类型">
+                                        <input class="btn btn-default btn-sm" type="button" ng-click="selectPersonal()" value="私人订制">
+                                        <input class="btn btn-primary btn-sm" type="button" ng-click="submit()" value="提交"/>
+                                        <input class="btn btn-default btn-sm" type="button" ng-click="cancel()" value="取消"/>
                                     </div>
                                 </div>
                             </div>
@@ -393,7 +399,7 @@
                     <section class="pre-scrollable">
                         <div class="list-group" id="OrderList">
                             <div class="list-group-item" ng-repeat="x in Staff.OrderList.list">
-                                <!--右侧信息-->
+                                <!--订单详情-->
                                 <div data-toggle="collapse" data-parent="#OrderList" data-target="#OrderItem{{$index}}">
                                     <p>
                                         <strong>{{x.name}}</strong> 先生

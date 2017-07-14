@@ -853,13 +853,13 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                     // 选择餐段
                     $scope.ReserveForm.dinner_period = $scope.QueryForm.dinner_period;
                     switch ($scope.QueryForm.dinner_period) {
-                        case 0:
+                        case '0':
                             $scope.MealsTime = $rootScope.MealsTime.lunch;
                             break;
-                        case 1:
+                        case '1':
                             $scope.MealsTime = $rootScope.MealsTime.dinner;
                             break;
-                        case 2:
+                        case '2':
                             $scope.MealsTime = $rootScope.MealsTime.supper;
                             break;
                         default:
@@ -1091,7 +1091,7 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                 };
                 var Order = {
                     OperationLog: function () {
-                        var url = "/webApp/order/log/list";
+                        var url = "/webApp/order/log/list/";
                         var param = angular.copy($scope.option);
                         $http.post(url, param).success(function (obj) {
                             if (obj.status === 0) {
