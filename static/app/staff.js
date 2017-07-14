@@ -948,7 +948,7 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                     var url = "/webApp/order/submit/";
                     var param = angular.copy($scope.ReserveForm);
                     // 转换数据类型
-                    param.dinner_period = parseInt(param.dinner_period);
+                    // param.dinner_period = parseInt(param.dinner_period);
                     Log.i(TAG, JSON.stringify(param));
                     $http.post(url, JSON.stringify(param)).success(function (obj) {
                         if (obj.status === "true") {
@@ -1135,6 +1135,7 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                         // 搜索订单列表
                         var url = "/webApp/staff/order/search/";
                         var param = angular.copy(option);
+                        param.branch_id = parseInt(param.branch_id);
                         $http.post(url, JSON.stringify(param)).success(function (obj) {
                             if (obj.status === "true") {
                                 $scope.data = obj.data;
