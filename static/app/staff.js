@@ -668,8 +668,11 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                 };
                 // 查询的表单
                 var date = new Date();
-                $scope.option = {
-                    area_id: -1
+                $scope.AreaOption = {
+                    // 选择区域【默认全部区域】
+                    name: "all_area",
+                    // 只看空闲桌位【默认否】
+                    empty_desk: false
                 };
                 $scope.QueryForm = {
                     branch_id: 0,
