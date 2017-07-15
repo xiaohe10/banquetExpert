@@ -8,7 +8,6 @@ from django.db import IntegrityError, transaction
 from django.db.models import Q, Sum
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.validators import RegexValidator
 
 from ..utils.decorator import validate_args, validate_staff_token
 from ..utils.response import corr_response, err_response
@@ -76,6 +75,8 @@ def search_scores(request, token, status=0, offset=0, limit=10, order=1,
             staff_description: 员工备注
             internal_channel: 内部获客渠道, 即接单人名字, 如果存在
             external_channel: 外部获客渠道, 即外部渠道名称, 如果存在
+            score_id: 评分ID
+            score: 总分
     """
     ORDERS = ('create_time', '-create_time')
 
@@ -162,13 +163,22 @@ def search_scores(request, token, status=0, offset=0, limit=10, order=1,
              'internal_channel': r.internal_channel.name if
              r.internal_channel else '',
              'external_channel': r.external_channel.name if
-             r.external_channel else ''}
+             r.external_channel else '',
+             'score_id': r.order_score.id
+             if r.order_score.all().count() == 1 else 0,
+             'score': r.order_score.score
+             if r.order_score.all().count() == 1 else 0}
 
+        # 桌位信息
         desks_list = json.loads(r.desks)
         d['desks'] = []
         for desk in desks_list:
             desk_id = int(desk[1:-1])
-            d['desks'].append(desk_id)
+            try:
+                number = Desk.objects.get(id=desk_id).number
+            except ObjectDoesNotExist:
+                number = ''
+            d['desks'].append(number)
 
         l.append(d)
 

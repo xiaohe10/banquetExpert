@@ -688,6 +688,8 @@ class OrderScore(models.Model):
     multi_table_transform_score = models.IntegerField(default=None, null=True)
     check_multi_table_transform_score = models.IntegerField(
         default=None, null=True)
+    # 总分
+    score = models.FloatField(default=0.00)
 
     # 创建时间
     create_time = models.DateTimeField(default=timezone.now, db_index=True)

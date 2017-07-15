@@ -168,7 +168,11 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
         d['desks'] = []
         for desk in desks_list:
             desk_id = int(desk[1:-1])
-            d['desks'].append(desk_id)
+            try:
+                number = Desk.objects.get(id=desk_id).number
+            except ObjectDoesNotExist:
+                number = ''
+            d['desks'].append(number)
 
         l.append(d)
 

@@ -2467,7 +2467,7 @@ URL：webApp/score/list/ <br>
 | count | 订单数量 |
 | list | 订单列表 |
 | 以下为list中的数据 |
-| score_id  | 评分记录ID    |
+| score_id  | 评分记录ID，如果ID为0则表示暂无评分    |
 | order_id  | 订单ID |
 | create_time | 创建日期 |
 | cancel_time | 撤销日期 |
