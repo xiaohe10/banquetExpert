@@ -255,6 +255,26 @@ ManagerApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
     ];
 
 
+    var Hotel = {
+        getProfile: function () {
+
+        },
+        getBranchList: function () {
+            // 获取门店列表
+            var url = "/webApp/admin/hotel_branch/list/";
+            var param = {
+                hotel_id: $rootScope.Hotel.hotel_id
+            };
+            $http.post(url, JSON.stringify(param)).success(function (obj) {
+                if (obj.status === "true") {
+                    $scope.Hotel.BranchList = obj.data;
+                } else {
+                    alert(obj.description);
+                }
+            });
+        }
+    };
+
     // 【酒店】获取酒店信息
     var url = "/webApp/admin/hotel/profile/get/";
     var param = {};
@@ -290,6 +310,10 @@ ManagerApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
         }
     });
 
+    $rootScope.$watch('Hotel', function (p1, p2, p3) {
+        Hotel.getBranchList();
+    });
+
     // // 【门店】获取门店信息
     // url = "/webApp/admin/hotel_branch/profile/get/";
     // param = {branch_id: $};
@@ -300,8 +324,8 @@ ManagerApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
     //         alert(obj.description);
     //     }
     // });
-    //
-    // // 【门店】获取门店区域列表
+
+    // 【门店】获取门店区域列表
     // url = "/webApp/admin/hotel_branch/area/list/";
     // param = {branch_id: 1};
     // $http.post(url, JSON.stringify(param)).success(function (obj) {
@@ -325,8 +349,8 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                 // 初始化酒店信息
                 $rootScope.$watch('Hotel', function () {
                     // 【酒店】获取渠道列表
-                    url = "/webApp/admin/hotel/channel/list/";
-                    param = {hotel_id: $rootScope.Hotel.hotel_id};
+                    var url = "/webApp/admin/hotel/channel/list/";
+                    var param = {hotel_id: $rootScope.Hotel.hotel_id};
                     $http.post(url, JSON.stringify(param)).success(function (obj) {
                         if (obj.status === "true") {
                             $rootScope.Hotel.Channel = obj.data;
@@ -763,6 +787,7 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
                             form: function () {
                                 return {
                                     hotel_id: $rootScope.Hotel.hotel_id,
+                                    branch_id: 0,
                                     phone: "",
                                     name: "",
                                     id_number: "",

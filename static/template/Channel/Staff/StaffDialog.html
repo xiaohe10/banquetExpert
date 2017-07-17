@@ -48,6 +48,16 @@
                     </label>
                 </div>
             </div>
+            <!--所在门店-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><a style="color: red;">*</a>所在门店：</label>
+                <div class="col-sm-10">
+                    <select ng-model="form.branch_id">
+                        <optgroup label="所在门店"></optgroup>
+                        <option ng-repeat="x in Hotel.BranchList.list" value="{{x.branch_id}}">{{x.name}}</option>
+                    </select>
+                </div>
+            </div>
             <!--职位-->
             <div class="form-group">
                 <label class="col-sm-2 control-label">职位：</label>

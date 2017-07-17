@@ -177,13 +177,12 @@
                                             <!--预约订单-->
                                             <div data-parent="#ReserveList" data-toggle="collapse" data-target="#ReserveItem{{$index}}">
                                                 <!--头像-->
-                                                <span class="badge badge-info">{{status|status}}</span>
+                                                <span class="badge badge-info">{{status|order_status}}</span>
                                                 <img class="img-responsive" src="/static/css/image/head1.jpg">
                                                 <span class="align-items-center">{{x.create_time|date:'MM/dd'}}</span>
                                                 <!--个人信息-->
                                                 <p>{{x.name}}</p>
                                                 <p>{{x.contact}} {{x.guest_type}}</p>
-                                                <!--操作-->
                                             </div>
                                             <!--操作栏-->
                                             <div class="collapse" id="ReserveItem{{$index}}">
@@ -250,9 +249,9 @@
                                                 <!--接待方式【添加】-->
                                                 <div class="form-group">
                                                     <label>接待方式</label>
-                                                    <select ng-init="type:['VIP','VVIP']" ng-model="ReserveForm.type">
+                                                    <select ng-model="ReserveForm.type">
                                                         <optgroup label="接待方式"></optgroup>
-                                                        <option ng-repeat="x in type">{{x}}</option>
+                                                        <option ng-repeat="x in Reception">{{x}}</option>
                                                     </select>
                                                 </div>
                                                 <!--数量-->
@@ -373,7 +372,7 @@
                         </div>
                     </div>
                     <!--订单列表-->
-                    <section class="pre-scrollable">
+                    <div class="pre-scrollable">
                         <div class="list-group" id="OrderList">
                             <div class="list-group-item" ng-repeat="x in Staff.OrderList.list">
                                 <!--订单详情-->
@@ -386,7 +385,7 @@
                                                             {{x.dinner_time|date:'hh:mm'}}
                                                         </span>
                                         <!--订单状态-->
-                                        <span class="badge badge-info">{{x.status|status}}</span>
+                                        <span class="badge badge-info">{{x.status|order_status}}</span>
                                     </p>
                                     <p>
                                         桌位：<span class="label label-info"
@@ -417,7 +416,7 @@
                                 </div>
                             </div>
                         </div>
-                    </section>
+                    </div>
                 </div>
             </div>
         </div>

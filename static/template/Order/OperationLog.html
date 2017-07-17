@@ -19,16 +19,18 @@
             </select>
             <!--门店/区域/餐位-->
             <select class="form-control form-control-sm" ng-model="option.branch_id">
-                <optgroup label="请选择区域"></optgroup>
+                <optgroup label="请选择门店"></optgroup>
                 <option ng-repeat="x in Hotel.BranchList.list" value={{x.branch_id}}>{{x.name}}</option>
             </select>
-            <select class="form-control form-control-sm" ng-model="option.area_id">
+            <select class="form-control form-control-sm" ng-model="option.area_name">
                 <optgroup label="请选择区域"></optgroup>
-                <option ng-repeat="x in Branch.Area.list" value={{x.area_id}}>{{x.name}}</option>
+                <option ng-repeat="x in Branch.Area.list" value="{{x.name}}">{{x.name}}</option>
             </select>
             <select class="form-control form-control-sm" ng-model="option.desk_id">
                 <optgroup label="请选择餐位"></optgroup>
-                <option ng-repeat="x in Branch.AreaDesk.list|filter:{area_id:option.area_id}" value={{x.desk_id}}>{{x.number}}</option>
+                <option ng-repeat="x in Branch.AreaDesk.list|filter:{area_name:option.area_name}" value={{x.desk_id}}>
+                    {{x.number}}
+                </option>
             </select>
             <!--操作-->
             <input class="form-control form-control-sm" type="text" ng-model="option.keyword" placeholder="输入姓名或手机号"/>
@@ -38,28 +40,54 @@
         <table class="table table-hover table-bordered small">
             <thead class="">
             <tr id="center">
-                <th align="center">
-                    <a class="btn btn-link btn-sm" ng-click="option.orderBy=create_time">
-                        操作时间<span class="glyphicon glyphicon-chevron-down"></span>
+                <th>
+                    <a class="btn  btn-link btn-sm" ng-click="option.orderBy='content'">
+                        <span class="glyphicon glyphicon-chevron-up">操作内容</span>
                     </a>
                 </th>
                 <th>
-                    <a class="btn btn-link btn-sm" ng-click="option.orderBy=staff_name">
-                        操作人<span class="glyphicon glyphicon-chevron-down"></span>
+                    <a class="btn  btn-link btn-sm" ng-click="option.orderBy='type'">
+                        <span class="glyphicon glyphicon-chevron-up">操作类型</span>
                     </a>
                 </th>
-                <th>操作类型</th>
-                <th>操作内容</th>
-                <th>订单信息</th>
+                <th style="display: none">员工ID</th>
+                <th>员工姓名</th>
+                <th style="display: none">订单ID</th>
+                <th>订单状态</th>
+                <th>预定用餐日期</th>
+                <th>预定用餐时间</th>
+                <th>订餐时段</th>
+                <th>联系人</th>
+                <th>性别</th>
+                <th>联系电话</th>
+                <th>客人数量</th>
+                <th>桌位</th>
+                <th>渠道</th>
+                <th style="display: none;">预定门店ID</th>
+                <th>预定门店名称</th>
+                <th>创建日期</th>
             </tr>
             </thead>
             <tbody>
             <tr align="center" ng-repeat="x in data.list|orderBy:'option.orderBy'">
-                <td style="width:120px;">{{x.create_time}}</td>
-                <td>{{x.staff_name}}</td>
-                <td>{{x.type}}</td>
                 <td>{{x.content}}</td>
-                <td>{{x.date}} {{x.meal_type}} {{x.time}} {{x.name }} {{x.gender}} {{x.phone}}</td>
+                <td>{{x.type}}</td>
+                <td style="display: none">{{x.staff_id}}</td>
+                <td>{{x.staff_name}}</td>
+                <td style="display: none">{{x.order_id}}</td>
+                <td>{{x.status|order_status}}</td>
+                <td>{{x.dinner_date|date:'yyyy/MM/dd'}}</td>
+                <td>{{x.dinner_time|date:'hh:mm:ss'}}</td>
+                <td>{{x.dinner_period}}</td>
+                <td>{{x.name}}</td>
+                <td>{{x.gender|gender}}</td>
+                <td>{{x.contact}}</td>
+                <td>{{x.guest_number}}</td>
+                <td><span class="label label-success" ng-repeat="y in x.desks">{{y.number}}</span></td>
+                <td>{{x.internal_channel|channel}} {{x.external_channel}}</td>
+                <td style="display: none">{{x.branch_id}}</td>
+                <td>{{x.branch_name}}</td>
+                <td>{{x.create_time|date:'yyyy/MM/dd'}}</td>
             </tr>
             </tbody>
         </table>

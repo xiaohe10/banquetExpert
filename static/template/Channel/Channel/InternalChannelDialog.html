@@ -30,25 +30,97 @@
                 </div>
             </div>
             <!--职能权限-->
-            <div class="form-group hidden">
+            <div class="form-group">
                 <label class="col-lg-2 control-label">职能权限：</label>
                 <div class="col-lg-10">
                     <!--职能权限表-->
                     <table class="table table-hover table-bordered table-responsive">
                         <thead>
                         <tr>
-                            <td>管理职能</td>
-                            <td>营销职能</td>
-                            <td>预定职能</td>
-                            <td>销售职能</td>
+                            <th>管理职能</th>
+                            <th>营销职能</th>
+                            <th>预定职能</th>
+                            <th>移动端管理</th>
+                            <th>其他</th>
                         </tr>
                         </thead>
                         <tbody class="table-info">
                         <tr>
-                            <td>管理职能</td>
-                            <td>营销职能</td>
-                            <td>预定职能</td>
-                            <td>销售职能</td>
+                            <td><label><input type="checkbox" ng-model="form.authority" value="1">账户管理</label></td>
+                            <td><label><input type="checkbox" ng-model="form.authority" value="2">客户管理</label></td>
+                            <td><label><input type="checkbox" ng-model="form.authority" value="3">订单管理</label></td>
+                            <td><label><input type="checkbox" ng-model="form.authority" value="5">查看订单</label></td>
+                            <td><label><input type="checkbox" ng-model="form.authority" value="5">微课堂管理</label></td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="checkbox" ng-model="form.authority" value="6">财务报表</label></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="checkbox" ng-model="form.authority" value="7">客户档案列表</label></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="checkbox" ng-model="form.authority" value="8">预定通知单</label></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="checkbox" ng-model="form.authority" value="5">操作客到</label></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="checkbox" ng-model="form.authority" value="5">直播课堂</label></td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="checkbox" ng-model="form.authority" value="1">短信详单</label></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="checkbox" ng-model="form.authority" value="2">客源情况分析</label></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="checkbox" ng-model="form.authority" value="3">历史订单</label></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="checkbox" ng-model="form.authority" value="5">操作调桌</label></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="checkbox" ng-model="form.authority" value="5">视频管理</label></td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="checkbox" ng-model="form.authority" value="1">修改密码</label></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="checkbox" ng-model="form.authority" value="2">会员价值设置</label></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="checkbox" ng-model="form.authority" value="3">订单金额录入</label></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="checkbox" ng-model="form.authority" value="5">操作翻台</label></td>
+                            <td><label><input type="checkbox" ng-model="form.authority" value="5">评分审阅</label></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="checkbox" ng-model="form.authority" value="2">纪念日报表</label></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="checkbox" ng-model="form.authority" value="3">订单统计</label></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="checkbox" ng-model="form.authority" value="5">操作撤单</label></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="checkbox" ng-model="form.authority" value="5">我的评分</label></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="checkbox" ng-model="form.authority" value="3">来电记录</label></td>
+                            <td><label><input type="checkbox" ng-model="form.authority" value="5">查看餐位</label></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="checkbox" ng-model="form.authority" value="5">排名</label></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="checkbox" ng-model="form.authority" value="3">操作日志</label></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="checkbox" ng-model="form.authority" value="5">占座预订</label></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="checkbox" ng-model="form.authority" value="5">视频教程</label></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td><label><input type="checkbox" ng-model="form.authority" value="3">智能订餐台</label></td>
+                            <td><label><input type="checkbox" ng-model="form.authority" value="5">我的客户</label></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="checkbox" ng-model="form.authority" value="3">预订台</label></td>
+                            <td><label><input type="checkbox" ng-model="form.authority" value="5">我的订单</label></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><label><input type="checkbox" ng-model="form.authority" value="5">客户管理</label></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><label><input type="checkbox" ng-model="form.authority" value="5">订单管理</label></td>
+                            <td></td>
                         </tr>
                         </tbody>
                     </table>
@@ -58,7 +130,16 @@
             <div ng-if="form.guest_channel===1" class="form-group">
                 <label class="col-lg-2 control-label">管理渠道客户：</label>
                 <div class="col-lg-10">
-                    <input type="text" ng-model="form.channel"/>
+                    <!--管理全部渠道客户-->
+                    <label class="control-label">
+                        <input type="checkbox" ng-model="form.manage_all_channels"/>管理全部渠道客户
+                    </label>
+                    <div class="row">
+                        <div class="col-sm-2" ng-repeat="x in Hotel.Channel.InternalChannel">
+                            {{x.name}} <span class="badge badge-info">{{x.guest_channel|channel}}</span>
+                            <input type="checkbox" ng-model="x.selected" ng-value="form.manage_all_channels"/>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!--销售职能【客户经理默认打开】-->
@@ -98,10 +179,10 @@
                         <!--接单提成-->
                         <li class="list-group-item">
                             <!--接单提成-->
-                            <label>
+                            <label class="control-label">
                                 <input type="checkbox" ng-model="form.order_bonus.enabled"/>接单提成
                             </label>
-                            <div class="p-2 bg-warning" ng-show="form.order_bonus.enabled">
+                            <div class="bg-warning" ng-show="form.order_bonus.enabled">
                                 <h5>提成结算方式</h5>
                                 <div>
                                     <label>
@@ -139,7 +220,7 @@
                                 <input type="checkbox" ng-model="form.new_customer_bonus.enabled"/>开新客提成
                                 <span class="text-warning">客户第一次在系统内生成订单消费成功，则接单人新开客数量加1。</span>
                             </label>
-                            <div class="p-2 bg-warning" ng-show="form.new_customer_bonus.enabled">
+                            <div class="bg-warning" ng-show="form.new_customer_bonus.enabled">
                                 <h5>提成结算方式</h5>
                                 <div>
                                     <label>
@@ -149,6 +230,13 @@
                             </div>
                         </li>
                     </ul>
+                </div>
+            </div>
+            <!--管辖门店-->
+            <div class="form-group">
+                <label class="col-lg-2 control-label">管辖门店：</label>
+                <div class="col-lg-10">
+                    门店列表
                 </div>
             </div>
             <!--管辖区域-->
@@ -169,23 +257,11 @@
                 <label class="col-lg-2 control-label">管辖桌位：</label>
                 <div class="col-lg-10">
                     <!--管理全部桌位-->
-                    <label>
+                    <label class="control_label">
                         <input type="checkbox" ng-model="select_all_seat"/>管理全部桌位
                     </label>
-                    <!--区域导航栏-->
-                    <div>
-                        区域导航栏
-                        <nav class="navbar">
-                            <ul class="nav nav-tabs">
-                                <li ng-repeat="x in area.list|filter:{is_enabled:true}">{{x.name}}</li>
-                            </ul>
-                        </nav>
-                    </div>
-                    <!--桌位选择列表-->
-                    <div ng-hide="select_all_seat===true">
-                        <ul class="list-group">
-                            <li class="list-group-item" ng-repeat="x in area.list">{{x.name}}</li>
-                        </ul>
+                    <!--区域选择面板-->
+                    <div class="panel panel-default">
                     </div>
                 </div>
             </div>
