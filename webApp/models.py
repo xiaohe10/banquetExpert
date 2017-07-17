@@ -874,3 +874,14 @@ class ValidationCode(models.Model):
                 break
         r.save()
         return r.code
+
+
+class Authority(models.Model):
+    """权限表"""
+
+    # 中文名
+    title = models.CharField(max_length=32, default='')
+    # 英文名
+    name = models.CharField(max_length=32, default='')
+    # 所属权限
+    parent_id = models.IntegerField(default=0)

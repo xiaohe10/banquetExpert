@@ -72,7 +72,7 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
             contact: 联系电话
             guest_number: 客人数量
             table_count: 餐位数
-            desks: 桌位, 数组
+            desks: 桌位, 数组, [{"desk_id":1,"number":"110"}, ...]
             staff_description: 员工备注
             internal_channel: 内部获客渠道, 即接单人名字, 如果存在
             external_channel: 外部获客渠道, 即外部渠道名称, 如果存在
@@ -172,7 +172,7 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
                 number = Desk.objects.get(id=desk_id).number
             except ObjectDoesNotExist:
                 number = ''
-            d['desks'].append(number)
+            d['desks'].append({'desk_id': desk_id, 'number': number})
 
         l.append(d)
 

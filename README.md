@@ -1095,7 +1095,7 @@ URL：webApp/order/search/ <br>
 | guest_number | 客人数量 |
 | table_count   | 餐位数   |
 | staff_description | 员工备注  |
-| desks | 桌位ID数组 |
+| desks | 桌位ID和number的数组 |
 | internal_channel | 内部获客渠道, 即接单人名字, 如果存在 |
 | external_channel | 外部获客渠道, 即外部渠道名称, 如果存在 |
 
@@ -1130,7 +1130,7 @@ URL：webApp/order/search/ <br>
             "contact":"18813101211",
             "guest_number":10,
             "table_count":3,
-            "desks":[1,3,5],
+            "desks":[{"desk_id":1,"number":"309"},{"desk_id":2,"number":"312"},{"desk_id":3,"number":"311"}],
             "staff_description":"备注",
             "internal_channel":"刘光艳",
             "external_channel":"美团"

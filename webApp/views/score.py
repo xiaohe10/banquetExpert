@@ -189,5 +189,17 @@ def search_scores(request, token, status=0, offset=0, limit=10, order=1,
                           'list': l})
 
 
+@validate_args({
+    'score_id': forms.IntegerField()
+})
+def score_profile(request, token, score_id):
+    """获取评分详情
+
+    :param token: 令牌(必传)
+    :param score_id: 评分ID(必传)
+
+    """
+
+
 def add_score(request):
     pass
