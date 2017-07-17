@@ -1,0 +1,166 @@
+[
+  {
+    "title": "智能订餐台",
+    "menu_id": "SmartOrder",
+    "id": 1,
+    "item": [
+      {
+        "title": "智能订餐台",
+        "item_id": "SmartOrder",
+        "id": 2
+      }
+    ]
+  },
+  {
+    "title": "订单管理",
+    "menu_id": "Order",
+    "id": 3,
+    "item": [
+      {
+        "title": "预定通知单",
+        "item_id": "ReserveNotice",
+        "id": 4
+      },
+      {
+        "title": "历史订单",
+        "item_id": "OrderHistory",
+        "id": 5
+      },
+      {
+        "title": "订单金额录入",
+        "item_id": "InsertOrder",
+        "id": 6
+      },
+      {
+        "title": "订单统计",
+        "item_id": "OrderStatistics",
+        "id": 7
+      },
+      {
+        "title": "来电记录",
+        "item_id": "PhoneReserve",
+        "id": 8
+      },
+      {
+        "title": "操作日志",
+        "item_id": "OperationLog",
+        "id": 9
+      }
+    ]
+  },
+  {
+    "title": "客户管理",
+    "menu_id": "Customer",
+    "id": 10,
+    "item": [
+      {
+        "title": "客户档案列表",
+        "item_id": "CustomerProfiles",
+        "id": 11
+      },
+      {
+        "title": "客源情况分析",
+        "item_id": "CustomerAnalysis",
+        "id": 12
+      },
+      {
+        "title": "会员价值设置",
+        "item_id": "MemberValue",
+        "id": 13
+      },
+      {
+        "title": "纪念日查询报表",
+        "item_id": "AnniversaryReport",
+        "id": 14
+      }
+    ]
+  },
+  {
+    "title": "账户管理",
+    "menu_id": "Account",
+    "id": 15,
+    "item": [
+      {
+        "title": "财务报表",
+        "item_id": "FinanceManage",
+        "id": 16
+      },
+      {
+        "title": "短信详单",
+        "item_id": "SMSDetails",
+        "id": 17
+      },
+      {
+        "title": "修改密码",
+        "item_id": "AccountManage",
+        "id": 18
+      }
+    ]
+  },
+  {
+    "title": "评分审阅",
+    "menu_id": "Review",
+    "id": 19,
+    "item": [
+      {
+        "title": "我的评分",
+        "item_id": "Scoring",
+        "id": 20
+      },
+      {
+        "title": "排名",
+        "item_id": "Rank",
+        "id": 21
+      },
+      {
+        "title": "中国服务私人订制标准视频教程",
+        "item_id": "Tutorial",
+        "id": 22
+      }
+    ]
+  },
+  {
+    "title": "微课堂管理",
+    "menu_id": "MicroCourse",
+    "id": 23,
+    "item": [
+      {
+        "title": "直播课堂",
+        "item_id": "LiveCourse",
+        "id": 24
+      },
+      {
+        "title": "视频管理",
+        "item_id": "LiveVideo",
+        "id": 25
+      }
+    ]
+  },
+  {
+    "title": "移动客户端",
+    "menu_id": "App",
+    "id": 26,
+    "item": [
+      {
+        "title": "我的客户",
+        "item_id": "MyCustomer",
+        "id": 27
+      },
+      {
+        "title": "我的订单",
+        "item_id": "MyOrder",
+        "id": 28
+      },
+      {
+        "title": "客户管理",
+        "item_id": "Customer",
+        "id": 29
+      },
+      {
+        "title": "订单管理",
+        "item_id": "Order",
+        "id": 30
+      }
+    ]
+  }
+]

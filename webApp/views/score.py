@@ -12,7 +12,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from ..utils.decorator import validate_args, validate_staff_token
 from ..utils.response import corr_response, err_response
 from ..utils.http import send_message
-from ..models import Staff, Hotel, Order, Guest, Desk
+from ..models import Staff, Hotel, Order, Guest, Desk, OrderScore
 
 
 @validate_args({
@@ -76,7 +76,7 @@ def search_scores(request, token, status=0, offset=0, limit=10, order=1,
             internal_channel: 内部获客渠道, 即接单人名字, 如果存在
             external_channel: 外部获客渠道, 即外部渠道名称, 如果存在
             score_id: 评分ID
-            score: 总分
+            total_score: 总分
     """
     ORDERS = ('create_time', '-create_time')
 
@@ -166,7 +166,7 @@ def search_scores(request, token, status=0, offset=0, limit=10, order=1,
              r.external_channel else '',
              'score_id': r.order_score.id
              if r.order_score.all().count() == 1 else 0,
-             'score': r.order_score.score
+             'total_score': r.order_score.total_score
              if r.order_score.all().count() == 1 else 0}
 
         # 桌位信息
@@ -199,6 +199,63 @@ def score_profile(request, token, score_id):
     :param score_id: 评分ID(必传)
 
     """
+    try:
+        score = OrderScore.objects.get(id=score_id)
+    except ObjectDoesNotExist:
+        return err_response('err_4', '该评分不存在')
+
+    d = {'id': score.id,
+         'door_card_picture': score.door_card_picture,
+         'door_card_score': score.door_card_score,
+         'check_door_card_score': score.check_door_card_score,
+         'sand_table_picture': score.sand_table_picture,
+         'sand_table_score': score.sand_table_score,
+         'check_sand_table_score': score.check_sand_table_score,
+         'welcome_screen_picture': score.welcome_screen_picture,
+         'welcome_screen_score': score.welcome_screen_score,
+         'check_welcome_screen_score': score.check_welcome_screen_score,
+         'atmosphere_picture': score.atmosphere_picture,
+         'atmosphere_score': score.atmosphere_score,
+         'check_atmosphere_score': score.check_atmosphere_score,
+         'group_photo_picture': score.group_photo_picture,
+         'group_photo_score': score.group_photo_score,
+         'check_group_photo_score': score.check_group_photo_score,
+         'cup_picture': score.cup_picture,
+         'cup_score': score.cup_score,
+         'check_cup_score': score.check_cup_score,
+         'brochure_picture': score.brochure_picture,
+         'brochure_score': score.brochure_score,
+         'check_brochure_score': score.check_brochure_score,
+         'calendar_picture': score.calendar_picture,
+         'calendar_score': score.calendar_score,
+         'check_calendar_score': score.check_calendar_score,
+         'honor_certificate_picture': score.honor_certificate_picture,
+         'honor_certificate_score': score.honor_certificate_score,
+         'check_honor_certificate_score': score.check_honor_certificate_score,
+         'work_in_heart_picture': score.work_in_heart_picture,
+         'work_in_heart_score': score.work_in_heart_score,
+         'check_work_in_heart_score': score.check_work_in_heart_score,
+         'innovation_picture': score.innovation_picture,
+         'innovation_score': score.innovation_score,
+         'check_innovation_score': score.check_innovation_score,
+         'praise_letter_picture': score.praise_letter_picture,
+         'praise_letter_score': score.praise_letter_score,
+         'check_praise_letter_score': score.check_praise_letter_score,
+         'friend_circle_picture': score.friend_circle_picture,
+         'friend_circle_score': score.friend_circle_score,
+         'check_friend_circle_score': score.check_friend_circle_score,
+         'network_comment_picture': score.network_comment_picture,
+         'network_comment_score': score.network_comment_score,
+         'check_network_comment_score': score.check_network_comment_score,
+         'single_table_transform_score': score.single_table_transform_score,
+         'check_single_table_transform_score':
+             score.check_single_table_transform_score,
+         'multi_table_transform_score': score.multi_table_transform_score,
+         'check_multi_table_transform_score':
+             score.check_multi_table_transform_score,
+         'total_score': score.total_score}
+
+    return corr_response(d)
 
 
 def add_score(request):

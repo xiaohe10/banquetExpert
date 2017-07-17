@@ -1694,16 +1694,18 @@ def get_staffs(request, token, hotel_id, order=1):
     'guest_channel': forms.IntegerField(
         min_value=0, max_value=3, required=False),
     'description': forms.CharField(max_length=200, required=False),
-    'authority': forms.CharField(max_length=20, required=False),
-    'hotel_id': forms.IntegerField(),
+    'branch_id': forms.IntegerField(),
+})
+@validate_json_args({
+    'authority': forms.CharField(max_length=20, required=False)
 })
 @validate_admin_token()
-def register_staff(request, phone, password, hotel_id, **kwargs):
+def register_staff(request, phone, password, branch_id, **kwargs):
     """注册新员工
 
     :param phone: 手机号(必传)
     :param password: 密码(必传)
-    :param hotel_id: 酒店ID(必传)
+    :param branch_id: 门店ID(必传)
     :param kwargs:
         staff_number: 员工编号
         name: 姓名(必传)
@@ -1712,17 +1714,17 @@ def register_staff(request, phone, password, hotel_id, **kwargs):
         id_number: 身份证号(必传)
         guest_channel: 所属获客渠道, 0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理
         description: 备注
-        authority: 权限
+        authority: 权限, 数组
         icon: 头像, [file]格式
     :return 200
     """
 
     try:
-        hotel = Hotel.enabled_objects.get(id=hotel_id)
+        branch = HotelBranch.enabled_objects.get(id=branch_id)
     except Hotel.DoesNotExist:
         return err_response('err_4', '酒店不存在')
     # 管理员只能添加自己酒店的员工
-    if hotel != request.admin.hotel:
+    if branch.hotel != request.admin.hotel:
         return err_response('err_2', '权限错误')
 
     if Staff.objects.filter(phone=phone).count() > 0:
@@ -1733,15 +1735,21 @@ def register_staff(request, phone, password, hotel_id, **kwargs):
 
     staff_keys = ('staff_number', 'name', 'gender', 'position', 'id_number',
                   'guest_channel', 'description', 'authority')
+    staff_json_keys = ('authority',)
+
     with transaction.atomic():
         try:
             staff = Staff(phone=phone, password=password, status=1,
-                          hotel=hotel)
+                          hotel=branch.hotel, branch=branch)
             # 更新令牌
             staff.update_token()
             for k in staff_keys:
                 if k in kwargs:
                     setattr(staff, k, kwargs[k])
+
+            for k in staff_json_keys:
+                if k in kwargs:
+                    setattr(staff, k, json.dumps(kwargs[k]))
 
             # 设置头像
             if 'icon' in request.FILES:
@@ -1816,6 +1824,8 @@ def get_staff_profile(request, token, staff_id):
         gender: 性别
         status: 员工状态，0: 待审核，1: 审核通过
         description: 备注
+        branch_id: 所属门店ID
+        branch_name: 所属门店名
         position: 职位
         guest_channel: 所属获客渠道
             0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理
@@ -1851,6 +1861,8 @@ def get_staff_profile(request, token, staff_id):
          'position': staff.position,
          'guest_channel': staff.guest_channel,
          'description': staff.description,
+         'branch_id': staff.branch.id,
+         'branch_name': staff.branch.name,
          'authority': json.loads(staff.authority) if staff.authority else [],
          'phone_private': staff.phone_private,
          'sale_enabled': staff.sale_enabled,
@@ -1882,16 +1894,17 @@ def get_staff_profile(request, token, staff_id):
     'guest_channel': forms.IntegerField(
         min_value=0, max_value=3, required=False),
     'description': forms.CharField(max_length=200, required=False),
-    'authority': forms.CharField(max_length=20, required=False),
     'status': forms.IntegerField(required=False),
     'is_enabled': forms.BooleanField(required=False),
     'staff_id': forms.IntegerField(),
+    'branch_id': forms.IntegerField(required=False),
     'phone_private': forms.BooleanField(required=False),
     'sale_enabled': forms.BooleanField(required=False),
     'order_sms_inform': forms.BooleanField(required=False),
     'order_sms_attach': forms.BooleanField(required=False),
 })
 @validate_json_args({
+    'authority': forms.CharField(max_length=20, required=False),
     'order_bonus': forms.CharField(max_length=60, required=False),
     'new_customer_bonus': forms.CharField(max_length=60, required=False),
     'manage_desks': forms.CharField(max_length=1000, required=False),
@@ -1911,6 +1924,7 @@ def modify_staff_profile(request, token, staff_id, **kwargs):
         position: 职位
         guest_channel: 所属获客渠道, 0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理
         description: 备注
+        branch_id: 所属门店ID
         authority: 权限
         status: 状态, 0: 待审核, 1: 审核通过
         is_enabled: 是否可用, True/False
@@ -1936,16 +1950,26 @@ def modify_staff_profile(request, token, staff_id, **kwargs):
     if staff.hotel != request.admin.hotel:
         return err_response('err_2', '权限错误')
 
+    if 'branch_id' in kwargs:
+        try:
+            branch = HotelBranch.objects.get(id=kwargs['branch_id'])
+            # 不能修改为其他酒店的门店
+            if staff.hotel != branch.hotel:
+                return err_response('err_4', '门店不存在')
+            staff.branch = branch
+        except ObjectDoesNotExist:
+            return err_response('err_4', '门店不存在')
+
     staff_keys = ('staff_number', 'gender', 'position', 'guest_channel',
-                  'description', 'authority', 'status', 'is_enabled',
-                  'phone_private', 'sale_enabled', 'order_sms_inform',
-                  'order_sms_attach')
+                  'description', 'status', 'is_enabled', 'phone_private',
+                  'sale_enabled', 'order_sms_inform', 'order_sms_attach')
     for k in staff_keys:
         if k in kwargs:
             setattr(staff, k, kwargs[k])
 
     staff_json_keys = ('order_bonus', 'new_customer_bonus', 'manage_desks',
-                       'manage_areas', 'manage_channel', 'communicate')
+                       'manage_areas', 'manage_channel', 'communicate',
+                       'authority')
     for k in staff_json_keys:
         if k in kwargs:
             setattr(staff, k, json.dumps(kwargs[k]))

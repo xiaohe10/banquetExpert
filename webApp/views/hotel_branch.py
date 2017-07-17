@@ -109,6 +109,88 @@ def get_areas(request, token, branch_id, order=2):
 
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
+    'area_id': forms.IntegerField(required=False),
+    'branch_id': forms.IntegerField(required=False),
+    'offset': forms.IntegerField(min_value=0, required=False),
+    'limit': forms.IntegerField(min_value=0, required=False),
+})
+@validate_staff_token()
+def get_desks(request, token, area_id=None, branch_id=None, offset=0, limit=10):
+    """获取门店的桌位列表
+
+    :param token: 令牌(必传)
+    :param area_id: 区域ID，不传返回所有区域桌位
+    :param branch_id: 门店ID
+    :param offset: 起始值
+    :param limit: 偏移量
+    :return:
+        count: 桌位数
+        list:
+            desk_id: 桌位ID
+            number: 编号
+            order: 排序
+            min_guest_num: 可容纳最小人数
+            max_guest_num: 可容纳最大人数
+            expense: 费用说明(数组)
+            type: 房间类型
+            facility: 房间设施（数组）
+            picture: 图片
+            is_beside_window: 是否靠窗
+            description: 备注
+            is_enabled: 是否有效
+            create_time: 创建时间
+    """
+
+    if area_id:
+        try:
+            area = Area.objects.get(id=area_id)
+        except ObjectDoesNotExist:
+            return err_response('err_4', '该区域不存在')
+
+        # 只能查看自己酒店的门店区域
+        if area.branch.hotel != request.staff.hotel:
+            return err_response('err_2', '权限错误')
+
+        c = area.desks.count()
+        ds = area.desks.order_by('-order')[offset:offset + limit]
+    elif branch_id:
+        try:
+            branch = HotelBranch.objects.get(id=branch_id)
+        except ObjectDoesNotExist:
+            return err_response('err_4', '该门店不存在')
+
+        # 只能查看自己酒店的门店区域
+        if branch.hotel != request.staff.hotel:
+            return err_response('err_2', '权限错误')
+
+        qs = Desk.objects.filter(area__branch=branch)
+        c = qs.count()
+        ds = qs.order_by('-order')[offset:offset + limit]
+    else:
+        branch = request.staff.branch
+        qs = Desk.objects.filter(area__branch=branch)
+        c = qs.count()
+        ds = qs.order_by('-order')[offset:offset + limit]
+
+    l = [{'desk_id': desk.id,
+          'number': desk.number,
+          'order': desk.order,
+          'min_guest_num': desk.min_guest_num,
+          'max_guest_num': desk.max_guest_num,
+          'expense': json.loads(desk.expense) if desk.expense else [],
+          'type': desk.type,
+          'facility': json.loads(desk.facility) if desk.facility else [],
+          'picture': desk.picture,
+          'is_enabled': desk.is_enabled,
+          'is_beside_window': desk.is_beside_window,
+          'description': desk.description,
+          'create_time': desk.create_time} for desk in ds]
+
+    return corr_response({'count': c, 'list': l})
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
     'branch_id': forms.IntegerField(),
     'area_id': forms.IntegerField(required=False),
     'date': forms.DateField(),
