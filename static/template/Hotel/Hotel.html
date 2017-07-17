@@ -107,7 +107,7 @@
                 <div class="form-group hidden">
                     <label class="col-lg-2 text-right">上传Logo：</label>
                     <div class="col-lg-8">
-                        <div class="py-2">
+                        <div>
                             <img ng-src="form.logo" alt="LOGO">
                             <input type="file" ng-model="form.logo" value="上传Logo"/>
                             <input class="btn btn-secondary btn-sm" type="button" value="清除Logo"/>
@@ -118,11 +118,11 @@
                 <div class="form-group">
                     <label class="col-lg-2 text-right">上传大图：</label>
                     <div class="col-lg-8">
-                        <div class="py-2">
+                        <div>
                             <img ng-src="form.icon" alt="IMAGE">
                         </div>
-                        <div class="py-2">
-                            <input type="file" ng-model="image" value="上传图片"/>
+                        <div>
+                            <input type="file" ng-model="form.image" value="上传图片"/>
                         </div>
                     </div>
                 </div>
@@ -130,7 +130,7 @@
                 <div class="form-group">
                     <label class="col-lg-2 text-right"></label>
                     <div class="col-lg-8">
-                        <div class="py-2">
+                        <div>
                             <button class="btn btn-primary btn-sm" ng-click="submit()">提交</button>
                         </div>
                     </div>

@@ -10,7 +10,7 @@
         <div class="navbar">
             <div class="navbar-inner">
                 <ul class="nav nav-tabs">
-                    <li class="nav-item" ng-repeat="x in area.list|filter:{is_enabled:true}|orderBy:'order'">
+                    <li class="nav-item" ng-repeat="x in Branch.Area.list|filter:{is_enabled:true}|orderBy:'order'">
                         <a ng-click="nav(x.area_id)">{{x.name}}</a>
                     </li>
                     <li class="nav-item">
@@ -40,7 +40,7 @@
             </tr>
             </thead>
             <tbody id="desk-table">
-            <tr ng-repeat="x in data.list">
+            <tr ng-repeat="x in Branch.AreaDesk.list">
                 <td style="width: 80px"><input type="text" ng-model="x.number" value="{{x.number}}"/></td>
                 <td>{{x.min_guest_num}} 人 至 {{x.max_guest_num}} 人</td>
                 <td style="width: 320px">

@@ -37,6 +37,11 @@ Templates = {
     Review: {
         Rank: "Review/Rank.html", // 餐厅排名
         Tutorial: "Review/Tutorial.html"// 中国服务私人订制标准视频教程
+    },
+    // 微课堂
+    MicroCourse: {
+        LiveCourse: "",
+        LiveVideo: ""
     }
 };
 
@@ -131,7 +136,7 @@ StaffApp.filter("dinner_period", function () {
         return TAG[dinner_period];
     }
 });
-StaffApp.filter("status", function () {
+StaffApp.filter("order_status", function () {
     return function (order_status) {
         var TAG = ["已订", "客到", "已完成", "已撤单"];
         return TAG[order_status];
@@ -141,6 +146,12 @@ StaffApp.filter("desk_status", function () {
     return function (desk_status) {
         var TAG = ["空闲", "预定中", "用餐中"];
         return TAG[desk_status];
+    }
+});
+StaffApp.filter("operation_type", function (operation_type) {
+    return function () {
+        var TAG = ["预定", "客到", "翻台", "调桌", "撤单", "补录"];
+        return TAG[operation_type];
     }
 });
 
@@ -285,7 +296,8 @@ StaffApp.directive('loading', function () {
     return {
         replace: true,
         restrict: 'AE',
-        template: '<div id="circle-loading" class="img-circle"><img src="/static/css/image/head1.jpg"></div>',
+        templateUrl: "",
+        template: '<div id="circle-loading" class="progress"><div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">60%</div></div>',
         link: function ($scope, $element, attrs) {
             var top = $(window).height() / 2 - 25;
             var left = $(window).width() / 2 - 25;
@@ -325,6 +337,7 @@ StaffApp.controller('drawerCtrl', function ($routeParams, $rootScope, $scope, $h
 
     var TAG = "drawerCtrl";
 
+    $rootScope.loading = true;
     // 酒店信息
     $rootScope.Hotel = {
         hotel_id: -1,
@@ -335,6 +348,8 @@ StaffApp.controller('drawerCtrl', function ($routeParams, $rootScope, $scope, $h
         owner_name: "杨秀荣",
         create_time: "创建时间"
     };
+    // 员工信息
+    $rootScope.Staff = {};
     // 餐段列表
     $rootScope.MealsTime = {
         lunch: [
@@ -410,77 +425,135 @@ StaffApp.controller('drawerCtrl', function ($routeParams, $rootScope, $scope, $h
             });
         }
     };
+
     var Staff = {
-        // 获取所在酒店信息
+        // 获取员工信息
         getProfile: function (hotel_id) {
-            var url = "/webApp/staff/hotel/";
+            var url = "/webApp/staff/profile/get/";
             var param = {hotel_id: hotel_id};
             $http.post(url, JSON.stringify(param)).success(function (obj) {
                 if (obj.status === "true") {
-                    $rootScope.Hotel = obj.data;
+                    $rootScope.Staff = obj.data;
+                    $rootScope.loading = false;
+                    $rootScope.Authority = {
+                        '0100': true, '0101': true,
+                        '0200': true, '0201': true, '0202': true, '0203': true, '0204': true, '0205': true, '0206': true,
+                        '0300': true, '0301': true, '0302': true, '0303': true, '0304': true, '0305': true,
+                        '0400': true, '0401': true, '0402': true, '0403': true,
+                        '0500': true, '0501': true, '0502': true, '0503': true,
+                        '0600': true, '0601': true,
+                        '0700': true, '0701': true, '0702': true
+                    };
                     $scope.Drawer = [
                         {
                             title: "智能订餐台",
                             menu_id: "SmartOrder",
+                            authority: '0100',
                             item: [
-                                {title: "智能订餐台", item_id: "SmartOrder", enable: false}
+                                {title: "智能订餐台", item_id: "SmartOrder", authority: '0101'}
                             ]
                         },
                         {
                             title: "订单管理",
                             menu_id: "Order",
+                            authority: '0200',
                             item: [
-                                {title: "预定通知单", item_id: "ReserveNotice"},
-                                {title: "历史订单", item_id: "OrderHistory"},
-                                {title: "订单金额录入", item_id: "InsertOrder"},
-                                {title: "订单统计", item_id: "OrderStatistics"},
-                                {title: "来电记录", item_id: "PhoneReserve"},
-                                {title: "操作日志", item_id: "OperationLog"}
+                                {title: "预定通知单", item_id: "ReserveNotice", authority: '0201'},
+                                {title: "历史订单", item_id: "OrderHistory", authority: '0202'},
+                                {title: "订单金额录入", item_id: "InsertOrder", authority: '0203'},
+                                {title: "订单统计", item_id: "OrderStatistics", authority: '0204'},
+                                {title: "来电记录", item_id: "PhoneReserve", authority: '0205'},
+                                {title: "操作日志", item_id: "OperationLog", authority: '0206'}
                             ]
                         },
                         {
                             title: "客户管理",
                             menu_id: "Customer",
+                            authority: '0300',
                             item: [
-                                {title: "客户档案列表", item_id: "CustomerProfiles"},
-                                {title: "客源情况分析", item_id: "CustomerAnalysis"},
-                                {title: "会员价值设置", item_id: "MemberValue"},
-                                {title: "客户档案回收站", item_id: "CustomerRecycleBin"},
-                                {title: "纪念日查询报表", item_id: "AnniversaryReport"}
+                                {title: "客户档案列表", item_id: "CustomerProfiles", authority: '0301'},
+                                {title: "客源情况分析", item_id: "CustomerAnalysis", authority: '0302'},
+                                {title: "会员价值设置", item_id: "MemberValue", authority: '0303'},
+                                {title: "客户档案回收站", item_id: "CustomerRecycleBin", authority: '0304'},
+                                {title: "纪念日查询报表", item_id: "AnniversaryReport", authority: '0305'}
                             ]
                         },
                         {
                             title: "账户管理",
                             menu_id: "Account",
+                            authority: '0400',
                             item: [
-                                {title: "财务报表", item_id: "FinanceManage"},
-                                {title: "短信详单", item_id: "SMSDetails"},
-                                {title: "修改密码", item_id: "AccountManage"}
+                                {title: "财务报表", item_id: "FinanceManage", authority: '0401'},
+                                {title: "短信详单", item_id: "SMSDetails", authority: '0402'},
+                                {title: "修改密码", item_id: "AccountManage", authority: '0403'}
                             ]
                         },
                         {
                             title: "评分审阅",
                             menu_id: "Review",
+                            authority: '0500',
                             item: [
-                                {title: "酒店排名", item_id: "Rank"},
-                                {title: "中国服务私人订制标准视频教程", item_id: "Tutorial"}
-                            ]
-                        },
-                        {
-                            title: "营销管理",
-                            menu_id: "",
-                            item: [
-                                {title: "", item_id: ""}
+                                {title: "我的评分", item_id: "Scoring", authority: '0501'},
+                                {title: "排名", item_id: "Rank", authority: '0502'},
+                                {title: "中国服务私人订制标准视频教程", item_id: "Tutorial", authority: '0503'}
                             ]
                         },
                         {
                             "title": "微课堂管理",
                             menu_id: "MicroCourse",
+                            authority: '0700',
                             item: [
-                                {title: "", item_id: ""}
+                                {title: "直播课堂", item_id: "LiveCourse", authority: '0701'},
+                                {title: "视频管理", item_id: "LiveVideo", authority: '0702'}
+                            ]
+                        },
+                        {
+                            "title": "移动客户端",
+                            menu_id: "App",
+                            authority: '0800',
+                            item: [
+                                {title: "我的客户", item_id: "MyCustomer"},
+                                {title: "我的订单", item_id: "MyOrder"},
+                                {title: "客户管理", item_id: "Customer"},
+                                {
+                                    title: "订单管理",
+                                    item_id: "Order",
+                                    item: [
+                                        {
+                                            title: "查看订单",
+                                            item_id: "VisitOrder"
+                                        },
+                                        {
+                                            title: "查看餐位",
+                                            item_id: "VisitDesk",
+                                            item: []
+                                        }
+                                    ]
+                                }
                             ]
                         }
                     ];
+                } else {
+                    alert(obj.description);
+                    $rootScope.Hotel = {
+                        "hotel_id": 1,
+                        "branch_id": 2,
+                        "name": "北京宴",
+                        "icon": "http://oss.aliyun/banquet/avatar/1.jpg",
+                        "branches_count": 3,
+                        "owner_name": "杨秀荣",
+                        "create_time": "创建时间"
+                    };
+                }
+            });
+        },
+        // 获取所在酒店信息
+        getHotelProfile: function (hotel_id) {
+            var url = "/webApp/staff/hotel/";
+            var param = {hotel_id: hotel_id};
+            $http.post(url, JSON.stringify(param)).success(function (obj) {
+                if (obj.status === "true") {
+                    $rootScope.Hotel = obj.data;
                 } else {
                     alert(obj.description);
                     $rootScope.Hotel = {
@@ -532,6 +605,7 @@ StaffApp.controller('drawerCtrl', function ($routeParams, $rootScope, $scope, $h
 
     // 获取员工信息
     Staff.getProfile();
+    Staff.getHotelProfile();
 });
 
 // Angular路由配置
@@ -553,7 +627,6 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                         $http.post(url, JSON.stringify(param)).success(function (obj) {
                             if (obj.status === "true") {
                                 $scope.Branch = obj.data;
-                                // alert("当前门店:" + $scope.Branch.name);
                             } else {
                                 Log.e(TAG, "getProfile:" + obj.description);
                                 alert(obj.description);
@@ -635,8 +708,11 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                         });
                     }
                 };
+                var Now = new Date();
                 $scope.MealsPeriod = ['午餐', '晚餐', '夜宵'];
                 $scope.weekdays = ["周一", "周二", "周三", "周四", "周五", "周六"];
+                $scope.WeekDays = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+                $scope.Reception = ['VIP', 'VVIP', '贵宾'];
                 $scope.MealsTime = $rootScope.MealsTime.lunch;
                 // 当前门店信息
                 $scope.Branch = {
@@ -676,15 +752,15 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                 };
                 $scope.QueryForm = {
                     branch_id: 0,
-                    date: "2017-07-12",
+                    date: '2017-07-15',//Now.format('yyyy/MM/dd'),
                     dinner_period: 0
                 };
                 // 预定表单
                 $scope.ReserveForm = {
                     // 预定用餐日期
-                    dinner_date: "2017-07-12",
+                    dinner_date: Now.toDateString(),
                     // 预定用餐时间
-                    dinner_time: "23:19:11",
+                    dinner_time: Now.toTimeString(),
                     // 订餐时段(0, '午餐'), (1, '晚餐'), (2, '夜宵')
                     dinner_period: 0,
                     // 姓名
@@ -855,6 +931,7 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                     });
                     // 选择餐段
                     $scope.ReserveForm.dinner_period = $scope.QueryForm.dinner_period;
+                    $scope.ReserveForm.dinner_date.getDay();
                     switch ($scope.QueryForm.dinner_period) {
                         case '0':
                             $scope.MealsTime = $rootScope.MealsTime.lunch;
@@ -951,7 +1028,7 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                     var url = "/webApp/order/submit/";
                     var param = angular.copy($scope.ReserveForm);
                     // 转换数据类型
-                    // param.dinner_period = parseInt(param.dinner_period);
+                    param.dinner_period = parseInt(param.dinner_period);
                     Log.i(TAG, JSON.stringify(param));
                     $http.post(url, JSON.stringify(param)).success(function (obj) {
                         if (obj.status === "true") {
@@ -1034,7 +1111,11 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                 var TAG = Templates.Order.OperationLog;
                 // 门店
                 var Branch = {
-                    // 获取门店的详情
+                    /**
+                     * 获取门店的详情
+                     * @param branch_id 门店id
+                     *
+                     */
                     getProfile: function (branch_id) {
                         var url = "/webApp/hotel_branch/profile/";
                         var param = {branch_id: branch_id};
@@ -1078,9 +1159,9 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                     getAreaDesk: function (branch_id, date, dinner_period) {
                         var url = "/webApp/hotel_branch/desk/list/";
                         var param = {
-                            "branch_id": branch_id
-                            // "date": date,
-                            // "dinner_period": dinner_period
+                            "branch_id": branch_id,
+                            "date": "2017-07-17",
+                            "dinner_period": 0
                         };
                         $http.post(url, JSON.stringify(param)).success(function (obj) {
                             if (obj.status === "true") {
@@ -1096,11 +1177,14 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                     OperationLog: function () {
                         var url = "/webApp/order/log/list/";
                         var param = angular.copy($scope.option);
+                        param.branch_id = parseInt(param.branch_id);
+                        param.area_id = parseInt(param.area_id);
+                        param.desk_id = parseInt(param.desk_id);
                         $http.post(url, param).success(function (obj) {
                             if (obj.status === 0) {
                                 $scope.data = obj.data;
                             } else {
-
+                                $scope.data = {count: 0, list: []};
                             }
                         });
                     }
@@ -1108,7 +1192,7 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                 $scope.option = {
                     date_from: "2017/07/01",
                     date_to: "2017/07/31",
-                    order_id: 1,
+                    // order_id: 1,
                     branch_id: 1,
                     area_id: 1,
                     desk_id: 1,
@@ -1504,23 +1588,9 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                     }
                 };
                 // 标签
-                var labels = [
-                    "一月", "二月", "三月", "四月", "五月", "六月",
-                    "七月", "八月", "九月", "十月", "十一月", "十二月"
-                ];
+                var labels = [];
                 // 数据集
-                var datasets = [
-                    {
-                        data: [0.10, 0.20, 0.30, 0.40, 0.10, 0.20],
-                        backgroundColor: Color[0],
-                        label: '数据集-1'
-                    },
-                    {
-                        data: [0.10, 0.20, 0.30, 0.40, 0.10, 0.20],
-                        backgroundColor: Color[1],
-                        label: '数据集-2'
-                    }
-                ];
+                var datasets = [];
                 // 数据
                 var data = {
                     labels: labels,
@@ -1740,31 +1810,11 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                     '#ffccff', '#ccffcc', '#ffcccc', '#ccccff', '#ffccff', '#ccffcc',
                     '#ffcccc', '#ccccff', '#ffccff', '#ccffcc', '#ffcccc', '#ccccff'
                 ];
-                var Month = [
-                    "一月", "二月", "三月", "四月", "五月", "六月",
-                    "七月", "八月", "九月", "十月", "十一月", "十二月"
-                ];
                 var config = {
-                    type: 'bar', // doughnut
+                    type: 'doughnut', // doughnut
                     data: {
-                        datasets: [
-                            {
-                                data: [0.10, 0.20, 0.30, 0.40, 0.10, 0.20, 0.30, 0.40, 0.10, 0.20, 0.30, 0.40],
-                                backgroundColor: Color,
-                                label: '数据集-1'
-                            },
-                            {
-                                data: [0.10, 0.20, 0.30, 0.40, 0.10, 0.20, 0.30, 0.40, 0.10, 0.20, 0.30, 0.40],
-                                backgroundColor: Color,
-                                label: '数据集-2'
-                            },
-                            {
-                                data: [0.10, 0.20, 0.30, 0.40, 0.10, 0.20, 0.30, 0.40, 0.10, 0.20, 0.30, 0.40],
-                                backgroundColor: Color,
-                                label: '数据集-3'
-                            }
-                        ],
-                        labels: Month
+                        datasets: [],
+                        labels: ["活跃", "沉睡", "流失", "全部"]
                     },
                     options: {
                         responsive: true,
@@ -1773,7 +1823,7 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                         },
                         title: {
                             display: true,
-                            text: '客源流动监测图'
+                            text: '员工客户统计'
                         },
                         animation: {
                             animateScale: true,
@@ -1784,17 +1834,30 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                 var chart1 = document.getElementById('chart1').getContext('2d');
                 var myDoughnut = new Chart(chart1, config);
 
-                var url = "/webApp/guest/";
-                var param = {};
-                $http.post(url, JSON.stringify(param)).success(function (obj) {
-                    if (obj.status === "true") {
-                        config.data.datasets.push(obj.data);
-                        myDoughnut.update();
-                    } else {
-                        // $scope.data = {count: 0, list: []};
-                        alert("无订单！");
+                // 获取员工的客户统计
+                var Staff = {
+                    getGuestStatistics: function () {
+                        var url = "/webApp/staff/guest/statistic/";
+                        var param = {};
+                        $http.post(url, JSON.stringify(param)).success(function (obj) {
+                            if (obj.status === "true") {
+                                var rawData = obj.data;
+                                var data = [
+                                    rawData.active_guest_number,
+                                    rawData.sleep_guest_number,
+                                    rawData.lost_guest_number,
+                                    rawData.all_guest_number
+                                ];
+                                config.data.datasets.push({data: data, backgroundColor: Color, label: "员工客户统计"});
+                                myDoughnut.update();
+                            } else {
+                                // $scope.data = {count: 0, list: []};
+                                alert("无订单！");
+                            }
+                        });
                     }
-                });
+                };
+                Staff.getGuestStatistics();
             }
         })
         .when('/Customer/CustomerProfiles', {

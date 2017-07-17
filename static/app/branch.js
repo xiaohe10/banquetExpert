@@ -78,18 +78,35 @@ BranchApp.service('BranchService', function ($rootScope, $http) {
         });
     }
 });
+BranchApp.service('LocationService', function () {
+    this.getQueryParams = function () {
+        var QueryString = window.location.search;
+        QueryString = QueryString.substring(1, QueryString.length);
+        var ParamArray = QueryString.split("&");
+        var QueryParams = {};
+        angular.forEach(ParamArray, function (Param) {
+            var KeyValue = Param.split("=");
+            QueryParams[KeyValue[0]] = KeyValue[1];
+        });
+        return QueryParams;
+    }
+});
 
 // 侧边导航栏控制器
-BranchApp.controller('drawerCtrl', function ($routeParams, $rootScope, $location, $scope, $http) {
+BranchApp.controller('drawerCtrl', function ($routeParams, $rootScope, $scope, $http, LocationService) {
 
     var TAG = "drawerCtrl";
     // 获取参数
-    $rootScope.branch_id = $routeParams.branch_id;
-    Log.i(TAG, $rootScope.branch_id);
+    // $rootScope.branch_id = $location.search().branch_id;
+    // Log.i(TAG, $rootScope.branch_id);
 
+    var params = LocationService.getQueryParams();
+    Log.i(TAG, JSON.stringify(params));
+    // 设置全局的门店ID
+    $rootScope.branch_id = parseInt(params.id);
     // 门店信息
     $rootScope.Branch = {
-        branch_id: -1,
+        branch_id: parseInt(params.id),
         name: "未登录"
     };
     // 餐段列表
@@ -133,15 +150,17 @@ BranchApp.controller('drawerCtrl', function ($routeParams, $rootScope, $location
 });
 
 // Angular路由配置
-BranchApp.config(['$routeProvider', function ($routeProvider) {
+BranchApp.config(['$routeProvider', '$locationProvider', function ($routeProvider) {
 
     // 【门店】预订管理
     $routeProvider
-        .when('/Reserve/Reserve/:branch_id', {
-            templateUrl: "./template/" + Templates.Reserve.Reserve, controller: function ($routeParams, $rootScope, $scope, $http) {
+        .when('/Reserve/Reserve', {
+            templateUrl: "./template/" + Templates.Reserve.Reserve,
+            controller: function ($routeParams, $rootScope, $scope, LocationService, $http) {
                 var TAG = Templates.Reserve.Reserve;
                 // 获取参数
-                $rootScope.branch_id = $routeParams.branch_id;
+                var Params = LocationService.getQueryParams();
+                $rootScope.branch_id = parseInt(Params.id);
                 Log.i(TAG, $rootScope.branch_id);
                 // 初始化门店店信息
                 $scope.form = {
@@ -243,15 +262,14 @@ BranchApp.config(['$routeProvider', function ($routeProvider) {
         .when('/Reserve/AreaDesk', {
             templateUrl: "./template/" + Templates.Reserve.AreaDesk, controller: function ($rootScope, $scope, $modal, $http) {
                 var TAG = Templates.Reserve.AreaDesk;
-                $scope.area = {count: 0, list: []};
-                $scope.desk = {};
+                $scope.Branch.Area = {count: 0, list: []};
                 $scope.pages = [1, 2, 3, 4, 5, 6, 7];
                 // 【门店】获取门店区域列表area/list/";
                 var url = "/webApp/admin/hotel_branch/area/list/";
                 var param = {branch_id: $rootScope.branch_id};
                 $http.post(url, JSON.stringify(param)).success(function (obj) {
                     if (obj.status === "true") {
-                        $scope.area = obj.data;
+                        $scope.Branch.Area = obj.data;
                     } else {
                         alert(obj.description);
                     }
@@ -397,12 +415,12 @@ BranchApp.config(['$routeProvider', function ($routeProvider) {
                 $scope.nav = function (area_id) {
                     Log.i(TAG, "选择区域：" + area_id);
                     var url = "/webApp/admin/hotel_branch/desk/list/";
-                    var param = {area_id: area_id, branch_id:$rootScope.Branch.branch_id};
+                    var param = {area_id: area_id, branch_id: $rootScope.Branch.branch_id};
                     $http.post(url, JSON.stringify(param)).success(function (obj) {
                         if (obj.status === "true") {
                             $scope.area_id = area_id;
-                            $scope.desk = obj.data;
-                            $scope.desk.list.forEach(function (obj) {
+                            $scope.Branch.AreaDesk = obj.data;
+                            $scope.Branch.AreaDesk.list.forEach(function (obj) {
                                 if (obj.facility === "") {
                                     obj.facility = [];
                                 }
@@ -419,7 +437,8 @@ BranchApp.config(['$routeProvider', function ($routeProvider) {
                                 }
                             });
                         } else {
-                            $scope.desk = {};
+                            $scope.Branch.AreaDesk = {count: 0, list: []};
+                            alert("该区域无空闲桌位");
                         }
                     });
                 };
@@ -508,6 +527,7 @@ BranchApp.config(['$routeProvider', function ($routeProvider) {
                 });
                 // 保存门店区域列表
                 $scope.save = function () {
+                    var data = angular.copy($scope.data);
                     // 【添加】【修改】【删除】区域的请求
                     var request = {
                         // 批量增加门店的餐厅区域
@@ -515,7 +535,7 @@ BranchApp.config(['$routeProvider', function ($routeProvider) {
                             url: "/webApp/admin/hotel_branch/area/add/",
                             param: {
                                 branch_id: $rootScope.branch_id,
-                                list: $scope.data.list.filter(function (item) {
+                                list: data.list.filter(function (item) {
                                     // 无id标记的是添加的数据
                                     return item.hasOwnProperty('area_id') === false;
                                 })
@@ -525,7 +545,7 @@ BranchApp.config(['$routeProvider', function ($routeProvider) {
                         modify: {
                             url: "/webApp/admin/hotel_branch/area/modify/",
                             param: {
-                                list: $scope.data.list.filter(function (item) {
+                                list: data.list.filter(function (item) {
                                     // 有id标记的是原有的数据
                                     return item.hasOwnProperty('area_id') === true;
                                 })
