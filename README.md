@@ -1095,7 +1095,7 @@ URL：webApp/order/search/ <br>
 | guest_number | 客人数量 |
 | table_count   | 餐位数   |
 | staff_description | 员工备注  |
-| desks | 桌位ID数组 |
+| desks | 桌位ID和number的数组 |
 | internal_channel | 内部获客渠道, 即接单人名字, 如果存在 |
 | external_channel | 外部获客渠道, 即外部渠道名称, 如果存在 |
 
@@ -1130,7 +1130,7 @@ URL：webApp/order/search/ <br>
             "contact":"18813101211",
             "guest_number":10,
             "table_count":3,
-            "desks":[1,3,5],
+            "desks":[{"desk_id":1,"number":"309"},{"desk_id":2,"number":"312"},{"desk_id":3,"number":"311"}],
             "staff_description":"备注",
             "internal_channel":"刘光艳",
             "external_channel":"美团"
@@ -2467,7 +2467,7 @@ URL：webApp/score/list/ <br>
 | count | 订单数量 |
 | list | 订单列表 |
 | 以下为list中的数据 |
-| score_id  | 评分记录ID    |
+| score_id  | 评分记录ID，如果ID为0则表示暂无评分    |
 | order_id  | 订单ID |
 | create_time | 创建日期 |
 | cancel_time | 撤销日期 |
@@ -2533,7 +2533,7 @@ URL：webApp/score/list/ <br>
 
 
 ## 获取评分详情
-URL：webApp/score/matrix/ <br>
+URL：webApp/score/profile/ <br>
 请求方式：POST
 
 | 参数名称       | 含义             | 是否必选       |
@@ -2725,7 +2725,7 @@ URL：webApp/score/submit/ <br>
 	"status":"true",
 	"data":[
 		{
-			"score_id":"001"
+			"score_id":1
 		}
 	]
 }

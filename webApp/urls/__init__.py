@@ -2,7 +2,7 @@ from django.conf.urls import include, url
 
 from webApp.views import common
 from . import super_admin, admin, hotel, hotel_branch, order, guest, staff, \
-    course, live, intelligent_ordering
+    course, live, score, intelligent_ordering
 
 urlpatterns = [
     url(r'^upload/file/', common.upload_android_app, name='upload_file'),
@@ -17,6 +17,7 @@ urlpatterns = [
     url(r'^staff/', include(staff.urlpatterns, namespace='staff')),
     url(r'^course/', include(course.urlpatterns, namespace='course')),
     url(r'^live/', include(live.urlpatterns, namespace='live')),
+    url(r'^score/', include(score.urlpatterns, namespace='score')),
     url(r'^intelligent_ordering/', include(
         intelligent_ordering, namespace='intelligent_ordering')),
 ]

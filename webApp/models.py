@@ -688,6 +688,8 @@ class OrderScore(models.Model):
     multi_table_transform_score = models.IntegerField(default=None, null=True)
     check_multi_table_transform_score = models.IntegerField(
         default=None, null=True)
+    # 总分
+    score = models.FloatField(default=0.00)
 
     # 创建时间
     create_time = models.DateTimeField(default=timezone.now, db_index=True)
@@ -872,3 +874,14 @@ class ValidationCode(models.Model):
                 break
         r.save()
         return r.code
+
+
+class Authority(models.Model):
+    """权限表"""
+
+    # 中文名
+    title = models.CharField(max_length=32, default='')
+    # 英文名
+    name = models.CharField(max_length=32, default='')
+    # 所属权限
+    parent_id = models.IntegerField(default=0)

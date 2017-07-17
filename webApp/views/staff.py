@@ -597,7 +597,7 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
     if request.staff.guest_channel != 2:
         rs = rs.filter(Q(internal_channel=request.staff))
 
-    if 'search_key' in kwargs:
+    if 'search_key' in kwargs and kwargs['search_key']:
         rs = rs.filter(Q(name__icontains=kwargs['search_key']) |
                        Q(contact__icontains=kwargs['search_key']))
 
