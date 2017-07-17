@@ -78,7 +78,7 @@ URL：webApp/staff/register/ <br>
 | phone         | 手机号          |         yes    |
 | password      | 密码（MD5加密后结果，32位）  |         yes    |
 | validation_code   | 验证码   |   yes |
-| hotel_id      | 酒店ID          |         yes    |
+| branch_id      | 门店ID          |         yes    |
 | staff_number  | 员工编号        |         yes    |
 | name          | 姓名            |         yes    |
 | gender        | 性别，0: 保密, 1: 男, 2: 女, 默认为0   | yes |
@@ -92,7 +92,7 @@ URL：webApp/staff/register/ <br>
 	"phone":"18813101211",
 	"password":"f344e6af76dba76214024c7b327eff78",
 	"validation_code":"123456",
-	"hotel_id":12,
+	"branch_id":12,
 	"staff_number":"2017213464",
 	"name":"小张",
 	"gender":1,
@@ -252,6 +252,8 @@ URL：webApp/staff/profile/get/ <br>
 | gender| 性别   |
 | position| 职位   |
 | guest_channel | 所属获客渠道, 0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理 |
+| branch_id | 所属门店ID    |
+| branch_name   | 所属门店名 |
 | description| 备注   |
 | authority| 权限等级 |
 | create_time| 创建时间|
@@ -270,6 +272,8 @@ URL：webApp/staff/profile/get/ <br>
 		"guest_channel":0,
 		"description":"备注",
 		"authority":"权限等级",
+		"branch_id":1,
+		"branch_name":"北京宴总店",
 		"icon":"http://oss.aliyun/banquet/avatar/1.jpg"
 		"create_time":"创建时间",
 	}
@@ -296,7 +300,6 @@ URL：webApp/staff/profile/modify/ <br>
 | position      | 职位     |         no   |
 | guest_channel      | 所属获客渠道, 0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理   |         no   |
 | description      | 备注，最多100字符   |         no   |
-| authority      | 权限    |         no   |
 | icon      | 头像（文件）    |         no   |
 
 请求示例:
@@ -311,7 +314,6 @@ URL：webApp/staff/profile/modify/ <br>
 	"position":"前台",
 	"guest_channel":0,
 	"description":"备注",
-	"authority":"权限等级",
 	"icon":[FILE]
 }
 ```
@@ -869,6 +871,85 @@ URL：webApp/hotel_branch/area/list/ <br>
 | err_3 | 不存在该员工 |
 | err_4 | 门店不存在 |
 | err_5 | 餐厅区域不存在 |
+
+
+## 获取门店的桌位列表（根据order逆序排列）
+URL：webApp/hotel_branch/desk/list/ <br>
+请求方式：POST <br>
+请求参数：
+
+| 参数名称       | 含义             | 是否必选       |
+|:------------- |:---------------| :-------------:|
+| token         | 令牌          |         yes    |
+| area_id  | 区域ID，不传时获取所有区域的桌位 | no   |
+| branch_id | 门店ID，不传时获取自己所在门店  | no    |
+| offset | 起始值（默认0） | no |
+| limit | 偏移量（默认10） | no |
+
+请求示例：
+
+```
+{
+    "token":"129ASDFIOJIO3RN23U12934INASDF",
+    "area_id":1
+}
+```
+
+返回参数：
+
+| 参数名称       | 含义             |
+|:------------- |:---------------|
+| count | 桌位数  |
+| list | 桌位列表 |
+| 以下为list中的数据    |
+| desk_id  | 桌位 ID    |
+| number  | 编号   |
+| order  | 排序  |
+| min_guest_num | 最小容纳人数    |
+| max_guest_num | 最大容纳人数    |
+| expense  | 费用说明  |
+| type  | 类型    |
+| facility  | 设施（数组）    |
+| picture   | 照片    |
+| is_beside_window    | 是否靠窗  |
+| description   | 备注    |
+| create_time   | 创建时间  |
+
+返回示例：
+
+```
+{
+	"status":"true",
+	"data":{
+	    "count":20,
+	    "list":{[
+		    "desk_id":1,
+		    "number":"201",
+		    "order":1,
+		    "min_guest_num":10,
+		    "max_guest_num":15,
+		    "expense":"收取15%服务费",
+		    "type":"豪华包间",
+		    "facility":["电脑","吸烟区"],
+		    "picture":"图片地址",
+		    "is_beside_window":"True",
+		    "description":"",
+		    "create_time":"创建时间"
+		    ],
+		    ...
+		}
+	}
+}
+```
+
+错误代码：
+
+| 错误代码      | 含义             |
+|:------------- |:---------------|
+| err_1 | 参数不正确（缺少参数或者不符合格式） |
+| err_2 | 权限错误 |
+| err_3 | 员工不存在 |
+| err_4 | 该区域不存在 |
 
 
 ## 获取门店某一天某餐段的桌位使用情况列表（根据order逆序排列）
@@ -2485,7 +2566,7 @@ URL：webApp/score/list/ <br>
 | desks | 桌位ID数组 |
 | internal_channel | 内部获客渠道, 即接单人名字, 如果存在 |
 | external_channel | 外部获客渠道, 即外部渠道名称, 如果存在 |
-| score | 总分    |
+| total_score | 总分    |
 
 
 返回示例：
@@ -2517,7 +2598,7 @@ URL：webApp/score/list/ <br>
             "desks":[1,3,5],
             "internal_channel":"刘光艳",
             "external_channel":"美团",
-            "score":200
+            "total_score":200
             ],
 			...
 	    }
@@ -4906,7 +4987,7 @@ URL：webApp/admin/hotel/staff/add/ <br>
 | 参数名称       | 含义             | 是否必选       |
 |:------------- |:---------------| :-------------:|
 | token         | 令牌          |         yes    |
-| hotel_id  | 酒店 ID | yes   |
+| branch_id  | 门店 ID | yes   |
 | phone |   手机号 | yes   |
 | password  | 密码    | yes   |
 | name  | 员工姓名  | yes   |
@@ -4924,7 +5005,7 @@ URL：webApp/admin/hotel/staff/add/ <br>
 ```
 {
     "token":"129ASDFIOJIO3RN23U12934INASDF",
-    "hotel_id":1,
+    "branch_id":1,
     "phone":"13000000000",
     "name":"张三",
     "id_number":"430723111111111111",
@@ -5032,6 +5113,8 @@ URL：webApp/admin/hotel/staff/profile/get/ <br>
 | icon  | 头像    |
 | gender    | 性别   |
 | position  | 职位   |
+| branch_id | 门店ID  |
+| branch_name   | 门店名   |
 | guest_channel | 所属获客渠道, 0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理 |
 | description   | 备注   |
 | authority | 权限等级 |
@@ -5061,6 +5144,8 @@ URL：webApp/admin/hotel/staff/profile/get/ <br>
 		"position":"前台",
 		"guest_channel":0,
 		"description":"备注",
+		"branch_id":1,
+		"branch_name":"北京宴总店",
 		"authority":[],
 		"phone_private": false,
         "sale_enabled": true,
@@ -5114,6 +5199,7 @@ URL：webApp/admin/hotel/staff/profile/modify/ <br>
 | token         | 登录口令          |         yes  |
 | staff_id  | 员工 ID | yes   |
 | status    | 员工状态，0: 待审核，1: 审核通过   | no    |
+| branch_id | 门店ID  | no    |
 | staff_number      | 员工编号     |         no   |
 | gender      | 性别    |         no   |
 | position      | 职位     |         no   |
@@ -5139,6 +5225,7 @@ URL：webApp/admin/hotel/staff/profile/modify/ <br>
 {
 	"token":"129ASDFIOJIO3RN23U12934INASDF",
 	"staff_number":"2017013434",
+	"branch_id":1,
 	"status":1,
 	"gender":1,
 	"position":"前台",

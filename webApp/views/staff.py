@@ -14,7 +14,7 @@ from django.core.validators import RegexValidator
 from ..utils.decorator import validate_args, validate_staff_token
 from ..utils.response import corr_response, err_response
 from ..utils.http import send_message
-from ..models import Staff, Hotel, Order, Guest, Desk, \
+from ..models import Staff, Hotel, HotelBranch, Order, Guest, Desk, Authority, \
     ValidationCode as ValidationCodeModel
 
 
@@ -50,15 +50,15 @@ def get_validation_code(request, phone):
     'gender': forms.IntegerField(min_value=0, max_value=2, required=False),
     'position': forms.CharField(max_length=20),
     'id_number': forms.CharField(min_length=18, max_length=18),
-    'hotel_id': forms.IntegerField(),
+    'branch_id': forms.IntegerField(),
 })
-def register(request, phone, password, validation_code, hotel_id, **kwargs):
+def register(request, phone, password, validation_code, branch_id, **kwargs):
     """员工注册
 
     :param phone: 手机号(必传)
     :param password: 密码(必传)
     :param validation_code: 验证码(必传)
-    :param hotel_id: 酒店ID(必传)
+    :param branch_id: 门店ID(必传)
     :param kwargs:
         staff_number: 员工编号
         name: 姓名(必传)
@@ -69,9 +69,9 @@ def register(request, phone, password, validation_code, hotel_id, **kwargs):
     """
 
     try:
-        hotel = Hotel.enabled_objects.get(id=hotel_id)
+        branch = HotelBranch.enabled_objects.get(id=branch_id)
     except Hotel.DoesNotExist:
-        return err_response('err_4', '酒店不存在')
+        return err_response('err_4', '门店不存在')
 
     if Staff.objects.filter(phone=phone).count() > 0:
         return err_response('err_2', '该手机号已经注册过')
@@ -85,7 +85,8 @@ def register(request, phone, password, validation_code, hotel_id, **kwargs):
     staff_keys = ('staff_number', 'name', 'gender', 'position', 'id_number')
     with transaction.atomic():
         try:
-            staff = Staff(phone=phone, password=password, hotel=hotel)
+            staff = Staff(phone=phone, password=password, hotel=branch.hotel,
+                          branch=branch)
             staff.update_token()
             for k in staff_keys:
                 if k in kwargs:
@@ -149,6 +150,41 @@ def modify_password(request, token, old_password, new_password):
 
 @validate_args({
     'token': forms.CharField(min_length=32, max_length=32),
+})
+def get_web_authority(request, token):
+    """根据员工的权限，返回相应的模块给web端
+
+    :param token: 令牌(必传)
+
+    """
+
+    # 获取当前员工的权限
+    authority_list = json.loads(request.staff.authority) \
+        if request.staff.authority else []
+
+    # 根据数据库的权限表生成web菜单表(id小于27的为web端权限)
+    authorities = Authority.objects.filter(id__lt=27)
+    result = []
+    d = {}
+    for authority in authorities:
+        if authority.id in authority_list:
+            if authority.parent_id == 0:
+                if d != {}:
+                    result.append(d)
+                d = {'title': authority.title,
+                     'menu_id': authority.name,
+                     'item': []}
+            else:
+                d['item'].append({'title': authority.title,
+                                  'item_id': authority.item_id})
+    if d != {}:
+        result.append(d)
+
+    return corr_response(result)
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
     'staff_id': forms.IntegerField(required=False),
 })
 @validate_staff_token()
@@ -164,6 +200,8 @@ def get_profile(request, token, staff_id=None):
         icon: 员工头像
         gender: 性别
         position: 职位
+        branch_id: 所属门店ID
+        branch_name: 所属门店名
         guest_channel: 所属获客渠道, 0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理
         description: 备注
         authority: 权限
@@ -186,6 +224,8 @@ def get_profile(request, token, staff_id=None):
          'guest_channel': staff.guest_channel,
          'description': staff.description,
          'authority': staff.authority,
+         'branch_id': staff.branch.id,
+         'branch_name': staff.branch.name,
          'create_time': staff.create_time}
     return corr_response(r)
 
@@ -200,7 +240,6 @@ def get_profile(request, token, staff_id=None):
     'guest_channel': forms.IntegerField(
         min_value=0, max_value=3, required=False),
     'description': forms.CharField(max_length=200, required=False),
-    'authority': forms.CharField(max_length=20, required=False),
 })
 @validate_staff_token()
 def modify_profile(request, token, **kwargs):
@@ -213,7 +252,6 @@ def modify_profile(request, token, **kwargs):
         position: 职位
         guest_channel: 所属获客渠道, 0:无, 1:高层管理, 2:预定员和迎宾, 3:客户经理
         description: 备注
-        authority: 权限
         icon: 头像, [file]格式
     :return: 200
     """

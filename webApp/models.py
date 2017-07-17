@@ -275,6 +275,8 @@ class Staff(models.Model):
 
     # 所属酒店
     hotel = models.ForeignKey('Hotel', models.CASCADE, 'staffs')
+    # 所属门店
+    branch = models.ForeignKey('HotelBranch', models.CASCADE, 'staffs')
 
     # 管理器
     objects = models.Manager()
@@ -689,7 +691,7 @@ class OrderScore(models.Model):
     check_multi_table_transform_score = models.IntegerField(
         default=None, null=True)
     # 总分
-    score = models.FloatField(default=0.00)
+    total_score = models.FloatField(default=0.00)
 
     # 创建时间
     create_time = models.DateTimeField(default=timezone.now, db_index=True)

@@ -11,6 +11,8 @@ urlpatterns = [
     url(r'^login/$', login, name='login'),
     # 修改密码
     url(r'^pass_modify/$', modify_password, name='modify_password'),
+    # 根据员工权限获取web端模块
+    url(r'^web/authority/$', get_web_authority, name='web_authority'),
     # 获取资料
     url(r'^profile/get/$', get_profile, name='get_profile'),
     # 修改个人资料
