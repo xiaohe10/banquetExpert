@@ -36,7 +36,8 @@ Templates = {
     // 评分审阅
     Review: {
         Rank: "Review/Rank.html", // 餐厅排名
-        Tutorial: "Review/Tutorial.html"// 中国服务私人订制标准视频教程
+        Scoring: "Review/Scoring.html", // 我的评分
+        Tutorial: "Review/Tutorial.html" // 中国服务私人订制标准视频教程
     },
     // 微课堂
     MicroCourse: {
@@ -2169,7 +2170,29 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                 }
             }
         })
-        .when('/Review/Tutorial', {templateUrl: "./template/" + Templates.Review.Tutorial});
+        .when('/Review/Scoring', {
+            templateUrl: "./template/" + Templates.Review.Scoring, controller: function () {
+
+            }
+        })
+        .when('/Review/Tutorial', {
+            templateUrl: "./template/" + Templates.Review.Tutorial, controller: function () {
+
+            }
+        });
+
+    // 【微课堂】微课堂
+    $routeProvider
+        .when('/MicroCourse/LiveCourse', {
+            templateUrl: "./template/" + Templates.MicroCourse.LiveCourse, controller: function () {
+
+            }
+        })
+        .when('/MicroCourse/LiveVideo', {
+            templateUrl: "./template/" + Templates.MicroCourse.LiveVideo, controller: function () {
+
+            }
+        });
 
     $routeProvider
         .otherwise({redirectTo: "/SmartOrder/SmartOrder"});

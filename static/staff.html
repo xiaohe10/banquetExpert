@@ -42,13 +42,15 @@
             <div class="panel-group" id="drawer">
                 <div class="panel panel-default" ng-repeat="menu in Drawer" ng-if="Authority[menu.authority]===true">
                     <div class="panel-heading" data-toggle="collapse" data-parent="#drawer" data-target="#{{menu.menu_id}}">
-                        <h4 class="panel-title"> {{menu.title}} </h4>
+                        <h4 class="panel-title"><span class="glyphicon glyphicon-leaf"></span> {{menu.title}} </h4>
                     </div>
                     <div class="panel-collapse collapse" id="{{menu.menu_id}}">
                         <!--<div class="panel-body">-->
                         <div class="list-group">
                             <div class="list-group-item" ng-repeat="x in menu.item" ng-if="Authority[x.authority]===true">
-                                <a href="#/{{menu.menu_id}}/{{x.item_id}}">{{x.title}}</a>
+                                <a href="#/{{menu.menu_id}}/{{x.item_id}}">
+                                    <span class="glyphicon glyphicon-briefcase"></span>{{x.title}}
+                                </a>
                             </div>
                         </div>
                         <!--</div>-->
