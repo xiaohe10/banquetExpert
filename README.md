@@ -2533,7 +2533,7 @@ URL：webApp/score/list/ <br>
 
 
 ## 获取评分详情
-URL：webApp/score/matrix/ <br>
+URL：webApp/score/profile/ <br>
 请求方式：POST
 
 | 参数名称       | 含义             | 是否必选       |
@@ -2725,7 +2725,7 @@ URL：webApp/score/submit/ <br>
 	"status":"true",
 	"data":[
 		{
-			"score_id":"001"
+			"score_id":1
 		}
 	]
 }

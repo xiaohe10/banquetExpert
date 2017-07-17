@@ -187,3 +187,7 @@ def search_scores(request, token, status=0, offset=0, limit=10, order=1,
                           'guest_number': guest_number,
                           'guest_consumption': guest_consumption,
                           'list': l})
+
+
+def add_score(request):
+    pass

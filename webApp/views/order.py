@@ -88,7 +88,7 @@ def search_orders(request, token, status=0, offset=0, limit=10, order=1,
     else:
         rs = Order.objects.filter(Q(branch__hotel=hotel, status=3))
 
-    if 'search_key' in kwargs:
+    if 'search_key' in kwargs and kwargs['search_key']:
         rs = rs.filter(Q(name__icontains=kwargs['search_key']) |
                        Q(contact__icontains=kwargs['search_key']))
 
