@@ -11,7 +11,6 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from ..utils.decorator import validate_args, validate_staff_token
 from ..utils.response import corr_response, err_response
-from ..utils.http import send_message
 from ..models import Staff, Hotel, Order, Guest, Desk, OrderScore
 
 
@@ -190,6 +189,7 @@ def search_scores(request, token, status=0, offset=0, limit=10, order=1,
 
 
 @validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
     'score_id': forms.IntegerField()
 })
 def score_profile(request, token, score_id):
@@ -199,64 +199,225 @@ def score_profile(request, token, score_id):
     :param score_id: 评分ID(必传)
 
     """
+
     try:
         score = OrderScore.objects.get(id=score_id)
     except ObjectDoesNotExist:
         return err_response('err_4', '该评分不存在')
 
+    # 读取评分项
+    with open('data/personal_tailor.json') as json_file:
+        json_data = json.loads(json_file)
+
     d = {'id': score.id,
-         'door_card_picture': score.door_card_picture,
-         'door_card_score': score.door_card_score,
-         'check_door_card_score': score.check_door_card_score,
-         'sand_table_picture': score.sand_table_picture,
-         'sand_table_score': score.sand_table_score,
-         'check_sand_table_score': score.check_sand_table_score,
-         'welcome_screen_picture': score.welcome_screen_picture,
-         'welcome_screen_score': score.welcome_screen_score,
-         'check_welcome_screen_score': score.check_welcome_screen_score,
-         'atmosphere_picture': score.atmosphere_picture,
-         'atmosphere_score': score.atmosphere_score,
-         'check_atmosphere_score': score.check_atmosphere_score,
-         'group_photo_picture': score.group_photo_picture,
-         'group_photo_score': score.group_photo_score,
-         'check_group_photo_score': score.check_group_photo_score,
-         'cup_picture': score.cup_picture,
-         'cup_score': score.cup_score,
-         'check_cup_score': score.check_cup_score,
-         'brochure_picture': score.brochure_picture,
-         'brochure_score': score.brochure_score,
-         'check_brochure_score': score.check_brochure_score,
-         'calendar_picture': score.calendar_picture,
-         'calendar_score': score.calendar_score,
-         'check_calendar_score': score.check_calendar_score,
-         'honor_certificate_picture': score.honor_certificate_picture,
-         'honor_certificate_score': score.honor_certificate_score,
-         'check_honor_certificate_score': score.check_honor_certificate_score,
-         'work_in_heart_picture': score.work_in_heart_picture,
-         'work_in_heart_score': score.work_in_heart_score,
-         'check_work_in_heart_score': score.check_work_in_heart_score,
-         'innovation_picture': score.innovation_picture,
-         'innovation_score': score.innovation_score,
-         'check_innovation_score': score.check_innovation_score,
-         'praise_letter_picture': score.praise_letter_picture,
-         'praise_letter_score': score.praise_letter_score,
-         'check_praise_letter_score': score.check_praise_letter_score,
-         'friend_circle_picture': score.friend_circle_picture,
-         'friend_circle_score': score.friend_circle_score,
-         'check_friend_circle_score': score.check_friend_circle_score,
-         'network_comment_picture': score.network_comment_picture,
-         'network_comment_score': score.network_comment_score,
-         'check_network_comment_score': score.check_network_comment_score,
-         'single_table_transform_score': score.single_table_transform_score,
-         'check_single_table_transform_score':
-             score.check_single_table_transform_score,
-         'multi_table_transform_score': score.multi_table_transform_score,
-         'check_multi_table_transform_score':
-             score.check_multi_table_transform_score,
-         'total_score': score.total_score}
+         'total_score': score.total_score,
+         'create_time': score.create_time}
+
+    for item in json_data:
+        item_key = item['item_key']
+        item_need_picture = item['item_need_picture']
+        # 根据该评分项是否需要照片, 来获取对象的照片地址
+        if item_need_picture == 1:
+            picture = item_key + '_picture'
+            d[picture] = getattr(score, picture)
+        own_score = item_key + '_score'
+        checked_score = 'check_' + item_key + '_score'
+        d[own_score] = getattr(score, own_score)
+        d[checked_score] = getattr(score, checked_score)
+
+    d1 = {'id': score.id,
+          'door_card_picture': score.door_card_picture,
+          'door_card_score': score.door_card_score,
+          'check_door_card_score': score.check_door_card_score,
+          'sand_table_picture': score.sand_table_picture,
+          'sand_table_score': score.sand_table_score,
+          'check_sand_table_score': score.check_sand_table_score,
+          'welcome_screen_picture': score.welcome_screen_picture,
+          'welcome_screen_score': score.welcome_screen_score,
+          'check_welcome_screen_score': score.check_welcome_screen_score,
+          'atmosphere_picture': score.atmosphere_picture,
+          'atmosphere_score': score.atmosphere_score,
+          'check_atmosphere_score': score.check_atmosphere_score,
+          'group_photo_picture': score.group_photo_picture,
+          'group_photo_score': score.group_photo_score,
+          'check_group_photo_score': score.check_group_photo_score,
+          'cup_picture': score.cup_picture,
+          'cup_score': score.cup_score,
+          'check_cup_score': score.check_cup_score,
+          'brochure_picture': score.brochure_picture,
+          'brochure_score': score.brochure_score,
+          'check_brochure_score': score.check_brochure_score,
+          'calendar_picture': score.calendar_picture,
+          'calendar_score': score.calendar_score,
+          'check_calendar_score': score.check_calendar_score,
+          'honor_certificate_picture': score.honor_certificate_picture,
+          'honor_certificate_score': score.honor_certificate_score,
+          'check_honor_certificate_score': score.check_honor_certificate_score,
+          'work_in_heart_picture': score.work_in_heart_picture,
+          'work_in_heart_score': score.work_in_heart_score,
+          'check_work_in_heart_score': score.check_work_in_heart_score,
+          'innovation_picture': score.innovation_picture,
+          'innovation_score': score.innovation_score,
+          'check_innovation_score': score.check_innovation_score,
+          'praise_letter_picture': score.praise_letter_picture,
+          'praise_letter_score': score.praise_letter_score,
+          'check_praise_letter_score': score.check_praise_letter_score,
+          'friend_circle_picture': score.friend_circle_picture,
+          'friend_circle_score': score.friend_circle_score,
+          'check_friend_circle_score': score.check_friend_circle_score,
+          'network_comment_picture': score.network_comment_picture,
+          'network_comment_score': score.network_comment_score,
+          'check_network_comment_score': score.check_network_comment_score,
+          'single_table_transform_score': score.single_table_transform_score,
+          'check_single_table_transform_score':
+              score.check_single_table_transform_score,
+          'multi_table_transform_score': score.multi_table_transform_score,
+          'check_multi_table_transform_score':
+              score.check_multi_table_transform_score,
+          'total_score': score.total_score,
+          'create_time': score.create_time}
 
     return corr_response(d)
 
 
-def add_score(request):
-    pass
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+    'order_id': forms.IntegerField(),
+    'door_card_score': forms.IntegerField(),
+    'sand_table_score': forms.IntegerField(),
+    'welcome_screen_score': forms.IntegerField(),
+    'atmosphere_score': forms.IntegerField(),
+    'group_photo_score': forms.IntegerField(),
+    'cup_score': forms.IntegerField(),
+    'brochure_score': forms.IntegerField(),
+    'calendar_score': forms.IntegerField(),
+    'honor_certificate_score': forms.IntegerField(),
+    'work_in_heart_score': forms.IntegerField(),
+    'innovation_score': forms.IntegerField(),
+    'praise_letter_score': forms.IntegerField(),
+    'friend_circle_score': forms.IntegerField(),
+    'network_comment_score': forms.IntegerField(),
+    'single_table_transform_score': forms.IntegerField(),
+    'multi_table_transform_score': forms.IntegerField(),
+})
+@validate_staff_token()
+def submit_score(request, token, order_id, **kwargs):
+    """增加私人订制评分
+
+    :param token: 令牌(必传)
+    :param order_id: 订单ID(必传)
+    :param kwargs:
+        door_card_score: 门牌
+        sand_table_score: 沙盘
+        welcome_screen_score: 欢迎屏
+        atmosphere_score: 氛围
+        group_photo_score: 拍合照
+        cup_score: 烤杯子
+        brochure_score: 小册子
+        calendar_score: 台历
+        honor_certificate_score: 荣誉证书
+        work_in_heart_score: 用心工作
+        innovation_score: 私人订制创新
+        praise_letter_score: 表扬信
+        friend_circle_score: 朋友圈评论
+        network_comment_score: 网评
+        single_table_transform_score: 单桌转化率
+        multi_table_transform_score: 多桌转化率
+    """
+
+    try:
+        order = Order.objects.get(id=order_id)
+    except ObjectDoesNotExist:
+        return err_response('err_4', '订单不存在')
+
+    score_keys = ('door_card_score', 'sand_table_score', 'welcome_screen_score',
+                  'atmosphere_score', 'group_photo_score', 'cup_score',
+                  'brochure_score', 'calendar_score', 'honor_certificate_score',
+                  'work_in_heart_score', 'innovation_score',
+                  'praise_letter_score', 'friend_circle_score',
+                  'network_comment_score', 'single_table_transform_score',
+                  'multi_table_transform_score')
+
+    with transaction.atomic():
+        try:
+            score = order.score.create(staff=request.staff)
+            for k in score_keys:
+                if k in kwargs:
+                    setattr(score, k, kwargs[k])
+
+            # todo 图片上传
+            score.save()
+            return corr_response({'score_id': score.id})
+        except IntegrityError:
+            return err_response('err_5', '服务器创建评分记录失败')
+
+
+@validate_args({
+    'token': forms.CharField(min_length=32, max_length=32),
+    'score_id': forms.IntegerField(),
+    'check_door_card_score': forms.IntegerField(required=False),
+    'check_sand_table_score': forms.IntegerField(required=False),
+    'check_welcome_screen_score': forms.IntegerField(required=False),
+    'check_atmosphere_score': forms.IntegerField(required=False),
+    'check_group_photo_score': forms.IntegerField(required=False),
+    'check_cup_score': forms.IntegerField(required=False),
+    'check_brochure_score': forms.IntegerField(required=False),
+    'check_calendar_score': forms.IntegerField(required=False),
+    'check_honor_certificate_score': forms.IntegerField(required=False),
+    'check_work_in_heart_score': forms.IntegerField(required=False),
+    'check_innovation_score': forms.IntegerField(required=False),
+    'check_praise_letter_score': forms.IntegerField(required=False),
+    'check_friend_circle_score': forms.IntegerField(required=False),
+    'check_network_comment_score': forms.IntegerField(required=False),
+    'check_single_table_transform_score': forms.IntegerField(required=False),
+    'check_multi_table_transform_score': forms.IntegerField(required=False),
+})
+@validate_staff_token()
+def check_score(request, token, score_id, **kwargs):
+    """审阅私人订制评分
+
+    :param token: 令牌(必传)
+    :param score_id: 评分ID(必传)
+    :param kwargs:
+        check_door_card_score: 门牌
+        check_sand_table_score: 沙盘
+        check_welcome_screen_score: 欢迎屏
+        check_atmosphere_score: 氛围
+        check_group_photo_score: 拍合照
+        check_cup_score: 烤杯子
+        check_brochure_score: 小册子
+        check_calendar_score: 台历
+        check_honor_certificate_score: 荣誉证书
+        check_work_in_heart_score: 用心工作
+        check_innovation_score: 私人订制创新
+        check_praise_letter_score: 表扬信
+        check_friend_circle_score: 朋友圈评论
+        check_network_comment_score: 网评
+        check_single_table_transform_score: 单桌转化率
+        check_multi_table_transform_score: 多桌转化率
+    """
+
+    try:
+        score = OrderScore.objects.get(id=score_id)
+    except ObjectDoesNotExist:
+        return err_response('err_4', '评分记录不存在')
+
+    score_keys = ('check_door_card_score', 'check_sand_table_score',
+                  'check_welcome_screen_score', 'check_atmosphere_score',
+                  'check_group_photo_score', 'check_cup_score',
+                  'check_brochure_score', 'check_calendar_score',
+                  'check_honor_certificate_score', 'check_work_in_heart_score',
+                  'check_innovation_score', 'check_praise_letter_score',
+                  'check_friend_circle_score', 'check_network_comment_score',
+                  'check_single_table_transform_score',
+                  'check_multi_table_transform_score')
+
+    for k in score_keys:
+        if k in kwargs:
+            setattr(score, k, kwargs[k])
+
+    # 保存审阅人信息
+    score.check_staff = request.staff
+    score.modify_time = timezone.now()
+    score.save()
+    return corr_response()
