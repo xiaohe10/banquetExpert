@@ -13,22 +13,20 @@
             <input class="form-control form-control-sm" type="date" ng-model="option.date_from"/>
             ~
             <input class="form-control form-control-sm" type="date" ng-model="option.date_to"/>
-            <!--选择门店-->
+            <!--选择门店/区域/餐位-->
             <select class="form-control form-control-sm" ng-model="option.branch_id">
                 <optgroup label="请选择门店"></optgroup>
                 <option ng-repeat="x in Hotel.BranchList.list|orderBy:'branch_id'" value="{{x.branch_id}}">
                     {{x.name}}
                 </option>
             </select>
-            <!--选择区域-->
             <select class="form-control form-control-sm" ng-model="option.area_id">
                 <optgroup label="请选择区域"></optgroup>
                 <option ng-repeat="x in Branch.Area.list|orderBy:'area_id'" value="{{x.area_id}}">{{x.name}}</option>
             </select>
-            <!--选择餐位-->
             <select class="form-control form-control-sm" ng-model="option.desk_id">
                 <optgroup label="请选择餐位"></optgroup>
-                <option ng-repeat="x in Branch.AreaDesk.list|filter:{area_name:option.select_area}|orderBy:'desk_id'" value="{{x.desk_id}}">
+                <option ng-repeat="x in Branch.AreaDesk.list|filter:{area_name:option.select_area}" value="{{x.desk_id}}">
                     {{x.number}}
                 </option>
             </select>

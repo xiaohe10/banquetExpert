@@ -1,0 +1,377 @@
+<!--主页/客户管理/客户档案列表/客户详细信息-->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        客户详细信息
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-2">
+                <!--头像-->
+                <div class="img-thumbnail">
+                    <img src="/static/css/image/head1.jpg">
+                    <div class="details">
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-9">
+                <!--详细信息-->
+                <table>
+                    <tbody>
+                    <tr>
+                        <td style="width: 176px;">创建于<span>2016/7/5</span></td>
+                        <td style="width: 195px;">有效订单<span>867（1018桌）</span>&nbsp;/&nbsp;撤单<span>998</span></td>
+                        <td style="width: 155px;">总消费金额<span>￥2387457.00</span></td>
+                        <td style="text-align: right;">有效订单0&nbsp;/&nbsp;撤单0</td>
+                    </tr>
+                    <tr>
+                        <td>最后就餐<span>2017/4/8</span></td>
+                        <td>总人数<span>21082</span>人</td>
+                        <td>总人均消费<span>￥146.34</span></td>
+                        <td style="text-align: right;">60天内总消费￥0&nbsp;/&nbsp;人均￥0&nbsp;/&nbsp;共0人</td>
+                    </tr>
+                    <tr>
+                        <td>客户会龄<span>12.6月</span></td>
+                        <td>总桌均消费<span>￥3470.14</span></td>
+                        <td>消费频度<span>68.99单/月</span></td>
+                        <td style="text-align: right;">桌均消费￥0.00&nbsp;/&nbsp;消费频度0单/月</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        客户档案
+                    </div>
+                    <div class="panel-body">
+                        <form class="form-horizontal">
+                            <fieldset>
+                                <!--电话-->
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label"><a style="color: red;">*</a>电话：</label>
+                                    <div class="col-sm-9">
+                                        <!--手机号列表-->
+                                        <div class="well well-sm">
+                                            <!--已添加手机号-->
+                                            <span class="label label-success" style="display: inline-block"
+                                                  ng-click="form.phone.splice($index, 1)" ng-repeat="x in form.phone">
+                        {{x}}<span class="glyphicon glyphicon-remove"></span>
+                    </span>
+                                            <!--提示未添加手机号-->
+                                            <span class="label label-warning" style="display: inline-block" ng-show="form.phone.length===0">
+                        未添加手机号<span class="glyphicon glyphicon-alert"></span>
+                    </span>
+                                        </div>
+                                        <!--添加手机号【限制最多添加3个手机号】-->
+                                        <div class="input-group" ng-hide="form.phone.length===3">
+                                            <input type="text" ng-model="phone" placeholder="在此填写手机号"/>
+                                            <!--<span ng-show="form.name.$error.invalid" class="text-warning">请准确输入11位手机号码</span>-->
+                                            <input type="button" ng-click="form.phone.push(phone)" value="添加手机号"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--生日-->
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">生日：</label>
+                                    <div class="col-sm-9">
+                                        <input type="date" ng-model="form.birthday"/>
+                                        <label class="radio-inline">
+                                            <input type="radio" ng-model="form.calendar" value=0/>公历
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" ng-model="form.calendar" value=1/>农历
+                                        </label>
+                                    </div>
+                                </div>
+                                <!--单位-->
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">单位：</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" ng-model="form.unit"/>
+                                    </div>
+                                </div>
+                                <!--职位-->
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">职位：</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" ng-model="form.position"/>
+                                    </div>
+                                </div>
+                                <!--现住址-->
+                                <div class="form-group hidden">
+                                    <label class="col-sm-3 control-label">现住址：</label>
+                                    <div class="col-sm-9">
+                                        <!--省-->
+                                        <select class=" inline" ng-model="form.address.province">
+                                            <option>北京</option>
+                                        </select>
+                                        <!--市-->
+                                        <select class=" inline" ng-model="form.address.city">
+                                            <option>北京</option>
+                                        </select>
+                                        <!--县-->
+                                        <select class=" inline" ng-model="form.address.county">
+                                            <option>北京</option>
+                                        </select>
+                                        <!--小区-->
+                                        <select class=" inline" ng-model="form.address.block">
+                                            <option>北京</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!--籍贯-->
+                                <div class="form-group hidden">
+                                    <label class="col-sm-3 control-label">籍贯：</label>
+                                    <div class="col-sm-9">
+                                        <!--省-->
+                                        <select class=" inline" ng-model="form.native.province">
+                                            <option>北京</option>
+                                        </select>
+                                        <!--市-->
+                                        <select class=" inline" ng-model="form.native.city">
+                                            <option>北京</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!--营销短信-->
+                                <div class="form-group hidden">
+                                    <label class="col-sm-3 control-label">营销短信：</label>
+                                    <div class="col-sm-9">
+                                        <label class="radio-inline">
+                                            <input type="radio" ng-model="form.sms_marketing" value="enabled"/>开
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" ng-model="form.sms_marketing" value="disabled"/>关
+                                        </label>
+                                    </div>
+                                </div>
+                                <!--分类方法-->
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">分类方法：</label>
+                                    <div class="col-sm-9">
+                                        <select ng-model="form.classification_method">
+                                            <option ng-repeat="x in types" value="{{x}}">{{x}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!--病症-->
+                                <div class="form-group hidden">
+                                    <label class="col-sm-3 control-label">病症：</label>
+                                    <div class="col-sm-9">
+                                        <!--病症列表-->
+                                        <div class="well well-sm">
+                                            <!--已添加标签-->
+                                            <span class="label label-success" style="display: inline-block"
+                                                  ng-click="form.disease.splice($index, 1)" ng-repeat="x in form.disease">
+                        {{x}}<span class="glyphicon glyphicon-remove"></span>
+                    </span>
+                                            <!--提示未添加标签-->
+                                            <span class="label label-warning" style="display: inline-block" ng-show="form.disease.length===0">
+                        无病症信息<span class="glyphicon glyphicon-alert"></span>
+                    </span>
+                                        </div>
+                                        <!--添加标签【限制最多添加6个标签】-->
+                                        <div class="input-group" ng-hide="form.disease.length===6">
+                                            <input type="text" ng-model="disease" placeholder="在此填写病症"/>
+                                            <input type="button" ng-click="form.disease.push(disease)" value="添加"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--喜好-->
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">喜好：</label>
+                                    <div class="col-sm-9">
+                                        <!--喜好列表-->
+                                        <div class="well well-sm">
+                                            <!--已添加标签-->
+                                            <span class="label label-success" style="display: inline-block"
+                                                  ng-click="form.like.splice($index, 1)" ng-repeat="x in form.like">
+                        {{x}}<span class="glyphicon glyphicon-remove"></span>
+                    </span>
+                                            <!--提示未添加标签-->
+                                            <span class="label label-warning" style="display: inline-block" ng-show="form.like.length===0">
+                        无喜好信息<span class="glyphicon glyphicon-alert"></span>
+                    </span>
+                                        </div>
+                                        <!--添加标签【限制最多添加12个标签】-->
+                                        <div class="input-group" ng-hide="form.like.length===12">
+                                            <input type="text" ng-model="like" placeholder="在此填写喜好"/>
+                                            <input type="button" ng-click="form.like.push(like)" value="添加"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--忌讳-->
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">忌讳：</label>
+                                    <div class="col-sm-9">
+                                        <!--忌口列表-->
+                                        <div class="well well-sm">
+                                            <!--已添加标签-->
+                                            <span class="label label-success" style="display: inline-block"
+                                                  ng-click="form.dislike.splice($index, 1)" ng-repeat="x in form.dislike">
+                        {{x}}<span class="glyphicon glyphicon-remove"></span>
+                    </span>
+                                            <!--提示未添加标签-->
+                                            <span class="label label-warning" style="display: inline-block" ng-show="form.dislike.length===0">
+                        无忌口信息<span class="glyphicon glyphicon-alert"></span>
+                    </span>
+                                        </div>
+                                        <!--添加标签【限制最多添加12个标签】-->
+                                        <div class="input-group" ng-hide="form.dislike.length===12">
+                                            <input type="text" ng-model="dislike" placeholder="在此填写忌口"/>
+                                            <input type="button" ng-click="form.dislike.push(dislike)" value="添加"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--纪念日-->
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">纪念日：</label>
+                                    <div class="col-sm-9">
+                                        <!--纪念日列表-->
+                                        <div class="well well-sm">
+                                            <!--已添加标签-->
+                                            <span class="label label-success" style="display: inline-block"
+                                                  ng-click="form.anniversary.splice($index, 1)" ng-repeat="x in form.anniversary">
+                        {{x}}<span class="glyphicon glyphicon-remove"></span>
+                    </span>
+                                            <!--提示未添加标签-->
+                                            <span class="label label-warning" style="display: inline-block" ng-show="form.anniversary.length===0">
+                        无纪念日信息<span class="glyphicon glyphicon-alert"></span>
+                    </span>
+                                        </div>
+                                        <!--添加标签【限制最多添加12个标签】-->
+                                        <div class="input-group" ng-hide="form.anniversary.length===12">
+                                            <input type="text" ng-model="anniversary" placeholder="在此填写纪念日"/>
+                                            <input type="button" ng-click="form.anniversary.push(anniversary)" value="添加"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--不良记录-->
+                                <div class="form-group hidden">
+                                    <label class="col-sm-3 control-label">不良记录：</label>
+                                    <div class="col-sm-9">
+                                        <textarea ng-model="form.bad_records"></textarea>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-7">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li><a data-toggle="tab" data-target="#AllLog">全部动态</a></li>
+                    <li><a data-toggle="tab" data-target="#GetRFMChange">价值变更</a></li>
+                    <li><a data-toggle="tab" data-target="#GetChannelChange">维护变更</a></li>
+                    <li class="dropdown">
+                        <a class="drop-toggle" data-toggle="dropdown">订单</a>
+                        <ul class="dropdown-menu">
+                            <li><a data-toggle="tab" data-target="#GetOrderList">全部</a></li>
+                            <li><a data-toggle="tab" data-target="#GetOrderList">预约</a></li>
+                            <li><a data-toggle="tab" data-target="#GetOrderList">消费成功</a></li>
+                            <li><a data-toggle="tab" data-target="#GetOrderList">已撤销</a></li>
+                            <li><a data-toggle="tab" data-target="#GetOrderList">网络订单</a></li>
+                        </ul>
+                    </li>
+                    <li><a data-toggle="tab" data-target="#GetSMSList">短信</a></li>
+                    <li><a data-toggle="tab" data-target="#GetRemarkList">备忘录</a></li>
+                    <li><a data-toggle="tab" data-target="#GetPictureList">照片</a></li>
+                </ul>
+                <div class="tab-content">
+                    <!--全部日志-->
+                    <div class="tab-pane" id="AllLog">
+                        <div class="pre-scrollable">
+                            <ul class="list-group">
+                                <li class="list-group-item" ng-repeat="x in [1,2,3,4,5,6,7,8]">
+                                    <span class="badge badge-info">动态-{{x}}</span>
+                                    <div>
+                                        <p>
+                                            消费成功<span>App预订 </span><span class="time">04月08日 18:00</span>
+                                            <span class="money">消费0元</span>
+                                            <span class="money">王唯唯  【常旅客】 同507.508婴儿市</span>
+                                        </p>
+                                        <p>南先生<span>4人</span>成功预订：北京宴总店04月08日18:00(五楼509包间)</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--价值变更-->
+                    <div class="tab-pane" id="GetRFMChange">
+                        <div class="pre-scrollable">
+                            <ul class="list-group">
+                                <li class="list-group-item" ng-repeat="x in [1,2,3,4,5,6,7,8]">
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <label class="label label-info">
+                                                价值变更
+                                                <span class="glyphicon glyphicon-arrow-up"></span>
+                                            </label>
+                                        </div>
+                                        <div class="col-sm-10">
+                                            <p>价值变更-{{x}} 13:56</p>
+                                            <p>南先生的价值分类由常旅客变更为常旅客</p>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--维护变更-->
+                    <div class="tab-pane" id="GetChannelChange">
+                        <div class="pre-scrollable">
+                            <ul class="list-group">
+                                <li class="list-group-item" ng-repeat="x in [1,2,3,4,5,6,7,8]">
+                                    维护变更-{{x}}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--订单-->
+                    <div class="tab-pane" id="GetOrderList">
+                        <div class="pre-scrollable">
+                            <ul class="list-group">
+                                <li class="list-group-item" ng-repeat="x in [1,2,3,4,5,6,7,8]">
+                                    订单-{{x}}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--短信-->
+                    <div class="tab-pane" id="GetSMSList">
+                        <div class="pre-scrollable">
+                            <ul class="list-group">
+                                <li class="list-group-item" ng-repeat="x in [1,2,3,4,5,6,7,8]">
+                                    短信-{{x}}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--备忘录-->
+                    <div class="tab-pane" id="GetRemarkList">
+                        <div class="pre-scrollable">
+                            <ul class="list-group">
+                                <li class="list-group-item" ng-repeat="x in [1,2,3,4,5,6,7,8]">
+                                    备忘录-{{x}}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--订单照片-->
+                    <div class="tab-pane" id="GetPictureList">
+                        <div class="pre-scrollable">
+                            <ul class="list-group">
+                                <li class="list-group-item" ng-repeat="x in [1,2,3,4,5,6,7,8]">
+                                    订单照片-{{x}}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

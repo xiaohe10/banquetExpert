@@ -187,13 +187,11 @@
                                             <!--操作栏-->
                                             <div class="collapse" id="ReserveItem{{$index}}">
                                                 <div class="btn-group btn-group-sm">
-                                                    <input type="button" value="客到" class="btn btn-default btn-sm">
-                                                    <input type="button" value="撤单" class="btn btn-default btn-sm">
+                                                    <input type="button" class="btn btn-default btn-sm"
+                                                           value="{{x.name}}"
+                                                           ng-repeat="x in ReserveOption"
+                                                           ng-click="handleReserve(x)">
                                                 </div>
-                                                <input type="button" ng-click="handleReserve($index)" value="处理"/>
-                                                <input type="button" value="加桌" class="btn btn-default btn-sm">
-                                                <input type="button" value="修改" class="btn btn-default btn-sm">
-                                                <input type="button" value="关闭" class="btn btn-default btn-sm">
                                             </div>
                                         </li>
                                     </ul>

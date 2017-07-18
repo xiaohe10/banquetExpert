@@ -16,8 +16,8 @@
                 <img class="img-circle" src="/static/css/image/head1.jpg" style="width: 96px;height: 96px">
                 <div class="caption">
                     <p>酒店：{{x.hotel_name}}</p>
-                    <p>类型：{{x.type}}</p>
-                    <p>创建时间：{{x.create_time}}</p>
+                    <p>类型：{{x.type|admin_type}}</p>
+                    <p>创建时间：{{x.create_time|date:'yyyy/MM/dd'}}</p>
                 </div>
             </div>
         </div>

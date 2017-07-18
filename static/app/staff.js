@@ -36,7 +36,8 @@ Templates = {
     // 评分审阅
     Review: {
         Rank: "Review/Rank.html", // 餐厅排名
-        Tutorial: "Review/Tutorial.html"// 中国服务私人订制标准视频教程
+        Scoring: "Review/Scoring.html", // 我的评分
+        Tutorial: "Review/Tutorial.html" // 中国服务私人订制标准视频教程
     },
     // 微课堂
     MicroCourse: {
@@ -616,7 +617,7 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
     // 【员工】智能订餐台
     $routeProvider
         .when('/SmartOrder/SmartOrder', {
-            templateUrl: "./template/" + Templates.SmartOrder.SmartOrder, controller: function ($rootScope, $scope, $http, $modal) {
+            templateUrl: "./template/SmartOrder/SmartOrder.html", controller: function ($rootScope, $scope, $http, $modal) {
                 var TAG = Templates.SmartOrder.SmartOrder;
                 // 门店
                 var Branch = {
@@ -782,6 +783,13 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                     // --发路线
                     order_route: false
                 };
+                // 预定操作
+                $scope.ReserveOption = [
+                    {name: "客到", value: "1"},
+                    {name: "翻台", value: "2"},
+                    {name: "调桌", value: "3"},
+                    {name: "撤单", value: "4"}
+                ];
                 // 查询表单
                 $scope.SearchForm = {
                     keyword: "",
@@ -1052,7 +1060,54 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                 };
                 // 处理预订单
                 $scope.handleReserve = function (index) {
-                    Log.i(TAG, JSON.stringify($scope.Staff.ReserveList[index]));
+                    Log.i(TAG, JSON.stringify($scope.ReserveOption[index]));
+                    // 添加用户提示
+                    var Order = {
+                        // 撤单
+                        Cancel: function () {
+
+                        },
+                        // 换桌
+                        // 加桌
+                        // 修改
+                        // 关闭
+                        // 发路线
+                        // 发短信
+                        // 相关订单
+                        // 客户档案
+                        UpdateOrder: function (option) {
+                            var url = "/webApp/order/update/";
+                            var param = angular.copy($scope.ReserveForm);
+                            switch (option) {
+                                case "1": // 客到
+                                    param.status = 1;
+                                    break;
+                                case "2": // 翻台
+                                    param.status = 3;
+                                    break;
+                                case "3": // 调桌
+                                    // param.status = 1;
+                                    param.desks = [];
+                                    param.table_count = 0;
+                                    break;
+                                case "4": // 撤单
+                                    param.status = 3;
+                                    break;
+                                default:
+                                    break;
+                            }
+                            // 转换数据类型
+                            param.dinner_period = parseInt(param.dinner_period);
+                            Log.i(TAG, JSON.stringify(param));
+                            $http.post(url, JSON.stringify(param)).success(function (obj) {
+                                if (obj.status === "true") {
+                                    alert("添加预定单成功，订单编号是:" + obj.data.order_id);
+                                } else {
+                                    alert(obj.description);
+                                }
+                            });
+                        }
+                    };
                 };
             }
         });
@@ -1060,7 +1115,7 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
     // 【员工】订单管理
     $routeProvider
         .when('/Order/InsertOrder', {
-            templateUrl: "./template/" + Templates.Order.InsertOrder, controller: function ($rootScope, $scope, $http) {
+            templateUrl: "./template/Order/InsertOrder.html", controller: function ($rootScope, $scope, $http) {
                 var TAG = Templates.Order.InsertOrder;// "#/Order/InsertOrder";
                 var Order = {
                     History: function (option) {
@@ -1107,7 +1162,7 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
             }
         })
         .when('/Order/OperationLog', {
-            templateUrl: "./template/" + Templates.Order.OperationLog, controller: function ($rootScope, $scope, $http) {
+            templateUrl: "./template/Order/OperationLog.html", controller: function ($rootScope, $scope, $http) {
                 var TAG = Templates.Order.OperationLog;
                 // 门店
                 var Branch = {
@@ -1215,7 +1270,7 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
             }
         })
         .when('/Order/OrderHistory', {
-            templateUrl: "./template/" + Templates.Order.OrderHistory, controller: function ($rootScope, $scope, $http, $modal) {
+            templateUrl: "./template/Order/OrderHistory.html", controller: function ($rootScope, $scope, $http, $modal) {
                 var TAG = Templates.Order.OrderHistory;
                 var Order = {
                     History: function (option) {
@@ -1566,7 +1621,7 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
             }
         })
         .when('/Order/OrderStatistics', {
-            templateUrl: "./template/" + Templates.Order.OrderStatistics, controller: function ($scope, $http) {
+            templateUrl: "./template/Order/OrderStatistics.html", controller: function ($scope, $http) {
                 var Color = [
                     '#ffccff', '#ccffcc', '#ffcccc', '#ccccff', '#ffccff', '#ccffcc',
                     '#ffcccc', '#ccccff', '#ffccff', '#ccffcc', '#ffcccc', '#ccccff'
@@ -1641,7 +1696,7 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
             }
         })
         .when('/Order/PhoneReserve', {
-            templateUrl: "./template/" + Templates.Order.PhoneReserve, controller: function ($scope) {
+            templateUrl: "./template/Order/PhoneReserve.html", controller: function ($scope) {
                 var TAG = Templates.Order.PhoneReserve;
                 $scope.option = {
                     date_from: "",
@@ -1665,7 +1720,7 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
             }
         })
         .when('/Order/ReserveNotice', {
-            templateUrl: "./template/" + Templates.Order.ReserveNotice, controller: function ($rootScope, $scope, $modal) {
+            templateUrl: "./template/Order/ReserveNotice.html", controller: function ($rootScope, $scope, $modal, $http) {
                 var TAG = Templates.Order.ReserveNotice;
                 // 操作栏
                 $scope.option = {
@@ -1737,8 +1792,8 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                     Log.i(TAG, "根据 '" + tags[index] + "' 过滤列表数据");
                 };
                 // 对话框
-                $scope.order_details = function (index) {
-                    Log.i(TAG, "订单详情:" + index);
+                $scope.order_details = function (order_id) {
+                    Log.i(TAG, "订单详情:" + order_id);
                     var dlg = $modal.open({
                         templateUrl: "./template/" + Dialog.Order.ReserveNotice.ReserveOrderDetails,
                         controller: function ($scope) {
@@ -1758,6 +1813,73 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                                 note: "给女朋友过生日，提前到店布置房间。",
                                 images: ["IMG1", "IMG2", "IMG3", "IMG4", "IMG5"]
                             };
+                            // 获取订单详情
+                            var Order = {
+                                OrderDetails: function (order_id) {
+                                    var url = "/webApp/order/profile/";
+                                    var param = {
+                                        order_id: order_id
+                                    };
+                                    $http.post(url, JSON.stringify(param)).success(function (obj) {
+                                        if (obj.status === "true") {
+                                            $scope.order.details = obj.data;
+                                        } else {
+                                            $scope.order.details = {
+                                                "order_id": 1,
+                                                "staff_name": "小二",
+                                                "create_time": "2014-02-01 10:00:00",
+                                                "cancel_time": "2014-02-01 10:00:00",
+                                                "arrival_time": "2014-02-01 10:00:00",
+                                                "finish_time": "2014-02-01 10:00:00",
+                                                "consumption": 1000,
+                                                "status": 0,
+                                                "dinner_date": "2014-02-01",
+                                                "dinner_time": "12:00",
+                                                "dinner_period": 0,
+                                                "name": "李四",
+                                                "guest_type": "vip",
+                                                "contact": "18813101211",
+                                                "guest_number": 10,
+                                                "banquet": "满月宴",
+                                                "desks": [{"desk_id": 1, "number": "309"}, {"desk_id": 2, "number": "312"}, {"desk_id": 3, "number": "311"}],
+                                                "user_description": "生日宴，准备蜡烛",
+                                                "staff_description": "客户年纪大，做好防滑",
+                                                "water_card": "水牌内容",
+                                                "door_card": "门牌内容",
+                                                "sand_table": "沙盘内容",
+                                                "welcome_screen": "欢迎xx领导",
+                                                "welcome_fruit": 128,
+                                                "welcome_card": "欢迎你",
+                                                "pictures": ["http://demo.com/1.jpg", "http://demo.com/2.jpg"],
+                                                "background_music": "我爱你中国",
+                                                "has_candle": true,
+                                                "has_flower": false,
+                                                "has_balloon": false,
+                                                "group_photo": "合照名称",
+                                                "internal_channel": "刘光艳",
+                                                "external_channel": "美团"
+                                            };
+                                            alert(obj.description);
+                                        }
+                                    });
+                                },
+                                OperationLog: function (order_id) {
+                                    var url = "/webApp/order/log/list/";
+                                    var param = {
+                                        order_id: order_id
+                                    };
+                                    $http.post(url, JSON.stringify(param)).success(function (obj) {
+                                        if (obj.status === "true") {
+                                            $scope.order.log = obj.data;
+                                        } else {
+                                            $scope.order.log = {count: 0, list: []};
+                                            alert("无订单！");
+                                        }
+                                    });
+                                }
+                            };
+                            Order.OrderDetails(order_id);
+                            Order.OperationLog(order_id);
                             $scope.check = function (index) {
                                 Log.i(TAG, "checked: " + JSON.stringify($scope.images[index]));
                             };
@@ -1780,7 +1902,7 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
     // 【员工】客户管理
     $routeProvider
         .when('/Customer/AnniversaryReport', {
-            templateUrl: "./template/" + Templates.Customer.AnniversaryReport, controller: function ($scope) {
+            templateUrl: "./template/Customer/AnniversaryReport.html", controller: function ($scope) {
                 var TAG = Templates.Customer.AnniversaryReport;
                 $scope.option = {
                     date_from: "",
@@ -1805,7 +1927,7 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
             }
         })
         .when('/Customer/CustomerAnalysis', {
-            templateUrl: "./template/" + Templates.Customer.CustomerAnalysis, controller: function ($scope, $http) {
+            templateUrl: "./template/Customer/CustomerAnalysis.html", controller: function ($scope, $http) {
                 var Color = [
                     '#ffccff', '#ccffcc', '#ffcccc', '#ccccff', '#ffccff', '#ccffcc',
                     '#ffcccc', '#ccccff', '#ffccff', '#ccffcc', '#ffcccc', '#ccccff'
@@ -1861,7 +1983,7 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
             }
         })
         .when('/Customer/CustomerProfiles', {
-            templateUrl: "./template/" + Templates.Customer.CustomerProfiles, controller: function ($rootScope, $scope, $modal, $http) {
+            templateUrl: "./template/Customer/CustomerProfiles.html", controller: function ($rootScope, $scope, $modal, $http) {
                 var TAG = Templates.Customer.CustomerProfiles;
                 // 操作栏
                 $scope.option = {
@@ -2074,8 +2196,32 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                 };
             }
         })
+        .when('/Customer/CustomerProfile/:guest_id', {
+            templateUrl: "./template/Customer/CustomerProfile.html", controller: function ($routeParams, $rootScope, $scope, $http) {
+                var TAG = "/Customer/CustomerProfile";
+                var guest_id = $routeParams.guest_id;
+                var Guest = {
+                    // 获取客户档案详情(根据ID或电话)
+                    getProfile: function (guest_id) {
+                        var url = "/webApp/guest/profile/";
+                        var param = {
+                            guest_id: guest_id
+                        };
+                        Log.i(TAG, JSON.stringify(param));
+                        $http.post(url, JSON.stringify(param)).success(function (obj) {
+                            if (obj.status === "true") {
+                                $scope.form = obj.data;
+                            } else {
+                                alert("无此客户信息")
+                            }
+                        });
+                    }
+                };
+                Guest.getProfile(guest_id);
+            }
+        })
         .when('/Customer/CustomerRecycleBin', {
-            templateUrl: "./template/" + Templates.Customer.CustomerRecycleBin, controller: function ($scope) {
+            templateUrl: "./template/Customer/CustomerRecycleBin.html", controller: function ($scope) {
                 var TAG = Templates.Customer.CustomerRecycleBin;
                 $scope.table = [];
                 for (var i = 0; i < 7; i++) {
@@ -2087,7 +2233,7 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
             }
         })
         .when('/Customer/MemberValue', {
-            templateUrl: "./template/" + Templates.Customer.MemberValue, controller: function ($scope) {
+            templateUrl: "./template/Customer/MemberValue.html", controller: function ($scope) {
 
             }
         });
@@ -2095,7 +2241,7 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
     // 【员工】账户管理
     $routeProvider
         .when('/Account/AccountManage', {
-            templateUrl: "./template/" + Templates.Account.AccountManage, controller: function ($scope) {
+            templateUrl: "./template/Account/AccountManage.html", controller: function ($scope) {
                 $scope.form = {
                     username: "",
                     password: "",
@@ -2108,7 +2254,7 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
             }
         })
         .when('/Account/FinanceManage', {
-            templateUrl: "./template/" + Templates.Account.FinanceManage, controller: function ($scope) {
+            templateUrl: "./template/Account/FinanceManage.html", controller: function ($scope) {
                 var TAG = Templates.Account.FinanceManage;
                 $scope.option = {
                     selected_year: 1,
@@ -2131,12 +2277,14 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                 };
             }
         })
-        .when('/Account/SMSDetails', {templateUrl: "./template/" + Templates.Account.SMSDetails});
+        .when('/Account/SMSDetails', {
+            templateUrl: "./template/Account/SMSDetails.html"
+        });
 
     // 【评分员】评分审阅
     $routeProvider
         .when('/Review/Rank', {
-            templateUrl: "./template/" + Templates.Review.Rank, controller: function ($scope) {
+            templateUrl: "./template/Review/Rank.html", controller: function ($scope) {
                 var TAG = Templates.Review.Rank;
                 var items = [
                     "门牌拍照", "沙盘", "欢迎屏", "氛围", "拍照", "烤瓷杯",
@@ -2169,7 +2317,29 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                 }
             }
         })
-        .when('/Review/Tutorial', {templateUrl: "./template/" + Templates.Review.Tutorial});
+        .when('/Review/Scoring', {
+            templateUrl: "./template/Review/Scoring.html", controller: function () {
+
+            }
+        })
+        .when('/Review/Tutorial', {
+            templateUrl: "./template/Review/Tutorial.html", controller: function () {
+
+            }
+        });
+
+    // 【微课堂】微课堂
+    $routeProvider
+        .when('/MicroCourse/LiveCourse', {
+            templateUrl: "./template/MicroCourse/LiveCourse.html", controller: function () {
+
+            }
+        })
+        .when('/MicroCourse/LiveVideo', {
+            templateUrl: "./template/MicroCourse/LiveVideo.html", controller: function () {
+
+            }
+        });
 
     $routeProvider
         .otherwise({redirectTo: "/SmartOrder/SmartOrder"});
