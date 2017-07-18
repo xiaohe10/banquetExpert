@@ -45,6 +45,13 @@ var AdminApp = angular.module('AdminApp', [
     'ui.bootstrap'
 ]);
 
+AdminApp.filter("admin_type", function () {
+    return function (admin_type) {
+        var TAG = ["管理员", "超级管理员"];
+        return TAG[admin_type];
+    }
+});
+
 // 侧边导航栏控制器
 AdminApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
 
@@ -115,7 +122,8 @@ AdminApp.config(['$routeProvider', function ($routeProvider) {
                             form: function () {
                                 return {
                                     name: "珍珠大酒店",
-                                    owner_name: "赵强"
+                                    owner_name: "赵强",
+                                    positions: []
                                 };
                             }
                         }
@@ -160,6 +168,9 @@ AdminApp.config(['$routeProvider', function ($routeProvider) {
                         },
                         resolve: {
                             form: function () {
+                                if (hotel.positions === "") {
+                                    hotel.positions = [];
+                                }
                                 return hotel;
                             }
                         }

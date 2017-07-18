@@ -8,22 +8,31 @@
     <div class="panel-body">
         <!--操作栏-->
         <div class="well well-sm form-inline">
-            <a>就餐日期：</a>
+            <!--选择日期-->
+            <label>就餐日期：</label>
             <input class="form-control form-control-sm" type="date" ng-model="option.date_from" value="{{option.date_from}}"/>
             ~
             <input class="form-control form-control-sm" type="date" ng-model="option.date_to" value="{{option.date_to}}"/>
-            <select class="form-control form-control-sm" ng-model="option.select_area">
-                <option value="0">全部就餐区域</option>
-                <option ng-repeat="x in area.list" value="{{x.area_id}}">{{x.name}}</option>
+            <!--选择门店/区域/餐位-->
+            <select class="form-control form-control-sm" ng-model="option.branch_id">
+                <optgroup label="请选择门店"></optgroup>
+                <option ng-repeat="x in Hotel.BranchList.list|orderBy:'branch_id'" value="{{x.branch_id}}">
+                    {{x.name}}
+                </option>
             </select>
+            <select class="form-control form-control-sm" ng-model="option.area_id">
+                <optgroup label="请选择区域"></optgroup>
+                <option ng-repeat="x in Branch.Area.list|orderBy:'area_id'" value="{{x.area_id}}">{{x.name}}</option>
+            </select>
+            <!--选择渠道-->
             <select class="form-control form-control-sm" ng-model="option.select_channel">
                 <option value="-1">全部接单渠道</option>
                 <optgroup label="内部渠道">内部渠道</optgroup>
-                <option ng-repeat="x in channel.internal_channel|filter:{is_enabled:true}" ng-value="JSON.stringify(x)">
+                <option ng-repeat="x in Hotel.Channel.InternalChannel" ng-value="JSON.stringify(x)">
                     {{x.name}}
                 </option>
                 <optgroup label="内部渠道">内部渠道</optgroup>
-                <option ng-repeat="x in channel.external_channel|filter:{is_enabled:true}" ng-value="JSON.stringify(x)">
+                <option ng-repeat="x in Hotel.Channel.ExternalChannel" ng-value="JSON.stringify(x)">
                     {{x.name}}
                 </option>
             </select>
