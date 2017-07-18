@@ -642,7 +642,7 @@ class OrderScore(models.Model):
     atmosphere_picture = models.CharField(max_length=100, default='')
     atmosphere_score = models.IntegerField(default=None, null=True)
     check_atmosphere_score = models.IntegerField(default=None, null=True)
-    # 拍照
+    # 拍合照
     group_photo_picture = models.CharField(max_length=100, default='')
     group_photo_score = models.IntegerField(default=None, null=True)
     check_group_photo_score = models.IntegerField(default=None, null=True)
@@ -691,7 +691,7 @@ class OrderScore(models.Model):
     check_multi_table_transform_score = models.IntegerField(
         default=None, null=True)
     # 总分
-    total_score = models.FloatField(default=0.00)
+    total_score = models.IntegerField(default=0)
 
     # 创建时间
     create_time = models.DateTimeField(default=timezone.now, db_index=True)
