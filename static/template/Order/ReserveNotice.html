@@ -78,13 +78,13 @@
                     <thead>
                     <tr align="center">
                         <td>
-                            <a ng-click="sort(0)">
+                            <a ng-click="option.orderBy='dinner_time'">
                                 就餐时间 <i class="icon-chevron-down inline"></i>
                             </a>
                         </td>
                         <td>
-                            <a ng-click="sort(1)">
-                                区域 <i class="icon-chevron-down inline"></i>
+                            <a ng-click="option.orderBy='table_count'">
+                                桌数 <i class="icon-chevron-down inline"></i>
                             </a>
                         </td>
                         <td>
@@ -94,15 +94,19 @@
                         </td>
                         <td>姓名</td>
                         <td>手机</td>
-                        <td>人数</td>
                         <td>
-                            <a ng-click="sort(6)">
+                            <a ng-click="option.orderBy='guest_number'">
+                                人数<i class="icon-chevron-down inline"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a ng-click="option.orderBy='internal_channel'">
                                 接单渠道<i class="icon-chevron-down inline"></i>
                             </a>
                         </td>
                         <td style="display: none">维护渠道</td>
                         <td>
-                            <a ng-click="sort(7)">
+                            <a ng-click="option.orderBy='create_time'">
                                 下单时间<i class="icon-chevron-down inline"></i>
                             </a>
                         </td>
@@ -114,31 +118,36 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr align="center" ng-repeat="x in data.list">
+                    <tr align="center" ng-repeat="x in data.list|orderBy:option.orderBy">
                         <!--就餐时间-->
-                        <td>{{x.meal_time}}</td>
-                        <!--区域-->
-                        <td>{{x.area}}</td>
+                        <td>{{x.dinner_time}}</td>
+                        <!--桌数-->
+                        <td>{{x.table_count}}</td>
                         <!--桌号-->
-                        <td>{{x.sesk}}<span style="color: lightgreen">[备注]</span></td>
+                        <td>
+                            <span class="badge badge-success" ng-repeat="y in x.desks">
+                                {{y.number}}
+                            </span>
+                            <span style="color: lightgreen">[备注]</span>
+                        </td>
                         <!--客户姓名性别-->
-                        <td>{{x.name}} {{x.gender}}</td>
+                        <td>{{x.name|surname}} {{x.gender|gender}}</td>
                         <!--电话-->
-                        <td>{{x.phone}}</td>
+                        <td>{{x.contact}}</td>
                         <!--人数-->
-                        <td>{{x.count}}</td>
+                        <td>{{x.guest_number}}</td>
                         <!--接单渠道-->
-                        <td>{{x.order_channel}}</td>
+                        <td>{{x.internal_channel|channel}} {{x.external_channel}}</td>
                         <!--维护渠道-->
                         <td style="display: none">{{x.channel}}</td>
                         <!--下单时间-->
-                        <td>{{x.order_time}}</td>
+                        <td>{{x.create_time|date:'yyyy/MM/dd'}}</td>
                         <!--分类-->
                         <td>{{x.type}}</td>
                         <!--单位-->
                         <td style="display: none">{{x.unit}}</td>
                         <!--订单状态及备注-->
-                        <td>{{x.status}}</td>
+                        <td>{{x.status|order_status}}</td>
                         <!--操作员显创建订单人-->
                         <td>{{x.operator}}</td>
                         <!--订单详情-->

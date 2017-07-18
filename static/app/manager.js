@@ -281,6 +281,9 @@ ManagerApp.controller('drawerCtrl', function ($rootScope, $scope, $http) {
     $http.post(url, JSON.stringify(param)).success(function (obj) {
         if (obj.status === "true") {
             Log.i(TAG, "获取酒店信息成功");
+            if (obj.data.positions === "") {
+                obj.data.positions = [];
+            }
             $rootScope.Hotel = obj.data;
             // 侧边栏
             $scope.menus = [
@@ -1033,9 +1036,19 @@ ManagerApp.config(['$routeProvider', function ($routeProvider) {
             templateUrl: "./template/" + Templates.Hotel.Hotel, controller: function ($rootScope, $scope, $modal, $http) {
                 var TAG = Templates.Hotel.Hotel;
                 $scope.form = $rootScope.Hotel;
-                $scope.data = $rootScope.Hotel;
+                // $scope.data = $rootScope.Hotel;
                 $scope.submit = function () {
-                    Log.i(TAG, "提交酒店信息：" + JSON.stringify($scope.form))
+                    Log.i(TAG, "提交酒店信息：" + JSON.stringify($scope.form));
+                    // 【酒店】提交酒店信息
+                    var url = "/webApp/admin/hotel/profile/modify/";
+                    var param = angular.copy($scope.form);
+                    $http.post(url, JSON.stringify(param)).success(function (obj) {
+                        if (obj.status === "true") {
+                            alert("修改酒店信息成功");
+                        } else {
+                            alert(obj.description);
+                        }
+                    });
                 }
             }
         })

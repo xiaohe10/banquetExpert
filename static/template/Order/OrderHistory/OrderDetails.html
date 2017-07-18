@@ -33,34 +33,34 @@
                         <p>结账时间：{{order.details.finish_time}}</p>
                         <p>消费金额：{{order.details.consumption}}</p>
                     </section>
-                </div>
-                <!--五张图片-->
-                <div class="row m-2">
-                    <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3" ng-repeat="(k, x) in order.details.pictures">
-                        <div class="img-thumbnail" ng-click="check(k)">
-                            <img class="img-responsive" ng-src="x" src="/static/css/image/head1.jpg" alt="PICTURE">
+                    <!--五张图片-->
+                    <div class="row m-2">
+                        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3" ng-repeat="(k, x) in order.details.pictures">
+                            <div class="img-thumbnail" ng-click="check(k)">
+                                <img class="img-responsive" ng-src="x" src="/static/css/image/head1.jpg" alt="PICTURE">
+                            </div>
                         </div>
                     </div>
-                </div>
-                <!--图片操作-->
-                <div class="row m-2">
-                    <div class="col-12 form-group" style="float: right">
+                    <!--图片操作-->
+                    <div class="row m-2">
+                        <div class="col-12 form-group" style="float: right">
                                 <span>已选0张
                                 </span>
-                        <div class="btn-group btn-group-sm">
-                            <input class="btn btn-danger btn-sm" type="button" ng-click="delete()" value="删除"/>
-                            <input class="btn btn-success btn-sm" type="button" ng-click="download()" value="下载"/>
+                            <div class="btn-group btn-group-sm">
+                                <input class="btn btn-danger btn-sm" type="button" ng-click="delete()" value="删除"/>
+                                <input class="btn btn-success btn-sm" type="button" ng-click="download()" value="下载"/>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <!--操作信息-->
-            <div class="tab-pane" id="czxx" role="tabpanel">
-                <section>
-                    <p ng-repeat="x in order.log.list">
-                        {{x.staff_name}} {{x.staff_id}} {{x.content}}
-                    </p>
-                </section>
+                <!--操作信息-->
+                <div class="tab-pane" id="czxx" role="tabpanel">
+                    <section>
+                        <p ng-repeat="x in order.log.list">
+                            {{x.staff_name}} {{x.staff_id}} {{x.content}}
+                        </p>
+                    </section>
+                </div>
             </div>
         </div>
     </div>

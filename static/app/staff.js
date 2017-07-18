@@ -1351,17 +1351,17 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                 // 操作栏
                 $scope.option = {
                     // 选择开始日期
-                    date_from: "2017/07/01",
+                    date_from: "2017-07-01",
                     // 选择结束日期
-                    date_to: "2017/08/09",
+                    date_to: "2017-08-09",
                     // 选择门店
-                    branch_id: 0,
+                    branch_id: 1,
                     // 选择区域
-                    area_id: 0,
+                    area_id: 1,
                     // 选择桌位
-                    desk_id: 0,
+                    desk_id: 1,
                     // 选择渠道
-                    select_channel: 0,
+                    select_channel: 1,
                     // 查询字符串
                     search_key: "",
                     // 排序参数
@@ -1724,16 +1724,17 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                 var TAG = Templates.Order.ReserveNotice;
                 // 操作栏
                 $scope.option = {
-                    date_from: "",
-                    date_to: "",
-                    dinner_: "",
+                    date_from: "2017-07-01",
+                    date_to: "2017-07-18",
+                    dinner_period: "",
                     select_area: 0,
                     select_channel: 0,
                     keyword: "18800184976",
                     daily_report: 0,
                     phone_mask: false,
                     desk_merge: true,
-                    print_size: 0
+                    print_size: 0,
+                    orderBy: "name"
                 };
                 $scope.detail = {
                     order_count: 0,
@@ -1752,11 +1753,12 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                 // 表格数据
                 $scope.data = {count: 0, list: []};
                 var Order = {
-                    getReserveOrder: function () {
-                        Log.i(TAG, "查询订单数据:" + JSON.stringify($scope.option));
+                    getReserveOrder: function (option) {
+                        Log.i(TAG, "查询订单数据:" + JSON.stringify(option));
                         // 搜索订单列表
                         var url = "/webApp/staff/order/search/";
-                        var param = angular.copy($scope.option);
+                        var param = angular.copy(option);
+                        param.branch_id = parseInt(param.branch_id);
                         $http.post(url, JSON.stringify(param)).success(function (obj) {
                             if (obj.status === "true") {
                                 $scope.data = obj.data;
@@ -1767,9 +1769,11 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                         });
                     }
                 };
+                Order.getReserveOrder($scope.option);
                 // 事件处理
                 $scope.query = function () {
                     Log.i(TAG, JSON.stringify($scope.option));
+                    Order.getReserveOrder($scope.option);
                 };
                 $scope.export = function () {
                     Log.i(TAG, JSON.stringify($scope.option));
@@ -1779,17 +1783,40 @@ StaffApp.config(['$routeProvider', '$httpProvider', function ($routeProvider, $h
                 };
                 $scope.sort = function (index) {
                     var tags = [
-                        "就餐时间", "区域", "桌号", "姓名", "手机", "人数",
-                        "接单渠道", "下单时间", "分类", "订单状态", "操作员",
+                        "dinner_time", "table_count", "桌号", "name", "contact", "guest_number",
+                        "internal_channel", "create_time", "guest_type", "status", "internal_channel",
                         "订单详情"
                     ];
                     Log.i(TAG, "根据 '" + tags[index] + "' 对列表排序");
+                    $scope.option.orderBy = tags[index];
                 };
                 $scope.today = function (index) {
                     var tags = [
-                        "今日报表", "午餐", "晚餐", "已撤销订单", "散客订单"
+                        "今日报表", "午餐", "晚餐", "夜宵", "已撤销订单", "散客订单"
                     ];
                     Log.i(TAG, "根据 '" + tags[index] + "' 过滤列表数据");
+                    switch (index) {
+                        case 0:
+                            $scope.option.date_from = "2017-07-18";
+                            $scope.option.date_to = "2017-07-18";
+                            break;
+                        case 1:
+                            $scope.option.dinner_period = 0;
+                            break;
+                        case 2:
+                            $scope.option.dinner_period = 1;
+                            break;
+                        case 3:
+                            $scope.option.dinner_period = 2;
+                            break;
+                        case 4:
+                            $scope.option.status = 2;
+                            break;
+                        case 5:
+                            $scope.option.status = 1;
+                            break;
+                    }
+                    Order.getReserveOrder($scope.option);
                 };
                 // 对话框
                 $scope.order_details = function (order_id) {

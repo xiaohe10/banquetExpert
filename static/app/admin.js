@@ -122,8 +122,7 @@ AdminApp.config(['$routeProvider', function ($routeProvider) {
                             form: function () {
                                 return {
                                     name: "珍珠大酒店",
-                                    owner_name: "赵强",
-                                    positions: []
+                                    owner_name: "赵强"
                                 };
                             }
                         }

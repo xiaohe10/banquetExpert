@@ -23,30 +23,6 @@
                 <input type="text" ng-model="form.owner_name"/>
             </div>
         </div>
-        <!--酒店职位列表-->
-        <div class="form-group">
-            <label class="col-sm-2 control-label"><a style="color: red;">*</a>职位列表：</label>
-            <div class="col-sm-10">
-                <!--职位列表-->
-                <div class="well well-sm">
-                    <!--已添加职位-->
-                    <span class="label label-success" style="display: inline-block"
-                          ng-click="form.positions.splice($index, 1)" ng-repeat="x in form.positions">
-                        {{x}}<span class="glyphicon glyphicon-remove"></span>
-                    </span>
-                    <!--提示未添加职位-->
-                    <span class="label label-warning" style="display: inline-block" ng-show="form.positions.length===0">
-                        未添加职位<span class="glyphicon glyphicon-alert"></span>
-                    </span>
-                </div>
-                <!--添加职位【限制最多添加12个职位】-->
-                <div class="input-group" ng-hide="form.positions.length===12">
-                    <input type="text" ng-model="phone" placeholder="在此填写职位"/>
-                    <!--<span ng-show="form.name.$error.invalid" class="text-warning">请输入职位名称</span>-->
-                    <input type="button" ng-click="form.positions.push(phone)" value="添加职位"/>
-                </div>
-            </div>
-        </div>
         <!--酒店大图-->
         <div class="form-group">
             <label class="col-sm-2 control-label">

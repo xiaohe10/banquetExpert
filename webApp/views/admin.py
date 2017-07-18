@@ -134,7 +134,7 @@ def modify_hotel_profile(request, token, hotel_id, **kwargs):
     """
 
     try:
-        hotel = Hotel.enabled_objects.filter(id=hotel_id)
+        hotel = Hotel.enabled_objects.filter(id=hotel_id)[0]
     except Hotel.DoesNotExist:
         return err_response('err_4', '酒店不存在')
 
